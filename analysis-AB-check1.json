@@ -1,0 +1,36 @@
+{
+  "analysisA": {
+    "baseline_note": "post-drain live-only (no pre-outage live samples in Check1)",
+    "baseline_live": {
+      "p50": 625,
+      "p95": 1684,
+      "p99": 1930,
+      "err": 0.08808891467851006,
+      "n": 44807,
+      "window_s": 27
+    },
+    "drain_live": {
+      "p50": 735,
+      "p95": 1733,
+      "p99": 1939,
+      "err": 0.1121439077463309,
+      "n": 280791,
+      "window_s": 282
+    },
+    "mean_recovery_drain_rate": 1053.4730700434402,
+    "recoveryRemaining_reached_0": false,
+    "recovery_acked": 296835,
+    "backlog_at_restore": 300000
+  },
+  "analysisB": {
+    "workers": 1024,
+    "mean_latency_ms": 841.8069209232176,
+    "p50_latency_ms": 735,
+    "p99_latency_ms": 1939,
+    "obs_combined_rps_mean": 2043.2836879432625,
+    "obs_combined_rps_peak": 2117,
+    "implied_workers_over_mean_lat": 1216.4309588675862,
+    "queueCap": 500,
+    "est_queue_from_p99": 3868.0
+  }
+}

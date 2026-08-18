@@ -1,0 +1,6 @@
+node_modules/
+bin/
+*.jsonl
+*.jsonl.*
+.DS_Store
+*.test

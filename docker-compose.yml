@@ -1,0 +1,26 @@
+services:
+  nats:
+    image: nats:2.10-alpine
+    command: ["-js", "-m", "8222", "-sd", "/data"]
+    ports:
+      # Host ports chosen to avoid clashing with other local NATS (e.g. :4222/:8222).
+      - "14222:4222"
+      - "18222:8222"
+    volumes:
+      - nats-data:/data
+
+  downstream:
+    build:
+      context: .
+      dockerfile: Dockerfile.downstream
+    environment:
+      CAPACITY: "2000"
+      SERVICE_TIME_MS: "25"
+      TIMEOUT_MS: "2000"
+      PROFILE: "graceful"
+      PORT: "8080"
+    ports:
+      - "8080:8080"
+
+volumes:
+  nats-data:

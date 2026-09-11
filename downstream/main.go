@@ -17,6 +17,16 @@ import (
 	"time"
 )
 
+func envFloat(key string, def float64) float64 {
+	if v := os.Getenv(key); v != "" {
+		if f, err := strconv.ParseFloat(v, 64); err == nil {
+			return f
+		}
+		log.Fatalf("invalid %s=%q: want a number", key, v)
+	}
+	return def
+}
+
 func envInt(key string, def int) int {
 	v := os.Getenv(key)
 	if v == "" {
@@ -247,10 +257,23 @@ func (s *Server) handleJob(j *job) {
 	j.done <- http.StatusOK
 }
 
+// serviceTimeJitterSigma is SERVICE_TIME_JITTER: the standard deviation of the
+// per-request service-time multiplier, as a fraction of the mean. 0 makes the
+// dependency deterministic. The default 0.15 is the value every Phase 0/1 run
+// used, so leaving it unset reproduces those runs exactly.
+//
+// It was a hardcoded constant until 2026-09-11 and appeared in no run record,
+// which meant the arrival-process-versus-service-process question could not be
+// asked of the existing data at all.
+var serviceTimeJitterSigma = 0.15
+
 func (s *Server) jitteredServiceTime() time.Duration {
+	if serviceTimeJitterSigma <= 0 {
+		return s.serviceTime
+	}
 	s.rngMu.Lock()
 	base := s.serviceTime
-	j := s.rng.NormFloat64() * 0.15
+	j := s.rng.NormFloat64() * serviceTimeJitterSigma
 	s.rngMu.Unlock()
 	if j < -0.5 {
 		j = -0.5
@@ -295,11 +318,13 @@ func (s *Server) CapacityInfo() map[string]any {
 	to := s.timeout
 	s.mu.Unlock()
 	return map[string]any{
-		"trueCapacity": cap,
-		"concurrency":  s.targetW.Load(),
-		"liveWorkers":  s.liveW.Load(),
-		"queueCap":     s.queueCap.Load(),
-		"queueCapMode": queueCapMode(),
+		"trueCapacity":           cap,
+		"concurrency":            s.targetW.Load(),
+		"liveWorkers":            s.liveW.Load(),
+		"queueCap":               s.queueCap.Load(),
+		"queueCapMode":           queueCapMode(),
+		"serviceTimeJitterSigma": serviceTimeJitterSigma,
+		"serviceTimeJitterClamp": 0.5,
 		"fullQueueDelayMs": math.Round(fullQueueDelayMs(
 			int(s.queueCap.Load()), int(s.targetW.Load()), st)*10) / 10,
 		"profile":       profile,
@@ -460,6 +485,7 @@ func main() {
 	profile := envStr("PROFILE", "graceful")
 	port := envInt("PORT", 8080)
 	queueCapOverride = envInt("QUEUE_CAP", 0)
+	serviceTimeJitterSigma = envFloat("SERVICE_TIME_JITTER", 0.15)
 
 	if profile != "graceful" && profile != "cliff" {
 		log.Fatalf("PROFILE must be graceful or cliff, got %q", profile)

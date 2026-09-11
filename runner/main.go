@@ -280,8 +280,13 @@ func main() {
 			// and not the other. Recorded per run so the two can be separated.
 			"downstreamQueueCapMode":     dsCap["queueCapMode"],
 			"downstreamFullQueueDelayMs": asFloat(dsCap["fullQueueDelayMs"]),
-			"profile":                    *profile,
-			"workers":                    *workers,
+			// Service-time jitter sigma, as a fraction of the mean. Hardcoded at
+			// 0.15 through Phase 0/1 and recorded nowhere, so the existing data
+			// cannot answer whether the boundary is set by the arrival process or
+			// the service process. Now read from the downstream per run.
+			"downstreamServiceTimeJitter": asFloat(dsCap["serviceTimeJitterSigma"]),
+			"profile":                     *profile,
+			"workers":                     *workers,
 			// Host condition at run start. A busy host distorts timing windows and a
 			// full disk truncates traces, and neither is visible in the results
 			// afterwards -- both happened on 2026-08-19.

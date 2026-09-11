@@ -269,6 +269,8 @@ def runner_argv(args, rl, run_id):
     ]
     if args.profile:
         argv += ['-profile', args.profile]
+    if args.injector_pacer:
+        argv += ['-injector-pacer', args.injector_pacer]
     return argv
 
 
@@ -448,6 +450,10 @@ def main():
     ap.add_argument('--outage', type=int, default=120)
     ap.add_argument('--workers', type=int, default=1024)
     ap.add_argument('--profile', default='graceful')
+    ap.add_argument('--injector-pacer', default='lanes', choices=['ticker', 'lanes'],
+                    help="live injector arrival process. Default lanes: on EC2 the ticker "
+                         "delivers 96.4-96.8%% of lambda_L and fails the +/-1%% guard, while "
+                         "lanes delivers 99.97-99.98%%. See NOTES.md 2026-09-11.")
     ap.add_argument('--nats', default='nats://127.0.0.1:14222')
     ap.add_argument('--downstream', default='http://127.0.0.1:8080')
     ap.add_argument('--runner', default='./bin/runner')

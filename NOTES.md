@@ -1,5 +1,40 @@
 # Phase 0 Notes
 
+## Injector pacer on EC2 — ticker under-delivers, lanes does not (2026-09-11)
+
+Measured before the first E1 run, on the EC2 box, at the rate the injector
+actually runs at (λ_L = 1000, C = 2000, S = 5 ms, 1024 consumer workers):
+
+| pacer | delivered | of target |
+|---|---:|---:|
+| `ticker` | 968.0, 964.2 rps | **96.80%, 96.42%** |
+| `lanes` | 999.7, 999.8 rps | **99.97%, 99.98%** |
+
+The ticker fails the ±1% generator guard outright on this platform: the first
+two E1 runs aborted with `injector delivered 967.0 rps vs target 1000`. A 3.3%
+shortfall in λ_L is about **0.017 in ρ**, more than twice the widest transition
+width measured anywhere in this project, so it would dominate the quantity being
+measured rather than perturb it.
+
+**E1 onward uses `-injector-pacer lanes`.** `locate_boundary.py` defaults to it.
+
+This is not a new finding so much as a confirmation. The 2026-08-19 A/B at
+offered 1000 — the same rate — already showed lanes achieving 1000.0 with
+qMean 0.1 against the ticker's 975.4 with qMean 20.0 and `sloOK false`. The
+ticker was nevertheless kept as the default then, for one reason only:
+comparability with the Phase 1 corpus, which had been measured under it.
+
+That reason no longer applies. E1 re-measures every boundary from scratch and
+makes **no comparison with the pre-EC2 corpus** (see the platform-change entry
+above), so there is nothing left to stay comparable with. The remaining
+consideration was the Aug 19 observation that lanes degrades at high offered
+rates — 10 lanes staggered 0.54 ms apart fall below OS timer resolution at 1850
+— but the injector runs 5 lanes at 1000 rps, which is the regime where lanes is
+measured to be clean, on both platforms.
+
+Recorded per run as `injectorPacer`, and the ±1% guard stays at ±1%: it is
+satisfiable on this platform without relaxation, which is the point.
+
 ## Platform change — the campaign moved to EC2 before E1 (2026-09-11)
 
 **Every boundary run from E1 onward is measured on EC2, not on the laptop.**

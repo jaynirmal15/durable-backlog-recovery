@@ -1,3 +1,6 @@
+// The 2026-08-19 changes in this file were reconstructed from the 2026-08-19 session log; original was never committed.
+// See RECONSTRUCTION.md.
+
 package main
 
 import (
@@ -167,6 +170,17 @@ func main() {
 
 	log.Printf("consumer started durable=%s workers=%d batch=%d restoreEpoch=%d rateLimit=%d out=%s",
 		durable, workers, batch, restoreEpoch, rateLimit, samplesOut)
+
+	// RATE_LIMIT_RPS < 0 = recovery suspended: admit nothing. Messages are left
+	// pending in JetStream (not fetched, not acked), so the backlog is retained
+	// and recoveryRemaining stays flat. 0 remains "unrestricted" so every
+	// existing run record keeps its meaning.
+	if rateLimit < 0 {
+		log.Printf("recovery SUSPENDED (rateLimit=%d): no messages will be fetched or acked", rateLimit)
+		close(jobs)
+		wg.Wait()
+		select {}
+	}
 
 	for {
 		msgs, err := cons.Fetch(batch, jetstream.FetchMaxWait(2*time.Second))

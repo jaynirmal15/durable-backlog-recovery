@@ -276,6 +276,16 @@ def probe(args, rl, log):
     """Run n repetitions at one rate and classify. Returns the point dict."""
     runs = []
     for rep in range(1, args.n + 1):
+        if runs or getattr(probe, '_started', False):
+            # Space runs instead of batching them. On 2026-08-19 back-to-back
+            # builds and campaigns drove the 15-minute load average to 13.9 on
+            # 8 cores and the conclusions drawn from those runs were withdrawn.
+            # The downstream also needs its queue genuinely empty between runs,
+            # not merely drained a second ago.
+            if args.settle_seconds > 0:
+                log('    settling %ds' % args.settle_seconds)
+                time.sleep(args.settle_seconds)
+        probe._started = True
         run_id = '%s-%s-rl%d-r%d' % (args.arm, args.regime.lower(), rl, rep)
         argv = runner_argv(args, rl, run_id)
         log('    run %s' % run_id)
@@ -443,6 +453,8 @@ def main():
     ap.add_argument('--runner', default='./bin/runner')
     ap.add_argument('--results', default='results')
     ap.add_argument('--out-dir', default='results/boundaries')
+    ap.add_argument('--settle-seconds', type=int, default=60,
+                    help='idle gap between runs, so the host and the downstream queue recover (default 60)')
     ap.add_argument('--dry-run', action='store_true', help='print the probe sequence and exit')
     args = ap.parse_args()
 

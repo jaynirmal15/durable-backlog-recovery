@@ -1,6 +1,10 @@
+// The 2026-08-19 changes in this file were reconstructed from session transcript 2026-08-19; original was never committed.
+// See RECONSTRUCTION.md.
+
 // Live-only SLO capacity curve (Probe 1). No NATS / no recovery.
 // Usage:
-//   go run ./scripts/probe_live_only -url http://127.0.0.1:8080 -capacity 2000
+//
+//	go run ./scripts/probe_live_only -url http://127.0.0.1:8080 -capacity 2000
 package main
 
 import (
@@ -27,6 +31,7 @@ func main() {
 	out := flag.String("out", "results/probe1-live-only.json", "")
 	sloP99 := flag.Float64("slo-p99-ms", 250, "")
 	sloErr := flag.Float64("slo-error-rate", 0.01, "")
+	pacer := flag.String("pacer", "lanes", "lanes|ticker — A/B the arrival process on one downstream")
 	ratesCSV := flag.String("rates", "250,500,750,900,1000,1200,1400,1600", "comma-separated offered rates")
 	flag.Parse()
 
@@ -41,6 +46,8 @@ func main() {
 			MaxIdleConns: 8192, MaxIdleConnsPerHost: 8192, MaxConnsPerHost: 8192,
 		},
 	}
+	pacerMode = *pacer
+	fmt.Printf("pacer=%s\n", pacerMode)
 	if err := setCapacity(client, *url, *capacity); err != nil {
 		fatal(err)
 	}
@@ -128,19 +135,19 @@ func main() {
 	}
 
 	outDoc := map[string]any{
-		"capacity":            *capacity,
-		"warmupSec":           warmup.Seconds(),
-		"measureSec":          measure.Seconds(),
-		"sloP99Ms":            *sloP99,
-		"sloErrorRate":        *sloErr,
-		"points":              points,
-		"C_SLO_live":          cSLO,
-		"lambda_L":            1000,
-		"lambda_L_vs_C_SLO":   rel,
-		"G_SLO_live_only_987": g987,
+		"capacity":             *capacity,
+		"warmupSec":            warmup.Seconds(),
+		"measureSec":           measure.Seconds(),
+		"sloP99Ms":             *sloP99,
+		"sloErrorRate":         *sloErr,
+		"points":               points,
+		"C_SLO_live":           cSLO,
+		"lambda_L":             1000,
+		"lambda_L_vs_C_SLO":    rel,
+		"G_SLO_live_only_987":  g987,
 		"G_SLO_live_only_1000": gAt987,
-		"queueCapAtC2000":     info["queueCap"],
-		"queueCensoring":      "soft queued counter hard-bounded at queueCap (concurrency×50=500 @C=2000); graceful waits outside queue until timeout — qPeak is censored",
+		"queueCapAtC2000":      info["queueCap"],
+		"queueCensoring":       "soft queued counter hard-bounded at queueCap (concurrency×50=500 @C=2000); graceful waits outside queue until timeout — qPeak is censored",
 	}
 	b, _ := json.MarshalIndent(outDoc, "", "  ")
 	if err := os.WriteFile(*out, b, 0o644); err != nil {
@@ -188,13 +195,13 @@ func pollQueue(client *http.Client, base string) *queuePoller {
 }
 
 type queuePoller struct {
-	client      *http.Client
-	base        string
-	stop        chan struct{}
-	mu          sync.Mutex
-	sum         float64
-	n           int
-	peak        int64
+	client *http.Client
+	base   string
+	stop   chan struct{}
+	mu     sync.Mutex
+	sum    float64
+	n      int
+	peak   int64
 }
 
 func (q *queuePoller) finish() (mean float64, peak int64) {
@@ -208,31 +215,47 @@ func (q *queuePoller) finish() (mean float64, peak int64) {
 	return mean, q.peak
 }
 
+var pacerMode = "lanes"
+
+type sample struct {
+	lat float64
+	st  int
+}
+
 func flood(client *http.Client, endpoint string, rate float64, dur time.Duration, qp *queuePoller) floodResult {
 	var issued atomic.Int64
 	var nFlight atomic.Int64
 	const maxInFlight = 4096
-	interval := time.Duration(float64(time.Second) / rate)
-	if interval < time.Microsecond {
-		interval = time.Microsecond
-	}
 	deadline := time.Now().Add(dur)
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
 
-	type sample struct {
-		lat float64
-		st  int
-	}
 	var mu sync.Mutex
 	var samples []sample
 	var wg sync.WaitGroup
 
-	for time.Now().Before(deadline) {
-		<-ticker.C
-		if nFlight.Load() >= maxInFlight {
-			continue
-		}
+	// Multi-lane deadline pacer. Two earlier designs both distorted the arrival
+	// process being measured:
+	//   time.Ticker    — DROPS ticks when the receiver is late, so delivered
+	//                    rate silently degraded with in-flight count and offered
+	//                    rate (88-99% of target, worst on a process's first point).
+	//   single-lane    — deriving a target count from elapsed time recovers the
+	//   catch-up loop    rate, but discharges accumulated timer debt as a BURST;
+	//                    at offered 1100 / C=2000 / S=25 that produced qPeak 446
+	//                    and p99 428 ms at rho=0.55, which is impossible for a
+	//                    smooth arrival process.
+	// Here the rate is split across lanes so each lane's interval is >= ~5 ms
+	// (comfortably above OS timer granularity) and the lanes are phase-staggered.
+	// Each lane sleeps to its own next deadline and issues exactly one request,
+	// so lateness self-corrects without bunching.
+	lanes := int(math.Ceil(rate / 200.0))
+	if lanes < 1 {
+		lanes = 1
+	}
+	if lanes > 64 {
+		lanes = 64
+	}
+	laneInterval := time.Duration(float64(lanes) * float64(time.Second) / rate)
+
+	issueOne := func() {
 		issued.Add(1)
 		nFlight.Add(1)
 		wg.Add(1)
@@ -253,8 +276,67 @@ func flood(client *http.Client, endpoint string, rate float64, dur time.Duration
 			mu.Unlock()
 		}()
 	}
-	wg.Wait()
 
+	if pacerMode == "ticker" {
+		// Original design: one time.Ticker. It DROPS ticks when late (so the
+		// delivered rate sags) but the ticks it does deliver are evenly spaced.
+		// Retained purely to A/B the arrival process against the lane pacer.
+		var pacers sync.WaitGroup
+		pacers.Add(1)
+		go func() {
+			defer pacers.Done()
+			tk := time.NewTicker(time.Duration(float64(time.Second) / rate))
+			defer tk.Stop()
+			for time.Now().Before(deadline) {
+				<-tk.C
+				if nFlight.Load() >= maxInFlight {
+					continue
+				}
+				issueOne()
+			}
+		}()
+		pacers.Wait()
+		wg.Wait()
+		return collect(&mu, &samples, qp)
+	}
+
+	var pacers sync.WaitGroup
+	for L := 0; L < lanes; L++ {
+		pacers.Add(1)
+		go func(L int) {
+			defer pacers.Done()
+			phase := time.Duration(int64(L) * int64(laneInterval) / int64(lanes))
+			time.Sleep(phase)
+			start := time.Now()
+			for i := int64(0); ; i++ {
+				target := start.Add(time.Duration(i) * laneInterval)
+				// Bounded catch-up: never discharge missed slots as a burst.
+				if time.Since(target) > laneInterval {
+					start = time.Now().Add(-time.Duration(i) * laneInterval)
+					target = time.Now()
+				}
+				if d := time.Until(target); d > 0 {
+					time.Sleep(d)
+				}
+				if time.Now().After(deadline) {
+					return
+				}
+				if nFlight.Load() >= maxInFlight {
+					continue
+				}
+				issueOne()
+			}
+		}(L)
+	}
+	pacers.Wait()
+	wg.Wait()
+	return collect(&mu, &samples, qp)
+}
+
+func collect(mu *sync.Mutex, samplesPtr *[]sample, qp *queuePoller) floodResult {
+	mu.Lock()
+	samples := *samplesPtr
+	mu.Unlock()
 	res := floodResult{}
 	for _, s := range samples {
 		res.n++

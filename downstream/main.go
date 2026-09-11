@@ -1,3 +1,6 @@
+// The 2026-08-19 changes in this file were reconstructed from session transcript 2026-08-19; original was never committed.
+// See RECONSTRUCTION.md.
+
 package main
 
 import (
@@ -55,15 +58,23 @@ type Server struct {
 	// Soft admission limit (profile × concurrency). Channel itself is sized once
 	// at startup large enough for the initial profile; we never close/rebuild it
 	// on capacity changes — that wedged the process under load during P0-B.
-	queueCap  atomic.Int64
-	queue     chan *job
-	targetW   atomic.Int64 // desired worker count
-	liveW     atomic.Int64 // running workers
-	workerWG  sync.WaitGroup
-	stopAll   chan struct{}
-	stats     stats
-	rngMu     sync.Mutex
-	rng       *rand.Rand
+	queueCap atomic.Int64
+	// Admission semaphore. Waiting requests PARK on a channel receive and are
+	// woken one-per-release. The previous graceful path spun on
+	// time.After(100us) per waiter, which allocated tens of millions of timers
+	// per second under load, saturated the host, starved the worker pool, and
+	// manufactured congestion collapse (see NOTES.md, 2026-08-19).
+	slots    chan struct{}
+	slotCap  atomic.Int64
+	slotMu   sync.Mutex
+	queue    chan *job
+	targetW  atomic.Int64 // desired worker count
+	liveW    atomic.Int64 // running workers
+	workerWG sync.WaitGroup
+	stopAll  chan struct{}
+	stats    stats
+	rngMu    sync.Mutex
+	rng      *rand.Rand
 }
 
 func concurrencyFor(capacity float64, serviceTime time.Duration) int {
@@ -83,6 +94,28 @@ func queueCapFor(profile string, concurrency int) int {
 	}
 }
 
+// resizeSlots adjusts the number of admission tokens in flight. Shrinking only
+// reclaims tokens that are currently free; held tokens drain naturally as their
+// requests complete.
+func (s *Server) resizeSlots(newCap int) {
+	s.slotMu.Lock()
+	defer s.slotMu.Unlock()
+	cur := int(s.slotCap.Load())
+	for i := cur; i < newCap; i++ {
+		select {
+		case s.slots <- struct{}{}:
+		default:
+		}
+	}
+	for i := newCap; i < cur; i++ {
+		select {
+		case <-s.slots:
+		default:
+		}
+	}
+	s.slotCap.Store(int64(newCap))
+}
+
 func NewServer(capacity float64, serviceTime, timeout time.Duration, profile string) *Server {
 	conc := concurrencyFor(capacity, serviceTime)
 	// Channel capacity: allow headroom above initial soft cap so later capacity
@@ -97,10 +130,12 @@ func NewServer(capacity float64, serviceTime, timeout time.Duration, profile str
 		timeout:     timeout,
 		profile:     profile,
 		queue:       make(chan *job, chCap),
+		slots:       make(chan struct{}, 65536),
 		stopAll:     make(chan struct{}),
 		rng:         rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 	s.queueCap.Store(int64(queueCapFor(profile, conc)))
+	s.resizeSlots(queueCapFor(profile, conc))
 	s.targetW.Store(int64(conc))
 	s.ensureWorkers()
 	log.Printf("capacity=%.0f rps concurrency=%d queueCap=%d profile=%s serviceTime=%s timeout=%s",
@@ -157,6 +192,12 @@ func (s *Server) worker() {
 
 func (s *Server) handleJob(j *job) {
 	s.stats.queued.Add(-1)
+	// Release the admission token as soon as the job leaves the queue, waking
+	// exactly one waiter.
+	select {
+	case s.slots <- struct{}{}:
+	default:
+	}
 	waited := time.Since(j.enqueuedAt)
 	timeout := s.timeout
 	if waited >= timeout {
@@ -201,6 +242,7 @@ func (s *Server) SetCapacity(rate float64) {
 	s.capacity = rate
 	conc := concurrencyFor(rate, s.serviceTime)
 	s.queueCap.Store(int64(queueCapFor(s.profile, conc)))
+	s.resizeSlots(queueCapFor(s.profile, conc))
 	s.targetW.Store(int64(conc))
 	s.ensureWorkers()
 	log.Printf("capacity=%.0f rps concurrency=%d queueCap=%d (liveWorkers≈%d)",
@@ -276,29 +318,42 @@ func (s *Server) Process(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		deadline := time.Now().Add(timeout)
-		for {
-			if s.softLen() < qCap {
-				select {
-				case s.queue <- j:
-					s.stats.queued.Add(1)
-					goto enqueued
-				default:
-					// channel physically full — brief yield
-				}
-			}
-			if time.Now().After(deadline) {
-				s.stats.timedOut.Add(1)
-				http.Error(w, "timeout waiting for queue", http.StatusGatewayTimeout)
-				return
-			}
+		// Graceful admission: BLOCK on the semaphore. A waiting request parks on
+		// a channel receive and is woken when a worker frees a slot — it costs
+		// no CPU while waiting. One timer per request, not one per 100us per
+		// request. Replaces a spin-wait that manufactured congestion collapse
+		// (NOTES.md 2026-08-19: 1216% CPU and served/s falling 1837 -> 1463 at
+		// offered 1950, versus ~100% and no collapse with the same load under
+		// PROFILE=cliff).
+		t := time.NewTimer(timeout)
+		select {
+		case <-s.slots:
+			t.Stop()
+		case <-t.C:
+			s.stats.timedOut.Add(1)
+			http.Error(w, "timeout waiting for queue", http.StatusGatewayTimeout)
+			return
+		case <-r.Context().Done():
+			t.Stop()
+			s.stats.timedOut.Add(1)
+			http.Error(w, "client gone", http.StatusGatewayTimeout)
+			return
+		}
+		// Token held => a queue slot is reserved for this request.
+		select {
+		case s.queue <- j:
+			s.stats.queued.Add(1)
+			goto enqueued
+		default:
+			// Physically full despite holding a token (only reachable if the
+			// soft cap was raised past the channel). Return the token.
 			select {
-			case <-r.Context().Done():
-				s.stats.timedOut.Add(1)
-				http.Error(w, "client gone", http.StatusGatewayTimeout)
-				return
-			case <-time.After(100 * time.Microsecond):
+			case s.slots <- struct{}{}:
+			default:
 			}
+			s.stats.timedOut.Add(1)
+			http.Error(w, "queue full", http.StatusGatewayTimeout)
+			return
 		}
 	}
 

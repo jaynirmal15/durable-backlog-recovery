@@ -17,6 +17,16 @@ import (
 	"time"
 )
 
+func envFloat(key string, def float64) float64 {
+	if v := os.Getenv(key); v != "" {
+		if f, err := strconv.ParseFloat(v, 64); err == nil {
+			return f
+		}
+		log.Fatalf("invalid %s=%q: want a number", key, v)
+	}
+	return def
+}
+
 func envInt(key string, def int) int {
 	v := os.Getenv(key)
 	if v == "" {
@@ -85,13 +95,42 @@ func concurrencyFor(capacity float64, serviceTime time.Duration) int {
 	return c
 }
 
+// queueCapOverride is QUEUE_CAP: a fixed admission limit in requests,
+// independent of concurrency. 0 (the default) keeps the historical
+// profile-relative behaviour.
+//
+// Why this exists: with the profile-relative cap, graceful's full-queue delay is
+// 50 x concurrency / (concurrency / S) = 50 x S, which is 250 ms at S=5 ms --
+// exactly the SLO -- and 1250 ms at S=25 ms. "Queue full" is therefore
+// definitionally "SLO breach" in the c10 arm and not in the c50 arm, which is a
+// competing explanation for the concurrency effect that has nothing to do with
+// concurrency. Holding the cap fixed across arms separates the two.
+var queueCapOverride int
+
 func queueCapFor(profile string, concurrency int) int {
+	if queueCapOverride > 0 {
+		return queueCapOverride
+	}
 	switch profile {
 	case "cliff":
 		return concurrency * 2
 	default:
 		return concurrency * 50
 	}
+}
+
+// fullQueueDelayMs is the wait a request faces when it is admitted to a full
+// queue: cap / service rate, where the service rate is concurrency / S. This is
+// the quantity that coincides with the SLO under the default cap at S=5 ms.
+func fullQueueDelayMs(queueCap, concurrency int, serviceTime time.Duration) float64 {
+	if concurrency <= 0 || serviceTime <= 0 {
+		return 0
+	}
+	serviceRate := float64(concurrency) / serviceTime.Seconds()
+	if serviceRate <= 0 {
+		return 0
+	}
+	return float64(queueCap) / serviceRate * 1000.0
 }
 
 // resizeSlots adjusts the number of admission tokens in flight. Shrinking only
@@ -218,10 +257,23 @@ func (s *Server) handleJob(j *job) {
 	j.done <- http.StatusOK
 }
 
+// serviceTimeJitterSigma is SERVICE_TIME_JITTER: the standard deviation of the
+// per-request service-time multiplier, as a fraction of the mean. 0 makes the
+// dependency deterministic. The default 0.15 is the value every Phase 0/1 run
+// used, so leaving it unset reproduces those runs exactly.
+//
+// It was a hardcoded constant until 2026-09-11 and appeared in no run record,
+// which meant the arrival-process-versus-service-process question could not be
+// asked of the existing data at all.
+var serviceTimeJitterSigma = 0.15
+
 func (s *Server) jitteredServiceTime() time.Duration {
+	if serviceTimeJitterSigma <= 0 {
+		return s.serviceTime
+	}
 	s.rngMu.Lock()
 	base := s.serviceTime
-	j := s.rng.NormFloat64() * 0.15
+	j := s.rng.NormFloat64() * serviceTimeJitterSigma
 	s.rngMu.Unlock()
 	if j < -0.5 {
 		j = -0.5
@@ -249,6 +301,15 @@ func (s *Server) SetCapacity(rate float64) {
 		rate, conc, s.queueCap.Load(), s.liveW.Load())
 }
 
+// queueCapMode records how the cap was chosen, so a run record shows whether
+// QUEUE_CAP was in force rather than leaving it to be inferred.
+func queueCapMode() string {
+	if queueCapOverride > 0 {
+		return "fixed"
+	}
+	return "profile_relative"
+}
+
 func (s *Server) CapacityInfo() map[string]any {
 	s.mu.Lock()
 	cap := s.capacity
@@ -257,10 +318,15 @@ func (s *Server) CapacityInfo() map[string]any {
 	to := s.timeout
 	s.mu.Unlock()
 	return map[string]any{
-		"trueCapacity":  cap,
-		"concurrency":   s.targetW.Load(),
-		"liveWorkers":   s.liveW.Load(),
-		"queueCap":      s.queueCap.Load(),
+		"trueCapacity":           cap,
+		"concurrency":            s.targetW.Load(),
+		"liveWorkers":            s.liveW.Load(),
+		"queueCap":               s.queueCap.Load(),
+		"queueCapMode":           queueCapMode(),
+		"serviceTimeJitterSigma": serviceTimeJitterSigma,
+		"serviceTimeJitterClamp": 0.5,
+		"fullQueueDelayMs": math.Round(fullQueueDelayMs(
+			int(s.queueCap.Load()), int(s.targetW.Load()), st)*10) / 10,
 		"profile":       profile,
 		"serviceTimeMs": st.Milliseconds(),
 		"timeoutMs":     to.Milliseconds(),
@@ -418,6 +484,8 @@ func main() {
 	timeout := time.Duration(envInt("TIMEOUT_MS", 2000)) * time.Millisecond
 	profile := envStr("PROFILE", "graceful")
 	port := envInt("PORT", 8080)
+	queueCapOverride = envInt("QUEUE_CAP", 0)
+	serviceTimeJitterSigma = envFloat("SERVICE_TIME_JITTER", 0.15)
 
 	if profile != "graceful" && profile != "cliff" {
 		log.Fatalf("PROFILE must be graceful or cliff, got %q", profile)

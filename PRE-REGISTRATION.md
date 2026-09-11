@@ -292,3 +292,105 @@ MARGINAL as a ceiling, and the interval definition are all untouched. Covered
 by seven unit tests in `scripts/test_locate_boundary.py`.
 
 No measurement changes, because no measurement has been taken.
+
+### A3 — 2026-09-11: the live injector moves from the ticker to lanes
+
+**Registered before any E1 data was collected.** Two runs had already aborted on
+the delivery guard at that point; see "Not data" below.
+
+#### The change
+
+`-injector-pacer` moves from `ticker` (a tick-dropping `time.Ticker`) to `lanes`
+(a multi-lane deadline pacer with bounded catch-up). `scripts/locate_boundary.py`
+defaults to `lanes` and passes it to every run. The ±1% delivery guard is
+**unchanged at ±1%** — the point of the change is that ±1% becomes satisfiable
+on this platform without relaxing it.
+
+#### Why: measured on the EC2 box at λ_L = 1000, C = 2000, S = 5 ms, 1024 workers
+
+| pacer | delivered | of target |
+|---|---:|---:|
+| `ticker` | 968.0, 964.2 rps | **96.80%, 96.42%** |
+| `lanes` | 999.7, 999.8 rps | **99.97%, 99.98%** |
+
+A 3.3% shortfall in λ_L is about **0.017 in ρ**. The widest transition width
+measured anywhere in this project is 0.007, so the generator error would be
+roughly **2.4× the quantity being measured**. That is not a perturbation to
+correct for afterwards; it would decide the answer.
+
+The 2026-08-19 A/B at the same offered rate had already shown it (lanes 1000.0
+with qMean 0.1 against the ticker's 975.4 with qMean 20.0 and `sloOK false`).
+The ticker was kept then solely for comparability with the Phase 1 corpus. E1
+re-measures every boundary and makes no comparison with the pre-EC2 corpus, so
+that reason no longer exists.
+
+#### Not data
+
+Two E1 runs aborted with `injector delivered 967.0 rps vs target 1000 (96.70%),
+outside +/-1.0%`. **Those are guard aborts, not measurements.** The guard fired
+before the outage began; no drain was performed, no boundary point was
+classified, and no run record was retained. They are recorded here because a
+change of instrument mid-campaign has to be visible, not because they carry
+information about any boundary.
+
+#### Registered expectation, before boundary 1 lands
+
+At `rl = 840` the two pacers put the operating point in different places:
+
+| | λ_L delivered | achieved ρ at rl=840 |
+|---|---:|---:|
+| ticker (pre-EC2 corpus) | ~967 | **~0.909** |
+| lanes (E1) | ~1000 | **~0.919** |
+
+The anchor is therefore being probed about **0.010 higher in achieved ρ** than
+the corpus point it is named after — again larger than the widest transition
+width. **`rl = 840` may classify non-SAFE for injector reasons alone**, with
+nothing about the dependency having changed. Amendment A2 already handles that
+mechanically: a non-SAFE anchor sends the search downward.
+
+Registering it now so that, if it happens, it is read as the instrument moving
+rather than as a finding.
+
+#### Consequence: rl-space comparison with the old corpus is invalid
+
+**Comparisons against the pre-Aug-19 corpus in `rl` space are meaningless and are
+not made.** The same nominal `rl` no longer denotes the same offered load,
+because λ_L underneath it has moved by 3.3%. Only **achieved ρ** is comparable,
+and even then only with the platform caveat in `NOTES.md` — which is to say, for
+E1, not at all.
+
+This is the same rule already stated for the platform change, arrived at
+independently: the old last-SAFE values are search starting points, not
+baselines.
+
+#### The two terms of ρ are paced by different mechanisms
+
+Stated explicitly because it belongs in the methods section and is easy to miss:
+
+    ρ_achieved = ( λ_L_achieved + rl_achieved ) / C_d
+                    ^^^^^^^^^^^^   ^^^^^^^^^^^
+                    lanes          STILL THE TICKER
+
+**Only the live injector moved.** The consumer's recovery rate limiter in
+`consumer/main.go` is still a plain `time.NewTicker`, unchanged. The two terms
+of ρ are therefore paced by different mechanisms with different error
+characteristics: the injector now delivers ~99.98% of its target, while the
+limiter under-delivers by an amount that **grows with rl** — measured on
+2026-08-19 at 98.4% at rl=900 falling to 97.2% at rl=990.
+
+Three things follow, and they are registered rather than fixed, because changing
+the limiter now would move the instrument again mid-campaign:
+
+1. Achieved ρ must be computed from **measured** delivered rates on both terms,
+   which §5 already requires. The limiter's error is absorbed by measuring
+   `rl_achieved` from messages acked, not from the flag.
+2. The error is **not common-mode across the two terms**, so it does not cancel,
+   and it is **rl-dependent**, so it is larger at the top of a sweep than at the
+   bottom. A boundary located by bisection walks up in rl, which is the
+   direction the limiter error grows.
+3. Every boundary file records per-run `liveAchievedRps` and
+   `recoveryAchievedRps` separately, so the two can be inspected rather than
+   inferred.
+
+Whether the limiter should also move to a deadline pacer is a real question for
+E2 and is **not** decided here.

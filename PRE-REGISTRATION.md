@@ -379,6 +379,35 @@ dispersion at 1 s** and ~6× lower at 100 ms. The ticker's gaps are individually
 more regular; its *counts* over any window that matters to a queue are much
 less so, because dropping a tick removes a whole arrival rather than shifting it.
 
+**Which statistic governs, and why they disagree.** The two measures point
+opposite ways — `ticker` has the lower CV, `lanes` the lower IDC — so one of them
+has to be the wrong instrument for this question. **IDC at 100 ms–1 s governs
+here and inter-arrival CV is misleading**, for one reason: a queue integrates the
+arrival–service imbalance over the time it takes to fill, and with a 500-deep cap
+against a few percent of excess arrival rate that horizon is **seconds**, so what
+matters is the variance of arrival *counts* over seconds, while per-gap jitter
+cancels within milliseconds and never reaches the queue. CV is the right
+statistic when each arrival is served immediately; IDC is the right one when
+arrivals accumulate.
+
+**Neither process is renewal, which is why CV cannot be converted into IDC.** For
+a renewal process IDC → CV², and both are far below it:
+
+| | CV | CV² | measured IDC(1 s) |
+|---|---:|---:|---:|
+| `ticker` | 0.276 | 0.076 | **0.025** |
+| `lanes` | 0.359 | 0.129 | **0.001** |
+
+IDC below CV² means successive intervals are **negatively correlated** — a long
+gap is followed by short ones — in both pacers, by different mechanisms. The
+ticker keeps an absolute schedule, so a late or dropped tick is followed by the
+next tick at its originally scheduled time rather than a full period later. The
+lanes pacer runs N independent deadline schedules, so one lane slipping does not
+move the others and the aggregate count over a window is restored by the lanes
+that did not slip. In both cases the correlation suppresses count variance far
+below what the marginal gap distribution alone would imply, which is exactly why
+quoting CV and reasoning about burstiness from it would get the answer backwards.
+
 **Direction, stated as asked.** Smoother arrivals permit a higher ρ before
 collapse. `lanes` is materially smoother at 100 ms–1 s, which is the timescale
 over which a queue of 500 against 10 servers actually fills. So **part of any

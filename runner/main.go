@@ -58,8 +58,11 @@ type TimelinePoint struct {
 type RunRecord struct {
 	RunID             string          `json:"runId"`
 	Condition         string          `json:"condition"`
-	GitCommit         string          `json:"gitCommit"`
-	GitDirty          bool            `json:"gitDirty"`
+	GitCommit         string          `json:"gitCommit"`         // short (12-hex) HEAD; runner refuses to start if unresolvable
+	GitCommitFull     string          `json:"gitCommitFull"`
+	GitBranch         string          `json:"gitBranch"`
+	GitDirty          bool            `json:"gitDirty"`          // uncommitted changes outside results/ and bin/
+	GitDirtyFiles     []string        `json:"gitDirtyFiles,omitempty"`
 	StartedAt         string          `json:"startedAt"`
 	Params            map[string]any  `json:"params"`
 	BacklogAtRestore  int64           `json:"backlogAtRestore"`
@@ -133,6 +136,18 @@ func main() {
 	resultsDir := flag.String("results", "results", "results directory")
 	flag.Parse()
 
+	// Provenance first: refuse before touching NATS or the downstream.
+	gi, err := gitInfo()
+	if err != nil {
+		log.Fatalf("provenance: %v — results must be tied to a revision; run the runner from inside the git checkout that built it", err)
+	}
+	if gi.dirty {
+		log.Printf("WARNING: working tree is DIRTY at %s (%d uncommitted change(s) outside results/ and bin/): %s — the run record marks gitDirty=true; results are not reproducible from the recorded commit",
+			gi.short, len(gi.dirtyFiles), strings.Join(gi.dirtyFiles, ", "))
+	} else {
+		log.Printf("provenance: clean at %s (%s)", gi.short, gi.branch)
+	}
+
 	if *runID == "" {
 		*runID = fmt.Sprintf("%s-%s", strings.ToLower(*condition), time.Now().Format("20060102-150405"))
 	}
@@ -162,13 +177,16 @@ func main() {
 			*arm, dsSvcMs, dsConc, dsCap["queueCap"], asFloat(dsCap["trueCapacity"]))
 	}
 
-	commit, dirty := gitInfo()
+	commit, dirty := gi.short, gi.dirty
 
 	rec := RunRecord{
 		RunID:            *runID,
 		Condition:        *condition,
 		GitCommit:        commit,
+		GitCommitFull:    gi.commit,
+		GitBranch:        gi.branch,
 		GitDirty:         dirty,
+		GitDirtyFiles:    gi.dirtyFiles,
 		StartedAt:        time.Now().UTC().Format(time.RFC3339),
 		CapacitySchedule: schedule,
 		HeadroomSchedule: headroom,
@@ -1270,18 +1288,94 @@ func writeRecord(dir string, rec RunRecord) string {
 	return path
 }
 
-func gitInfo() (string, bool) {
-	commit := "unknown"
-	out, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
-	if err == nil {
-		commit = strings.TrimSpace(string(out))
+// gitProvenance is what gets stamped into every run record.
+type gitProvenance struct {
+	commit     string   // full 40-hex
+	short      string   // first 12
+	branch     string
+	dirty      bool     // any uncommitted change outside provenanceOutputPrefixes
+	dirtyFiles []string // those changes, "XY path"
+}
+
+// Paths that may differ from HEAD without marking the tree dirty: run output,
+// not code.
+var provenanceOutputPrefixes = []string{"results/", "bin/"}
+
+// gitInfo resolves the commit the runner is executing from. It is deliberately
+// strict, mirroring the voice harness rule (webrtc-recovery-harness
+// voice/lib/env.mjs gitInfo):
+//
+//   - HEAD must resolve to a full 40-hex commit or an error is returned and
+//     the caller refuses to run. The previous version swallowed every error
+//     and wrote "unknown" — which is how 137 of the 140 Phase 0/1 run records
+//     came to carry gitCommit="unknown", gitDirty=true: they were produced in
+//     a checkout whose HEAD was unborn (git init, no commit yet), where
+//     `git status` succeeds (everything untracked, hence dirty=true) but
+//     `git rev-parse HEAD` fails with "Needed a single revision".
+//   - Commands run with -C at the repository root, so any cwd inside the tree
+//     resolves the same way.
+//   - Dirty is computed from `git status --porcelain` excluding output paths,
+//     and the offending files are recorded so a dirty run is never mistaken
+//     for a clean one.
+func gitInfo() (gitProvenance, error) {
+	var gp gitProvenance
+	run := func(args ...string) (string, error) {
+		cmd := exec.Command("git", args...)
+		var stderr bytes.Buffer
+		cmd.Stderr = &stderr
+		out, err := cmd.Output()
+		if err != nil {
+			return "", fmt.Errorf("git %s: %v: %s", strings.Join(args, " "), err, strings.TrimSpace(stderr.String()))
+		}
+		return string(out), nil
 	}
-	dirty := false
-	out, err = exec.Command("git", "status", "--porcelain").Output()
-	if err == nil && len(strings.TrimSpace(string(out))) > 0 {
-		dirty = true
+	root, err := run("rev-parse", "--show-toplevel")
+	if err != nil {
+		return gp, fmt.Errorf("git_commit_unavailable: not inside a git work tree (%v)", err)
 	}
-	return commit, dirty
+	root = strings.TrimSpace(root)
+	runC := func(args ...string) (string, error) { return run(append([]string{"-C", root}, args...)...) }
+	commit, err := runC("rev-parse", "HEAD")
+	if err != nil {
+		return gp, fmt.Errorf("git_commit_unavailable: HEAD does not resolve (%v)", err)
+	}
+	commit = strings.TrimSpace(commit)
+	if len(commit) != 40 || strings.Trim(commit, "0123456789abcdef") != "" {
+		return gp, fmt.Errorf("git_commit_unavailable: unexpected commit format %q", commit)
+	}
+	gp.commit = commit
+	gp.short = commit[:12]
+	branch, err := runC("rev-parse", "--abbrev-ref", "HEAD")
+	if err != nil {
+		return gp, fmt.Errorf("git_commit_unavailable: branch does not resolve (%v)", err)
+	}
+	gp.branch = strings.TrimSpace(branch)
+	status, err := runC("status", "--porcelain")
+	if err != nil {
+		return gp, fmt.Errorf("git_commit_unavailable: status failed (%v)", err)
+	}
+	for _, line := range strings.Split(status, "\n") {
+		if len(line) <= 3 {
+			continue
+		}
+		path := line[3:]
+		if i := strings.Index(path, " -> "); i >= 0 {
+			path = path[i+4:]
+		}
+		path = strings.Trim(path, "\"")
+		isOutput := false
+		for _, pfx := range provenanceOutputPrefixes {
+			if strings.HasPrefix(path, pfx) {
+				isOutput = true
+				break
+			}
+		}
+		if !isOutput {
+			gp.dirtyFiles = append(gp.dirtyFiles, strings.TrimSpace(line[:2])+" "+path)
+		}
+	}
+	gp.dirty = len(gp.dirtyFiles) > 0
+	return gp, nil
 }
 
 func env(k, def string) string {

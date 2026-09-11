@@ -1,5 +1,63 @@
 # Phase 0 Notes
 
+## Platform change — the campaign moved to EC2 before E1 (2026-09-11)
+
+**Every boundary run from E1 onward is measured on EC2, not on the laptop.**
+
+| | Machine |
+|---|---|
+| Gate 0, Phase 1, and the whole 2026-08-18 corpus | MacBookPro15,2 — Intel i5-8259U, 8 cores, 8 GiB |
+| E1 onward | EC2 `c6i.2xlarge` — 8 vCPU, 16 GiB, Ubuntu 24.04, Docker native |
+
+The move is for measurement integrity, not convenience. The laptop ran the
+experiment alongside everything else on a desktop machine, and the 2026-08-19
+campaign was lost precisely to that: load climbed during the runs, the injector
+fell from 99.4–99.8% delivery to 96.2%, and the conclusions from that stretch
+were withdrawn. A dedicated box removes the class of problem rather than
+watching for it. The instance is deliberately fixed-performance — a burstable
+t-series would throttle once CPU credits ran out and change the downstream's
+service rate partway through a drain.
+
+### What this means for the old numbers
+
+**The 2026-08-18 last-SAFE values are SEARCH STARTING POINTS, not comparisons.**
+
+`PRE-REGISTRATION.md` §3 step 0 already requires every anchor to be re-verified
+on the current harness before a search proceeds, and a non-SAFE anchor sends the
+search downward (amendment A2). That is what the old values are for: they say
+where to start probing. They are not a baseline, and an E1 interval that lands
+somewhere else is **not** evidence that anything moved.
+
+**No cross-platform claim is made anywhere.** Not in this file, not in the
+boundary files, not in the paper. Any statement of the form "ρ* moved from X to
+Y" across the platform change would be comparing two machines and one harness
+fix at once, with no way to separate them. If a before-and-after on the harness
+fix is ever wanted, it needs both arms re-measured on the same box.
+
+The three laptop runs at the C0/10 anchor that were probed on 2026-09-11 before
+the move are retained in `results/laptop-preec2/` and are excluded from E1 for
+the same reason.
+
+### Recorded per run
+
+Every record now carries the machine and its condition, so none of this has to
+be inferred from a date:
+
+- `platform`: instance type, kernel, OS/arch, CPU model and count, memory,
+  Docker version, Go version
+- `hostLoad1Min` / `Mean` / `Max`, `hostLoadSamples`, `hostLoadBreached` — the
+  1-minute load sampled every 10 s **for the life of the run**, not only at the
+  start. A start-only reading cannot see load that climbs during measurement,
+  which is the exact failure that cost the 2026-08-19 campaign.
+- `hostFreeDiskGB`, and the queue-cap and jitter settings
+
+A run whose load breaches `cores × 1.0` at any sample is marked invalid with
+`host_load_breached_during_run` and halts the search, so it is reported rather
+than silently kept.
+
+Provisioning is committed under `deploy/`.
+
+
 <!-- Every section dated 2026-08-19 was reconstructed from the 2026-08-19 session log; original was never committed.
      See RECONSTRUCTION.md. -->
 

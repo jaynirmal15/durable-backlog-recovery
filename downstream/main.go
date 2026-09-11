@@ -352,7 +352,59 @@ func (s *Server) softLen() int {
 	return int(s.stats.queued.Load())
 }
 
+// arrivalLog optionally records the nanosecond arrival time of every request.
+//
+// It measures the arrival PROCESS as the dependency actually experiences it,
+// which is the thing queueing behaviour depends on -- not the generator's mean
+// rate, which is all the delivery guard checks. Two pacers can agree on rate to
+// four figures and present completely different processes.
+//
+// Off unless ARRIVAL_LOG_CAP is set, and a plain atomic bump plus one slice
+// append when on. The per-request sample stream is millisecond-resolution, which
+// cannot resolve inter-arrival times at 1000 rps; this can.
+type arrivalLog struct {
+	mu  sync.Mutex
+	ns  []int64
+	cap int
+	on  bool
+}
+
+func (a *arrivalLog) record() {
+	if !a.on {
+		return
+	}
+	now := time.Now().UnixNano()
+	a.mu.Lock()
+	if len(a.ns) < a.cap {
+		a.ns = append(a.ns, now)
+	}
+	a.mu.Unlock()
+}
+
+// drain returns everything captured so far and resets, so a probe can mark off
+// windows without restarting the server.
+func (a *arrivalLog) drain() []int64 {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	out := a.ns
+	a.ns = make([]int64, 0, a.cap)
+	return out
+}
+
+var arrivals = &arrivalLog{}
+
+func (s *Server) AdminArrivals(w http.ResponseWriter, r *http.Request) {
+	got := arrivals.drain()
+	writeJSON(w, map[string]any{
+		"enabled":      arrivals.on,
+		"count":        len(got),
+		"capacity":     arrivals.cap,
+		"arrivalNanos": got,
+	})
+}
+
 func (s *Server) Process(w http.ResponseWriter, r *http.Request) {
+	arrivals.record()
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -486,6 +538,13 @@ func main() {
 	port := envInt("PORT", 8080)
 	queueCapOverride = envInt("QUEUE_CAP", 0)
 	serviceTimeJitterSigma = envFloat("SERVICE_TIME_JITTER", 0.15)
+	// Arrival-process capture. 0 (default) leaves it off entirely.
+	if n := envInt("ARRIVAL_LOG_CAP", 0); n > 0 {
+		arrivals.cap = n
+		arrivals.ns = make([]int64, 0, n)
+		arrivals.on = true
+		log.Printf("arrival log ENABLED, capacity %d timestamps", n)
+	}
 
 	if profile != "graceful" && profile != "cliff" {
 		log.Fatalf("PROFILE must be graceful or cliff, got %q", profile)
@@ -500,6 +559,7 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
 	})
+	mux.HandleFunc("/admin/arrivals", s.AdminArrivals)
 	mux.HandleFunc("/admin/capacity", s.AdminCapacity)
 	mux.HandleFunc("/admin/stats", s.AdminStats)
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {

@@ -247,16 +247,23 @@ func main() {
 			"downstreamServiceTimeMs": dsSvcMs,
 			"downstreamConcurrency":   dsConc,
 			"downstreamQueueCap":      asFloat(dsCap["queueCap"]),
-			"profile":                 *profile,
-			"workers":                 *workers,
-			"sloP99Ms":                *sloP99,
-			"sloErrorRate":            *sloErr,
-			"rateLimitRps":            *rateLimit,
-			"maxInFlight":             liveInjectorMaxInFlight,
-			"sloErrorAccounting":      "exclude_status_429_client_injector_drops",
-			"stabilizeSeconds":        *stabilizeSec,
-			"stabilizeW30Seconds":     *stabilizeW30Sec,
-			"stabilizeJustification":  "W=15s = 3× observed post-drain settling (~5s queue/latency return) from p0b-pilot-arch2b; W=30 retained as sensitivity",
+			// How the cap was chosen, and the wait a request faces when it is
+			// admitted to a full queue. Under the default profile-relative cap
+			// this delay is 50 x S, which equals the 250 ms SLO at S=5 ms and is
+			// 1250 ms at S=25 ms -- so "queue full" means "SLO breach" in one arm
+			// and not the other. Recorded per run so the two can be separated.
+			"downstreamQueueCapMode":     dsCap["queueCapMode"],
+			"downstreamFullQueueDelayMs": asFloat(dsCap["fullQueueDelayMs"]),
+			"profile":                    *profile,
+			"workers":                    *workers,
+			"sloP99Ms":                   *sloP99,
+			"sloErrorRate":               *sloErr,
+			"rateLimitRps":               *rateLimit,
+			"maxInFlight":                liveInjectorMaxInFlight,
+			"sloErrorAccounting":         "exclude_status_429_client_injector_drops",
+			"stabilizeSeconds":           *stabilizeSec,
+			"stabilizeW30Seconds":        *stabilizeW30Sec,
+			"stabilizeJustification":     "W=15s = 3× observed post-drain settling (~5s queue/latency return) from p0b-pilot-arch2b; W=30 retained as sensitivity",
 		},
 	}
 

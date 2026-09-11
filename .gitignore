@@ -5,3 +5,11 @@ bin/
 .DS_Store
 *.test
 __pycache__/
+
+# Terraform: provider binaries are hundreds of MB and are re-fetched by init.
+# The lock file IS committed -- it pins provider versions for reproducibility.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log

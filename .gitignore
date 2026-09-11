@@ -4,3 +4,4 @@ bin/
 *.jsonl.*
 .DS_Store
 *.test
+__pycache__/

@@ -60,6 +60,13 @@ property the collapsed regime actually has once the CPU clamp is removed.
 
 Given a last-SAFE anchor `lo` and a first-non-SAFE ceiling `hi`:
 
+0. **The anchor is probed first.** If it does not classify SAFE it is not a
+   floor: it becomes `hi`, and the search steps **downward** in decrements of
+   10% (rounded to 5 rps) until a point classifies SAFE, which becomes `lo`.
+   The lowest non-SAFE point seen becomes `hi`. If the descent reaches the
+   5 rps floor without a SAFE point, **no interval is reported** — the result
+   is "no safe recovery rate exists at this condition on the measurable grid",
+   reported as such. (Amendment A2.)
 1. If `hi` is not known, step **upward** from `lo` in increments of 10% of `lo`
    (rounded to 5 rps) until a point classifies UNSAFE or MARGINAL. That point
    becomes `hi`.
@@ -257,5 +264,31 @@ interval is quoted. §3 is unchanged — its behaviour was already correct.
 `scripts/locate_boundary.py` records the endpoint as `firstNonSafeRl` and
 `firstNonSafeClass`; those fields were named `firstUnsafeRl` and
 `firstUnsafeClass` before this amendment and carried the same values.
+
+No measurement changes, because no measurement has been taken.
+
+### A2 — 2026-09-11: a non-SAFE anchor extends the search downward
+
+**Registered before any E1–E4 run; no results existed when this was made.**
+
+§3 assumed the supplied anchor was SAFE and said nothing about what happens if
+it is not. `scripts/locate_boundary.py` aborted in that case and asked for a
+lower anchor by hand, which would have put a human choice inside a procedure
+whose whole purpose is to remove one.
+
+This is not hypothetical. Every candidate anchor comes from Phase 1 and was
+measured on the harness with the spin-wait admission defect, and the
+2026-08-19 notes state directly that the c50 last-safe point (rl=380) was
+**not safe** once the harness was fixed.
+
+§3 gains step 0: a non-SAFE anchor becomes the ceiling and the search descends
+by 10% until it finds a SAFE floor, symmetric to the existing upward step. If
+the descent reaches the 5 rps resolution floor without finding one, no interval
+is reported and the condition is recorded as having no safe rate on the
+measurable grid, rather than an interval being forced.
+
+Nothing else changes: classification, the 5 rps resolution, the treatment of
+MARGINAL as a ceiling, and the interval definition are all untouched. Covered
+by seven unit tests in `scripts/test_locate_boundary.py`.
 
 No measurement changes, because no measurement has been taken.

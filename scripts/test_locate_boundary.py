@@ -13,7 +13,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from locate_boundary import (  # noqa: E402
-    RESOLUTION_RPS, bisect_step, classify, plan, upward_step,
+    RESOLUTION_RPS, bisect_step, classify, downward_step, plan, upward_step,
 )
 
 
@@ -95,6 +95,52 @@ class TestBisectStep(unittest.TestCase):
         self.assertEqual(upward_step(380), 420)   # +38.0 -> 40
         self.assertEqual(upward_step(290), 320)   # +29.0 -> 30
         self.assertEqual(upward_step(10), 15)     # +1.0 -> 0, raised to the 5 rps floor
+
+
+class TestDownwardExtension(unittest.TestCase):
+    """Amendment A2: an anchor that is not SAFE becomes the ceiling."""
+
+    @staticmethod
+    def oracle(last_safe):
+        return lambda rl: 'SAFE' if rl <= last_safe else 'UNSAFE'
+
+    def test_downward_step_is_ten_percent_rounded_to_five(self):
+        self.assertEqual(downward_step(840), 755)
+        self.assertEqual(downward_step(380), 340)
+        self.assertEqual(downward_step(10), 5)
+
+    def test_downward_step_never_goes_below_the_floor(self):
+        self.assertGreaterEqual(downward_step(5), RESOLUTION_RPS)
+
+    def test_non_safe_anchor_descends_and_brackets(self):
+        # The c50 case the 2026-08-19 notes predict: the Phase 1 anchor does not
+        # survive the fix, so the search must go down before it can bracket.
+        seq, lo, hi = plan(380, oracle=self.oracle(300))
+        self.assertEqual(seq[0]['phase'], 'anchor')
+        self.assertEqual(seq[0]['class'], 'UNSAFE')
+        self.assertTrue(any(p['phase'] == 'downward' for p in seq))
+        self.assertLessEqual(hi - lo, RESOLUTION_RPS)
+        self.assertTrue(lo <= 300 < hi, 'boundary 300 not bracketed by [%s,%s]' % (lo, hi))
+
+    def test_anchor_far_above_the_boundary_still_converges(self):
+        seq, lo, hi = plan(840, oracle=self.oracle(290))
+        self.assertLessEqual(hi - lo, RESOLUTION_RPS)
+        self.assertTrue(lo <= 290 < hi)
+
+    def test_marginal_anchor_also_descends(self):
+        o = lambda rl: 'MARGINAL' if rl == 380 else ('SAFE' if rl <= 340 else 'UNSAFE')
+        seq, lo, hi = plan(380, oracle=o)
+        self.assertEqual(seq[0]['class'], 'MARGINAL')
+        self.assertIsNotNone(lo)
+        self.assertLessEqual(hi - lo, RESOLUTION_RPS)
+
+    def test_no_safe_point_anywhere_yields_no_floor(self):
+        seq, lo, hi = plan(100, oracle=lambda rl: 'UNSAFE', max_probes=8)
+        self.assertIsNone(lo)
+
+    def test_safe_anchor_does_not_descend(self):
+        seq, lo, hi = plan(840, hi=900, oracle=self.oracle(865))
+        self.assertFalse(any(p['phase'] in ('anchor', 'downward') for p in seq))
 
 
 class TestSearchPlan(unittest.TestCase):

@@ -100,6 +100,18 @@ def upward_step(lo):
     return lo + step
 
 
+def downward_step(hi):
+    """Next floor candidate when the anchor itself is not SAFE: -10%, to 5 rps.
+
+    Symmetric to upward_step. Needed because Phase 1 anchors were measured on
+    the harness with the spin-wait admission defect, and the 2026-08-19 notes
+    predict the c50 anchor will not survive the fix -- so a search may have to
+    start by going down before it can bracket anything.
+    """
+    step = max(RESOLUTION_RPS, int(round(hi * 0.10 / RESOLUTION_RPS) * RESOLUTION_RPS))
+    return max(RESOLUTION_RPS, hi - step)
+
+
 def plan(anchor, hi=None, oracle=None, max_probes=24):
     """Probe sequence the search would follow.
 
@@ -112,6 +124,27 @@ def plan(anchor, hi=None, oracle=None, max_probes=24):
     lo = anchor
     ceiling = hi
     probes = 0
+    if oracle is not None and ceiling is None:
+        # If the anchor itself is not SAFE it cannot be the floor: descend.
+        anchor_cls = oracle(lo)
+        if anchor_cls != 'SAFE':
+            seq.append({'rl': lo, 'phase': 'anchor', 'class': anchor_cls})
+            ceiling = lo
+            while probes < max_probes:
+                cand = downward_step(ceiling)
+                probes += 1
+                if cand >= ceiling:
+                    break
+                cls = oracle(cand)
+                seq.append({'rl': cand, 'phase': 'downward', 'class': cls})
+                if cls == 'SAFE':
+                    lo = cand
+                    break
+                ceiling = cand
+            else:
+                return seq, None, ceiling
+            if lo == anchor:
+                return seq, None, ceiling
     if ceiling is None:
         while probes < max_probes:
             cand = upward_step(lo)
@@ -293,16 +326,29 @@ def search(args, log):
 
     log('verifying the anchor at rl=%d' % args.anchor)
     anchor_pt = probe_once(args.anchor)
-    if anchor_pt['class'] != 'SAFE':
-        raise SystemExit(
-            'anchor rl=%d classified %s, not SAFE. The search needs a verified safe '
-            'floor; a Phase 1 anchor does not count because those points were '
-            'measured on the defective harness. Lower the anchor and retry.'
-            % (args.anchor, anchor_pt['class'])
-        )
-
     lo = args.anchor
     hi = args.hi
+    if anchor_pt['class'] != 'SAFE':
+        # The anchor is not a floor. It becomes the ceiling and the search
+        # descends until it finds one. Phase 1 anchors were measured on the
+        # defective harness, so this is an expected outcome, not an error.
+        log('  anchor rl=%d classified %s, not SAFE: extending DOWNWARD' % (args.anchor, anchor_pt['class']))
+        hi = args.anchor
+        lo = None
+        while True:
+            cand = downward_step(hi)
+            if cand >= hi:
+                raise SystemExit(
+                    'downward search reached the %d rps floor without finding a SAFE point '
+                    'below rl=%d. No safe recovery rate exists at this condition on the '
+                    'measurable grid; report that rather than forcing an interval.'
+                    % (RESOLUTION_RPS, args.anchor))
+            pt = probe_once(cand)
+            if pt['class'] == 'SAFE':
+                lo = cand
+                break
+            hi = cand
+        log('  found a SAFE floor at rl=%d; ceiling is rl=%d (%s)' % (lo, hi, by_rate[hi]['class']))
     if hi is not None:
         hi_pt = probe_once(hi)
         if hi_pt['class'] == 'SAFE':

@@ -519,3 +519,75 @@ in ρ — already close to the 0.0025 threshold, and that was the *good* term.
 
 Whether the limiter should also move to a deadline pacer is otherwise a question
 for E2 and is **not** pre-judged here.
+
+### A4 — 2026-09-11: achieved recovery rate is measured over the delivery span, not the drain window
+
+**Registered during E1, after boundary 1 (c10/C0) and before any boundary is
+interpreted.** This corrects an estimator, not an instrument: it is applied to
+recorded traces and **requires no run to be repeated**.
+
+#### What was wrong
+
+§5 defined the recovery term as `backlogAtRestore / tDrain`. Both quantities are
+exact, and the arithmetic is exact — the number of recovery arrivals inside the
+drain window equals `backlogAtRestore` to the message across every run checked.
+The defect is the **denominator**: `tDrain` is the first second at which
+`recoveryRemaining` reaches 0, which lands **after** the last recovery request
+was actually issued, by the detector's sampling and confirmation lag.
+
+Measured on all 18 runs of boundary 1, that dead tail is **1.5 s to 6.6 s**.
+Dividing a real backlog by a window padded with a variable dead tail understates
+the recovery rate by tail/tDrain — up to 4.5% — and, worse, by a **different
+amount each run**.
+
+#### The correction
+
+    rl_achieved = recovery arrivals ÷ (last recovery arrival − first recovery arrival)
+
+measured from the retained per-request trace. This is the rate the dependency
+actually experienced, which is what ρ is supposed to express.
+
+#### What it changes, on boundary 1
+
+| rl | tail (s) | ρ spread, `backlog/tDrain` | ρ spread, delivery span |
+|---:|---|---:|---:|
+| 755 | 1.5–2.1 | 0.0014 | **0.0000** |
+| 800 | 1.9–**6.6** | **0.0129** | **0.0000** |
+| 820 | 1.7–2.5 | 0.0021 | **0.0000** |
+| 825 | 2.1–2.4 | 0.0009 | **0.0001** |
+| 830 | 1.8–1.9 | 0.0003 | **0.0001** |
+| 840 | 2.5–**6.5** | **0.0114** | **0.0000** |
+
+The interval endpoints move from **[0.9054, 0.9094]** to **[0.9124, 0.9150]**.
+The `rl` interval — [825, 830], upper endpoint UNSAFE — is **unchanged**, because
+classification is `vSLO`-based and never touched this estimator.
+
+#### It also retracts a conclusion
+
+The A3 spread diagnostic flagged **2 of 6** points on boundary 1, and those flags
+were attributed, in the moment, to the consumer limiter — the one term still on
+the ticker. **That attribution was wrong.** Under the corrected estimator the
+spread at every point collapses to ≤ 0.0001 and **no point flags at all**.
+
+The limiter is not noisy. Measured directly from the same traces, its arrival
+process is near-deterministic: IDC(1 s) of 0.000–0.003, delivering 753–756 at
+rl=755 and 818–820 at rl=820, with **zero** stall seconds. Its count noise is
+
+    σ(N(1 s)) = √(IDC × rate) = **0.24 to 1.61 rps**
+
+against a bisection resolution of 5 rps — **0.05× to 0.32× of one resolution
+unit**, an order of magnitude clear of the threshold. For contrast the injector
+ticker, measured the same way, gives σ ≈ 4.9 rps at 1000 rps, right at one unit.
+
+**The registered A3 trigger is therefore not met by the limiter**, and the case
+for moving it to a deadline pacer before E2 is **not made on this evidence**. The
+asymmetry stays a methods paragraph, as A3 allowed for. The diagnostic still
+stands and still decides — it simply has to be computed on a ρ that is not
+contaminated by the detector's tail.
+
+#### Standing correction to §5
+
+§5 continues to require achieved rates from measurement rather than flags. The
+recovery term is now measured over the delivery span rather than the drain
+window. The live term is unchanged. Applied to every E1 boundary as it lands,
+retrospectively for boundary 1, by recomputation from retained traces.

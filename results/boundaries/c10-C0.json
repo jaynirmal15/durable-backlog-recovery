@@ -15,13 +15,17 @@
     "firstNonSafeRl": 830,
     "firstNonSafeClass": "UNSAFE",
     "rhoStarInterval": [
-      0.9054,
-      0.9094
+      0.9124,
+      0.915
     ],
-    "rhoIntervalWidth": 0.004,
+    "rhoIntervalWidth": 0.0026,
     "resolutionReachedRps": 5,
     "marginalRates": [],
-    "note": "rho* is this interval; its upper end is the first non-SAFE point, whose class is firstNonSafeClass. It is not a point and must not be averaged, narrowed, or quoted to more figures than its width supports."
+    "note": "rho* is this interval; its upper end is the first non-SAFE point, whose class is firstNonSafeClass. It is not a point and must not be averaged, narrowed, or quoted to more figures than its width supports.",
+    "rhoStarIntervalDrainWindow": [
+      0.9054,
+      0.9094
+    ]
   },
   "latencyInvisibility": null,
   "points": [
@@ -34,16 +38,16 @@
         0
       ],
       "rhoAchieved": [
-        0.8724,
-        0.8729,
-        0.8738
+        0.8775,
+        0.8774,
+        0.8775
       ],
       "runs": [
         {
           "liveAchievedRps": 999.98,
-          "recoveryAchievedRps": 744.73,
+          "recoveryAchievedRps": 755.0,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.8724,
+          "rhoAchieved": 0.8775,
           "rhoNominal": 0.8775,
           "runId": "c10-c0-rl755-r1",
           "gitCommit": "026be6242d26",
@@ -60,13 +64,17 @@
           "drainQueueDepthMean": 0.538961038961039,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 365.8
+          "wallSeconds": 365.8,
+          "recoveryAchievedRpsDrainWindow": 744.73,
+          "recoveryDeliverySpanSec": 151.909,
+          "drainDetectorTailSec": 2.082,
+          "rhoAchievedDrainWindow": 0.8724
         },
         {
           "liveAchievedRps": 999.97,
-          "recoveryAchievedRps": 745.76,
+          "recoveryAchievedRps": 754.92,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.8729,
+          "rhoAchieved": 0.8774,
           "rhoNominal": 0.8775,
           "runId": "c10-c0-rl755-r2",
           "gitCommit": "026be6242d26",
@@ -83,13 +91,17 @@
           "drainQueueDepthMean": 0.7631578947368421,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 363.7
+          "wallSeconds": 363.7,
+          "recoveryAchievedRpsDrainWindow": 745.76,
+          "recoveryDeliverySpanSec": 150.158,
+          "drainDetectorTailSec": 1.833,
+          "rhoAchievedDrainWindow": 0.8729
         },
         {
           "liveAchievedRps": 1000.03,
-          "recoveryAchievedRps": 747.52,
+          "recoveryAchievedRps": 754.93,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.8738,
+          "rhoAchieved": 0.8775,
           "rhoNominal": 0.8775,
           "runId": "c10-c0-rl755-r3",
           "gitCommit": "026be6242d26",
@@ -106,9 +118,22 @@
           "drainQueueDepthMean": 0.4230769230769231,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 367.8
+          "wallSeconds": 367.8,
+          "recoveryAchievedRpsDrainWindow": 747.52,
+          "recoveryDeliverySpanSec": 154.473,
+          "drainDetectorTailSec": 1.519,
+          "rhoAchievedDrainWindow": 0.8738
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.8724,
+        0.8729,
+        0.8738
+      ],
+      "rhoAchievedSpread": 0.0001,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.04
     },
     {
       "rl": 800,
@@ -119,16 +144,16 @@
         0
       ],
       "rhoAchieved": [
-        0.8944,
-        0.8949,
-        0.882
+        0.9,
+        0.9,
+        0.9
       ],
       "runs": [
         {
           "liveAchievedRps": 1000.02,
-          "recoveryAchievedRps": 788.75,
+          "recoveryAchievedRps": 799.93,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.8944,
+          "rhoAchieved": 0.9,
           "rhoNominal": 0.9,
           "runId": "c10-c0-rl800-r1",
           "gitCommit": "026be6242d26",
@@ -145,13 +170,17 @@
           "drainQueueDepthMean": 1.3333333333333333,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 355.8
+          "wallSeconds": 355.8,
+          "recoveryAchievedRpsDrainWindow": 788.75,
+          "recoveryDeliverySpanSec": 141.991,
+          "drainDetectorTailSec": 2.001,
+          "rhoAchievedDrainWindow": 0.8944
         },
         {
           "liveAchievedRps": 1000.05,
-          "recoveryAchievedRps": 789.71,
+          "recoveryAchievedRps": 799.95,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.8949,
+          "rhoAchieved": 0.9,
           "rhoNominal": 0.9,
           "runId": "c10-c0-rl800-r2",
           "gitCommit": "026be6242d26",
@@ -168,13 +197,17 @@
           "drainQueueDepthMean": 1.4863013698630136,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 357.8
+          "wallSeconds": 357.8,
+          "recoveryAchievedRpsDrainWindow": 789.71,
+          "recoveryDeliverySpanSec": 144.136,
+          "drainDetectorTailSec": 1.857,
+          "rhoAchievedDrainWindow": 0.8949
         },
         {
           "liveAchievedRps": 999.97,
-          "recoveryAchievedRps": 764.01,
+          "recoveryAchievedRps": 799.97,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.882,
+          "rhoAchieved": 0.9,
           "rhoNominal": 0.9,
           "runId": "c10-c0-rl800-r3",
           "gitCommit": "026be6242d26",
@@ -191,9 +224,22 @@
           "drainQueueDepthMean": 1.3445945945945945,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 359.8
+          "wallSeconds": 359.8,
+          "recoveryAchievedRpsDrainWindow": 764.01,
+          "recoveryDeliverySpanSec": 141.352,
+          "drainDetectorTailSec": 6.639,
+          "rhoAchievedDrainWindow": 0.882
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.8944,
+        0.8949,
+        0.882
+      ],
+      "rhoAchievedSpread": 0.0,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.0
     },
     {
       "rl": 820,
@@ -204,16 +250,16 @@
         0
       ],
       "rhoAchieved": [
-        0.9049,
-        0.9028,
-        0.9049
+        0.91,
+        0.91,
+        0.91
       ],
       "runs": [
         {
           "liveAchievedRps": 1000.04,
-          "recoveryAchievedRps": 809.67,
+          "recoveryAchievedRps": 819.97,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9049,
+          "rhoAchieved": 0.91,
           "rhoNominal": 0.91,
           "runId": "c10-c0-rl820-r1",
           "gitCommit": "026be6242d26",
@@ -230,13 +276,17 @@
           "drainQueueDepthMean": 4.264285714285714,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.8
+          "wallSeconds": 351.8,
+          "recoveryAchievedRpsDrainWindow": 809.67,
+          "recoveryDeliverySpanSec": 138.246,
+          "drainDetectorTailSec": 1.745,
+          "rhoAchievedDrainWindow": 0.9049
         },
         {
           "liveAchievedRps": 999.96,
-          "recoveryAchievedRps": 805.61,
+          "recoveryAchievedRps": 819.99,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9028,
+          "rhoAchieved": 0.91,
           "rhoNominal": 0.91,
           "runId": "c10-c0-rl820-r2",
           "gitCommit": "026be6242d26",
@@ -253,13 +303,17 @@
           "drainQueueDepthMean": 4.148936170212766,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 352.8
+          "wallSeconds": 352.8,
+          "recoveryAchievedRpsDrainWindow": 805.61,
+          "recoveryDeliverySpanSec": 138.531,
+          "drainDetectorTailSec": 2.459,
+          "rhoAchievedDrainWindow": 0.9028
         },
         {
           "liveAchievedRps": 999.99,
-          "recoveryAchievedRps": 809.8,
+          "recoveryAchievedRps": 819.97,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9049,
+          "rhoAchieved": 0.91,
           "rhoNominal": 0.91,
           "runId": "c10-c0-rl820-r3",
           "gitCommit": "026be6242d26",
@@ -276,9 +330,22 @@
           "drainQueueDepthMean": 4.392857142857143,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.8
+          "wallSeconds": 351.8,
+          "recoveryAchievedRpsDrainWindow": 809.8,
+          "recoveryDeliverySpanSec": 138.267,
+          "drainDetectorTailSec": 1.724,
+          "rhoAchievedDrainWindow": 0.9049
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.9049,
+        0.9028,
+        0.9049
+      ],
+      "rhoAchievedSpread": 0.0,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.0
     },
     {
       "rl": 825,
@@ -289,16 +356,16 @@
         0
       ],
       "rhoAchieved": [
-        0.9054,
-        0.9062,
-        0.9063
+        0.9124,
+        0.9124,
+        0.9124
       ],
       "runs": [
         {
           "liveAchievedRps": 999.97,
-          "recoveryAchievedRps": 810.83,
+          "recoveryAchievedRps": 824.91,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9054,
+          "rhoAchieved": 0.9124,
           "rhoNominal": 0.9125,
           "runId": "c10-c0-rl825-r1",
           "gitCommit": "026be6242d26",
@@ -315,13 +382,17 @@
           "drainQueueDepthMean": 198.7357142857143,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.7
+          "wallSeconds": 351.7,
+          "recoveryAchievedRpsDrainWindow": 810.83,
+          "recoveryDeliverySpanSec": 137.614,
+          "drainDetectorTailSec": 2.377,
+          "rhoAchievedDrainWindow": 0.9054
         },
         {
           "liveAchievedRps": 999.97,
-          "recoveryAchievedRps": 812.44,
+          "recoveryAchievedRps": 824.9,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9062,
+          "rhoAchieved": 0.9124,
           "rhoNominal": 0.9125,
           "runId": "c10-c0-rl825-r2",
           "gitCommit": "026be6242d26",
@@ -338,13 +409,17 @@
           "drainQueueDepthMean": 13.342857142857143,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.8
+          "wallSeconds": 351.8,
+          "recoveryAchievedRpsDrainWindow": 812.44,
+          "recoveryDeliverySpanSec": 137.89,
+          "drainDetectorTailSec": 2.101,
+          "rhoAchievedDrainWindow": 0.9062
         },
         {
           "liveAchievedRps": 999.95,
-          "recoveryAchievedRps": 812.61,
+          "recoveryAchievedRps": 824.82,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9063,
+          "rhoAchieved": 0.9124,
           "rhoNominal": 0.9125,
           "runId": "c10-c0-rl825-r3",
           "gitCommit": "026be6242d26",
@@ -361,9 +436,22 @@
           "drainQueueDepthMean": 15.15,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.8
+          "wallSeconds": 351.8,
+          "recoveryAchievedRpsDrainWindow": 812.61,
+          "recoveryDeliverySpanSec": 137.931,
+          "drainDetectorTailSec": 2.061,
+          "rhoAchievedDrainWindow": 0.9063
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.9054,
+        0.9062,
+        0.9063
+      ],
+      "rhoAchievedSpread": 0.0,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.0
     },
     {
       "rl": 830,
@@ -374,16 +462,16 @@
         0.13548061212059426
       ],
       "rhoAchieved": [
-        0.9091,
-        0.9093,
-        0.9094
+        0.9149,
+        0.915,
+        0.9149
       ],
       "runs": [
         {
           "liveAchievedRps": 999.99,
-          "recoveryAchievedRps": 818.11,
+          "recoveryAchievedRps": 829.81,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9091,
+          "rhoAchieved": 0.9149,
           "rhoNominal": 0.915,
           "runId": "c10-c0-rl830-r1",
           "gitCommit": "026be6242d26",
@@ -400,13 +488,17 @@
           "drainQueueDepthMean": 227.71942446043167,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 353.8
+          "wallSeconds": 353.8,
+          "recoveryAchievedRpsDrainWindow": 818.11,
+          "recoveryDeliverySpanSec": 137.045,
+          "drainDetectorTailSec": 1.947,
+          "rhoAchievedDrainWindow": 0.9091
         },
         {
           "liveAchievedRps": 1000.0,
-          "recoveryAchievedRps": 818.66,
+          "recoveryAchievedRps": 829.91,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9093,
+          "rhoAchieved": 0.915,
           "rhoNominal": 0.915,
           "runId": "c10-c0-rl830-r2",
           "gitCommit": "026be6242d26",
@@ -423,13 +515,17 @@
           "drainQueueDepthMean": 202.95,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 351.8
+          "wallSeconds": 351.8,
+          "recoveryAchievedRpsDrainWindow": 818.66,
+          "recoveryDeliverySpanSec": 138.106,
+          "drainDetectorTailSec": 1.885,
+          "rhoAchievedDrainWindow": 0.9093
         },
         {
           "liveAchievedRps": 1000.0,
-          "recoveryAchievedRps": 818.76,
+          "recoveryAchievedRps": 829.88,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9094,
+          "rhoAchieved": 0.9149,
           "rhoNominal": 0.915,
           "runId": "c10-c0-rl830-r3",
           "gitCommit": "026be6242d26",
@@ -446,9 +542,22 @@
           "drainQueueDepthMean": 234.1304347826087,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 352.8
+          "wallSeconds": 352.8,
+          "recoveryAchievedRpsDrainWindow": 818.76,
+          "recoveryDeliverySpanSec": 136.156,
+          "drainDetectorTailSec": 1.835,
+          "rhoAchievedDrainWindow": 0.9094
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.9091,
+        0.9093,
+        0.9094
+      ],
+      "rhoAchievedSpread": 0.0001,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.04
     },
     {
       "rl": 840,
@@ -459,16 +568,16 @@
         0.6792273527453071
       ],
       "rhoAchieved": [
-        0.9121,
-        0.9115,
-        0.9007
+        0.9196,
+        0.9196,
+        0.9196
       ],
       "runs": [
         {
           "liveAchievedRps": 1000.01,
-          "recoveryAchievedRps": 824.11,
+          "recoveryAchievedRps": 839.29,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9121,
+          "rhoAchieved": 0.9196,
           "rhoNominal": 0.92,
           "runId": "c10-c0-rl840-r1",
           "gitCommit": "026be6242d26",
@@ -485,13 +594,17 @@
           "drainQueueDepthMean": 409.24817518248176,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 353.8
+          "wallSeconds": 353.8,
+          "recoveryAchievedRpsDrainWindow": 824.11,
+          "recoveryDeliverySpanSec": 134.526,
+          "drainDetectorTailSec": 2.465,
+          "rhoAchievedDrainWindow": 0.9121
         },
         {
           "liveAchievedRps": 1000.01,
-          "recoveryAchievedRps": 822.96,
+          "recoveryAchievedRps": 839.21,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9115,
+          "rhoAchieved": 0.9196,
           "rhoNominal": 0.92,
           "runId": "c10-c0-rl840-r2",
           "gitCommit": "026be6242d26",
@@ -508,13 +621,17 @@
           "drainQueueDepthMean": 436.1811594202899,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 354.8
+          "wallSeconds": 354.8,
+          "recoveryAchievedRpsDrainWindow": 822.96,
+          "recoveryDeliverySpanSec": 135.332,
+          "drainDetectorTailSec": 2.658,
+          "rhoAchievedDrainWindow": 0.9115
         },
         {
           "liveAchievedRps": 999.99,
-          "recoveryAchievedRps": 801.31,
+          "recoveryAchievedRps": 839.23,
           "faultCapacity": 2000,
-          "rhoAchieved": 0.9007,
+          "rhoAchieved": 0.9196,
           "rhoNominal": 0.92,
           "runId": "c10-c0-rl840-r3",
           "gitCommit": "026be6242d26",
@@ -531,9 +648,30 @@
           "drainQueueDepthMean": 417.74305555555554,
           "invalid": false,
           "invalidReason": null,
-          "wallSeconds": 356.8
+          "wallSeconds": 356.8,
+          "recoveryAchievedRpsDrainWindow": 801.31,
+          "recoveryDeliverySpanSec": 137.498,
+          "drainDetectorTailSec": 6.492,
+          "rhoAchievedDrainWindow": 0.9007
         }
-      ]
+      ],
+      "rhoAchievedDrainWindow": [
+        0.9121,
+        0.9115,
+        0.9007
+      ],
+      "rhoAchievedSpread": 0.0,
+      "rhoResolution": 0.0025,
+      "spreadExceedsResolution": false,
+      "spreadRatio": 0.0
     }
-  ]
+  ],
+  "spreadDiagnostic": {
+    "rule": "PRE-REGISTRATION.md A3, computed retrospectively under the A4 estimator.",
+    "resolutionRps": 5,
+    "flaggedRates": [],
+    "flaggedCount": 0,
+    "maxSpread": 0.0001
+  },
+  "rhoEstimator": "delivery span (PRE-REGISTRATION A4); the drain-window values are retained alongside under *DrainWindow keys"
 }

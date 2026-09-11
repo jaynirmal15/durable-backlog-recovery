@@ -1,0 +1,53 @@
+{
+  "runId": "p0b-pilot-arch2",
+  "condition": "P0-B",
+  "gitCommit": "unknown",
+  "gitDirty": true,
+  "startedAt": "2026-08-14T14:49:21Z",
+  "params": {
+    "liveRatePerSec": 1000,
+    "maxInFlight": 4096,
+    "nominalCapacity": 2000,
+    "outageSeconds": 120,
+    "profile": "graceful",
+    "rateLimitRps": 0,
+    "serviceTimeMs": 5,
+    "sloErrorAccounting": "exclude_status_429_client_injector_drops",
+    "sloErrorRate": 0.01,
+    "sloP99Ms": 250,
+    "workers": 1024
+  },
+  "backlogAtRestore": 0,
+  "restoreEpochMs": 0,
+  "capacitySchedule": [
+    {
+      "atSec": 0,
+      "rate": 2000
+    },
+    {
+      "atSec": 20,
+      "rate": 1400
+    }
+  ],
+  "headroomSchedule": [
+    {
+      "atSec": 0,
+      "capacity": 2000,
+      "headroom": 1000
+    },
+    {
+      "atSec": 20,
+      "capacity": 1400,
+      "headroom": 400
+    }
+  ],
+  "timeline": null,
+  "tDrainSec": 0,
+  "tFullSec": 0,
+  "vSLO": 0,
+  "peakOfferedRate": 0,
+  "amplification": 0,
+  "aborted": "pre-outage unhealthy: liveP99=1789.0 err=0.020",
+  "invalid": true,
+  "invalidReason": "pilot_aborted_warmup_double_load"
+}

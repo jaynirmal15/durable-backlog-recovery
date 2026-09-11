@@ -1,0 +1,25 @@
+capacity=1400 queueCap=350 concurrency=7
+
+=== offered=800 warmup=30s measure=1m0s ===
+  achieved=798.1 p50=6 p90=7 p95=7 p99=8 frac=1.000 gp=798.1 to=0.000 err=0.000 qMean=0.2 qPeak=6 sloOK=true
+
+=== offered=1000 warmup=30s measure=1m0s ===
+  achieved=994.3 p50=6 p90=7 p95=7 p99=8 frac=1.000 gp=994.3 to=0.000 err=0.000 qMean=0.2 qPeak=11 sloOK=true
+
+=== offered=1150 warmup=30s measure=1m0s ===
+  achieved=1144.7 p50=5 p90=7 p95=7 p99=8 frac=1.000 gp=1144.7 to=0.000 err=0.000 qMean=0.1 qPeak=3 sloOK=true
+
+=== offered=1250 warmup=30s measure=1m0s ===
+  achieved=1242.3 p50=6 p90=9 p95=12 p99=25 frac=1.000 gp=1242.3 to=0.000 err=0.000 qMean=1.4 qPeak=31 sloOK=true
+
+=== offered=1300 warmup=30s measure=1m0s ===
+  achieved=1292.4 p50=63 p90=113 p95=116 p99=122 frac=0.998 gp=1289.9 to=0.000 err=0.000 qMean=80.8 qPeak=281 sloOK=true
+
+=== offered=1350 warmup=30s measure=1m0s ===
+  achieved=1340.4 p50=398 p90=889 p95=1111 p99=1642 frac=0.146 gp=195.6 to=0.004 err=0.004 qMean=321.5 qPeak=353 sloOK=false
+
+=== SUMMARY ===
+C_SLO,live (max offered with p99≤250 & err≤1%) = 1300 rps
+λ_L=1000 is below C_SLO,live
+G_SLO,live-only @987 ≈ 994.3 rps (at offered=1000: 994.3)
+wrote results/probe-verifa-c1400-live-only.json

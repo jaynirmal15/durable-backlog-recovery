@@ -1,0 +1,37 @@
+{
+  "check1": {
+    "max_recovery_gap_s": 0.091,
+    "max_live_gap_s": 0.09,
+    "recovery_sampling_continuous": true,
+    "recovery_samples": 296835,
+    "live_samples_excl_429": 318160,
+    "live_samples_incl_429": 318160,
+    "total_samples": 614995,
+    "recovery_span_s": 281.768,
+    "live_span_s": 301.203,
+    "concurrent_longest_s": 282,
+    "concurrent_range": [
+      1786671686,
+      1786671967
+    ],
+    "t_drain_s_est": null,
+    "backlog_at_restore": 300000,
+    "pass": true
+  },
+  "check3": {
+    "live_429_count": 0,
+    "live_429_rate": 0.0,
+    "avg_live_rps_excl_429_in_concurrent": 995.7,
+    "peak_live_rps_excl_429": 2096,
+    "target_live_rps": 1000.0,
+    "peak_recovery_rps": 1593,
+    "peak_combined_rps_excl_429": 2117,
+    "capacity": 2000.0,
+    "peakInFlight": 1166,
+    "status_counts": {
+      "200": 546426,
+      "504": 68569
+    },
+    "pass": true
+  }
+}

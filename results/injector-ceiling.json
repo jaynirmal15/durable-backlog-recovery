@@ -1,0 +1,63 @@
+{
+  "results": [
+    {
+      "target": 1000,
+      "achieved_ok_rps": 993.9,
+      "drop_rps": 0.0,
+      "peakInFlight": 19,
+      "tracking": true
+    },
+    {
+      "target": 2000,
+      "achieved_ok_rps": 1984.1,
+      "drop_rps": 0.0,
+      "peakInFlight": 5,
+      "tracking": true
+    },
+    {
+      "target": 4000,
+      "achieved_ok_rps": 3939.0,
+      "drop_rps": 0.0,
+      "peakInFlight": 20,
+      "tracking": true
+    },
+    {
+      "target": 6000,
+      "achieved_ok_rps": 5781.9,
+      "drop_rps": 0.0,
+      "peakInFlight": 31,
+      "tracking": true
+    },
+    {
+      "target": 8000,
+      "achieved_ok_rps": 7712.5,
+      "drop_rps": 0.0,
+      "peakInFlight": 24,
+      "tracking": true
+    },
+    {
+      "target": 10000,
+      "achieved_ok_rps": 3.2,
+      "drop_rps": 0.0,
+      "peakInFlight": 4731,
+      "tracking": false
+    },
+    {
+      "target": 12000,
+      "achieved_ok_rps": 0.0,
+      "drop_rps": 0.0,
+      "peakInFlight": 656,
+      "tracking": false
+    },
+    {
+      "target": 16000,
+      "achieved_ok_rps": 0.0,
+      "drop_rps": 0.0,
+      "peakInFlight": 355,
+      "tracking": false
+    }
+  ],
+  "ceiling_rps": 8000,
+  "peakInFlight_at_ceiling": 24,
+  "maxInFlight_config": 8192
+}

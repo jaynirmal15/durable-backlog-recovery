@@ -1,0 +1,22 @@
+Information for Consumer EVENTS > rhc-consumer created 2026-08-13 23:33:04
+
+Configuration:
+
+                    Name: rhc-consumer
+               Pull Mode: true
+          Filter Subject: events.orders
+          Deliver Policy: All
+              Ack Policy: Explicit
+                Ack Wait: 30.00s
+           Replay Policy: Instant
+         Max Ack Pending: 262,144
+       Max Waiting Pulls: 512
+
+State:
+
+  Last Delivered Message: Consumer sequence: 2,112,000 Stream sequence: 2,111,994 Last delivery: 183ms ago
+    Acknowledgment Floor: Consumer sequence: 2,108,596 Stream sequence: 2,108,590 Last Ack: 3ms ago
+        Outstanding Acks: 1,542 out of maximum 262,144
+    Redelivered Messages: 0
+    Unprocessed Messages: 14,439
+           Waiting Pulls: 0 of maximum 512

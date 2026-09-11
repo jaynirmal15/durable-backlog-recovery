@@ -1,0 +1,200 @@
+2026/08/13 23:42:45 t= 400.0s pending=435009 recLeft=39717 liveRps=687 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:42:46 [producer] 2026/08/13 23:42:46 published_total=577404
+2026/08/13 23:42:46 t= 401.0s pending=435750 recLeft=39317 liveRps=288 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:42:47 [producer] 2026/08/13 23:42:47 published_total=578396
+2026/08/13 23:42:47 t= 402.0s pending=436475 recLeft=39317 liveRps=683 recRps=0 cap=1400 offered=1175 liveP99=8 err=0.000
+2026/08/13 23:42:48 [producer] 2026/08/13 23:42:48 published_total=579383
+2026/08/13 23:42:48 t= 403.0s pending=437216 recLeft=38920 liveRps=283 recRps=0 cap=1400 offered=1198 liveP99=7 err=0.000
+2026/08/13 23:42:49 [producer] 2026/08/13 23:42:49 published_total=580379
+2026/08/13 23:42:49 t= 404.0s pending=437946 recLeft=38920 liveRps=677 recRps=0 cap=1400 offered=1185 liveP99=8 err=0.000
+2026/08/13 23:42:50 [producer] 2026/08/13 23:42:50 published_total=581362
+2026/08/13 23:42:50 t= 405.0s pending=438932 recLeft=38522 liveRps=278 recRps=0 cap=1400 offered=1187 liveP99=9 err=0.000
+2026/08/13 23:42:51 [producer] 2026/08/13 23:42:51 published_total=582354
+2026/08/13 23:42:51 t= 406.0s pending=439660 recLeft=38522 liveRps=674 recRps=0 cap=1400 offered=1182 liveP99=9 err=0.000
+2026/08/13 23:42:52 [producer] 2026/08/13 23:42:52 published_total=583339
+2026/08/13 23:42:52 t= 407.0s pending=440388 recLeft=38125 liveRps=275 recRps=0 cap=1400 offered=1185 liveP99=9 err=0.000
+2026/08/13 23:42:53 [producer] 2026/08/13 23:42:53 published_total=584310
+2026/08/13 23:42:53 t= 408.0s pending=441110 recLeft=38125 liveRps=670 recRps=0 cap=1400 offered=1183 liveP99=9 err=0.000
+2026/08/13 23:42:54 [producer] 2026/08/13 23:42:54 published_total=585302
+2026/08/13 23:42:54 t= 409.0s pending=442107 recLeft=37729 liveRps=279 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:42:55 [producer] 2026/08/13 23:42:55 published_total=586299
+2026/08/13 23:42:55 t= 410.0s pending=442849 recLeft=37729 liveRps=679 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:42:56 [producer] 2026/08/13 23:42:56 published_total=587297
+2026/08/13 23:42:56 t= 411.0s pending=443592 recLeft=37329 liveRps=277 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:42:57 [producer] 2026/08/13 23:42:57 published_total=588298
+2026/08/13 23:42:57 t= 412.0s pending=444334 recLeft=37329 liveRps=676 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:42:58 [producer] 2026/08/13 23:42:58 published_total=589296
+2026/08/13 23:42:58 t= 413.0s pending=445074 recLeft=36929 liveRps=275 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:42:59 [producer] 2026/08/13 23:42:59 published_total=590289
+2026/08/13 23:42:59 t= 414.0s pending=446066 recLeft=36929 liveRps=672 recRps=0 cap=1400 offered=1184 liveP99=8 err=0.000
+2026/08/13 23:43:00 [producer] 2026/08/13 23:43:00 published_total=591286
+2026/08/13 23:43:00 t= 415.0s pending=446807 recLeft=36529 liveRps=273 recRps=0 cap=1400 offered=1205 liveP99=8 err=0.000
+2026/08/13 23:43:01 [producer] 2026/08/13 23:43:01 published_total=592281
+2026/08/13 23:43:01 t= 416.0s pending=447550 recLeft=36529 liveRps=673 recRps=0 cap=1400 offered=1201 liveP99=8 err=0.000
+2026/08/13 23:43:02 [producer] 2026/08/13 23:43:02 published_total=593281
+2026/08/13 23:43:02 t= 417.0s pending=448290 recLeft=36129 liveRps=271 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:03 [producer] 2026/08/13 23:43:03 published_total=594280
+2026/08/13 23:43:03 t= 418.0s pending=449283 recLeft=36129 liveRps=671 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:04 [producer] 2026/08/13 23:43:04 published_total=595273
+2026/08/13 23:43:04 t= 419.0s pending=450026 recLeft=35729 liveRps=270 recRps=0 cap=1400 offered=1203 liveP99=7 err=0.000
+2026/08/13 23:43:05 [producer] 2026/08/13 23:43:05 published_total=596270
+2026/08/13 23:43:05 t= 420.0s pending=450760 recLeft=35729 liveRps=668 recRps=0 cap=1400 offered=1190 liveP99=8 err=0.000
+2026/08/13 23:43:06 [producer] 2026/08/13 23:43:06 published_total=597263
+2026/08/13 23:43:06 t= 421.0s pending=451500 recLeft=35330 liveRps=267 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:43:07 [producer] 2026/08/13 23:43:07 published_total=598260
+2026/08/13 23:43:07 t= 422.0s pending=452242 recLeft=35330 liveRps=666 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:43:08 [producer] 2026/08/13 23:43:08 published_total=599257
+2026/08/13 23:43:08 t= 423.0s pending=453238 recLeft=34932 liveRps=265 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:43:09 [producer] 2026/08/13 23:43:09 published_total=600243
+2026/08/13 23:43:09 t= 424.0s pending=453969 recLeft=34932 liveRps=660 recRps=0 cap=1400 offered=1185 liveP99=8 err=0.000
+2026/08/13 23:43:10 [producer] 2026/08/13 23:43:10 published_total=601244
+2026/08/13 23:43:10 t= 425.0s pending=454711 recLeft=34533 liveRps=264 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:43:11 [producer] 2026/08/13 23:43:11 published_total=602242
+2026/08/13 23:43:11 t= 426.0s pending=455455 recLeft=34533 liveRps=664 recRps=0 cap=1400 offered=1203 liveP99=8 err=0.000
+2026/08/13 23:43:12 [producer] 2026/08/13 23:43:12 published_total=603240
+2026/08/13 23:43:12 t= 427.0s pending=456365 recLeft=34133 liveRps=248 recRps=0 cap=1400 offered=1128 liveP99=37 err=0.000
+2026/08/13 23:43:13 [producer] 2026/08/13 23:43:13 published_total=604153
+2026/08/13 23:43:13 t= 428.0s pending=457105 recLeft=34133 liveRps=637 recRps=0 cap=1400 offered=1205 liveP99=35 err=0.000
+2026/08/13 23:43:14 [producer] 2026/08/13 23:43:14 published_total=605148
+2026/08/13 23:43:14 t= 429.0s pending=457845 recLeft=33739 liveRps=359 recRps=0 cap=1400 offered=1192 liveP99=8 err=0.000
+2026/08/13 23:43:15 [producer] 2026/08/13 23:43:15 published_total=606147
+2026/08/13 23:43:15 t= 430.0s pending=458579 recLeft=33739 liveRps=659 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:43:16 [producer] 2026/08/13 23:43:16 published_total=607138
+2026/08/13 23:43:16 t= 431.0s pending=459318 recLeft=33340 liveRps=257 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:17 [producer] 2026/08/13 23:43:17 published_total=608132
+2026/08/13 23:43:17 t= 432.0s pending=460314 recLeft=33340 liveRps=656 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:43:18 [producer] 2026/08/13 23:43:18 published_total=609131
+2026/08/13 23:43:18 t= 433.0s pending=461058 recLeft=32939 liveRps=257 recRps=0 cap=1400 offered=1200 liveP99=7 err=0.000
+2026/08/13 23:43:19 [producer] 2026/08/13 23:43:19 published_total=610132
+2026/08/13 23:43:19 t= 434.0s pending=461802 recLeft=32939 liveRps=657 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:20 [producer] 2026/08/13 23:43:20 published_total=611133
+2026/08/13 23:43:20 t= 435.0s pending=462543 recLeft=32539 liveRps=295 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:43:21 [producer] 2026/08/13 23:43:21 published_total=612130
+2026/08/13 23:43:21 t= 436.0s pending=463284 recLeft=32539 liveRps=694 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:43:22 [producer] 2026/08/13 23:43:22 published_total=613128
+2026/08/13 23:43:22 t= 437.0s pending=464282 recLeft=32139 liveRps=294 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:43:23 [producer] 2026/08/13 23:43:23 published_total=614124
+2026/08/13 23:43:23 t= 438.0s pending=465015 recLeft=32139 liveRps=691 recRps=0 cap=1400 offered=1193 liveP99=8 err=0.000
+2026/08/13 23:43:24 [producer] 2026/08/13 23:43:24 published_total=615117
+2026/08/13 23:43:24 t= 439.0s pending=465754 recLeft=31739 liveRps=291 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:43:25 [producer] 2026/08/13 23:43:25 published_total=616112
+2026/08/13 23:43:25 t= 440.0s pending=466495 recLeft=31739 liveRps=689 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:26 [producer] 2026/08/13 23:43:26 published_total=617109
+2026/08/13 23:43:26 t= 441.0s pending=467494 recLeft=31339 liveRps=289 recRps=0 cap=1400 offered=1198 liveP99=7 err=0.000
+2026/08/13 23:43:27 [producer] 2026/08/13 23:43:27 published_total=618109
+2026/08/13 23:43:27 t= 442.0s pending=468238 recLeft=31339 liveRps=689 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:28 [producer] 2026/08/13 23:43:28 published_total=619109
+2026/08/13 23:43:28 t= 443.0s pending=468978 recLeft=30939 liveRps=286 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:43:29 [producer] 2026/08/13 23:43:29 published_total=620104
+2026/08/13 23:43:29 t= 444.0s pending=469716 recLeft=30939 liveRps=685 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:43:30 [producer] 2026/08/13 23:43:30 published_total=621100
+2026/08/13 23:43:30 t= 445.0s pending=470457 recLeft=30540 liveRps=284 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:31 [producer] 2026/08/13 23:43:31 published_total=622098
+2026/08/13 23:43:31 t= 446.0s pending=471453 recLeft=30540 liveRps=682 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:43:32 [producer] 2026/08/13 23:43:32 published_total=623094
+2026/08/13 23:43:32 t= 447.0s pending=472196 recLeft=30139 liveRps=283 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:43:33 [producer] 2026/08/13 23:43:33 published_total=624095
+2026/08/13 23:43:33 t= 448.0s pending=472934 recLeft=30139 liveRps=683 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:43:34 [producer] 2026/08/13 23:43:34 published_total=625090
+2026/08/13 23:43:34 t= 449.0s pending=473678 recLeft=29739 liveRps=282 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:43:35 [producer] 2026/08/13 23:43:35 published_total=626090
+2026/08/13 23:43:35 t= 450.0s pending=474675 recLeft=29739 liveRps=681 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:36 [producer] 2026/08/13 23:43:36 published_total=627082
+2026/08/13 23:43:36 t= 451.0s pending=475411 recLeft=29339 liveRps=278 recRps=0 cap=1400 offered=1191 liveP99=8 err=0.000
+2026/08/13 23:43:37 [producer] 2026/08/13 23:43:37 published_total=628080
+2026/08/13 23:43:37 t= 452.0s pending=476150 recLeft=29339 liveRps=676 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:43:38 [producer] 2026/08/13 23:43:38 published_total=629075
+2026/08/13 23:43:38 t= 453.0s pending=476889 recLeft=28941 liveRps=277 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:43:39 [producer] 2026/08/13 23:43:39 published_total=630072
+2026/08/13 23:43:39 t= 454.0s pending=477631 recLeft=28941 liveRps=676 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:43:40 [producer] 2026/08/13 23:43:40 published_total=631071
+2026/08/13 23:43:40 t= 455.0s pending=478628 recLeft=28540 liveRps=275 recRps=0 cap=1400 offered=1203 liveP99=7 err=0.000
+2026/08/13 23:43:41 [producer] 2026/08/13 23:43:41 published_total=632066
+2026/08/13 23:43:41 t= 456.0s pending=479370 recLeft=28540 liveRps=674 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:43:42 [producer] 2026/08/13 23:43:42 published_total=633067
+2026/08/13 23:43:42 t= 457.0s pending=480114 recLeft=28141 liveRps=274 recRps=0 cap=1400 offered=1202 liveP99=7 err=0.000
+2026/08/13 23:43:43 [producer] 2026/08/13 23:43:43 published_total=634068
+2026/08/13 23:43:43 t= 458.0s pending=480850 recLeft=28141 liveRps=673 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:43:44 [producer] 2026/08/13 23:43:44 published_total=635058
+2026/08/13 23:43:44 t= 459.0s pending=481844 recLeft=27740 liveRps=271 recRps=0 cap=1400 offered=1192 liveP99=8 err=0.000
+2026/08/13 23:43:45 [producer] 2026/08/13 23:43:45 published_total=636055
+2026/08/13 23:43:45 t= 460.0s pending=482585 recLeft=27740 liveRps=670 recRps=0 cap=1400 offered=1199 liveP99=8 err=0.000
+2026/08/13 23:43:46 [producer] 2026/08/13 23:43:46 published_total=637052
+2026/08/13 23:43:46 t= 461.0s pending=483326 recLeft=27340 liveRps=268 recRps=0 cap=1400 offered=1197 liveP99=7 err=0.000
+2026/08/13 23:43:47 [producer] 2026/08/13 23:43:47 published_total=638044
+2026/08/13 23:43:47 t= 462.0s pending=484050 recLeft=27340 liveRps=664 recRps=0 cap=1400 offered=1180 liveP99=8 err=0.000
+2026/08/13 23:43:48 [producer] 2026/08/13 23:43:48 published_total=639030
+2026/08/13 23:43:48 t= 463.0s pending=484778 recLeft=26943 liveRps=264 recRps=0 cap=1400 offered=1180 liveP99=8 err=0.000
+2026/08/13 23:43:49 [producer] 2026/08/13 23:43:49 published_total=640015
+2026/08/13 23:43:49 t= 464.0s pending=485764 recLeft=26943 liveRps=656 recRps=0 cap=1400 offered=1188 liveP99=8 err=0.000
+2026/08/13 23:43:50 [producer] 2026/08/13 23:43:50 published_total=641002
+2026/08/13 23:43:50 t= 465.0s pending=486505 recLeft=26547 liveRps=263 recRps=0 cap=1400 offered=1200 liveP99=7 err=0.000
+2026/08/13 23:43:51 [producer] 2026/08/13 23:43:51 published_total=642000
+2026/08/13 23:43:51 t= 466.0s pending=487238 recLeft=26547 liveRps=660 recRps=0 cap=1400 offered=1186 liveP99=8 err=0.000
+2026/08/13 23:43:52 [producer] 2026/08/13 23:43:52 published_total=642988
+2026/08/13 23:43:52 t= 467.0s pending=487980 recLeft=26149 liveRps=361 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:43:53 [producer] 2026/08/13 23:43:53 published_total=643983
+2026/08/13 23:43:53 t= 468.0s pending=488969 recLeft=26149 liveRps=659 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:43:54 [producer] 2026/08/13 23:43:54 published_total=644977
+2026/08/13 23:43:54 t= 469.0s pending=489699 recLeft=25749 liveRps=256 recRps=0 cap=1400 offered=1185 liveP99=7 err=0.000
+2026/08/13 23:43:55 [producer] 2026/08/13 23:43:55 published_total=645964
+2026/08/13 23:43:55 t= 470.0s pending=490442 recLeft=25749 liveRps=653 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:56 [producer] 2026/08/13 23:43:56 published_total=646962
+2026/08/13 23:43:56 t= 471.0s pending=491183 recLeft=25351 liveRps=257 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:43:57 [producer] 2026/08/13 23:43:57 published_total=647961
+2026/08/13 23:43:57 t= 472.0s pending=491926 recLeft=25351 liveRps=656 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:58 [producer] 2026/08/13 23:43:58 published_total=648961
+2026/08/13 23:43:58 t= 473.0s pending=492926 recLeft=24951 liveRps=255 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:43:59 [producer] 2026/08/13 23:43:59 published_total=649960
+2026/08/13 23:43:59 t= 474.0s pending=493665 recLeft=24951 liveRps=654 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:44:00 [producer] 2026/08/13 23:44:00 published_total=650958
+2026/08/13 23:44:00 t= 475.0s pending=494407 recLeft=24551 liveRps=292 recRps=0 cap=1400 offered=1197 liveP99=7 err=0.000
+2026/08/13 23:44:01 [producer] 2026/08/13 23:44:01 published_total=651954
+2026/08/13 23:44:01 t= 476.0s pending=495145 recLeft=24551 liveRps=691 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:44:02 [producer] 2026/08/13 23:44:02 published_total=652948
+2026/08/13 23:44:02 t= 477.0s pending=496138 recLeft=24151 liveRps=289 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:44:03 [producer] 2026/08/13 23:44:03 published_total=653945
+2026/08/13 23:44:03 t= 478.0s pending=496875 recLeft=24151 liveRps=688 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:44:04 [producer] 2026/08/13 23:44:04 published_total=654938
+2026/08/13 23:44:04 t= 479.0s pending=497617 recLeft=23751 liveRps=289 recRps=0 cap=1400 offered=1200 liveP99=7 err=0.000
+2026/08/13 23:44:05 [producer] 2026/08/13 23:44:05 published_total=655939
+2026/08/13 23:44:05 t= 480.0s pending=498361 recLeft=23751 liveRps=689 recRps=0 cap=1400 offered=1199 liveP99=7 err=0.000
+2026/08/13 23:44:06 [producer] 2026/08/13 23:44:06 published_total=656940
+2026/08/13 23:44:06 t= 481.0s pending=499103 recLeft=23351 liveRps=287 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:44:07 [producer] 2026/08/13 23:44:07 published_total=657935
+2026/08/13 23:44:07 t= 482.0s pending=500099 recLeft=23351 liveRps=685 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:44:08 [producer] 2026/08/13 23:44:08 published_total=658932
+2026/08/13 23:44:08 t= 483.0s pending=500836 recLeft=22951 liveRps=284 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:44:09 [producer] 2026/08/13 23:44:09 published_total=659929
+2026/08/13 23:44:09 t= 484.0s pending=501578 recLeft=22951 liveRps=683 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:44:10 [producer] 2026/08/13 23:44:10 published_total=660924
+2026/08/13 23:44:10 t= 485.0s pending=502319 recLeft=22551 liveRps=283 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:44:11 [producer] 2026/08/13 23:44:11 published_total=661923
+2026/08/13 23:44:11 t= 486.0s pending=503061 recLeft=22551 liveRps=682 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:44:12 [producer] 2026/08/13 23:44:12 published_total=662924
+2026/08/13 23:44:12 t= 487.0s pending=504061 recLeft=22151 liveRps=283 recRps=0 cap=1400 offered=1201 liveP99=7 err=0.000
+2026/08/13 23:44:13 [producer] 2026/08/13 23:44:13 published_total=663922
+2026/08/13 23:44:13 t= 488.0s pending=504800 recLeft=22151 liveRps=681 recRps=0 cap=1400 offered=1197 liveP99=7 err=0.000
+2026/08/13 23:44:14 [producer] 2026/08/13 23:44:14 published_total=664920
+2026/08/13 23:44:14 t= 489.0s pending=505539 recLeft=21751 liveRps=279 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:44:15 [producer] 2026/08/13 23:44:15 published_total=665916
+2026/08/13 23:44:15 t= 490.0s pending=506279 recLeft=21751 liveRps=678 recRps=0 cap=1400 offered=1197 liveP99=8 err=0.000
+2026/08/13 23:44:16 [producer] 2026/08/13 23:44:16 published_total=666910
+2026/08/13 23:44:16 t= 491.0s pending=507273 recLeft=21351 liveRps=278 recRps=0 cap=1400 offered=1196 liveP99=7 err=0.000
+2026/08/13 23:44:17 [producer] 2026/08/13 23:44:17 published_total=667902
+2026/08/13 23:44:17 t= 492.0s pending=508009 recLeft=21351 liveRps=676 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:44:18 [producer] 2026/08/13 23:44:18 published_total=668901
+2026/08/13 23:44:18 t= 493.0s pending=508750 recLeft=20951 liveRps=276 recRps=0 cap=1400 offered=1198 liveP99=8 err=0.000
+2026/08/13 23:44:19 [producer] 2026/08/13 23:44:19 published_total=669896
+2026/08/13 23:44:19 t= 494.0s pending=509488 recLeft=20951 liveRps=675 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:44:20 [producer] 2026/08/13 23:44:20 published_total=670892
+2026/08/13 23:44:20 t= 495.0s pending=510232 recLeft=20552 liveRps=275 recRps=0 cap=1400 offered=1200 liveP99=8 err=0.000
+2026/08/13 23:44:21 [producer] 2026/08/13 23:44:21 published_total=671893
+2026/08/13 23:44:21 t= 496.0s pending=511228 recLeft=20552 liveRps=675 recRps=0 cap=1400 offered=1195 liveP99=8 err=0.000
+2026/08/13 23:44:22 [producer] 2026/08/13 23:44:22 published_total=672879
+2026/08/13 23:44:22 t= 497.0s pending=511959 recLeft=20152 liveRps=271 recRps=0 cap=1400 offered=1194 liveP99=8 err=0.000
+2026/08/13 23:44:23 [producer] 2026/08/13 23:44:23 published_total=673877
+2026/08/13 23:44:23 t= 498.0s pending=512697 recLeft=20152 liveRps=670 recRps=0 cap=1400 offered=1196 liveP99=8 err=0.000
+2026/08/13 23:44:24 [producer] 2026/08/13 23:44:24 published_total=674871
+
+[This shell is producing too much output to stream. The command will still run.]

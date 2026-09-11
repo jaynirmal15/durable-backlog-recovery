@@ -1,0 +1,199 @@
+{
+  "description": "Regression fixture pinning the reconstructed metrics path against the pre-2026-08-19 corpus. Each run's drain-window metrics are recomputed from its raw per-request trace and compared with what the original runner wrote into the committed record. See check_metrics.py.",
+  "gCeil": 998.0,
+  "note": "The 2026-08-18 runs are all c50; the corpus contains no c10 runs on that date. c10 coverage is drawn from 2026-08-14 and 2026-08-17, which are the same pre-Aug-19 harness. Both arms, both capacity regimes, and both safe and collapsed operating points are represented.",
+  "runs": [
+    {
+      "runId": "p1a-c0-rl840-r1",
+      "arm": "c10",
+      "regime": "C0",
+      "startedAt": "2026-08-14T22:59:45Z",
+      "rateLimitRps": 840,
+      "expected": {
+        "tDrainSec": 146.005473375,
+        "vSLO": 0,
+        "drainLiveP50Ms": 6,
+        "drainLiveP99Ms": 10,
+        "drainGoodputRpsMean": 998.5069004486148,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 1.5136986301369864
+      }
+    },
+    {
+      "runId": "p1a-c0-rl855-r1",
+      "arm": "c10",
+      "regime": "C0",
+      "startedAt": "2026-08-14T23:11:39Z",
+      "rateLimitRps": 855,
+      "expected": {
+        "tDrainSec": 142.007120208,
+        "vSLO": 0,
+        "drainLiveP50Ms": 7,
+        "drainLiveP99Ms": 26,
+        "drainGoodputRpsMean": 999.1831331070518,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 4.985915492957746
+      }
+    },
+    {
+      "runId": "p1a-c0-rl900-r1",
+      "arm": "c10",
+      "regime": "C0",
+      "startedAt": "2026-08-14T22:20:20Z",
+      "rateLimitRps": 900,
+      "expected": {
+        "tDrainSec": 136.008334209,
+        "vSLO": 0.7799656687243389,
+        "drainLiveP50Ms": 293,
+        "drainLiveP99Ms": 568,
+        "drainGoodputRpsMean": 152.32192223986823,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 455.75
+      }
+    },
+    {
+      "runId": "p1b-c1-rl290-r1",
+      "arm": "c10",
+      "regime": "C1",
+      "startedAt": "2026-08-15T02:19:33Z",
+      "rateLimitRps": 290,
+      "expected": {
+        "tDrainSec": 414.008858542,
+        "vSLO": 0,
+        "drainLiveP50Ms": 10,
+        "drainLiveP99Ms": 38,
+        "drainGoodputRpsMean": 994.5967227686422,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 8.765700483091788
+      }
+    },
+    {
+      "runId": "p1b-c1-fine-rl300-r1",
+      "arm": "c10",
+      "regime": "C1",
+      "startedAt": "2026-08-17T20:34:51Z",
+      "rateLimitRps": 300,
+      "expected": {
+        "tDrainSec": 403.007928167,
+        "vSLO": 0.8499812232570547,
+        "drainLiveP50Ms": 279,
+        "drainLiveP99Ms": 410,
+        "drainGoodputRpsMean": 136.91325460848074,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 317.1116625310174
+      }
+    },
+    {
+      "runId": "p1b-h3-rl840-c1-r1",
+      "arm": "c10",
+      "regime": "C1",
+      "startedAt": "2026-08-17T21:54:39Z",
+      "rateLimitRps": 840,
+      "expected": {
+        "tDrainSec": 152.008574417,
+        "vSLO": 0.7952877845978058,
+        "drainLiveP50Ms": 693,
+        "drainLiveP99Ms": 1962,
+        "drainGoodputRpsMean": 136.1178359033735,
+        "drainTimeoutRate": 0.23746448463815725,
+        "drainQueueDepthMean": 304.82894736842104
+      }
+    },
+    {
+      "runId": "p1b-verifb-s25-rl855-r1",
+      "arm": "c50",
+      "regime": "C0",
+      "startedAt": "2026-08-18T00:01:24Z",
+      "rateLimitRps": 855,
+      "expected": {
+        "tDrainSec": 142.008221666,
+        "vSLO": 0,
+        "drainLiveP50Ms": 25,
+        "drainLiveP99Ms": 34,
+        "drainGoodputRpsMean": 997.8804011041631,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 0.09154929577464789
+      }
+    },
+    {
+      "runId": "p1b-verifb-s25-rl900-r1",
+      "arm": "c50",
+      "regime": "C0",
+      "startedAt": "2026-08-18T00:13:10Z",
+      "rateLimitRps": 900,
+      "expected": {
+        "tDrainSec": 135.006712041,
+        "vSLO": 0,
+        "drainLiveP50Ms": 25,
+        "drainLiveP99Ms": 35,
+        "drainGoodputRpsMean": 997.1260536568745,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 0.2518518518518518
+      }
+    },
+    {
+      "runId": "p1b-h4-s50-rl290-r1",
+      "arm": "c50",
+      "regime": "C0",
+      "startedAt": "2026-08-18T15:53:41Z",
+      "rateLimitRps": 290,
+      "expected": {
+        "tDrainSec": 412.006429417,
+        "vSLO": 0.009389567387472398,
+        "drainLiveP50Ms": 25,
+        "drainLiveP99Ms": 35,
+        "drainGoodputRpsMean": 993.0268005805741,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 0.12378640776699029
+      }
+    },
+    {
+      "runId": "p1b-c1-s25-rl380-r1",
+      "arm": "c50",
+      "regime": "C1",
+      "startedAt": "2026-08-18T08:26:15Z",
+      "rateLimitRps": 380,
+      "expected": {
+        "tDrainSec": 317.008022625,
+        "vSLO": 0,
+        "drainLiveP50Ms": 34,
+        "drainLiveP99Ms": 60,
+        "drainGoodputRpsMean": 993.7414828647858,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 13.794952681388013
+      }
+    },
+    {
+      "runId": "p1b-c1-s25-uf-rl384-r1",
+      "arm": "c50",
+      "regime": "C1",
+      "startedAt": "2026-08-18T14:10:24Z",
+      "rateLimitRps": 384,
+      "expected": {
+        "tDrainSec": 314.009104542,
+        "vSLO": 0.31706497481090734,
+        "drainLiveP50Ms": 148,
+        "drainLiveP99Ms": 372,
+        "drainGoodputRpsMean": 710.9477753822342,
+        "drainTimeoutRate": 0,
+        "drainQueueDepthMean": 196.95859872611464
+      }
+    },
+    {
+      "runId": "p1b-h3-s50-rl840-r1",
+      "arm": "c50",
+      "regime": "C1",
+      "startedAt": "2026-08-18T15:02:57Z",
+      "rateLimitRps": 840,
+      "expected": {
+        "tDrainSec": 179.005772583,
+        "vSLO": 0.8190699071768928,
+        "drainLiveP50Ms": 1308,
+        "drainLiveP99Ms": 1971,
+        "drainGoodputRpsMean": 117.9973631874148,
+        "drainTimeoutRate": 0.13686352541952504,
+        "drainQueueDepthMean": 1526.6145251396647
+      }
+    }
+  ]
+}

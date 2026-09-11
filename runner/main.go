@@ -222,6 +222,11 @@ func main() {
 		}
 	}
 
+	plat := platform()
+	log.Printf("platform: %s %s | %s x%d | %.1f GiB | docker %s | %s",
+		plat.Instance, plat.OS, plat.CPUModel, plat.CPUCount, plat.MemGB,
+		plat.DockerVer, plat.GoVer)
+
 	loadMon := newLoadSampler(host.Cores, *maxLoad1Frac)
 	loadMon.start()
 
@@ -1865,6 +1870,119 @@ func (g *gzipReadCloser) Close() error {
 		err = ferr
 	}
 	return err
+}
+
+// platformInfo identifies the machine a run was measured on.
+//
+// E1 onward runs on EC2; the 2026-08-18 corpus was measured on a laptop. Those
+// numbers are not comparable and no cross-platform claim is made anywhere, so
+// every record has to say plainly where it came from rather than leaving it to
+// be inferred from a date.
+type platformInfo struct {
+	Instance  string  `json:"instanceType"`
+	Kernel    string  `json:"kernel"`
+	OS        string  `json:"os"`
+	CPUModel  string  `json:"cpuModel"`
+	CPUCount  int     `json:"cpuCount"`
+	MemGB     float64 `json:"memGB"`
+	DockerVer string  `json:"dockerVersion"`
+	GoVer     string  `json:"goVersion"`
+}
+
+func firstLine(b []byte) string {
+	s := strings.TrimSpace(string(b))
+	if i := strings.IndexByte(s, '\n'); i >= 0 {
+		s = s[:i]
+	}
+	return s
+}
+
+func cmdOut(name string, args ...string) string {
+	out, err := exec.Command(name, args...).Output()
+	if err != nil {
+		return ""
+	}
+	return firstLine(out)
+}
+
+// platform gathers machine identity. Everything is best-effort: a missing
+// docker or a cloud metadata service that is not there leaves the field empty
+// rather than failing a run.
+func platform() platformInfo {
+	p := platformInfo{
+		CPUCount: runtime.NumCPU(),
+		GoVer:    runtime.Version(),
+		OS:       runtime.GOOS + "/" + runtime.GOARCH,
+	}
+	p.Kernel = cmdOut("uname", "-sr")
+	p.DockerVer = cmdOut("docker", "version", "--format", "{{.Server.Version}}")
+	if p.DockerVer == "" {
+		p.DockerVer = cmdOut("docker", "--version")
+	}
+	switch runtime.GOOS {
+	case "darwin":
+		p.CPUModel = cmdOut("sysctl", "-n", "machdep.cpu.brand_string")
+		if v := cmdOut("sysctl", "-n", "hw.memsize"); v != "" {
+			if n, err := strconv.ParseFloat(v, 64); err == nil {
+				p.MemGB = math.Round(n/(1<<30)*10) / 10
+			}
+		}
+		p.Instance = cmdOut("sysctl", "-n", "hw.model")
+	default:
+		if b, err := os.ReadFile("/proc/cpuinfo"); err == nil {
+			for _, line := range strings.Split(string(b), "\n") {
+				if strings.HasPrefix(line, "model name") {
+					if i := strings.Index(line, ":"); i >= 0 {
+						p.CPUModel = strings.TrimSpace(line[i+1:])
+					}
+					break
+				}
+			}
+		}
+		if b, err := os.ReadFile("/proc/meminfo"); err == nil {
+			for _, line := range strings.Split(string(b), "\n") {
+				if strings.HasPrefix(line, "MemTotal:") {
+					f := strings.Fields(line)
+					if len(f) >= 2 {
+						if n, err := strconv.ParseFloat(f[1], 64); err == nil {
+							p.MemGB = math.Round(n/(1<<20)*10) / 10
+						}
+					}
+					break
+				}
+			}
+		}
+		// EC2 IMDSv2. Silent and fast when not on EC2.
+		p.Instance = ec2InstanceType()
+	}
+	return p
+}
+
+func ec2InstanceType() string {
+	client := &http.Client{Timeout: 500 * time.Millisecond}
+	req, err := http.NewRequest("PUT", "http://169.254.169.254/latest/api/token", nil)
+	if err != nil {
+		return ""
+	}
+	req.Header.Set("X-aws-ec2-metadata-token-ttl-seconds", "60")
+	resp, err := client.Do(req)
+	if err != nil {
+		return ""
+	}
+	tok, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	req, err = http.NewRequest("GET", "http://169.254.169.254/latest/meta-data/instance-type", nil)
+	if err != nil {
+		return ""
+	}
+	req.Header.Set("X-aws-ec2-metadata-token", string(tok))
+	resp, err = client.Do(req)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	b, _ := io.ReadAll(resp.Body)
+	return firstLine(b)
 }
 
 // loadSampler polls the 1-minute load average for the life of a run.

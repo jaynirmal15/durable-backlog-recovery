@@ -5,6 +5,7 @@ package main
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"flag"
@@ -177,6 +178,7 @@ func main() {
 	injectorPacer := flag.String("injector-pacer", "ticker", "ticker|lanes — live injector arrival process. DEFAULT ticker: what all of Phase 1 used. It drops ticks under load (98.4-99.8% of lambda_L, arm-dependent) but stays evenly spaced. `lanes` delivers the exact rate in isolation (qMean 0.1 at 1000 rps vs ticker's 20) but degrades under the consumer's 1024 competing goroutines, collapsing the rl=840 safe anchor even at rho_ach=0.906.")
 	genTolerance := flag.Float64("gen-tolerance", 0.01, "generator self-check: injector rate must be within this fraction of target during warm-up, else refuse the run")
 	maxLoad5Frac := flag.Float64("max-load5-per-core", 1.0, "integrity: refuse to start if the 5-minute load average exceeds cores x this. 0 disables")
+	gzipSamples := flag.Bool("gzip-samples", true, "compress the per-request sample trace to .jsonl.gz when the run completes. Readers accept both forms")
 	minFreeDiskGB := flag.Float64("min-free-disk-gb", 5.0, "integrity: refuse to start if free disk is below this. 0 disables")
 	rateDevSecs := flag.Int("rate-dev-secs", 2, "integrity: consecutive seconds of sustained live-rate deviation before INVALID")
 	flag.Parse()
@@ -862,6 +864,14 @@ func main() {
 	sampleMu.Unlock()
 	rec.Supplementary = computeSupplementary(allSamples, timeline, rec.TDrainSec, *sloP99, queueSum, queueN, queuePeak, artifactRanges(timeline, rec.RestoreEpochMs), rec.FaultWindowSec, rec.RestoreEpochMs)
 
+	if *gzipSamples {
+		if gzPath, err := compressSamples(samplesPath); err != nil {
+			log.Printf("WARNING: could not compress %s: %v (trace retained uncompressed)", samplesPath, err)
+		} else if gzPath != "" {
+			log.Printf("compressed trace -> %s", gzPath)
+		}
+	}
+
 	path := writeRecord(*resultsDir, rec)
 	log.Printf("wrote %s tDrain=%.1f tFull(W=%d)=%.1f tFull(W30)=%.1f vSLO=%.3f (lat %.3f err %.3f) faultVSLO=%.3f t2health=%.0f stallSec=%d contamSec=%d",
 		path, rec.TDrainSec, *stabilizeSec, rec.TFullSec, rec.TFullSecW30, rec.VSLO, rec.VSLOLatency, rec.VSLOError, rec.FaultVSLO, rec.TimeToHealthSec, rec.StallSeconds, rec.ContaminatedSecs)
@@ -1286,6 +1296,9 @@ func startLiveInjector(wg *sync.WaitGroup, downstream string, rate float64, samp
 	}()
 }
 
+// tailSamples follows the live trace. It reads the plain file only: during a run
+// the trace is always uncompressed (see compressSamples). openSamples is the
+// entry point for readers that run after a run has finished.
 func tailSamples(path string, mu *sync.Mutex, dst *[]Sample) {
 	var offset int64
 	for {
@@ -1735,6 +1748,88 @@ func writeRecord(dir string, rec RunRecord) string {
 	b, _ := json.MarshalIndent(rec, "", "  ")
 	_ = os.WriteFile(path, b, 0o644)
 	return path
+}
+
+// compressSamples gzips a completed sample trace in place and removes the
+// original, returning the new path. Traces are 35-85 MB each and the full
+// campaign is several GB; a full disk silently truncates them to 0 bytes, which
+// is how several 2026-08-19 traces were lost.
+//
+// This runs AFTER the run finishes, not during it, and deliberately so: the
+// runner tails this same file live to compute per-second live and recovery
+// metrics, and the live injector appends to it concurrently with the consumer.
+// A compressed writer interleaved with a plain writer and a tailing reader
+// would corrupt the trace. Compressing on completion gets the same disk saving
+// without touching the hot path.
+func compressSamples(path string) (string, error) {
+	in, err := os.Open(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
+		return "", err
+	}
+	defer in.Close()
+	gzPath := path + ".gz"
+	out, err := os.Create(gzPath)
+	if err != nil {
+		return "", err
+	}
+	zw := gzip.NewWriter(out)
+	if _, err := io.Copy(zw, in); err != nil {
+		zw.Close()
+		out.Close()
+		os.Remove(gzPath)
+		return "", err
+	}
+	if err := zw.Close(); err != nil {
+		out.Close()
+		os.Remove(gzPath)
+		return "", err
+	}
+	if err := out.Close(); err != nil {
+		os.Remove(gzPath)
+		return "", err
+	}
+	in.Close()
+	if err := os.Remove(path); err != nil {
+		return gzPath, err
+	}
+	return gzPath, nil
+}
+
+// openSamples opens a sample trace in either form, preferring the plain file if
+// both are present. Every reader of a trace goes through this.
+func openSamples(path string) (io.ReadCloser, error) {
+	if f, err := os.Open(path); err == nil {
+		return f, nil
+	} else if !os.IsNotExist(err) {
+		return nil, err
+	}
+	f, err := os.Open(path + ".gz")
+	if err != nil {
+		return nil, err
+	}
+	zr, err := gzip.NewReader(f)
+	if err != nil {
+		f.Close()
+		return nil, err
+	}
+	return &gzipReadCloser{zr: zr, f: f}, nil
+}
+
+type gzipReadCloser struct {
+	zr *gzip.Reader
+	f  *os.File
+}
+
+func (g *gzipReadCloser) Read(p []byte) (int, error) { return g.zr.Read(p) }
+func (g *gzipReadCloser) Close() error {
+	err := g.zr.Close()
+	if ferr := g.f.Close(); err == nil {
+		err = ferr
+	}
+	return err
 }
 
 // hostStateInfo is the machine's condition at run start. Recorded in every run

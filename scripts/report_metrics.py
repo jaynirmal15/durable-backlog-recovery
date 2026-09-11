@@ -11,7 +11,30 @@ derived from a sweep's maximum achieved rate.
   python3 scripts/report_metrics.py --g-ceil 998 --group "H4 @50=p1b-h4-s50-rl290-r1,p1b-h4-s50-rl290-r2"
   python3 scripts/report_metrics.py --g-ceil 998 --glob 'results/p1c-c2-rl*.json'
 """
-import argparse, glob, json, os, re, statistics, sys
+import argparse, glob, gzip, io, json, os, re, statistics, sys
+
+
+def open_samples(path):
+    """Open a per-request trace in either form.
+
+    Traces are gzipped when a run completes (runner -gzip-samples), so both
+    <runId>-consumer.jsonl and <runId>-consumer.jsonl.gz occur in the archive.
+    Prefers the plain file when both exist."""
+    if os.path.exists(path):
+        return open(path, 'rb')
+    if os.path.exists(path + '.gz'):
+        return gzip.open(path + '.gz', 'rb')
+    raise FileNotFoundError('%s (and %s.gz)' % (path, path))
+
+
+def samples_path(run, raw_dir='../rhc-raw-data/results'):
+    """Locate a run's trace, next to the record or in the raw-data sibling."""
+    name = '%s-consumer.jsonl' % run
+    for base in ('results', raw_dir):
+        cand = os.path.join(base, name)
+        if os.path.exists(cand) or os.path.exists(cand + '.gz'):
+            return cand
+    raise FileNotFoundError(name)
 
 def load(run):
     p = run if run.endswith('.json') else 'results/%s.json' % run
@@ -119,4 +142,6 @@ def main():
         if r['invalid']:
             print('    INVALID: %s' % r['invalid'])
 
-main()
+
+if __name__ == '__main__':
+    main()

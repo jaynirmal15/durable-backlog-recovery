@@ -18,7 +18,7 @@ files only.
 
 | Run record (in repo) | Raw sample file (outside repo) |
 |---|---|
-| `<runId>.json` | `<runId>-consumer.jsonl` |
+| `<runId>.json` | `<runId>-consumer.jsonl` or `<runId>-consumer.jsonl.gz` |
 
 The run record’s `runId` field matches the prefix before `-consumer.jsonl`.
 Aborted or invalid traces may carry suffixes on the jsonl side only, e.g.
@@ -26,6 +26,15 @@ Aborted or invalid traces may carry suffixes on the jsonl side only, e.g.
 
 Relative paths under `results/` are preserved in `rhc-raw-data/` (including
 `partial-verifb-interrupted/`).
+
+**Compression.** From 2026-09-11 the runner gzips each trace when the run
+completes (`-gzip-samples`, default on), so newer traces carry a `.gz` suffix.
+Both forms occur in the archive and every reader accepts either:
+`openSamples` in the runner and `open_samples` in
+`scripts/report_metrics.py`, which prefer the plain file when both exist.
+Compression happens after the run, not during it — the runner tails the live
+trace to compute per-second metrics while the injector appends to it, so a
+compressed writer in that path would corrupt it.
 
 ## Use
 

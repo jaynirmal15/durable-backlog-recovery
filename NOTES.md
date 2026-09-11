@@ -1,6 +1,6 @@
 # Phase 0 Notes
 
-<!-- Every section dated 2026-08-19 was reconstructed from session transcript 2026-08-19; original was never committed.
+<!-- Every section dated 2026-08-19 was reconstructed from the 2026-08-19 session log; original was never committed.
      See RECONSTRUCTION.md. -->
 
 ## Downstream validation (2026-08-13)

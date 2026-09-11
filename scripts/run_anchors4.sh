@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 # Post-injector-fix anchors.
 #  - c50 safe anchor (closes the gap left by the ticker under-delivery)

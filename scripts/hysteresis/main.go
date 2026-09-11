@@ -1,4 +1,4 @@
-// This file was reconstructed from session transcript 2026-08-19; original was never committed.
+// This file was reconstructed from the 2026-08-19 session log; original was never committed.
 // See RECONSTRUCTION.md.
 
 // Hysteresis probe: does backing off to a previously-safe rate restore health?

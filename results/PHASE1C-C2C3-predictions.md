@@ -1,6 +1,6 @@
 # C2 / C3 — predictions registered before running
 
-<!-- This file was reconstructed from session transcript 2026-08-19; original was never committed.
+<!-- This file was reconstructed from the 2026-08-19 session log; original was never committed.
      See RECONSTRUCTION.md. -->
 
 **Date:** 2026-08-19 (written before the first C2 or C3 run)

@@ -1,6 +1,6 @@
 # Two-class burstiness at 50 servers (S = 25 ms)
 
-<!-- This file was reconstructed from session transcript 2026-08-19; original was never committed.
+<!-- This file was reconstructed from the 2026-08-19 session log; original was never committed.
      See RECONSTRUCTION.md. -->
 
 **Question:** Does the Verif-A two-class penalty (live-only OK vs recovery collapsed at

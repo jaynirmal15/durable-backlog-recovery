@@ -1,14 +1,14 @@
-# Aug 19 runs — headline metrics recovered from the session transcript
+# Aug 19 runs — headline metrics recovered from the session log
 
-<!-- reconstructed from session transcript 2026-08-19; original was never committed. -->
+<!-- reconstructed from the 2026-08-19 session log; original was never committed. -->
 
 The 2026-08-19 session wrote 36 result files into `results/` of a working copy
 that was later deleted. **None of those files' full contents (timelines,
-per-second samples) appear in the transcript, so the files themselves are not
-recoverable.** What follows is everything the transcript does contain about
+per-second samples) appear in the session log, so the files themselves are not
+recoverable.** What follows is everything the session log does contain about
 them: the runner's `wrote results/…` log line per run, and the tables the
-session reported. Source is the transcript's tool output for command *NNNN*
-(zero-based order of Bash calls) or the assistant report at the given UTC time.
+session reported. Source is the session log's command output for command *NNNN*
+(zero-based order of Bash calls) or the written status report at the given UTC time.
 
 Harness state for every run below: the Aug 19 working tree — d09049a plus the
 uncommitted edits reconstructed on this branch. Runs before 16:15Z used the

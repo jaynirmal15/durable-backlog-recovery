@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 # Anchors 3 and 4: collapsed point under PROFILE=cliff (S=5), and the c50 safe
 # anchor (S=25). Each requires a downstream reconfigure, so they are separate

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 # Post-fix anchor measurements: quantify the offset introduced by replacing the
 # graceful spin-wait admission with a blocking semaphore (NOTES.md 2026-08-19).

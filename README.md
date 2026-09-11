@@ -49,3 +49,11 @@ consumer/     # unrestricted pull consumer; live vs recovery samples
 runner/       # orchestrates one experiment run
 scripts/load_sweep/  # downstream knee validation
 ```
+
+## Status
+
+**Read [`STATUS.md`](STATUS.md) before using anything in `results/`.** It records
+a harness defect found on 2026-08-19 that contaminates every measurement past
+the safe boundary, gives a validity verdict for each memo, and lists the re-runs
+required. [`RECONSTRUCTION.md`](RECONSTRUCTION.md) documents how that day's
+uncommitted work was recovered.

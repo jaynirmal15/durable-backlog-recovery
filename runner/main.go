@@ -1,4 +1,4 @@
-// The 2026-08-19 changes in this file were reconstructed from session transcript 2026-08-19; original was never committed.
+// The 2026-08-19 changes in this file were reconstructed from the 2026-08-19 session log; original was never committed.
 // See RECONSTRUCTION.md.
 
 package main
@@ -46,8 +46,9 @@ type TimelinePoint struct {
 	RecoveryAcked     int64   `json:"recoveryAcked"`
 	LiveInFlight      int64   `json:"liveInFlight"`
 	LiveRps           float64 `json:"liveRps"`
-	InjRate           float64 `json:"injRate"` // injector ISSUE rate (authoritative); liveRps is a 5s completion-window estimate and reads low
-
+	// Injector ISSUE rate — authoritative. LiveRps is a 5s trailing
+	// completion-window estimate and reads ~0.8x truth by construction.
+	InjRate       float64 `json:"injRate"`
 	RecoveryRps   float64 `json:"recoveryRps"`
 	TrueCapacity  float64 `json:"trueCapacity"`
 	OfferedRate   float64 `json:"offeredRate"`
@@ -92,7 +93,7 @@ type RunRecord struct {
 	// it read 0.778 vs 0.868 across a 100x p99 difference. Always report both.
 	VSLOLatency       float64        `json:"vSLO_latency"`
 	VSLOError         float64        `json:"vSLO_error"`
-	VSLOBoth          float64        `json:"vSLO_both"` // seconds where both fired (overlap)
+	VSLOBoth          float64        `json:"vSLO_both"`
 	VSLOW30           float64        `json:"vSLO_W30,omitempty"`
 	TDrainReached     bool           `json:"tDrainReached"`
 	FaultWindowSec    []float64      `json:"faultWindowSec,omitempty"`

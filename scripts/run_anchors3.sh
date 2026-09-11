@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 # Completes anchors 2 and 4. Two deviations, both recorded:
 #  - replacement IDs (…-r1b) because the aborted attempts left invalid records,

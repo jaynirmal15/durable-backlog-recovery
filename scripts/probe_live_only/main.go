@@ -1,4 +1,4 @@
-// The 2026-08-19 changes in this file were reconstructed from session transcript 2026-08-19; original was never committed.
+// The 2026-08-19 changes in this file were reconstructed from the 2026-08-19 session log; original was never committed.
 // See RECONSTRUCTION.md.
 
 // Live-only SLO capacity curve (Probe 1). No NATS / no recovery.

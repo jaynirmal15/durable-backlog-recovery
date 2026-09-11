@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 """Standard metric table from run records.
 

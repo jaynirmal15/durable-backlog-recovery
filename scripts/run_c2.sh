@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This file was reconstructed from session transcript 2026-08-19; original was never committed.
+# This file was reconstructed from the 2026-08-19 session log; original was never committed.
 # See RECONSTRUCTION.md.
 # C2 — temporary degradation (P0-C: 2000 -> 1300 @t=20 -> 2000 @t=60), arm c10.
 # Predictions registered in results/PHASE1C-C2C3-predictions.md BEFORE this ran.

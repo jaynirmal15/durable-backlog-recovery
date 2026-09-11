@@ -1,6 +1,6 @@
 # H3/H4 @ 50 servers (c50)
 
-<!-- This file was reconstructed from session transcript 2026-08-19; original was never committed.
+<!-- This file was reconstructed from the 2026-08-19 session log; original was never committed.
      See RECONSTRUCTION.md. -->
 
 **Date:** 2026-08-18  

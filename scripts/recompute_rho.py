@@ -20,11 +20,23 @@ from locate_boundary import RESOLUTION_RPS, spread_diagnostic  # noqa: E402
 
 
 def open_trace(dirs, run_id):
+    """Open a trace, preferring the gzip when both forms exist.
+
+    The .gz is authoritative: the runner writes it only when a run COMPLETES and
+    deletes the plain file at the same time. So a plain file sitting beside a .gz
+    is a stale partial -- typically an rsync that caught the run mid-flight. It
+    shadowed a complete trace once and produced a silently skipped run; preferring
+    plain would eventually produce silently WRONG numbers instead.
+    """
     for d in dirs:
-        for cand in (os.path.join(d, run_id + '-consumer.jsonl'),
-                     os.path.join(d, run_id + '-consumer.jsonl.gz')):
-            if os.path.exists(cand):
-                return gzip.open(cand, 'rb') if cand.endswith('.gz') else open(cand, 'rb')
+        gz = os.path.join(d, run_id + '-consumer.jsonl.gz')
+        plain = os.path.join(d, run_id + '-consumer.jsonl')
+        if os.path.exists(gz):
+            if os.path.exists(plain):
+                print('  note: ignoring stale partial %s (complete .gz present)' % plain)
+            return gzip.open(gz, 'rb')
+        if os.path.exists(plain):
+            return open(plain, 'rb')
     return None
 
 
@@ -56,6 +68,11 @@ def main():
     dirs = a.raw_dir or ['results', '../rhc-raw-data/results']
 
     b = json.load(open(a.boundary))
+    if 'rhoEstimator' in b:
+        print('%s already recomputed under A4; refusing to double-apply. '
+              'Restore the as-measured file first (git checkout) if you need to redo it.'
+              % os.path.basename(a.boundary))
+        return 1
     cap = None
     changed = 0
     for pt in b['points']:
@@ -64,9 +81,11 @@ def main():
             rec = json.load(open('results/%s.json' % run['runId']))
             fh = open_trace(dirs, run['runId'])
             if fh is None:
-                print('  no trace for %s; leaving as measured' % run['runId'])
-                new_rhos.append(run['rhoAchieved'])
-                continue
+                # Leaving one run on the old estimator would mix estimators inside
+                # a point and corrupt its spread. Refuse rather than half-apply.
+                print('  FATAL: no trace for %s. Every run in a point must use the '
+                      'same estimator; fetch the trace and retry.' % run['runId'])
+                return 1
             with fh:
                 dr = delivery_rate(rec, fh)
             if not dr:

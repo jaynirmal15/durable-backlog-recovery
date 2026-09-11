@@ -20,10 +20,12 @@ def open_samples(path):
     Traces are gzipped when a run completes (runner -gzip-samples), so both
     <runId>-consumer.jsonl and <runId>-consumer.jsonl.gz occur in the archive.
     Prefers the plain file when both exist."""
-    if os.path.exists(path):
-        return open(path, 'rb')
+    # The .gz is authoritative: the runner writes it only on completion and
+    # removes the plain file then. A plain file beside a .gz is a stale partial.
     if os.path.exists(path + '.gz'):
         return gzip.open(path + '.gz', 'rb')
+    if os.path.exists(path):
+        return open(path, 'rb')
     raise FileNotFoundError('%s (and %s.gz)' % (path, path))
 
 

@@ -299,11 +299,14 @@ func main() {
 			// Host condition at run start. A busy host distorts timing windows and a
 			// full disk truncates traces, and neither is visible in the results
 			// afterwards -- both happened on 2026-08-19.
-			"hostLoad1":              host.Load1,
-			"hostLoad5":              host.Load5,
-			"hostLoad15":             host.Load15,
-			"hostCores":              host.Cores,
-			"hostFreeDiskGB":         host.FreeDiskGB,
+			"hostLoad1":      host.Load1,
+			"hostLoad5":      host.Load5,
+			"hostLoad15":     host.Load15,
+			"hostCores":      host.Cores,
+			"hostFreeDiskGB": host.FreeDiskGB,
+			// Which machine this run was measured on. E1 onward is EC2; the
+			// 2026-08-18 corpus is the laptop. They are not comparable.
+			"platform":               plat,
 			"sloP99Ms":               *sloP99,
 			"sloErrorRate":           *sloErr,
 			"rateLimitRps":           *rateLimit,

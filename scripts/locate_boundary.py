@@ -15,7 +15,8 @@ looking at traces:
       lower the ceiling; stop when ceiling - floor <= 5 rps
 
   reporting
-      rho* is the achieved-rho interval [last SAFE, first UNSAFE]. Never a
+      rho* is the achieved-rho interval [last SAFE, first NON-SAFE], whose
+      upper end may be MARGINAL or UNSAFE and whose class is recorded. Never a
       point, never a mean. Repetition disagreement widens the interval.
 
 Nothing here averages vSLO across repetitions, and nothing here narrows an
@@ -75,7 +76,7 @@ def classify(vslos):
 
 
 def bisect_step(lo, hi):
-    """Next rate to probe between a SAFE floor and an UNSAFE/MARGINAL ceiling.
+    """Next rate to probe between a SAFE floor and a non-SAFE ceiling.
 
     Returns None once the interval is at or below the 5 rps resolution floor.
     The midpoint is rounded to the nearest 5 and clamped strictly inside the
@@ -94,7 +95,7 @@ def bisect_step(lo, hi):
 
 
 def upward_step(lo):
-    """First ceiling candidate when no UNSAFE anchor is known: +10%, to 5 rps."""
+    """First ceiling candidate when no non-SAFE ceiling is known: +10%, to 5 rps."""
     step = max(RESOLUTION_RPS, int(round(lo * 0.10 / RESOLUTION_RPS) * RESOLUTION_RPS))
     return lo + step
 
@@ -364,13 +365,14 @@ def build_output(args, points, lo, hi, by_rate):
         },
         'boundary': {
             'lastSafeRl': lo,
-            'firstUnsafeRl': hi,
-            'firstUnsafeClass': hi_pt['class'],
+            'firstNonSafeRl': hi,
+            'firstNonSafeClass': hi_pt['class'],
             'rhoStarInterval': [min(lo_rhos), max(hi_rhos)],
             'rhoIntervalWidth': round(max(hi_rhos) - min(lo_rhos), 4),
             'resolutionReachedRps': hi - lo,
             'marginalRates': marginal,
-            'note': 'rho* is this interval. It is not a point and must not be '
+            'note': 'rho* is this interval; its upper end is the first non-SAFE point, '
+                    'whose class is firstNonSafeClass. It is not a point and must not be '
                     'averaged, narrowed, or quoted to more figures than its width supports.',
         },
         'latencyInvisibility': latency,
@@ -383,7 +385,7 @@ def main():
     ap.add_argument('--arm', required=True, choices=sorted(ARMS))
     ap.add_argument('--regime', required=True, choices=sorted(REGIMES))
     ap.add_argument('--anchor', required=True, type=int, help='last SAFE rate to start from')
-    ap.add_argument('--hi', type=int, help='known first-UNSAFE rate, if any')
+    ap.add_argument('--hi', type=int, help='known first non-SAFE rate (MARGINAL or UNSAFE), if any')
     ap.add_argument('--n', type=int, default=3, help='repetitions per point (default 3)')
     ap.add_argument('--baseline-p99', type=float, help='healthy-baseline live p99 ms for the invisibility test')
     ap.add_argument('--live-rate', type=int, default=1000)
@@ -435,8 +437,8 @@ def main():
         fh.write('\n')
     b = out['boundary']
     log('')
-    log('boundary: last SAFE rl=%d, first %s rl=%d (resolution %d rps)'
-        % (b['lastSafeRl'], b['firstUnsafeClass'], b['firstUnsafeRl'], b['resolutionReachedRps']))
+    log('boundary: last SAFE rl=%d, first non-SAFE rl=%d classified %s (resolution %d rps)'
+        % (b['lastSafeRl'], b['firstNonSafeRl'], b['firstNonSafeClass'], b['resolutionReachedRps']))
     log('rho* interval: [%.4f, %.4f]  width %.4f' % (
         b['rhoStarInterval'][0], b['rhoStarInterval'][1], b['rhoIntervalWidth']))
     if b['marginalRates']:

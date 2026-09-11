@@ -58,7 +58,7 @@ property the collapsed regime actually has once the CPU clamp is removed.
 
 ## 3. Search procedure
 
-Given a last-SAFE anchor `lo` and a first-UNSAFE anchor `hi`:
+Given a last-SAFE anchor `lo` and a first-non-SAFE ceiling `hi`:
 
 1. If `hi` is not known, step **upward** from `lo` in increments of 10% of `lo`
    (rounded to 5 rps) until a point classifies UNSAFE or MARGINAL. That point
@@ -80,7 +80,16 @@ were measured on the defective harness.
 
 **ρ\* is reported as an interval, never a point.**
 
-    ρ* ∈ [ ρ_achieved(last SAFE) , ρ_achieved(first UNSAFE) ]
+    ρ* ∈ [ ρ_achieved(last SAFE) , ρ_achieved(first NON-SAFE) ]
+
+The upper end is the **first non-SAFE point**, which may classify **MARGINAL or
+UNSAFE**. §3 step 3 makes a MARGINAL midpoint the new ceiling, so a MARGINAL
+point can and often will terminate the search from above; calling that endpoint
+"first UNSAFE" would misdescribe it. **The class of the upper endpoint is
+recorded per boundary** (`firstNonSafeClass`) and stated wherever the interval
+is quoted, because "safe up to here, marginal above" and "safe up to here,
+collapsed above" are different findings and must not be reported in the same
+words.
 
 Both endpoints are **achieved** ρ, defined in §5. The interval is the claim. A
 midpoint, a mean, or a value quoted to more significant figures than the
@@ -228,4 +237,25 @@ test rather than passing silently.
 
 ## Amendments
 
-*(none)*
+### A1 — 2026-09-11: the interval's upper end is the first NON-SAFE point
+
+**Registered before any E1–E4 run; no results existed when this was made.**
+
+§4 originally read:
+
+> ρ* ∈ [ ρ_achieved(last SAFE) , ρ_achieved(first UNSAFE) ]
+
+That contradicted §3, which already made a MARGINAL midpoint the new ceiling.
+Under the original wording a search that terminated on a MARGINAL point would
+have had its upper endpoint reported as "first UNSAFE", which is a stronger
+claim than the data supports and exactly the kind of label-versus-measurement
+mismatch this protocol exists to prevent.
+
+§4 now reads "first NON-SAFE", requires the endpoint's class (MARGINAL or
+UNSAFE) to be recorded per boundary, and requires it to be stated wherever the
+interval is quoted. §3 is unchanged — its behaviour was already correct.
+`scripts/locate_boundary.py` records the endpoint as `firstNonSafeRl` and
+`firstNonSafeClass`; those fields were named `firstUnsafeRl` and
+`firstUnsafeClass` before this amendment and carried the same values.
+
+No measurement changes, because no measurement has been taken.

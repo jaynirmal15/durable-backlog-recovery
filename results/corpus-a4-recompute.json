@@ -1,0 +1,85 @@
+{
+  "description": "Pre-EC2 corpus anchors recomputed under PRE-REGISTRATION.md A4: the recovery term measured over the span recovery traffic actually occupied, instead of backlogAtRestore/tDrain.",
+  "why": "tDrain is the first second at which recoveryRemaining reaches 0, which lands after the last recovery request was issued. Dividing an exact backlog by a window padded with that dead tail understates the recovery rate.",
+  "scope": "Every last-SAFE anchor STATUS.md marks valid.",
+  "liveTerm": "Measured from the trace on both sides (live arrivals over their span), so the only thing differing between the OLD and A4 columns is the recovery estimator.",
+  "anchors": {
+    "c10-C0-rl840": {
+      "faultCapacity": 2000,
+      "n": 2,
+      "drainDetectorTailSec": {
+        "min": 4.54,
+        "max": 4.57
+      },
+      "rhoOld": {
+        "mean": 0.9091,
+        "min": 0.909,
+        "max": 0.9092
+      },
+      "rhoA4": {
+        "mean": 0.9224,
+        "min": 0.9223,
+        "max": 0.9226
+      },
+      "shift": 0.0133
+    },
+    "c10-C1-rl290": {
+      "faultCapacity": 1400,
+      "n": 3,
+      "drainDetectorTailSec": {
+        "min": 1.54,
+        "max": 2.28
+      },
+      "rhoOld": {
+        "mean": 0.9166,
+        "min": 0.9161,
+        "max": 0.917
+      },
+      "rhoA4": {
+        "mean": 0.9176,
+        "min": 0.9169,
+        "max": 0.9181
+      },
+      "shift": 0.001
+    },
+    "c50-C0-rl990": {
+      "faultCapacity": 2000,
+      "n": 2,
+      "drainDetectorTailSec": {
+        "min": 2.25,
+        "max": 2.51
+      },
+      "rhoOld": {
+        "mean": 0.9776,
+        "min": 0.9773,
+        "max": 0.9779
+      },
+      "rhoA4": {
+        "mean": 0.9872,
+        "min": 0.9863,
+        "max": 0.988
+      },
+      "shift": 0.0096
+    },
+    "c50-C1-rl380": {
+      "faultCapacity": 1400,
+      "n": 2,
+      "drainDetectorTailSec": {
+        "min": 1.59,
+        "max": 1.94
+      },
+      "rhoOld": {
+        "mean": 0.9787,
+        "min": 0.9786,
+        "max": 0.9788
+      },
+      "rhoA4": {
+        "mean": 0.9802,
+        "min": 0.9802,
+        "max": 0.9803
+      },
+      "shift": 0.0015
+    }
+  },
+  "finding": "The correction is NOT uniform: it scales with (tail / tDrain) x recovery share. Short drains with long tails move most (c10/C0 +0.0133, c50/C0 +0.0096); long drains with short tails barely move (c10/C1 +0.0010, c50/C1 +0.0015). It therefore does not cancel in any comparison and must be applied to both sides."
+}

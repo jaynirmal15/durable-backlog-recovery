@@ -585,6 +585,66 @@ asymmetry stays a methods paragraph, as A3 allowed for. The diagnostic still
 stands and still decides — it simply has to be computed on a ρ that is not
 contaminated by the detector's tail.
 
+#### Why it is safe to apply to data already collected
+
+A post-hoc estimator change on collected data is exactly where a reviewer should
+look for the search having been steered by it. It was not, and the reason is
+structural rather than a matter of care:
+
+**SAFE / UNSAFE / MARGINAL classification is `vSLO`-based and never consumed this
+estimator.** §2 classifies a point from its three `vSLO` values alone. `vSLO` is
+violating seconds over `tFullSec` from the run's own timeline; it does not read
+the recovery rate, achieved ρ, or anything A4 touches. §3's search then moves on
+the class alone. So:
+
+- **No probed point was reclassified.** Every SAFE stayed SAFE, every UNSAFE
+  stayed UNSAFE, across all 18 runs of boundary 1.
+- **No search path changed.** The same rates were probed in the same order, and
+  the `rl` interval is bit-for-bit what it was: [825, 830], upper endpoint
+  UNSAFE.
+- **Only the ρ coordinates moved.** A4 relabels where on the ρ axis each already
+  determined point sits. It cannot move the boundary in `rl`, because `rl` is
+  what the runner was told to do and the classification never looked at ρ.
+
+The check that would fail if this were untrue is simply whether any point changed
+class. None did.
+
+#### The historical corpus is corrected too
+
+**A4 applies to the pre-EC2 corpus exactly as it applies to E1.** The defect is in
+an estimator, not in a platform or a harness version, and every run in the corpus
+has a retained trace, so every one can be recomputed. Every last-SAFE anchor that
+`STATUS.md` marks valid, recomputed (live term measured from the trace on both
+sides, so only the recovery estimator differs):
+
+| anchor | drain tail (s) | ρ as reported | ρ under A4 | shift |
+|---|---|---:|---:|---:|
+| c10/C0 rl=840 | 4.54–4.57 | 0.9091 | **0.9224** | **+0.0133** |
+| c10/C1 rl=290 | 1.54–2.28 | 0.9166 | **0.9176** | +0.0010 |
+| c50/C0 rl=990 | 2.25–2.51 | 0.9776 | **0.9872** | **+0.0096** |
+| c50/C1 rl=380 | 1.59–1.94 | 0.9787 | **0.9802** | +0.0015 |
+
+Full detail in `results/corpus-a4-recompute.json`.
+
+**The correction is not uniform, so it does not cancel.** It scales with
+tail ÷ tDrain times the recovery share of ρ. Short drains with long tails move a
+lot (c10/C0 by +0.0133, five times the transition width); long drains with short
+tails barely move (c10/C1 by +0.0010). Correcting one side of a comparison and
+not the other would therefore **manufacture a difference of up to 0.013** — larger
+than any real effect this project is trying to resolve.
+
+> **Rule.** Any achieved-ρ comparison between E1 and the historical corpus must
+> use **A4-corrected values on both sides**. Comparing an A4 value against a
+> published pre-A4 value is a protocol violation.
+
+**What surviving movement does and does not mean.** A4 removes the estimator
+confound. It does **not** remove the two that §A3 and the platform-change note in
+`NOTES.md` already record: the machine changed, and the injector pacer changed.
+Movement that survives A4 correction is real movement **in the measurement**; it
+is not yet attributable to the dependency, and §A3's prohibition on cross-platform
+ρ\* claims stands unchanged. A4 makes such a comparison *possible to state
+honestly*, not *valid to draw conclusions from*.
+
 #### Standing correction to §5
 
 §5 continues to require achieved rates from measurement rather than flags. The

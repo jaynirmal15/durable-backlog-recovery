@@ -1,0 +1,9 @@
+SIGQUIT sent to consumer pid 17393 at ~00:09:28 local.
+Result: process became Zombie (Z); no "goroutine" stacks appeared in runner
+terminal capture (runner logWriter line-buffers child stderr; Go's SIGQUIT
+dump may have been lost when the pipe/process died, or dump went to a
+buffer that was never flushed into the terminal file).
+
+No /debug/pprof endpoint is exposed on the consumer.
+
+Pre-kill JetStream + downstream snapshots are in this directory.

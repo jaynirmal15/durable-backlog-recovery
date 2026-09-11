@@ -1,0 +1,14 @@
+2026/08/13 21:35:20 stats issued=39533 completed=34810 drops429=0 peakInFlight=4731 inFlight=4723
+2026/08/13 21:35:25 stats issued=40213 completed=40176 drops429=0 peakInFlight=4731 inFlight=37
+2026/08/13 21:35:30 stats issued=43018 completed=40727 drops429=0 peakInFlight=4731 inFlight=2291
+2026/08/13 21:35:35 stats issued=43637 completed=43591 drops429=0 peakInFlight=4731 inFlight=46
+2026/08/13 21:35:40 stats issued=44264 completed=44197 drops429=0 peakInFlight=4731 inFlight=67
+2026/08/13 21:35:45 stats issued=45432 completed=44769 drops429=0 peakInFlight=4731 inFlight=663
+2026/08/13 21:35:50 stats issued=45997 completed=45964 drops429=0 peakInFlight=4731 inFlight=33
+2026/08/13 21:35:55 stats issued=46524 completed=46435 drops429=0 peakInFlight=4731 inFlight=89
+2026/08/13 21:36:00 stats issued=47030 completed=46995 drops429=0 peakInFlight=4731 inFlight=35
+2026/08/13 21:36:05 stats issued=47506 completed=47464 drops429=0 peakInFlight=4731 inFlight=42
+2026/08/13 21:36:10 stats issued=47972 completed=47932 drops429=0 peakInFlight=4731 inFlight=40
+2026/08/13 21:36:15 stats issued=48465 completed=48428 drops429=0 peakInFlight=4731 inFlight=37
+2026/08/13 21:36:20 stats issued=48974 completed=48943 drops429=0 peakInFlight=4731 inFlight=31
+2026/08/13 21:36:24 FINAL issued=49349 completed=49349 drops429=0 peakInFlight=4731

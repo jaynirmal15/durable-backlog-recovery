@@ -1,0 +1,7 @@
+2026/08/13 21:35:56 stats issued=489 completed=387 drops429=0 peakInFlight=278 inFlight=102
+2026/08/13 21:36:01 stats issued=1120 completed=908 drops429=0 peakInFlight=355 inFlight=212
+2026/08/13 21:36:06 stats issued=1375 completed=1330 drops429=0 peakInFlight=355 inFlight=45
+2026/08/13 21:36:11 stats issued=1825 completed=1778 drops429=0 peakInFlight=355 inFlight=47
+2026/08/13 21:36:16 stats issued=2295 completed=2268 drops429=0 peakInFlight=355 inFlight=27
+2026/08/13 21:36:21 stats issued=2797 completed=2774 drops429=0 peakInFlight=355 inFlight=23
+2026/08/13 21:36:24 FINAL issued=3020 completed=3020 drops429=0 peakInFlight=355

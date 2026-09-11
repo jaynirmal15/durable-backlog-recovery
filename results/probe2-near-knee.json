@@ -1,0 +1,61 @@
+{
+  "runs": [
+    {
+      "rateLimit": 300,
+      "totalOfferedApprox": 1300,
+      "invalid": null,
+      "invalidReason": null,
+      "tDrain": 402.007639542,
+      "tFull": 416.007049959,
+      "tFullW30": 431.008737292,
+      "vSLO": 0,
+      "p50": 5,
+      "p90": 6,
+      "p95": 7,
+      "p99": 8,
+      "frac": 1,
+      "goodput": 997.5945692487942,
+      "timeoutRate": 0,
+      "qMean": 0.2537313432835821,
+      "qPeak": 67
+    },
+    {
+      "rateLimit": 600,
+      "totalOfferedApprox": 1600,
+      "invalid": null,
+      "invalidReason": null,
+      "tDrain": 202.006167875,
+      "tFull": 216.006884542,
+      "tFullW30": 231.007280875,
+      "vSLO": 0,
+      "p50": 5,
+      "p90": 6,
+      "p95": 7,
+      "p99": 7,
+      "frac": 1,
+      "goodput": 998.4703273202512,
+      "timeoutRate": 0,
+      "qMean": 0.039603960396039604,
+      "qPeak": 5
+    },
+    {
+      "rateLimit": 900,
+      "totalOfferedApprox": 1900,
+      "invalid": null,
+      "invalidReason": null,
+      "tDrain": 136.004780291,
+      "tFull": 150.004820833,
+      "tFullW30": 165.006332666,
+      "vSLO": 0.7933078373026585,
+      "p50": 301,
+      "p90": 432,
+      "p95": 490,
+      "p99": 625,
+      "frac": 0.1399409612567449,
+      "goodput": 139.77530072644925,
+      "timeoutRate": 0,
+      "qMean": 458.9779411764706,
+      "qPeak": 501
+    }
+  ]
+}

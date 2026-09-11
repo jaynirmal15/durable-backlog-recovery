@@ -1,0 +1,1 @@
+2026/08/13 21:41:25 consumer started durable=rhc-consumer workers=1024 batch=256 restoreEpoch=1786671685695 rateLimit=0 out=results/preflight-instr-consumer.jsonl

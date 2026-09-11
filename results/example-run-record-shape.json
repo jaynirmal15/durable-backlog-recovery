@@ -1,0 +1,54 @@
+{
+  "runId": "example-record-shape",
+  "condition": "P0-B",
+  "gitCommit": "pending",
+  "gitDirty": true,
+  "startedAt": "2026-08-13T00:00:00Z",
+  "params": {
+    "liveRatePerSec": 1000,
+    "nominalCapacity": 2000,
+    "outageSeconds": 120,
+    "serviceTimeMs": 5,
+    "profile": "graceful",
+    "workers": 1024,
+    "sloP99Ms": 250,
+    "sloErrorRate": 0.01,
+    "rateLimitRps": 0,
+    "maxInFlight": 4096,
+    "sloErrorAccounting": "exclude_status_429_client_injector_drops"
+  },
+  "headroomSchedule": [
+    {
+      "atSec": 0,
+      "capacity": 2000,
+      "headroom": 1000
+    },
+    {
+      "atSec": 20,
+      "capacity": 1400,
+      "headroom": 400
+    }
+  ],
+  "capacitySchedule": [
+    {
+      "atSec": 0,
+      "rate": 2000
+    },
+    {
+      "atSec": 20,
+      "rate": 1400
+    }
+  ],
+  "timeline": [
+    {
+      "tSec": 0,
+      "totalPending": 120000,
+      "recoveryRemaining": 120000,
+      "recoveryAcked": 0,
+      "liveInFlight": 12,
+      "liveRps": 1000,
+      "recoveryRps": 0
+    }
+  ],
+  "notes": "illustrative shape for Check 5; not a real run"
+}

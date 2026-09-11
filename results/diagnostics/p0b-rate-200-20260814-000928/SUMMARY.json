@@ -1,0 +1,110 @@
+{
+  "goroutine_dump": "UNAVAILABLE \u2014 SIGQUIT zombied consumer pid 17393; 0 goroutine stacks in runner terminal capture; no pprof endpoint",
+  "jetstream_pre_kill": {
+    "memory": 0,
+    "storage": 221146952,
+    "reserved_memory": 0,
+    "reserved_storage": 0,
+    "accounts": 1,
+    "ha_assets": 0,
+    "api": {
+      "total": 14595,
+      "errors": 0
+    },
+    "server_id": "NCCBACYPYPIATZ3ADNATDXVXBT3DFPKWEMN6BCOGIQLWIW5U6IXOHSIC",
+    "now": "2026-08-14T04:09:28.920241383Z",
+    "config": {
+      "max_memory": 6162435072,
+      "max_storage": 10595675136,
+      "store_dir": "/data/jetstream",
+      "sync_interval": 120000000000
+    },
+    "streams": 1,
+    "consumers": 1,
+    "messages": 2126413,
+    "bytes": 221146952,
+    "account_details": [
+      {
+        "name": "$G",
+        "id": "$G",
+        "memory": 0,
+        "storage": 221146952,
+        "reserved_memory": 18446744073709551615,
+        "reserved_storage": 18446744073709551615,
+        "accounts": 0,
+        "ha_assets": 0,
+        "api": {
+          "total": 14595,
+          "errors": 0
+        },
+        "stream_detail": [
+          {
+            "name": "EVENTS",
+            "created": "2026-08-14T03:33:04.919466261Z",
+            "cluster": {
+              "leader": "NCCBACYPYPIATZ3ADNATDXVXBT3DFPKWEMN6BCOGIQLWIW5U6IXOHSIC"
+            },
+            "state": {
+              "messages": 2126413,
+              "bytes": 221146952,
+              "first_seq": 1,
+              "first_ts": "2026-08-14T03:33:04.939867011Z",
+              "last_seq": 2126413,
+              "last_ts": "2026-08-14T04:09:28.918618925Z",
+              "num_subjects": 1,
+              "consumer_count": 1
+            },
+            "consumer_detail": [
+              {
+                "stream_name": "EVENTS",
+                "name": "rhc-consumer",
+                "created": "2026-08-14T03:33:04.92013797Z",
+                "delivered": {
+                  "consumer_seq": 2112000,
+                  "stream_seq": 2111994,
+                  "last_active": "2026-08-14T04:09:28.761421592Z"
+                },
+                "ack_floor": {
+                  "consumer_seq": 2108596,
+                  "stream_seq": 2108590,
+                  "last_active": "2026-08-14T04:09:28.919559383Z"
+                },
+                "num_ack_pending": 1573,
+                "num_redelivered": 0,
+                "num_waiting": 0,
+                "num_pending": 14419,
+                "ts": "2026-08-14T04:09:28.920261842Z"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "total": 1
+  },
+  "downstream_pre_kill": {
+    "concurrency": 7,
+    "queueCap": 350,
+    "queued": 350,
+    "rejected": 0,
+    "served": 9959163,
+    "timedOut": 782864,
+    "trueCapacity": 1400
+  },
+  "sample_tail_classes": {
+    "tail_samples": 246227,
+    "classes": {
+      "live": 246227
+    },
+    "malformed_json_lines": 0
+  },
+  "evidence": {
+    "recovery_in_jsonl": 119192,
+    "recovery_duration_s": 591.84,
+    "implied_recovery_rps": 201.4,
+    "rate_limit_configured": 200,
+    "post_stall_tail_all_live": true,
+    "live_age0_are_injector": "~657k age=0 live samples (injector has no pub header)",
+    "live_high_age_nats_catchup": "~1.04M live samples with age>5m = post-restore NATS live queued behind recovery"
+  }
+}

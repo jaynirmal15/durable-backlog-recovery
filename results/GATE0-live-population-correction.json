@@ -1,0 +1,2385 @@
+{
+  "populationDefinition": {
+    "injector_live": "class=live && age_ms==0 (post-restore)",
+    "nats_live": "class=live && age_ms>0 (post-restore)",
+    "recovery": "class=recovery (post-restore)",
+    "liveSLOPopulation": "injector_direct"
+  },
+  "runs": {
+    "p0a-r1": {
+      "runId": "p0a-r1",
+      "condition": "P0-A",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 115.008330792,
+      "tFullSec": 249.008344667,
+      "gapSec": 134.00001387499998,
+      "backlogAtRestore": 119206,
+      "injectorCompleted_param": 114499,
+      "injector_live_count_post_restore": 147554,
+      "populations_drain": {
+        "injector_live": {
+          "count": 113565,
+          "meanRps": 987.4530467445743,
+          "p50": 800.0,
+          "p95": 2003.0,
+          "p99": 2167.0,
+          "errorRate": 0.10510280456126447
+        },
+        "nats_live": {
+          "count": 4258,
+          "meanRps": 37.02351140790206,
+          "p50": 780.0,
+          "p95": 2001.0,
+          "p99": 2152.1500000000015,
+          "errorRate": 0.07679661813057774
+        },
+        "recovery": {
+          "count": 119214,
+          "meanRps": 1036.571368948247,
+          "p50": 800.0,
+          "p95": 2003.0,
+          "p99": 2176.0,
+          "errorRate": 0.10586004999412821
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 147554,
+          "meanRps": 592.5673070744715,
+          "p50": 608.0,
+          "p95": 2002.0,
+          "p99": 2143.0,
+          "errorRate": 0.08181411551025387
+        },
+        "nats_live": {
+          "count": 194297,
+          "meanRps": 780.2841675769453,
+          "p50": 455.0,
+          "p95": 1108.0,
+          "p99": 1610.0400000000081,
+          "errorRate": 0.0032990730685496946
+        },
+        "recovery": {
+          "count": 119214,
+          "meanRps": 478.755702628028,
+          "p50": 800.0,
+          "p95": 2003.0,
+          "p99": 2176.0,
+          "errorRate": 0.10586004999412821
+        }
+      },
+      "old": {
+        "vSLO": 0.8754726685627038,
+        "drainPeakLiveRps": 1498.6,
+        "drainMeanLiveRps": 519.0921739130434,
+        "drainPeakLiveP99Ms": 1974,
+        "drainMeanLiveP99Ms": 1919.9652173913043
+      },
+      "new": {
+        "vSLO": 0.8790322580645161,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 987.4530467445743,
+        "drainInjectorP50": 800.0,
+        "drainInjectorP95": 2003.0,
+        "drainInjectorP99": 2167.0,
+        "drainInjectorErrorRate": 0.10510280456126447,
+        "drainMeanNatsRps": 37.02351140790206,
+        "drainNatsP99": 2152.1500000000015,
+        "drainNatsErrorRate": 0.07679661813057774,
+        "drainMeanRecoveryRps": 1036.571368948247,
+        "drainRecoveryP99": 2176.0
+      },
+      "downstream": {
+        "deltaServed": 434853,
+        "deltaTimedOut": 25333,
+        "timeoutRate": 0.05504947999287245
+      }
+    },
+    "p0a-r2": {
+      "runId": "p0a-r2",
+      "condition": "P0-A",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 115.007120167,
+      "tFullSec": 252.00897725,
+      "gapSec": 137.001857083,
+      "backlogAtRestore": 119028,
+      "injectorCompleted_param": 114590,
+      "injector_live_count_post_restore": 147192,
+      "populations_drain": {
+        "injector_live": {
+          "count": 113649,
+          "meanRps": 988.1920230942463,
+          "p50": 805.0,
+          "p95": 2003.0,
+          "p99": 2168.0,
+          "errorRate": 0.10678492551628259
+        },
+        "nats_live": {
+          "count": 3688,
+          "meanRps": 32.067613275713654,
+          "p50": 808.5,
+          "p95": 2000.0,
+          "p99": 2116.13,
+          "errorRate": 0.07212581344902386
+        },
+        "recovery": {
+          "count": 119036,
+          "meanRps": 1035.0326501865104,
+          "p50": 806.0,
+          "p95": 2003.0,
+          "p99": 2172.0,
+          "errorRate": 0.10697604086158809
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 147192,
+          "meanRps": 584.0766959779054,
+          "p50": 612.0,
+          "p95": 2002.0,
+          "p99": 2145.0,
+          "errorRate": 0.0833740964182836
+        },
+        "nats_live": {
+          "count": 197162,
+          "meanRps": 782.3640519348592,
+          "p50": 456.0,
+          "p95": 1111.0,
+          "p99": 1610.0,
+          "errorRate": 0.0031801259877664054
+        },
+        "recovery": {
+          "count": 119036,
+          "meanRps": 472.35008412431347,
+          "p50": 806.0,
+          "p95": 2003.0,
+          "p99": 2172.0,
+          "errorRate": 0.10697604086158809
+        }
+      },
+      "old": {
+        "vSLO": 0.8769528864075417,
+        "drainPeakLiveRps": 1496,
+        "drainMeanLiveRps": 507.3182608695652,
+        "drainPeakLiveP99Ms": 1965,
+        "drainMeanLiveP99Ms": 1918.1739130434783
+      },
+      "new": {
+        "vSLO": 0.8804780876494024,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 988.1920230942463,
+        "drainInjectorP50": 805.0,
+        "drainInjectorP95": 2003.0,
+        "drainInjectorP99": 2168.0,
+        "drainInjectorErrorRate": 0.10678492551628259,
+        "drainMeanNatsRps": 32.067613275713654,
+        "drainNatsP99": 2116.13,
+        "drainNatsErrorRate": 0.07212581344902386,
+        "drainMeanRecoveryRps": 1035.0326501865104,
+        "drainRecoveryP99": 2172.0
+      },
+      "downstream": {
+        "deltaServed": 437874,
+        "deltaTimedOut": 25633,
+        "timeoutRate": 0.05530229316925095
+      }
+    },
+    "p0a-r3": {
+      "runId": "p0a-r3",
+      "condition": "P0-A",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 113.008710042,
+      "tFullSec": 251.008857458,
+      "gapSec": 138.000147416,
+      "backlogAtRestore": 118865,
+      "injectorCompleted_param": 112354,
+      "injector_live_count_post_restore": 145250,
+      "populations_drain": {
+        "injector_live": {
+          "count": 111394,
+          "meanRps": 985.7178252867054,
+          "p50": 790.0,
+          "p95": 2003.0,
+          "p99": 2166.0,
+          "errorRate": 0.1025369409483455
+        },
+        "nats_live": {
+          "count": 3757,
+          "meanRps": 33.24543395157865,
+          "p50": 773.0,
+          "p95": 2001.0,
+          "p99": 2154.32,
+          "errorRate": 0.07718924673941975
+        },
+        "recovery": {
+          "count": 118876,
+          "meanRps": 1051.9255273962906,
+          "p50": 788.0,
+          "p95": 2002.0,
+          "p99": 2169.0,
+          "errorRate": 0.10275413035431878
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 145250,
+          "meanRps": 578.666815400306,
+          "p50": 598.0,
+          "p95": 2001.0,
+          "p99": 2142.0,
+          "errorRate": 0.07962134251290878
+        },
+        "nats_live": {
+          "count": 199577,
+          "meanRps": 795.1021481387047,
+          "p50": 459.0,
+          "p95": 1116.0,
+          "p99": 1613.2399999999907,
+          "errorRate": 0.0032368459291401315
+        },
+        "recovery": {
+          "count": 118876,
+          "meanRps": 473.59446710861806,
+          "p50": 788.0,
+          "p95": 2002.0,
+          "p99": 2169.0,
+          "errorRate": 0.10275413035431878
+        }
+      },
+      "old": {
+        "vSLO": 0.876463094681077,
+        "drainPeakLiveRps": 1375.4,
+        "drainMeanLiveRps": 497.6371681415929,
+        "drainPeakLiveP99Ms": 1991,
+        "drainMeanLiveP99Ms": 1914.1061946902655
+      },
+      "new": {
+        "vSLO": 0.88,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 985.7178252867054,
+        "drainInjectorP50": 790.0,
+        "drainInjectorP95": 2003.0,
+        "drainInjectorP99": 2166.0,
+        "drainInjectorErrorRate": 0.1025369409483455,
+        "drainMeanNatsRps": 33.24543395157865,
+        "drainNatsP99": 2154.32,
+        "drainNatsErrorRate": 0.07718924673941975,
+        "drainMeanRecoveryRps": 1051.9255273962906,
+        "drainRecoveryP99": 2169.0
+      },
+      "downstream": {
+        "deltaServed": 438360,
+        "deltaTimedOut": 24426,
+        "timeoutRate": 0.05278033475515681
+      }
+    },
+    "p0b-r1": {
+      "runId": "p0b-r1",
+      "condition": "P0-B",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 145.01323175,
+      "tFullSec": 468.007065125,
+      "gapSec": 322.993833375,
+      "backlogAtRestore": 118531,
+      "injectorCompleted_param": 144424,
+      "injector_live_count_post_restore": 175211,
+      "populations_drain": {
+        "injector_live": {
+          "count": 143158,
+          "meanRps": 987.2080434167971,
+          "p50": 1192.0,
+          "p95": 2027.0,
+          "p99": 2210.0,
+          "errorRate": 0.27630310565948113
+        },
+        "nats_live": {
+          "count": 2979,
+          "meanRps": 20.542985801272987,
+          "p50": 1227.0,
+          "p95": 2037.1999999999998,
+          "p99": 2207.0,
+          "errorRate": 0.26317556226921784
+        },
+        "recovery": {
+          "count": 118539,
+          "meanRps": 817.4370573672705,
+          "p50": 1160.0,
+          "p95": 2022.0,
+          "p99": 2206.0,
+          "errorRate": 0.26540632196998454
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 175211,
+          "meanRps": 374.37687897830585,
+          "p50": 937.0,
+          "p95": 2017.0,
+          "p99": 2197.0,
+          "errorRate": 0.22834182785327406
+        },
+        "nats_live": {
+          "count": 398503,
+          "meanRps": 851.4894007995607,
+          "p50": 606.0,
+          "p95": 1770.0,
+          "p99": 2045.0,
+          "errorRate": 0.031944552487685164
+        },
+        "recovery": {
+          "count": 118539,
+          "meanRps": 253.2846730924965,
+          "p50": 1160.0,
+          "p95": 2022.0,
+          "p99": 2206.0,
+          "errorRate": 0.26540632196998454
+        }
+      },
+      "old": {
+        "vSLO": 0.933746587529147,
+        "drainPeakLiveRps": 1483.8,
+        "drainMeanLiveRps": 492.54758620689654,
+        "drainPeakLiveP99Ms": 1993,
+        "drainMeanLiveP99Ms": 1948.8689655172413
+      },
+      "new": {
+        "vSLO": 0.9357601713062098,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 987.2080434167971,
+        "drainInjectorP50": 1192.0,
+        "drainInjectorP95": 2027.0,
+        "drainInjectorP99": 2210.0,
+        "drainInjectorErrorRate": 0.27630310565948113,
+        "drainMeanNatsRps": 20.542985801272987,
+        "drainNatsP99": 2207.0,
+        "drainNatsErrorRate": 0.26317556226921784,
+        "drainMeanRecoveryRps": 817.4370573672705,
+        "drainRecoveryP99": 2206.0
+      },
+      "downstream": {
+        "deltaServed": 608207,
+        "deltaTimedOut": 84199,
+        "timeoutRate": 0.12160351007934651
+      }
+    },
+    "p0b-r2": {
+      "runId": "p0b-r2",
+      "condition": "P0-B",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 145.007657083,
+      "tFullSec": 475.005254917,
+      "gapSec": 329.997597834,
+      "backlogAtRestore": 118259,
+      "injectorCompleted_param": 144146,
+      "injector_live_count_post_restore": 178745,
+      "populations_drain": {
+        "injector_live": {
+          "count": 142858,
+          "meanRps": 985.1800257918583,
+          "p50": 1188.0,
+          "p95": 2031.0,
+          "p99": 2211.0,
+          "errorRate": 0.2741183552898683
+        },
+        "nats_live": {
+          "count": 2776,
+          "meanRps": 19.143903397767005,
+          "p50": 1220.0,
+          "p95": 2046.0,
+          "p99": 2199.25,
+          "errorRate": 0.25720461095100866
+        },
+        "recovery": {
+          "count": 118265,
+          "meanRps": 815.5813167640183,
+          "p50": 1172.0,
+          "p95": 2026.0,
+          "p99": 2210.0,
+          "errorRate": 0.2676277850589777
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 178745,
+          "meanRps": 376.3013020915569,
+          "p50": 906.0,
+          "p95": 2018.0,
+          "p99": 2198.0,
+          "errorRate": 0.22181319757196005
+        },
+        "nats_live": {
+          "count": 405315,
+          "meanRps": 853.2857548867906,
+          "p50": 609.0,
+          "p95": 1768.0,
+          "p99": 2043.0,
+          "errorRate": 0.031807359707881525
+        },
+        "recovery": {
+          "count": 118265,
+          "meanRps": 248.97632656498354,
+          "p50": 1172.0,
+          "p95": 2026.0,
+          "p99": 2210.0,
+          "errorRate": 0.2676277850589777
+        }
+      },
+      "old": {
+        "vSLO": 0.9347265012417226,
+        "drainPeakLiveRps": 1153.4,
+        "drainMeanLiveRps": 497.56137931034476,
+        "drainPeakLiveP99Ms": 2021,
+        "drainMeanLiveP99Ms": 1952.1310344827587
+      },
+      "new": {
+        "vSLO": 0.9367088607594937,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 985.1800257918583,
+        "drainInjectorP50": 1188.0,
+        "drainInjectorP95": 2031.0,
+        "drainInjectorP99": 2211.0,
+        "drainInjectorErrorRate": 0.2741183552898683,
+        "drainMeanNatsRps": 19.143903397767005,
+        "drainNatsP99": 2199.25,
+        "drainNatsErrorRate": 0.25720461095100866,
+        "drainMeanRecoveryRps": 815.5813167640183,
+        "drainRecoveryP99": 2210.0
+      },
+      "downstream": {
+        "deltaServed": 617275,
+        "deltaTimedOut": 84191,
+        "timeoutRate": 0.1200214978345351
+      }
+    },
+    "p0b-r3": {
+      "runId": "p0b-r3",
+      "condition": "P0-B",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 143.010275583,
+      "tFullSec": 482.007335291,
+      "gapSec": 338.997059708,
+      "backlogAtRestore": 119153,
+      "injectorCompleted_param": 142169,
+      "injector_live_count_post_restore": 151179,
+      "populations_drain": {
+        "injector_live": {
+          "count": 140939,
+          "meanRps": 985.5184952101253,
+          "p50": 1157.0,
+          "p95": 2027.0,
+          "p99": 2204.0,
+          "errorRate": 0.2652920767140394
+        },
+        "nats_live": {
+          "count": 2599,
+          "meanRps": 18.173554296902317,
+          "p50": 1221.0,
+          "p95": 2019.1,
+          "p99": 2204.1,
+          "errorRate": 0.25740669488264717
+        },
+        "recovery": {
+          "count": 119161,
+          "meanRps": 833.2354380812532,
+          "p50": 1126.0,
+          "p95": 2021.0,
+          "p99": 2203.0,
+          "errorRate": 0.25701362022809476
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 151179,
+          "meanRps": 313.6448225855641,
+          "p50": 1079.0,
+          "p95": 2024.0,
+          "p99": 2201.0,
+          "errorRate": 0.2503654608113561
+        },
+        "nats_live": {
+          "count": 444184,
+          "meanRps": 921.5301852462724,
+          "p50": 579.0,
+          "p95": 1733.0,
+          "p99": 2032.0,
+          "errorRate": 0.02947877456189327
+        },
+        "recovery": {
+          "count": 119161,
+          "meanRps": 247.21840139251088,
+          "p50": 1126.0,
+          "p95": 2021.0,
+          "p99": 2203.0,
+          "errorRate": 0.25701362022809476
+        }
+      },
+      "old": {
+        "vSLO": 0.9356704078532745,
+        "drainPeakLiveRps": 1482.4,
+        "drainMeanLiveRps": 499.137062937063,
+        "drainPeakLiveP99Ms": 2058,
+        "drainMeanLiveP99Ms": 1949.3566433566434
+      },
+      "new": {
+        "vSLO": 0.9376299376299376,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 985.5184952101253,
+        "drainInjectorP50": 1157.0,
+        "drainInjectorP95": 2027.0,
+        "drainInjectorP99": 2204.0,
+        "drainInjectorErrorRate": 0.2652920767140394,
+        "drainMeanNatsRps": 18.173554296902317,
+        "drainNatsP99": 2204.1,
+        "drainNatsErrorRate": 0.25740669488264717,
+        "drainMeanRecoveryRps": 833.2354380812532,
+        "drainRecoveryP99": 2203.0
+      },
+      "downstream": {
+        "deltaServed": 633032,
+        "deltaTimedOut": 81570,
+        "timeoutRate": 0.11414745550670163
+      }
+    },
+    "p0c-r1": {
+      "runId": "p0c-r1",
+      "condition": "P0-C",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 123.005764208,
+      "tFullSec": 269.007814041,
+      "gapSec": 146.002049833,
+      "backlogAtRestore": 119185,
+      "injectorCompleted_param": 122081,
+      "injector_live_count_post_restore": 155501,
+      "populations_drain": {
+        "injector_live": {
+          "count": 121166,
+          "meanRps": 985.0493882362506,
+          "p50": 901.0,
+          "p95": 2006.0,
+          "p99": 2178.0,
+          "errorRate": 0.16860340359506792
+        },
+        "nats_live": {
+          "count": 4065,
+          "meanRps": 33.04743709605301,
+          "p50": 776.0,
+          "p95": 2001.0,
+          "p99": 2187.8000000000006,
+          "errorRate": 0.08167281672816729
+        },
+        "recovery": {
+          "count": 119192,
+          "meanRps": 969.0012601113776,
+          "p50": 867.0,
+          "p95": 2005.0,
+          "p99": 2181.0,
+          "errorRate": 0.15324015034566077
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 155501,
+          "meanRps": 578.0555896314966,
+          "p50": 673.0,
+          "p95": 2004.0,
+          "p99": 2156.0,
+          "errorRate": 0.1320377360917293
+        },
+        "nats_live": {
+          "count": 215324,
+          "meanRps": 800.4401372454992,
+          "p50": 457.0,
+          "p95": 1109.0,
+          "p99": 1599.0,
+          "errorRate": 0.0031858966023295128
+        },
+        "recovery": {
+          "count": 119192,
+          "meanRps": 443.0814068035404,
+          "p50": 867.0,
+          "p95": 2005.0,
+          "p99": 2181.0,
+          "errorRate": 0.15324015034566077
+        }
+      },
+      "old": {
+        "vSLO": 0.8847326641735617,
+        "drainPeakLiveRps": 1371.2,
+        "drainMeanLiveRps": 520.3073170731708,
+        "drainPeakLiveP99Ms": 1986,
+        "drainMeanLiveP99Ms": 1921.5284552845528
+      },
+      "new": {
+        "vSLO": 0.8880597014925373,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 985.0493882362506,
+        "drainInjectorP50": 901.0,
+        "drainInjectorP95": 2006.0,
+        "drainInjectorP99": 2178.0,
+        "drainInjectorErrorRate": 0.16860340359506792,
+        "drainMeanNatsRps": 33.04743709605301,
+        "drainNatsP99": 2187.8000000000006,
+        "drainNatsErrorRate": 0.08167281672816729,
+        "drainMeanRecoveryRps": 969.0012601113776,
+        "drainRecoveryP99": 2181.0
+      },
+      "downstream": {
+        "deltaServed": 450373,
+        "deltaTimedOut": 39483,
+        "timeoutRate": 0.08060123791481578
+      }
+    },
+    "p0c-r2": {
+      "runId": "p0c-r2",
+      "condition": "P0-C",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 123.007221958,
+      "tFullSec": 271.006370542,
+      "gapSec": 147.999148584,
+      "backlogAtRestore": 119270,
+      "injectorCompleted_param": 122294,
+      "injector_live_count_post_restore": 126574,
+      "populations_drain": {
+        "injector_live": {
+          "count": 121391,
+          "meanRps": 986.8625362784231,
+          "p50": 882.0,
+          "p95": 2006.0,
+          "p99": 2176.0,
+          "errorRate": 0.1639413136064453
+        },
+        "nats_live": {
+          "count": 5193,
+          "meanRps": 42.21710959538888,
+          "p50": 774.0,
+          "p95": 2001.0,
+          "p99": 2136.24,
+          "errorRate": 0.08569227806662816
+        },
+        "recovery": {
+          "count": 119278,
+          "meanRps": 969.6846520929703,
+          "p50": 856.0,
+          "p95": 2005.0,
+          "p99": 2174.0,
+          "errorRate": 0.1518134106876373
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 126574,
+          "meanRps": 467.0523899839856,
+          "p50": 851.0,
+          "p95": 2006.0,
+          "p99": 2172.270000000004,
+          "errorRate": 0.1580024333591417
+        },
+        "nats_live": {
+          "count": 247320,
+          "meanRps": 912.5997210393866,
+          "p50": 426.0,
+          "p95": 1093.0,
+          "p99": 1596.0,
+          "errorRate": 0.0034166262332201197
+        },
+        "recovery": {
+          "count": 119278,
+          "meanRps": 440.1304768160115,
+          "p50": 856.0,
+          "p95": 2005.0,
+          "p99": 2174.0,
+          "errorRate": 0.1518134106876373
+        }
+      },
+      "old": {
+        "vSLO": 0.889277988255447,
+        "drainPeakLiveRps": 1512.6,
+        "drainMeanLiveRps": 514.2959349593496,
+        "drainPeakLiveP99Ms": 1989,
+        "drainMeanLiveP99Ms": 1915.3252032520325
+      },
+      "new": {
+        "vSLO": 0.8892988929889298,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 986.8625362784231,
+        "drainInjectorP50": 882.0,
+        "drainInjectorP95": 2006.0,
+        "drainInjectorP99": 2176.0,
+        "drainInjectorErrorRate": 0.1639413136064453,
+        "drainMeanNatsRps": 42.21710959538888,
+        "drainNatsP99": 2136.24,
+        "drainNatsErrorRate": 0.08569227806662816,
+        "drainMeanRecoveryRps": 969.6846520929703,
+        "drainRecoveryP99": 2174.0
+      },
+      "downstream": {
+        "deltaServed": 453308,
+        "deltaTimedOut": 38952,
+        "timeoutRate": 0.07912891561370007
+      }
+    },
+    "p0c-r3": {
+      "runId": "p0c-r3",
+      "condition": "P0-C",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 123.01362475,
+      "tFullSec": 266.006983375,
+      "gapSec": 142.99335862499998,
+      "backlogAtRestore": 119128,
+      "injectorCompleted_param": 122398,
+      "injector_live_count_post_restore": 153754,
+      "populations_drain": {
+        "injector_live": {
+          "count": 121436,
+          "meanRps": 987.1802167250615,
+          "p50": 894.0,
+          "p95": 2007.0,
+          "p99": 2180.0,
+          "errorRate": 0.16656510425244572
+        },
+        "nats_live": {
+          "count": 4948,
+          "meanRps": 40.22339102371294,
+          "p50": 781.0,
+          "p95": 2001.0,
+          "p99": 2164.0,
+          "errorRate": 0.08589329021827001
+        },
+        "recovery": {
+          "count": 119136,
+          "meanRps": 968.4830058611691,
+          "p50": 858.0,
+          "p95": 2005.0,
+          "p99": 2180.0,
+          "errorRate": 0.1529260676873489
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 153754,
+          "meanRps": 578.0095185822877,
+          "p50": 682.0,
+          "p95": 2004.0,
+          "p99": 2160.0,
+          "errorRate": 0.13245834254718578
+        },
+        "nats_live": {
+          "count": 212212,
+          "meanRps": 797.7714788388232,
+          "p50": 455.0,
+          "p95": 1112.0,
+          "p99": 1618.0,
+          "errorRate": 0.0035153525719563454
+        },
+        "recovery": {
+          "count": 119136,
+          "meanRps": 447.86959692638516,
+          "p50": 858.0,
+          "p95": 2005.0,
+          "p99": 2180.0,
+          "errorRate": 0.1529260676873489
+        }
+      },
+      "old": {
+        "vSLO": 0.8871947533321032,
+        "drainPeakLiveRps": 1510.8,
+        "drainMeanLiveRps": 508.7317073170732,
+        "drainPeakLiveP99Ms": 1989,
+        "drainMeanLiveP99Ms": 1916.1869918699188
+      },
+      "new": {
+        "vSLO": 0.8872180451127819,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 987.1802167250615,
+        "drainInjectorP50": 894.0,
+        "drainInjectorP95": 2007.0,
+        "drainInjectorP99": 2180.0,
+        "drainInjectorErrorRate": 0.16656510425244572,
+        "drainMeanNatsRps": 40.22339102371294,
+        "drainNatsP99": 2164.0,
+        "drainNatsErrorRate": 0.08589329021827001,
+        "drainMeanRecoveryRps": 968.4830058611691,
+        "drainRecoveryP99": 2180.0
+      },
+      "downstream": {
+        "deltaServed": 445837,
+        "deltaTimedOut": 39331,
+        "timeoutRate": 0.08106676450219305
+      }
+    },
+    "p0d-r1": {
+      "runId": "p0d-r1",
+      "condition": "P0-D",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 137.015787584,
+      "tFullSec": 296.010152917,
+      "gapSec": 158.99436533300002,
+      "backlogAtRestore": 119225,
+      "injectorCompleted_param": 136384,
+      "injector_live_count_post_restore": 145237,
+      "populations_drain": {
+        "injector_live": {
+          "count": 135421,
+          "meanRps": 988.3662372732913,
+          "p50": 1148.0,
+          "p95": 2024.0,
+          "p99": 2191.0,
+          "errorRate": 0.29089284527510506
+        },
+        "nats_live": {
+          "count": 3227,
+          "meanRps": 23.55216582126045,
+          "p50": 786.0,
+          "p95": 2001.0,
+          "p99": 2164.0,
+          "errorRate": 0.07809110629067245
+        },
+        "recovery": {
+          "count": 119233,
+          "meanRps": 870.2185892055616,
+          "p50": 1029.0,
+          "p95": 2017.0,
+          "p99": 2185.0,
+          "errorRate": 0.2483792238725856
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 145237,
+          "meanRps": 490.6489645620081,
+          "p50": 1058.0,
+          "p95": 2021.0,
+          "p99": 2186.0,
+          "errorRate": 0.2721069699869868
+        },
+        "nats_live": {
+          "count": 263548,
+          "meanRps": 890.3347859869599,
+          "p50": 431.0,
+          "p95": 1070.0,
+          "p99": 1536.0,
+          "errorRate": 0.0023259520087422405
+        },
+        "recovery": {
+          "count": 119233,
+          "meanRps": 402.80058106145066,
+          "p50": 1029.0,
+          "p95": 2017.0,
+          "p99": 2185.0,
+          "errorRate": 0.2483792238725856
+        }
+      },
+      "old": {
+        "vSLO": 0.8986178257020301,
+        "drainPeakLiveRps": 1524.8,
+        "drainMeanLiveRps": 521.2467153284672,
+        "drainPeakLiveP99Ms": 1999,
+        "drainMeanLiveP99Ms": 1929.014598540146
+      },
+      "new": {
+        "vSLO": 0.8986486486486487,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 988.3662372732913,
+        "drainInjectorP50": 1148.0,
+        "drainInjectorP95": 2024.0,
+        "drainInjectorP99": 2191.0,
+        "drainInjectorErrorRate": 0.29089284527510506,
+        "drainMeanNatsRps": 23.55216582126045,
+        "drainNatsP99": 2164.0,
+        "drainNatsErrorRate": 0.07809110629067245,
+        "drainMeanRecoveryRps": 870.2185892055616,
+        "drainRecoveryP99": 2185.0
+      },
+      "downstream": {
+        "deltaServed": 458367,
+        "deltaTimedOut": 69748,
+        "timeoutRate": 0.1320697196633309
+      }
+    },
+    "p0d-r2": {
+      "runId": "p0d-r2",
+      "condition": "P0-D",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 137.009029708,
+      "tFullSec": 299.00758275,
+      "gapSec": 161.99855304199997,
+      "backlogAtRestore": 118886,
+      "injectorCompleted_param": 136376,
+      "injector_live_count_post_restore": 169190,
+      "populations_drain": {
+        "injector_live": {
+          "count": 135392,
+          "meanRps": 988.1978556153247,
+          "p50": 1141.0,
+          "p95": 2022.0,
+          "p99": 2190.0,
+          "errorRate": 0.2899358898605531
+        },
+        "nats_live": {
+          "count": 3902,
+          "meanRps": 28.479880883737568,
+          "p50": 777.5,
+          "p95": 2001.0,
+          "p99": 2142.0,
+          "errorRate": 0.08175294720656073
+        },
+        "recovery": {
+          "count": 118894,
+          "meanRps": 867.7824084549192,
+          "p50": 1024.0,
+          "p95": 2014.0,
+          "p99": 2185.0,
+          "errorRate": 0.2482295153666291
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 169190,
+          "meanRps": 565.8395957285281,
+          "p50": 842.0,
+          "p95": 2014.0,
+          "p99": 2173.109999999986,
+          "errorRate": 0.232756073053963
+        },
+        "nats_live": {
+          "count": 245227,
+          "meanRps": 820.1379900804998,
+          "p50": 457.0,
+          "p95": 1109.0,
+          "p99": 1598.0,
+          "errorRate": 0.003054312942702068
+        },
+        "recovery": {
+          "count": 118894,
+          "meanRps": 397.6294869350885,
+          "p50": 1024.0,
+          "p95": 2014.0,
+          "p99": 2185.0,
+          "errorRate": 0.2482295153666291
+        }
+      },
+      "old": {
+        "vSLO": 0.8962983397784751,
+        "drainPeakLiveRps": 1493,
+        "drainMeanLiveRps": 527.6992700729927,
+        "drainPeakLiveP99Ms": 1993,
+        "drainMeanLiveP99Ms": 1932.2335766423357
+      },
+      "new": {
+        "vSLO": 0.8993288590604027,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 988.1978556153247,
+        "drainInjectorP50": 1141.0,
+        "drainInjectorP95": 2022.0,
+        "drainInjectorP99": 2190.0,
+        "drainInjectorErrorRate": 0.2899358898605531,
+        "drainMeanNatsRps": 28.479880883737568,
+        "drainNatsP99": 2142.0,
+        "drainNatsErrorRate": 0.08175294720656073,
+        "drainMeanRecoveryRps": 867.7824084549192,
+        "drainRecoveryP99": 2185.0
+      },
+      "downstream": {
+        "deltaServed": 462794,
+        "deltaTimedOut": 69642,
+        "timeoutRate": 0.13079881901298934
+      }
+    },
+    "p0d-r3": {
+      "runId": "p0d-r3",
+      "condition": "P0-D",
+      "liveSLOPopulation": "injector_direct",
+      "tDrainSec": 139.009157,
+      "tFullSec": 300.009552375,
+      "gapSec": 161.000395375,
+      "backlogAtRestore": 119244,
+      "injectorCompleted_param": 138022,
+      "injector_live_count_post_restore": 170915,
+      "populations_drain": {
+        "injector_live": {
+          "count": 137077,
+          "meanRps": 986.1016193196125,
+          "p50": 1145.0,
+          "p95": 2023.0,
+          "p99": 2192.0,
+          "errorRate": 0.2897203761389584
+        },
+        "nats_live": {
+          "count": 4388,
+          "meanRps": 31.566301462495236,
+          "p50": 777.0,
+          "p95": 2001.0,
+          "p99": 2139.0,
+          "errorRate": 0.08477666362807658
+        },
+        "recovery": {
+          "count": 119253,
+          "meanRps": 857.8797056305708,
+          "p50": 1042.0,
+          "p95": 2017.0,
+          "p99": 2194.0,
+          "errorRate": 0.25184272093783805
+        }
+      },
+      "populations_full": {
+        "injector_live": {
+          "count": 170915,
+          "meanRps": 569.6995756793963,
+          "p50": 850.0,
+          "p95": 2015.0,
+          "p99": 2177.0,
+          "errorRate": 0.23312757803586578
+        },
+        "nats_live": {
+          "count": 244025,
+          "meanRps": 813.3922648987196,
+          "p50": 455.0,
+          "p95": 1100.0,
+          "p99": 1593.0,
+          "errorRate": 0.0030119864767954104
+        },
+        "recovery": {
+          "count": 119253,
+          "meanRps": 397.4980750577482,
+          "p50": 1042.0,
+          "p95": 2017.0,
+          "p99": 2194.0,
+          "errorRate": 0.25184272093783805
+        }
+      },
+      "old": {
+        "vSLO": 0.8999713437874496,
+        "drainPeakLiveRps": 1492.2,
+        "drainMeanLiveRps": 506.0143884892086,
+        "drainPeakLiveP99Ms": 2006,
+        "drainMeanLiveP99Ms": 1934.1438848920864
+      },
+      "new": {
+        "vSLO": 0.9,
+        "vSLO_drainInjectorOnly": 1.0,
+        "drainMeanInjectorRps": 986.1016193196125,
+        "drainInjectorP50": 1145.0,
+        "drainInjectorP95": 2023.0,
+        "drainInjectorP99": 2192.0,
+        "drainInjectorErrorRate": 0.2897203761389584,
+        "drainMeanNatsRps": 31.566301462495236,
+        "drainNatsP99": 2139.0,
+        "drainNatsErrorRate": 0.08477666362807658,
+        "drainMeanRecoveryRps": 857.8797056305708,
+        "drainRecoveryP99": 2194.0
+      },
+      "downstream": {
+        "deltaServed": 463667,
+        "deltaTimedOut": 70613,
+        "timeoutRate": 0.1321647825110429
+      }
+    }
+  },
+  "summaryTable": [
+    {
+      "runId": "p0a-r1",
+      "condition": "P0-A",
+      "tDrain": 115.008330792,
+      "tFull": 249.008344667,
+      "gap": 134.00001387499998,
+      "old_vSLO": 0.8754726685627038,
+      "new_vSLO": 0.8790322580645161,
+      "old_peakLiveRps": 1498.6,
+      "new_meanInjRps": 987.4530467445743,
+      "old_peakLiveP99": 1974,
+      "new_injP99": 2167.0,
+      "nats_p99_drain": 2152.1500000000015,
+      "timeoutRate": 0.05504947999287245
+    },
+    {
+      "runId": "p0a-r2",
+      "condition": "P0-A",
+      "tDrain": 115.007120167,
+      "tFull": 252.00897725,
+      "gap": 137.001857083,
+      "old_vSLO": 0.8769528864075417,
+      "new_vSLO": 0.8804780876494024,
+      "old_peakLiveRps": 1496,
+      "new_meanInjRps": 988.1920230942463,
+      "old_peakLiveP99": 1965,
+      "new_injP99": 2168.0,
+      "nats_p99_drain": 2116.13,
+      "timeoutRate": 0.05530229316925095
+    },
+    {
+      "runId": "p0a-r3",
+      "condition": "P0-A",
+      "tDrain": 113.008710042,
+      "tFull": 251.008857458,
+      "gap": 138.000147416,
+      "old_vSLO": 0.876463094681077,
+      "new_vSLO": 0.88,
+      "old_peakLiveRps": 1375.4,
+      "new_meanInjRps": 985.7178252867054,
+      "old_peakLiveP99": 1991,
+      "new_injP99": 2166.0,
+      "nats_p99_drain": 2154.32,
+      "timeoutRate": 0.05278033475515681
+    },
+    {
+      "runId": "p0b-r1",
+      "condition": "P0-B",
+      "tDrain": 145.01323175,
+      "tFull": 468.007065125,
+      "gap": 322.993833375,
+      "old_vSLO": 0.933746587529147,
+      "new_vSLO": 0.9357601713062098,
+      "old_peakLiveRps": 1483.8,
+      "new_meanInjRps": 987.2080434167971,
+      "old_peakLiveP99": 1993,
+      "new_injP99": 2210.0,
+      "nats_p99_drain": 2207.0,
+      "timeoutRate": 0.12160351007934651
+    },
+    {
+      "runId": "p0b-r2",
+      "condition": "P0-B",
+      "tDrain": 145.007657083,
+      "tFull": 475.005254917,
+      "gap": 329.997597834,
+      "old_vSLO": 0.9347265012417226,
+      "new_vSLO": 0.9367088607594937,
+      "old_peakLiveRps": 1153.4,
+      "new_meanInjRps": 985.1800257918583,
+      "old_peakLiveP99": 2021,
+      "new_injP99": 2211.0,
+      "nats_p99_drain": 2199.25,
+      "timeoutRate": 0.1200214978345351
+    },
+    {
+      "runId": "p0b-r3",
+      "condition": "P0-B",
+      "tDrain": 143.010275583,
+      "tFull": 482.007335291,
+      "gap": 338.997059708,
+      "old_vSLO": 0.9356704078532745,
+      "new_vSLO": 0.9376299376299376,
+      "old_peakLiveRps": 1482.4,
+      "new_meanInjRps": 985.5184952101253,
+      "old_peakLiveP99": 2058,
+      "new_injP99": 2204.0,
+      "nats_p99_drain": 2204.1,
+      "timeoutRate": 0.11414745550670163
+    },
+    {
+      "runId": "p0c-r1",
+      "condition": "P0-C",
+      "tDrain": 123.005764208,
+      "tFull": 269.007814041,
+      "gap": 146.002049833,
+      "old_vSLO": 0.8847326641735617,
+      "new_vSLO": 0.8880597014925373,
+      "old_peakLiveRps": 1371.2,
+      "new_meanInjRps": 985.0493882362506,
+      "old_peakLiveP99": 1986,
+      "new_injP99": 2178.0,
+      "nats_p99_drain": 2187.8000000000006,
+      "timeoutRate": 0.08060123791481578
+    },
+    {
+      "runId": "p0c-r2",
+      "condition": "P0-C",
+      "tDrain": 123.007221958,
+      "tFull": 271.006370542,
+      "gap": 147.999148584,
+      "old_vSLO": 0.889277988255447,
+      "new_vSLO": 0.8892988929889298,
+      "old_peakLiveRps": 1512.6,
+      "new_meanInjRps": 986.8625362784231,
+      "old_peakLiveP99": 1989,
+      "new_injP99": 2176.0,
+      "nats_p99_drain": 2136.24,
+      "timeoutRate": 0.07912891561370007
+    },
+    {
+      "runId": "p0c-r3",
+      "condition": "P0-C",
+      "tDrain": 123.01362475,
+      "tFull": 266.006983375,
+      "gap": 142.99335862499998,
+      "old_vSLO": 0.8871947533321032,
+      "new_vSLO": 0.8872180451127819,
+      "old_peakLiveRps": 1510.8,
+      "new_meanInjRps": 987.1802167250615,
+      "old_peakLiveP99": 1989,
+      "new_injP99": 2180.0,
+      "nats_p99_drain": 2164.0,
+      "timeoutRate": 0.08106676450219305
+    },
+    {
+      "runId": "p0d-r1",
+      "condition": "P0-D",
+      "tDrain": 137.015787584,
+      "tFull": 296.010152917,
+      "gap": 158.99436533300002,
+      "old_vSLO": 0.8986178257020301,
+      "new_vSLO": 0.8986486486486487,
+      "old_peakLiveRps": 1524.8,
+      "new_meanInjRps": 988.3662372732913,
+      "old_peakLiveP99": 1999,
+      "new_injP99": 2191.0,
+      "nats_p99_drain": 2164.0,
+      "timeoutRate": 0.1320697196633309
+    },
+    {
+      "runId": "p0d-r2",
+      "condition": "P0-D",
+      "tDrain": 137.009029708,
+      "tFull": 299.00758275,
+      "gap": 161.99855304199997,
+      "old_vSLO": 0.8962983397784751,
+      "new_vSLO": 0.8993288590604027,
+      "old_peakLiveRps": 1493,
+      "new_meanInjRps": 988.1978556153247,
+      "old_peakLiveP99": 1993,
+      "new_injP99": 2190.0,
+      "nats_p99_drain": 2142.0,
+      "timeoutRate": 0.13079881901298934
+    },
+    {
+      "runId": "p0d-r3",
+      "condition": "P0-D",
+      "tDrain": 139.009157,
+      "tFull": 300.009552375,
+      "gap": 161.000395375,
+      "old_vSLO": 0.8999713437874496,
+      "new_vSLO": 0.9,
+      "old_peakLiveRps": 1492.2,
+      "new_meanInjRps": 986.1016193196125,
+      "old_peakLiveP99": 2006,
+      "new_injP99": 2192.0,
+      "nats_p99_drain": 2139.0,
+      "timeoutRate": 0.1321647825110429
+    }
+  ],
+  "p0bGaps": {
+    "p0b-r1": {
+      "gapSec": 322.993833375,
+      "queued_min": 0,
+      "queued_max": 355,
+      "queued_mean": 312.9504643962848,
+      "timeouts_in_gap": 12787,
+      "served_in_gap": 417796,
+      "timeout_rate_gap": 0.029696945768876153,
+      "injectorP99_in_gap_max": 2240.6200000000003,
+      "natsP99_in_gap_p50": 2081.819999999999,
+      "natsP99_in_gap_p99": 2217.34,
+      "last_injector_active_tSec": 468.002147,
+      "series": [
+        {
+          "tSec": 145.001324167,
+          "queued": 355,
+          "injectorP99": 2200.9799999999996,
+          "natsP99": 2207.0,
+          "natsRps": 594.0,
+          "timedOut": 216063,
+          "cap": 1400
+        },
+        {
+          "tSec": 150.001754667,
+          "queued": 352,
+          "injectorP99": 2229.0,
+          "natsP99": 2070.7199999999993,
+          "natsRps": 993.0,
+          "timedOut": 217033,
+          "cap": 1400
+        },
+        {
+          "tSec": 160.001776084,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2052.199999999999,
+          "natsRps": 1036.2,
+          "timedOut": 217430,
+          "cap": 1400
+        },
+        {
+          "tSec": 170.002487667,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2223.1800000000003,
+          "natsRps": 896.6,
+          "timedOut": 217839,
+          "cap": 1400
+        },
+        {
+          "tSec": 180.002928,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2082.2199999999993,
+          "natsRps": 1018.0,
+          "timedOut": 218362,
+          "cap": 1400
+        },
+        {
+          "tSec": 190.001576584,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2040.5999999999985,
+          "natsRps": 1017.0,
+          "timedOut": 218766,
+          "cap": 1400
+        },
+        {
+          "tSec": 200.001799375,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2100.3499999999976,
+          "natsRps": 1034.8,
+          "timedOut": 219144,
+          "cap": 1400
+        },
+        {
+          "tSec": 210.001427459,
+          "queued": 355,
+          "injectorP99": NaN,
+          "natsP99": 2098.71,
+          "natsRps": 1006.0,
+          "timedOut": 219550,
+          "cap": 1400
+        },
+        {
+          "tSec": 220.001939667,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2072.5600000000013,
+          "natsRps": 992.4,
+          "timedOut": 219977,
+          "cap": 1400
+        },
+        {
+          "tSec": 230.001416709,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2043.0,
+          "natsRps": 1026.0,
+          "timedOut": 220395,
+          "cap": 1400
+        },
+        {
+          "tSec": 240.001493667,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2118.5,
+          "natsRps": 1005.2,
+          "timedOut": 220780,
+          "cap": 1400
+        },
+        {
+          "tSec": 250.001879292,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2063.3099999999986,
+          "natsRps": 1024.8,
+          "timedOut": 221189,
+          "cap": 1400
+        },
+        {
+          "tSec": 260.00182175,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2083.0,
+          "natsRps": 1044.0,
+          "timedOut": 221629,
+          "cap": 1400
+        },
+        {
+          "tSec": 270.001771209,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2093.5999999999976,
+          "natsRps": 989.8,
+          "timedOut": 222034,
+          "cap": 1400
+        },
+        {
+          "tSec": 280.001394625,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2100.880000000001,
+          "natsRps": 985.8,
+          "timedOut": 222428,
+          "cap": 1400
+        },
+        {
+          "tSec": 290.001905042,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2084.6500000000005,
+          "natsRps": 1009.2,
+          "timedOut": 222820,
+          "cap": 1400
+        },
+        {
+          "tSec": 300.001398292,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2084.05,
+          "natsRps": 979.2,
+          "timedOut": 223241,
+          "cap": 1400
+        },
+        {
+          "tSec": 310.0017525,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2087.26,
+          "natsRps": 1015.0,
+          "timedOut": 223648,
+          "cap": 1400
+        },
+        {
+          "tSec": 320.001816084,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2049.1799999999985,
+          "natsRps": 1005.4,
+          "timedOut": 224071,
+          "cap": 1400
+        },
+        {
+          "tSec": 330.003365,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2078.4399999999996,
+          "natsRps": 971.4,
+          "timedOut": 224483,
+          "cap": 1400
+        },
+        {
+          "tSec": 340.002281709,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2080.4400000000005,
+          "natsRps": 1041.8,
+          "timedOut": 225022,
+          "cap": 1400
+        },
+        {
+          "tSec": 350.001712084,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2085.0,
+          "natsRps": 1009.0,
+          "timedOut": 225433,
+          "cap": 1400
+        },
+        {
+          "tSec": 360.002318625,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2093.3600000000006,
+          "natsRps": 1006.6,
+          "timedOut": 225849,
+          "cap": 1400
+        },
+        {
+          "tSec": 370.00144675,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2081.0,
+          "natsRps": 1020.2,
+          "timedOut": 226292,
+          "cap": 1400
+        },
+        {
+          "tSec": 380.001562792,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2106.0,
+          "natsRps": 1009.6,
+          "timedOut": 226705,
+          "cap": 1400
+        },
+        {
+          "tSec": 390.002016834,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2095.0,
+          "natsRps": 1024.0,
+          "timedOut": 227139,
+          "cap": 1400
+        },
+        {
+          "tSec": 400.003063417,
+          "queued": 353,
+          "injectorP99": NaN,
+          "natsP99": 2079.6099999999997,
+          "natsRps": 1022.8,
+          "timedOut": 227561,
+          "cap": 1400
+        },
+        {
+          "tSec": 410.001355417,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2093.8599999999997,
+          "natsRps": 1007.8,
+          "timedOut": 227942,
+          "cap": 1400
+        },
+        {
+          "tSec": 420.002163959,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2059.9000000000005,
+          "natsRps": 992.6,
+          "timedOut": 228357,
+          "cap": 1400
+        },
+        {
+          "tSec": 430.001754792,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2065.4399999999987,
+          "natsRps": 1035.4,
+          "timedOut": 228747,
+          "cap": 1400
+        },
+        {
+          "tSec": 440.00209075,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 63.0,
+          "timedOut": 228850,
+          "cap": 1400
+        },
+        {
+          "tSec": 450.001685167,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 107.4,
+          "timedOut": 228850,
+          "cap": 1400
+        },
+        {
+          "tSec": 460.002244459,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 147.2,
+          "timedOut": 228850,
+          "cap": 1400
+        },
+        {
+          "tSec": 467.0018425,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 152.4,
+          "timedOut": 228850,
+          "cap": 1400
+        },
+        {
+          "tSec": 468.002147,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 116.6,
+          "timedOut": 228850,
+          "cap": 1400
+        }
+      ]
+    },
+    "p0b-r2": {
+      "gapSec": 329.997597834,
+      "queued_min": 0,
+      "queued_max": 355,
+      "queued_mean": 314.05151515151516,
+      "timeouts_in_gap": 13036,
+      "served_in_gap": 427397,
+      "timeout_rate_gap": 0.029598145461398214,
+      "injectorP99_in_gap_max": 2240.93,
+      "natsP99_in_gap_p50": 2080.0,
+      "natsP99_in_gap_p99": 2211.6727,
+      "last_injector_active_tSec": 475.002219417,
+      "series": [
+        {
+          "tSec": 145.001892958,
+          "queued": 353,
+          "injectorP99": 2206.0,
+          "natsP99": 2199.34,
+          "natsRps": 553.4,
+          "timedOut": 300005,
+          "cap": 1400
+        },
+        {
+          "tSec": 150.002700667,
+          "queued": 352,
+          "injectorP99": 2223.24,
+          "natsP99": 2083.3600000000024,
+          "natsRps": 979.0,
+          "timedOut": 300967,
+          "cap": 1400
+        },
+        {
+          "tSec": 160.002088333,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2044.4099999999999,
+          "natsRps": 992.0,
+          "timedOut": 301377,
+          "cap": 1400
+        },
+        {
+          "tSec": 170.003612167,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2057.26,
+          "natsRps": 997.6,
+          "timedOut": 301770,
+          "cap": 1400
+        },
+        {
+          "tSec": 180.002118292,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2034.8199999999997,
+          "natsRps": 1023.8,
+          "timedOut": 302153,
+          "cap": 1400
+        },
+        {
+          "tSec": 190.003065208,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2080.579999999999,
+          "natsRps": 983.0,
+          "timedOut": 302556,
+          "cap": 1400
+        },
+        {
+          "tSec": 200.00298375,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2083.1099999999997,
+          "natsRps": 1018.0,
+          "timedOut": 302997,
+          "cap": 1400
+        },
+        {
+          "tSec": 210.002314958,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2070.7,
+          "natsRps": 989.4,
+          "timedOut": 303388,
+          "cap": 1400
+        },
+        {
+          "tSec": 220.00198175,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2090.2699999999995,
+          "natsRps": 994.8,
+          "timedOut": 303799,
+          "cap": 1400
+        },
+        {
+          "tSec": 230.003615583,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2240.34,
+          "natsRps": 806.8,
+          "timedOut": 304279,
+          "cap": 1400
+        },
+        {
+          "tSec": 240.00188125,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2091.8199999999997,
+          "natsRps": 982.0,
+          "timedOut": 304809,
+          "cap": 1400
+        },
+        {
+          "tSec": 250.002191042,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2077.7000000000007,
+          "natsRps": 983.2,
+          "timedOut": 305238,
+          "cap": 1400
+        },
+        {
+          "tSec": 260.001939167,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2083.0,
+          "natsRps": 1002.2,
+          "timedOut": 305644,
+          "cap": 1400
+        },
+        {
+          "tSec": 270.002803125,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2098.4400000000005,
+          "natsRps": 981.0,
+          "timedOut": 306048,
+          "cap": 1400
+        },
+        {
+          "tSec": 280.002973833,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2077.0,
+          "natsRps": 1038.8,
+          "timedOut": 306482,
+          "cap": 1400
+        },
+        {
+          "tSec": 290.002192375,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2093.66,
+          "natsRps": 1047.0,
+          "timedOut": 306876,
+          "cap": 1400
+        },
+        {
+          "tSec": 300.003914042,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2089.84,
+          "natsRps": 1021.0,
+          "timedOut": 307287,
+          "cap": 1400
+        },
+        {
+          "tSec": 310.002059292,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2056.800000000001,
+          "natsRps": 968.2,
+          "timedOut": 307674,
+          "cap": 1400
+        },
+        {
+          "tSec": 320.00196675,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2085.5,
+          "natsRps": 985.2,
+          "timedOut": 308079,
+          "cap": 1400
+        },
+        {
+          "tSec": 330.002175583,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2036.0,
+          "natsRps": 1017.2,
+          "timedOut": 308528,
+          "cap": 1400
+        },
+        {
+          "tSec": 340.002127292,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2106.699999999998,
+          "natsRps": 1001.4,
+          "timedOut": 308912,
+          "cap": 1400
+        },
+        {
+          "tSec": 350.002777375,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2087.7999999999956,
+          "natsRps": 972.2,
+          "timedOut": 309308,
+          "cap": 1400
+        },
+        {
+          "tSec": 360.003049792,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2071.540000000001,
+          "natsRps": 976.6,
+          "timedOut": 309705,
+          "cap": 1400
+        },
+        {
+          "tSec": 370.002048792,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2071.71,
+          "natsRps": 1026.0,
+          "timedOut": 310132,
+          "cap": 1400
+        },
+        {
+          "tSec": 380.002002042,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2102.0,
+          "natsRps": 1037.4,
+          "timedOut": 310525,
+          "cap": 1400
+        },
+        {
+          "tSec": 390.002080167,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2086.750000000002,
+          "natsRps": 993.2,
+          "timedOut": 310944,
+          "cap": 1400
+        },
+        {
+          "tSec": 400.002102875,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2042.0,
+          "natsRps": 1009.6,
+          "timedOut": 311381,
+          "cap": 1400
+        },
+        {
+          "tSec": 410.002136125,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2081.8900000000003,
+          "natsRps": 1022.4,
+          "timedOut": 311805,
+          "cap": 1400
+        },
+        {
+          "tSec": 420.001963458,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2075.0,
+          "natsRps": 985.4,
+          "timedOut": 312208,
+          "cap": 1400
+        },
+        {
+          "tSec": 430.002032125,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2083.26,
+          "natsRps": 997.6,
+          "timedOut": 312641,
+          "cap": 1400
+        },
+        {
+          "tSec": 440.002261375,
+          "queued": 350,
+          "injectorP99": 1221.66,
+          "natsP99": 2051.4,
+          "natsRps": 612.2,
+          "timedOut": 313040,
+          "cap": 1400
+        },
+        {
+          "tSec": 450.002009917,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.230000000000004,
+          "natsRps": 15.6,
+          "timedOut": 313041,
+          "cap": 1400
+        },
+        {
+          "tSec": 460.002020667,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 11.090000000000003,
+          "natsRps": 38.4,
+          "timedOut": 313041,
+          "cap": 1400
+        },
+        {
+          "tSec": 470.002154625,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 21.8,
+          "timedOut": 313041,
+          "cap": 1400
+        },
+        {
+          "tSec": 474.002102,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 8.699999999999989,
+          "natsRps": 26.2,
+          "timedOut": 313041,
+          "cap": 1400
+        },
+        {
+          "tSec": 475.002219417,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 8.929999999999993,
+          "natsRps": 21.6,
+          "timedOut": 313041,
+          "cap": 1400
+        }
+      ]
+    },
+    "p0b-r3": {
+      "gapSec": 338.997059708,
+      "queued_min": 0,
+      "queued_max": 354,
+      "queued_mean": 314.952802359882,
+      "timeouts_in_gap": 13248,
+      "served_in_gap": 441570,
+      "timeout_rate_gap": 0.029128134770391674,
+      "injectorP99_in_gap_max": 2239.6,
+      "natsP99_in_gap_p50": 2084.51,
+      "natsP99_in_gap_p99": 2141.1072,
+      "last_injector_active_tSec": 482.002542416,
+      "series": [
+        {
+          "tSec": 143.002305541,
+          "queued": 350,
+          "injectorP99": 2200.0,
+          "natsP99": 2204.5999999999995,
+          "natsRps": 517.8,
+          "timedOut": 381363,
+          "cap": 1400
+        },
+        {
+          "tSec": 150.002813041,
+          "queued": 350,
+          "injectorP99": 2239.6,
+          "natsP99": 2084.0,
+          "natsRps": 1029.8,
+          "timedOut": 382399,
+          "cap": 1400
+        },
+        {
+          "tSec": 160.00259125,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2061.3500000000004,
+          "natsRps": 993.2,
+          "timedOut": 382812,
+          "cap": 1400
+        },
+        {
+          "tSec": 170.002465791,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2102.0299999999997,
+          "natsRps": 979.6,
+          "timedOut": 383210,
+          "cap": 1400
+        },
+        {
+          "tSec": 180.003584333,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2116.3199999999997,
+          "natsRps": 1013.8,
+          "timedOut": 383605,
+          "cap": 1400
+        },
+        {
+          "tSec": 190.003624541,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2100.3499999999995,
+          "natsRps": 991.2,
+          "timedOut": 384030,
+          "cap": 1400
+        },
+        {
+          "tSec": 200.002816666,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2087.6000000000004,
+          "natsRps": 1034.2,
+          "timedOut": 384443,
+          "cap": 1400
+        },
+        {
+          "tSec": 210.002550875,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2070.0,
+          "natsRps": 981.4,
+          "timedOut": 384862,
+          "cap": 1400
+        },
+        {
+          "tSec": 220.002467541,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2065.3,
+          "natsRps": 1014.2,
+          "timedOut": 385270,
+          "cap": 1400
+        },
+        {
+          "tSec": 230.003438333,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2048.0,
+          "natsRps": 989.0,
+          "timedOut": 385662,
+          "cap": 1400
+        },
+        {
+          "tSec": 240.002429916,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2082.949999999999,
+          "natsRps": 1000.4,
+          "timedOut": 386082,
+          "cap": 1400
+        },
+        {
+          "tSec": 250.003537458,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2098.4799999999996,
+          "natsRps": 977.0,
+          "timedOut": 386488,
+          "cap": 1400
+        },
+        {
+          "tSec": 260.002839166,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2098.04,
+          "natsRps": 1019.4,
+          "timedOut": 386906,
+          "cap": 1400
+        },
+        {
+          "tSec": 270.002831416,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2096.63,
+          "natsRps": 987.6,
+          "timedOut": 387338,
+          "cap": 1400
+        },
+        {
+          "tSec": 280.003020166,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2116.0,
+          "natsRps": 981.2,
+          "timedOut": 387757,
+          "cap": 1400
+        },
+        {
+          "tSec": 290.003156291,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2092.5499999999975,
+          "natsRps": 987.2,
+          "timedOut": 388206,
+          "cap": 1400
+        },
+        {
+          "tSec": 300.003587291,
+          "queued": 353,
+          "injectorP99": NaN,
+          "natsP99": 2093.5200000000004,
+          "natsRps": 1003.4,
+          "timedOut": 388616,
+          "cap": 1400
+        },
+        {
+          "tSec": 310.0035545,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2094.3500000000004,
+          "natsRps": 1033.2,
+          "timedOut": 389031,
+          "cap": 1400
+        },
+        {
+          "tSec": 320.003532416,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2093.66,
+          "natsRps": 1047.0,
+          "timedOut": 389432,
+          "cap": 1400
+        },
+        {
+          "tSec": 330.002607291,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2042.2200000000003,
+          "natsRps": 1015.8,
+          "timedOut": 389848,
+          "cap": 1400
+        },
+        {
+          "tSec": 340.002606125,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2096.2299999999996,
+          "natsRps": 1015.6,
+          "timedOut": 390260,
+          "cap": 1400
+        },
+        {
+          "tSec": 350.002717,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2074.37,
+          "natsRps": 1024.4,
+          "timedOut": 390687,
+          "cap": 1400
+        },
+        {
+          "tSec": 360.00353625,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2062.279999999999,
+          "natsRps": 1028.8,
+          "timedOut": 391081,
+          "cap": 1400
+        },
+        {
+          "tSec": 370.002601875,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2094.040000000001,
+          "natsRps": 975.0,
+          "timedOut": 391488,
+          "cap": 1400
+        },
+        {
+          "tSec": 380.002621,
+          "queued": 353,
+          "injectorP99": NaN,
+          "natsP99": 2096.0899999999992,
+          "natsRps": 1022.8,
+          "timedOut": 391887,
+          "cap": 1400
+        },
+        {
+          "tSec": 390.00371125,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2131.0,
+          "natsRps": 994.4,
+          "timedOut": 392300,
+          "cap": 1400
+        },
+        {
+          "tSec": 400.002550958,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2089.21,
+          "natsRps": 996.0,
+          "timedOut": 392699,
+          "cap": 1400
+        },
+        {
+          "tSec": 410.002887625,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2112.2999999999993,
+          "natsRps": 987.0,
+          "timedOut": 393103,
+          "cap": 1400
+        },
+        {
+          "tSec": 420.002899541,
+          "queued": 350,
+          "injectorP99": NaN,
+          "natsP99": 2061.6000000000004,
+          "natsRps": 1021.8,
+          "timedOut": 393517,
+          "cap": 1400
+        },
+        {
+          "tSec": 430.002655458,
+          "queued": 351,
+          "injectorP99": NaN,
+          "natsP99": 2078.5,
+          "natsRps": 1005.2,
+          "timedOut": 393944,
+          "cap": 1400
+        },
+        {
+          "tSec": 440.003472125,
+          "queued": 352,
+          "injectorP99": NaN,
+          "natsP99": 2061.0700000000015,
+          "natsRps": 980.0,
+          "timedOut": 394365,
+          "cap": 1400
+        },
+        {
+          "tSec": 450.002557375,
+          "queued": 0,
+          "injectorP99": 1041.1899999999998,
+          "natsP99": 925.4999999999959,
+          "natsRps": 676.6,
+          "timedOut": 394611,
+          "cap": 1400
+        },
+        {
+          "tSec": 460.002875875,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 913.6,
+          "timedOut": 394611,
+          "cap": 1400
+        },
+        {
+          "tSec": 470.003702333,
+          "queued": 0,
+          "injectorP99": 8.0,
+          "natsP99": 7.0,
+          "natsRps": 717.4,
+          "timedOut": 394611,
+          "cap": 1400
+        },
+        {
+          "tSec": 480.002651875,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 309.6,
+          "timedOut": 394611,
+          "cap": 1400
+        },
+        {
+          "tSec": 481.003612041,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 243.8,
+          "timedOut": 394611,
+          "cap": 1400
+        },
+        {
+          "tSec": 482.002542416,
+          "queued": 0,
+          "injectorP99": 7.0,
+          "natsP99": 7.0,
+          "natsRps": 158.4,
+          "timedOut": 394611,
+          "cap": 1400
+        }
+      ]
+    }
+  },
+  "representativeDrainTables": {
+    "p0a-r1": {
+      "injector_live": {
+        "count": 113565,
+        "meanRps": 987.4530467445743,
+        "p50": 800.0,
+        "p95": 2003.0,
+        "p99": 2167.0,
+        "errorRate": 0.10510280456126447
+      },
+      "nats_live": {
+        "count": 4258,
+        "meanRps": 37.02351140790206,
+        "p50": 780.0,
+        "p95": 2001.0,
+        "p99": 2152.1500000000015,
+        "errorRate": 0.07679661813057774
+      },
+      "recovery": {
+        "count": 119214,
+        "meanRps": 1036.571368948247,
+        "p50": 800.0,
+        "p95": 2003.0,
+        "p99": 2176.0,
+        "errorRate": 0.10586004999412821
+      }
+    },
+    "p0b-r1": {
+      "injector_live": {
+        "count": 143158,
+        "meanRps": 987.2080434167971,
+        "p50": 1192.0,
+        "p95": 2027.0,
+        "p99": 2210.0,
+        "errorRate": 0.27630310565948113
+      },
+      "nats_live": {
+        "count": 2979,
+        "meanRps": 20.542985801272987,
+        "p50": 1227.0,
+        "p95": 2037.1999999999998,
+        "p99": 2207.0,
+        "errorRate": 0.26317556226921784
+      },
+      "recovery": {
+        "count": 118539,
+        "meanRps": 817.4370573672705,
+        "p50": 1160.0,
+        "p95": 2022.0,
+        "p99": 2206.0,
+        "errorRate": 0.26540632196998454
+      }
+    },
+    "p0c-r1": {
+      "injector_live": {
+        "count": 121166,
+        "meanRps": 985.0493882362506,
+        "p50": 901.0,
+        "p95": 2006.0,
+        "p99": 2178.0,
+        "errorRate": 0.16860340359506792
+      },
+      "nats_live": {
+        "count": 4065,
+        "meanRps": 33.04743709605301,
+        "p50": 776.0,
+        "p95": 2001.0,
+        "p99": 2187.8000000000006,
+        "errorRate": 0.08167281672816729
+      },
+      "recovery": {
+        "count": 119192,
+        "meanRps": 969.0012601113776,
+        "p50": 867.0,
+        "p95": 2005.0,
+        "p99": 2181.0,
+        "errorRate": 0.15324015034566077
+      }
+    },
+    "p0d-r1": {
+      "injector_live": {
+        "count": 135421,
+        "meanRps": 988.3662372732913,
+        "p50": 1148.0,
+        "p95": 2024.0,
+        "p99": 2191.0,
+        "errorRate": 0.29089284527510506
+      },
+      "nats_live": {
+        "count": 3227,
+        "meanRps": 23.55216582126045,
+        "p50": 786.0,
+        "p95": 2001.0,
+        "p99": 2164.0,
+        "errorRate": 0.07809110629067245
+      },
+      "recovery": {
+        "count": 119233,
+        "meanRps": 870.2185892055616,
+        "p50": 1029.0,
+        "p95": 2017.0,
+        "p99": 2185.0,
+        "errorRate": 0.2483792238725856
+      }
+    }
+  }
+}

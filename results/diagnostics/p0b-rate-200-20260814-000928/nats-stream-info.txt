@@ -1,0 +1,38 @@
+Information for Stream EVENTS created 2026-08-13 23:33:04
+
+                Subjects: events.>
+                Replicas: 1
+                 Storage: File
+
+Options:
+
+               Retention: Limits
+         Acknowledgments: true
+          Discard Policy: Old
+        Duplicate Window: 2m0s
+    Allows Batch Publish: false
+         Allows Counters: false
+       Allows Msg Delete: true
+  Allows Per-Message TTL: false
+            Allows Purge: true
+        Allows Schedules: false
+          Allows Rollups: false
+
+Limits:
+
+        Maximum Messages: unlimited
+     Maximum Per Subject: unlimited
+           Maximum Bytes: unlimited
+             Maximum Age: 1d0h0m0s
+    Maximum Message Size: unlimited
+       Maximum Consumers: unlimited
+
+State:
+
+                Messages: 2,126,459
+                   Bytes: 211 MiB
+          First Sequence: 1 @ 2026-08-13 23:33:04
+           Last Sequence: 2,126,459 @ 2026-08-14 00:09:28
+        Active Consumers: 1
+      Number of Subjects: 1
+

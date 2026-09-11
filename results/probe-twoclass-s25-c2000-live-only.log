@@ -1,0 +1,19 @@
+capacity=2000 queueCap=2500 concurrency=50
+
+=== offered=1900 warmup=30s measure=1m0s ===
+  achieved=1895.5 p50=25 p90=30 p95=31 p99=35 frac=1.000 gp=1895.5 to=0.000 err=0.000 qMean=0.3 qPeak=22 sloOK=true
+
+=== offered=1950 warmup=30s measure=1m0s ===
+  achieved=1937.5 p50=25 p90=31 p95=32 p99=35 frac=1.000 gp=1937.5 to=0.000 err=0.000 qMean=1.1 qPeak=8 sloOK=true
+
+=== offered=1975 warmup=30s measure=1m0s ===
+  achieved=1970.8 p50=27 p90=32 p95=33 p99=36 frac=1.000 gp=1970.8 to=0.000 err=0.000 qMean=3.4 qPeak=14 sloOK=true
+
+=== offered=1990 warmup=30s measure=1m0s ===
+  achieved=1983.5 p50=40 p90=70 p95=76 p99=84 frac=1.000 gp=1983.5 to=0.000 err=0.000 qMean=39.7 qPeak=116 sloOK=true
+
+=== SUMMARY ===
+C_SLO,live (max offered with p99≤250 & err≤1%) = 1990 rps
+λ_L=1000 is below C_SLO,live
+G_SLO,live-only @987 ≈ 0.0 rps (at offered=1000: 0.0)
+wrote results/probe-twoclass-s25-c2000-live-only.json

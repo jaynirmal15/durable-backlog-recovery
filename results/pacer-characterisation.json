@@ -1,0 +1,83 @@
+{
+  "description": "Arrival-process characterisation of the two live-injector pacers, PRE-REGISTRATION.md A3.",
+  "method": "Injector only (scripts/probe_live_only), no consumer and no NATS, so the measured process is the pacer's alone. Nominal 1000 rps, 60 s measure window after 10 s warm-up. Arrival timestamps captured at the downstream at nanosecond resolution via ARRIVAL_LOG_CAP; first and last 10% of each series dropped to exclude ramp edges. Both pacers measured on the SAME temporary c6i.2xlarge (i-08c6cebabf577775c), so the comparison is within-machine.",
+  "platform": "EC2 c6i.2xlarge, Ubuntu 24.04, Go 1.25.3, commit 5524e52",
+  "references": {
+    "poisson": {
+      "CV": 1.0,
+      "IDC": 1.0
+    },
+    "deterministic": {
+      "CV": 0.0,
+      "IDC": 0.0
+    }
+  },
+  "pacers": {
+    "ticker": {
+      "reps": [
+        {
+          "rep": 1,
+          "arrivals": 53798,
+          "meanInterArrivalUs": 1040.9,
+          "sdInterArrivalUs": 287.4,
+          "CV": 0.2761,
+          "impliedRps": 960.7,
+          "IDC_1s": 0.0218,
+          "IDC_100ms": 0.027,
+          "IDC_10ms": 0.0359
+        },
+        {
+          "rep": 2,
+          "arrivals": 53889,
+          "meanInterArrivalUs": 1040.5,
+          "sdInterArrivalUs": 288.1,
+          "CV": 0.2768,
+          "impliedRps": 961.0,
+          "IDC_1s": 0.028,
+          "IDC_100ms": 0.032,
+          "IDC_10ms": 0.0398
+        }
+      ],
+      "meanInterArrivalUs": 1040.7,
+      "CV": 0.2764,
+      "IDC_1s": 0.0249,
+      "IDC_100ms": 0.0295
+    },
+    "lanes": {
+      "reps": [
+        {
+          "rep": 1,
+          "arrivals": 56000,
+          "meanInterArrivalUs": 1000.1,
+          "sdInterArrivalUs": 360.3,
+          "CV": 0.3603,
+          "impliedRps": 999.9,
+          "IDC_1s": 0.0012,
+          "IDC_100ms": 0.0046,
+          "IDC_10ms": 0.0254
+        },
+        {
+          "rep": 2,
+          "arrivals": 55999,
+          "meanInterArrivalUs": 1000.1,
+          "sdInterArrivalUs": 358.0,
+          "CV": 0.358,
+          "impliedRps": 999.9,
+          "IDC_1s": 0.0011,
+          "IDC_100ms": 0.0048,
+          "IDC_10ms": 0.0255
+        }
+      ],
+      "meanInterArrivalUs": 1000.1,
+      "CV": 0.3591,
+      "IDC_1s": 0.0011,
+      "IDC_100ms": 0.0047
+    }
+  },
+  "comparison": {
+    "CV_lanes_over_ticker": 1.3,
+    "IDC_1s_lanes_over_ticker": 0.044,
+    "IDC_100ms_lanes_over_ticker": 0.159,
+    "finding": "lanes has HIGHER inter-arrival CV (short-timescale jitter) but ~20x LOWER index of dispersion at 1 s and ~6x lower at 100 ms. Both processes are far smoother than Poisson at every timescale measured."
+  }
+}

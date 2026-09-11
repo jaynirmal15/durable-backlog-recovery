@@ -351,6 +351,59 @@ mechanically: a non-SAFE anchor sends the search downward.
 Registering it now so that, if it happens, it is read as the instrument moving
 rather than as a finding.
 
+#### The arrival process, not just the mean rate
+
+The justification above rests on mean delivery accuracy. That is not sufficient
+on its own: two pacers can agree on rate to four figures and still present
+different **processes** to the dependency, and queueing depends on the process.
+Measured directly rather than assumed.
+
+**Method.** Injector only — `scripts/probe_live_only`, no consumer and no NATS,
+so the measured process is the pacer's alone. Nominal 1000 rps, 60 s measure
+window, arrival timestamps captured at the downstream at **nanosecond**
+resolution (`ARRIVAL_LOG_CAP`); the per-request sample stream is milliseconds and
+cannot resolve 1 ms spacing. First and last 10% of each series dropped. Both
+pacers measured on the **same** temporary `c6i.2xlarge`, so the comparison is
+within-machine. Raw summary in `results/pacer-characterisation.json`.
+
+| | mean inter-arrival | implied rate | **CV** | **IDC(1 s)** | IDC(100 ms) |
+|---|---:|---:|---:|---:|---:|
+| `ticker` | 1040.7 µs | 960.9 rps | **0.276** | **0.025** | 0.030 |
+| `lanes` | 1000.1 µs | 999.9 rps | **0.359** | **0.001** | 0.005 |
+| Poisson reference | — | — | 1.0 | 1.0 | 1.0 |
+| Deterministic | — | — | 0.0 | 0.0 | 0.0 |
+
+**They differ, and not in one direction.** `lanes` has a **1.3× higher CV** of
+inter-arrival — slightly more jitter gap-to-gap — but a **~23× lower index of
+dispersion at 1 s** and ~6× lower at 100 ms. The ticker's gaps are individually
+more regular; its *counts* over any window that matters to a queue are much
+less so, because dropping a tick removes a whole arrival rather than shifting it.
+
+**Direction, stated as asked.** Smoother arrivals permit a higher ρ before
+collapse. `lanes` is materially smoother at 100 ms–1 s, which is the timescale
+over which a queue of 500 against 10 servers actually fills. So **part of any
+ρ\* shift could be the arrival process rather than the rate correction**, and the
+two act in **opposite directions**:
+
+- the rate correction raises achieved ρ at a fixed `rl` (~0.909 → ~0.919), which
+  pushes a point toward collapse;
+- the smoothing raises the ρ the dependency tolerates, which pushes ρ\* away
+  from collapse.
+
+The anchor at `rl=840` came back **UNSAFE**, so the rate correction dominated
+here. That does not disentangle them, and no attempt is made to: **any ρ\*
+difference against the pre-EC2 corpus confounds machine, rate correction and
+arrival process**, which is why §A3 already forbids that comparison outright.
+
+**A caution against over-reading the smoothness.** Both processes are far
+smoother than Poisson at every timescale measured — IDC 0.001 and 0.025 against
+1.0. The difference between them is a difference between two nearly
+deterministic generators, not between a smooth and a bursty one. It is recorded
+because it exists and was asked for, not because there is evidence it moves ρ\*
+at these magnitudes. Establishing that it does would need ρ\* measured under
+deliberately varied arrival burstiness, which is an E2 question and is **not**
+claimed here.
+
 #### Consequence: rl-space comparison with the old corpus is invalid
 
 **Comparisons against the pre-Aug-19 corpus in `rl` space are meaningless and are

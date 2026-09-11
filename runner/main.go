@@ -178,6 +178,7 @@ func main() {
 	injectorPacer := flag.String("injector-pacer", "ticker", "ticker|lanes — live injector arrival process. DEFAULT ticker: what all of Phase 1 used. It drops ticks under load (98.4-99.8% of lambda_L, arm-dependent) but stays evenly spaced. `lanes` delivers the exact rate in isolation (qMean 0.1 at 1000 rps vs ticker's 20) but degrades under the consumer's 1024 competing goroutines, collapsing the rl=840 safe anchor even at rho_ach=0.906.")
 	genTolerance := flag.Float64("gen-tolerance", 0.01, "generator self-check: injector rate must be within this fraction of target during warm-up, else refuse the run")
 	maxLoad5Frac := flag.Float64("max-load5-per-core", 1.0, "integrity: refuse to start if the 5-minute load average exceeds cores x this. 0 disables")
+	maxLoad1Frac := flag.Float64("max-load1-per-core", 1.0, "integrity: 1-minute load sampled every 10s for the life of the run; exceeding cores x this at any point flags the run. 0 disables")
 	gzipSamples := flag.Bool("gzip-samples", true, "compress the per-request sample trace to .jsonl.gz when the run completes. Readers accept both forms")
 	minFreeDiskGB := flag.Float64("min-free-disk-gb", 5.0, "integrity: refuse to start if free disk is below this. 0 disables")
 	rateDevSecs := flag.Int("rate-dev-secs", 2, "integrity: consecutive seconds of sustained live-rate deviation before INVALID")
@@ -220,6 +221,9 @@ func main() {
 				"Free space, or pass -min-free-disk-gb 0.", host.FreeDiskGB, *minFreeDiskGB)
 		}
 	}
+
+	loadMon := newLoadSampler(host.Cores, *maxLoad1Frac)
+	loadMon.start()
 
 	log.Printf("headroom schedule for %s (λ_L=%.0f):", *condition, *liveRate)
 	for _, h := range headroom {
@@ -868,6 +872,32 @@ func main() {
 	allSamples := append([]Sample(nil), samples...)
 	sampleMu.Unlock()
 	rec.Supplementary = computeSupplementary(allSamples, timeline, rec.TDrainSec, *sloP99, queueSum, queueN, queuePeak, artifactRanges(timeline, rec.RestoreEpochMs), rec.FaultWindowSec, rec.RestoreEpochMs)
+
+	lMin, lMean, lMax, lN, lBreach := loadMon.finish()
+	rec.Params["hostLoad1Min"] = lMin
+	rec.Params["hostLoad1Mean"] = math.Round(lMean*100) / 100
+	rec.Params["hostLoad1Max"] = lMax
+	rec.Params["hostLoadSamples"] = lN
+	rec.Params["hostLoadSampleIntervalSec"] = 10
+	rec.Params["hostLoadLimitPerCore"] = *maxLoad1Frac
+	rec.Params["hostLoadBreached"] = lBreach
+	if lBreach {
+		// Not fatal, and deliberately not: the run happened and its data exists.
+		// But it is flagged in the record and named in the log so it is reported
+		// rather than quietly kept, which is what went wrong on 2026-08-19.
+		log.Printf("WARNING: host load breached during the run -- 1-minute load reached %.2f on %d cores "+
+			"(limit %.2f x cores = %.2f), sampled %d times every 10s. This run is FLAGGED: "+
+			"hostLoadBreached=true. Timing-sensitive measurements taken under climbing load are "+
+			"not trustworthy; report it, do not silently keep it.",
+			lMax, host.Cores, *maxLoad1Frac, float64(host.Cores)**maxLoad1Frac, lN)
+		if !rec.Invalid {
+			// Do not clobber an earlier integrity failure; the first reason is
+			// the one that explains the run.
+			rec.Invalid = true
+			rec.InvalidReason = "host_load_breached_during_run"
+		}
+	}
+	log.Printf("host load over the run: min %.2f mean %.2f max %.2f (%d samples, every 10s)", lMin, lMean, lMax, lN)
 
 	if *gzipSamples {
 		if gzPath, err := compressSamples(samplesPath); err != nil {
@@ -1835,6 +1865,80 @@ func (g *gzipReadCloser) Close() error {
 		err = ferr
 	}
 	return err
+}
+
+// loadSampler polls the 1-minute load average for the life of a run.
+//
+// A start-only reading cannot see load that climbs DURING measurement, which is
+// exactly how the 2026-08-19 campaign was lost: the host was quiet when each run
+// began and at 13.9 on 8 cores by the end, the injector fell from 99.4-99.8% to
+// 96.2% delivery, and every conclusion from that stretch had to be withdrawn.
+// The start-of-run guard would have passed all of them.
+type loadSampler struct {
+	mu      sync.Mutex
+	samples []float64
+	cores   int
+	limit   float64
+	stop    chan struct{}
+	done    chan struct{}
+}
+
+func newLoadSampler(cores int, limit float64) *loadSampler {
+	return &loadSampler{cores: cores, limit: limit, stop: make(chan struct{}), done: make(chan struct{})}
+}
+
+func (l *loadSampler) start() {
+	go func() {
+		defer close(l.done)
+		t := time.NewTicker(10 * time.Second)
+		defer t.Stop()
+		l.sample()
+		for {
+			select {
+			case <-l.stop:
+				return
+			case <-t.C:
+				l.sample()
+			}
+		}
+	}()
+}
+
+func (l *loadSampler) sample() {
+	h, err := hostState()
+	if err != nil {
+		return
+	}
+	l.mu.Lock()
+	l.samples = append(l.samples, h.Load1)
+	l.mu.Unlock()
+}
+
+func (l *loadSampler) finish() (min, mean, max float64, n int, breached bool) {
+	close(l.stop)
+	<-l.done
+	l.sample()
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if len(l.samples) == 0 {
+		return 0, 0, 0, 0, false
+	}
+	min, max = l.samples[0], l.samples[0]
+	var sum float64
+	for _, v := range l.samples {
+		if v < min {
+			min = v
+		}
+		if v > max {
+			max = v
+		}
+		sum += v
+	}
+	mean = sum / float64(len(l.samples))
+	if l.limit > 0 && max > float64(l.cores)*l.limit {
+		breached = true
+	}
+	return min, mean, max, len(l.samples), breached
 }
 
 // hostStateInfo is the machine's condition at run start. Recorded in every run

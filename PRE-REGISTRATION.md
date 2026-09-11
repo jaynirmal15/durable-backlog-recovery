@@ -378,6 +378,23 @@ characteristics: the injector now delivers ~99.98% of its target, while the
 limiter under-delivers by an amount that **grows with rl** — measured on
 2026-08-19 at 98.4% at rl=900 falling to 97.2% at rl=990.
 
+**The asymmetry falls the wrong way round.** λ_L is the term held **fixed**
+across an entire boundary search, and it is the one that now has the accurate
+pacer. `rl` is the term being **bisected** — the only thing that varies, the
+thing whose value the boundary *is* — and it is the one still on the
+tick-dropping ticker. The instrument is precise on the axis that does not move
+and imprecise on the axis being measured.
+
+**The interval stays valid; the precision of the search does not follow for
+free.** §5 requires achieved ρ to be measured per run from messages actually
+acked, so the limiter's error is absorbed into the reported value rather than
+propagated into it: an interval endpoint means what it says. What the error
+costs is **search precision** — bisection decides which way to go from a
+nominal `rl`, while the achieved ρ that nominal rate produces carries a
+run-to-run error the search cannot see. Bisecting to 5 rps buys nothing if the
+same nominal rate lands at different achieved ρ on different repetitions. That
+is measured per point rather than assumed; see the spread diagnostic below.
+
 Three things follow, and they are registered rather than fixed, because changing
 the limiter now would move the instrument again mid-campaign:
 
@@ -392,5 +409,31 @@ the limiter now would move the instrument again mid-campaign:
    `recoveryAchievedRps` separately, so the two can be inspected rather than
    inferred.
 
-Whether the limiter should also move to a deadline pacer is a real question for
-E2 and is **not** decided here.
+#### Spread diagnostic — registered decision rule
+
+For every probed point, the **spread of achieved ρ across its n repetitions** at
+the same nominal `rl` is recorded, alongside the resolution the search claims:
+
+    rho_resolution = RESOLUTION_RPS / C_d     (5 / 2000 = 0.0025 at C0;
+                                               5 / 1400 = 0.0036 at C1)
+
+**If the within-point spread exceeds that resolution, the 5 rps interval at that
+point cannot be trusted** — the limiter's run-to-run noise is then larger than
+the distance the search is trying to resolve, and the bisection is reading its
+own jitter. Every such point is flagged in the boundary file
+(`spreadExceedsResolution`) and named in the run log; the interval is still
+reported, with the flag attached, rather than suppressed.
+
+For scale: the injector's own ticker A/B spanned 96.42–96.80%, which is 0.0019
+in ρ — already close to the 0.0025 threshold, and that was the *good* term.
+
+**Decided in advance, so the outcome cannot pick the rule:**
+
+- Flag fires on **more than two points across E1** → the consumer limiter moves
+  to a deadline pacer before E2, and every affected boundary is re-run. The
+  asymmetry is then a defect, not a caveat.
+- Flag fires on **two or fewer** → the asymmetry is a methods paragraph and
+  nothing more, and the intervals stand as reported.
+
+Whether the limiter should also move to a deadline pacer is otherwise a question
+for E2 and is **not** pre-judged here.

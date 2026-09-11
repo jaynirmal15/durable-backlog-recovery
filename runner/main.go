@@ -16,11 +16,13 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/nats-io/nats.go"
@@ -174,6 +176,8 @@ func main() {
 	rateDevFrac := flag.Float64("rate-dev-frac", 0.90, "integrity: achieved live rps below this fraction of target for >=N consecutive seconds is INVALID")
 	injectorPacer := flag.String("injector-pacer", "ticker", "ticker|lanes — live injector arrival process. DEFAULT ticker: what all of Phase 1 used. It drops ticks under load (98.4-99.8% of lambda_L, arm-dependent) but stays evenly spaced. `lanes` delivers the exact rate in isolation (qMean 0.1 at 1000 rps vs ticker's 20) but degrades under the consumer's 1024 competing goroutines, collapsing the rl=840 safe anchor even at rho_ach=0.906.")
 	genTolerance := flag.Float64("gen-tolerance", 0.01, "generator self-check: injector rate must be within this fraction of target during warm-up, else refuse the run")
+	maxLoad5Frac := flag.Float64("max-load5-per-core", 1.0, "integrity: refuse to start if the 5-minute load average exceeds cores x this. 0 disables")
+	minFreeDiskGB := flag.Float64("min-free-disk-gb", 5.0, "integrity: refuse to start if free disk is below this. 0 disables")
 	rateDevSecs := flag.Int("rate-dev-secs", 2, "integrity: consecutive seconds of sustained live-rate deviation before INVALID")
 	flag.Parse()
 
@@ -195,6 +199,26 @@ func main() {
 
 	schedule := scheduleFor(*condition, *nominalCap, *liveRate)
 	headroom := headroomSchedule(schedule, *liveRate)
+	host, hostErr := hostState()
+	if hostErr != nil {
+		log.Printf("WARNING: host state unavailable (%v); load and disk guards skipped", hostErr)
+	} else {
+		log.Printf("host: load %.2f/%.2f/%.2f on %d cores, free disk %.1f GB",
+			host.Load1, host.Load5, host.Load15, host.Cores, host.FreeDiskGB)
+		if *maxLoad5Frac > 0 && host.Load5 > float64(host.Cores)**maxLoad5Frac {
+			log.Fatalf("host load too high: 5-minute average %.2f exceeds %d cores x %.2f = %.2f. "+
+				"Measurements taken under self-inflicted load are not trustworthy -- the 2026-08-19 "+
+				"pacer conclusions were withdrawn for exactly this reason. Wait for the load to fall, "+
+				"or pass -max-load5-per-core 0 to record an explicitly untrustworthy run.",
+				host.Load5, host.Cores, *maxLoad5Frac, float64(host.Cores)**maxLoad5Frac)
+		}
+		if *minFreeDiskGB > 0 && host.FreeDiskGB < *minFreeDiskGB {
+			log.Fatalf("free disk %.1f GB is below the %.1f GB floor. A full disk silently truncates "+
+				"consumer traces to 0 bytes, which is how several 2026-08-19 runs lost their raw data. "+
+				"Free space, or pass -min-free-disk-gb 0.", host.FreeDiskGB, *minFreeDiskGB)
+		}
+	}
+
 	log.Printf("headroom schedule for %s (λ_L=%.0f):", *condition, *liveRate)
 	for _, h := range headroom {
 		log.Printf("  atSec=%d capacity=%.0f headroom=%.0f", h.AtSec, h.Capacity, h.Headroom)
@@ -256,14 +280,22 @@ func main() {
 			"downstreamFullQueueDelayMs": asFloat(dsCap["fullQueueDelayMs"]),
 			"profile":                    *profile,
 			"workers":                    *workers,
-			"sloP99Ms":                   *sloP99,
-			"sloErrorRate":               *sloErr,
-			"rateLimitRps":               *rateLimit,
-			"maxInFlight":                liveInjectorMaxInFlight,
-			"sloErrorAccounting":         "exclude_status_429_client_injector_drops",
-			"stabilizeSeconds":           *stabilizeSec,
-			"stabilizeW30Seconds":        *stabilizeW30Sec,
-			"stabilizeJustification":     "W=15s = 3× observed post-drain settling (~5s queue/latency return) from p0b-pilot-arch2b; W=30 retained as sensitivity",
+			// Host condition at run start. A busy host distorts timing windows and a
+			// full disk truncates traces, and neither is visible in the results
+			// afterwards -- both happened on 2026-08-19.
+			"hostLoad1":              host.Load1,
+			"hostLoad5":              host.Load5,
+			"hostLoad15":             host.Load15,
+			"hostCores":              host.Cores,
+			"hostFreeDiskGB":         host.FreeDiskGB,
+			"sloP99Ms":               *sloP99,
+			"sloErrorRate":           *sloErr,
+			"rateLimitRps":           *rateLimit,
+			"maxInFlight":            liveInjectorMaxInFlight,
+			"sloErrorAccounting":     "exclude_status_429_client_injector_drops",
+			"stabilizeSeconds":       *stabilizeSec,
+			"stabilizeW30Seconds":    *stabilizeW30Sec,
+			"stabilizeJustification": "W=15s = 3× observed post-drain settling (~5s queue/latency return) from p0b-pilot-arch2b; W=30 retained as sensitivity",
 		},
 	}
 
@@ -1703,6 +1735,58 @@ func writeRecord(dir string, rec RunRecord) string {
 	b, _ := json.MarshalIndent(rec, "", "  ")
 	_ = os.WriteFile(path, b, 0o644)
 	return path
+}
+
+// hostStateInfo is the machine's condition at run start. Recorded in every run
+// record because a busy host distorts timing windows and a full disk truncates
+// traces, and neither is visible in the results afterwards.
+type hostStateInfo struct {
+	Load1, Load5, Load15 float64
+	Cores                int
+	FreeDiskGB           float64
+}
+
+// hostState reads the load averages and the free space on the results volume.
+func hostState() (hostStateInfo, error) {
+	h := hostStateInfo{Cores: runtime.NumCPU()}
+	loaded := false
+	if out, err := exec.Command("sysctl", "-n", "vm.loadavg").Output(); err == nil {
+		fields := strings.Fields(strings.Trim(strings.TrimSpace(string(out)), "{}"))
+		var vals []float64
+		for _, f := range fields {
+			if v, e := strconv.ParseFloat(f, 64); e == nil {
+				vals = append(vals, v)
+			}
+		}
+		if len(vals) >= 3 {
+			h.Load1, h.Load5, h.Load15 = vals[0], vals[1], vals[2]
+			loaded = true
+		}
+	}
+	if !loaded {
+		if b, e := os.ReadFile("/proc/loadavg"); e == nil {
+			fields := strings.Fields(string(b))
+			if len(fields) >= 3 {
+				h.Load1, _ = strconv.ParseFloat(fields[0], 64)
+				h.Load5, _ = strconv.ParseFloat(fields[1], 64)
+				h.Load15, _ = strconv.ParseFloat(fields[2], 64)
+				loaded = true
+			}
+		}
+	}
+	if !loaded {
+		return h, fmt.Errorf("no load average source (tried sysctl vm.loadavg and /proc/loadavg)")
+	}
+	var st syscall.Statfs_t
+	wd, err := os.Getwd()
+	if err != nil {
+		return h, err
+	}
+	if err := syscall.Statfs(wd, &st); err != nil {
+		return h, err
+	}
+	h.FreeDiskGB = float64(st.Bavail) * float64(st.Bsize) / (1 << 30)
+	return h, nil
 }
 
 // gitProvenance is what gets stamped into every run record.

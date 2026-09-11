@@ -13,7 +13,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from locate_boundary import (  # noqa: E402
-    RESOLUTION_RPS, bisect_step, classify, downward_step, plan, upward_step,
+    RESOLUTION_RPS, bisect_step, classify, downward_step, plan, spread_diagnostic,
+    upward_step,
 )
 
 
@@ -141,6 +142,52 @@ class TestDownwardExtension(unittest.TestCase):
     def test_safe_anchor_does_not_descend(self):
         seq, lo, hi = plan(840, hi=900, oracle=self.oracle(865))
         self.assertFalse(any(p['phase'] in ('anchor', 'downward') for p in seq))
+
+
+class TestSpreadDiagnostic(unittest.TestCase):
+    """A3: is the within-point achieved-rho spread larger than the resolution?"""
+
+    def test_resolution_is_regime_dependent(self):
+        # 5 rps means a different distance in rho at different fault capacities.
+        self.assertAlmostEqual(spread_diagnostic([0.9, 0.9], 2000)['rhoResolution'], 0.0025, places=5)
+        self.assertAlmostEqual(spread_diagnostic([0.9, 0.9], 1400)['rhoResolution'], 0.00357, places=5)
+
+    def test_tight_point_is_not_flagged(self):
+        d = spread_diagnostic([0.9190, 0.9192, 0.9191], 2000)
+        self.assertFalse(d['spreadExceedsResolution'])
+        self.assertAlmostEqual(d['rhoAchievedSpread'], 0.0002, places=5)
+
+    def test_spread_wider_than_resolution_is_flagged(self):
+        d = spread_diagnostic([0.9150, 0.9200, 0.9180], 2000)
+        self.assertTrue(d['spreadExceedsResolution'])
+        self.assertAlmostEqual(d['spreadRatio'], 2.0, places=2)
+
+    def test_exactly_at_resolution_is_not_flagged(self):
+        # Strictly greater than, so a spread equal to the resolution passes.
+        d = spread_diagnostic([0.9000, 0.9025], 2000)
+        self.assertFalse(d['spreadExceedsResolution'])
+
+    def test_same_spread_flags_at_c0_but_not_c1(self):
+        # 0.003 exceeds 0.0025 at C=2000 but not 0.00357 at C=1400. A fixed
+        # 0.0025 threshold would get the C1 case wrong.
+        rhos = [0.9200, 0.9230]
+        self.assertTrue(spread_diagnostic(rhos, 2000)['spreadExceedsResolution'])
+        self.assertFalse(spread_diagnostic(rhos, 1400)['spreadExceedsResolution'])
+
+    def test_ticker_ab_reference_is_near_the_threshold(self):
+        # The injector's own ticker A/B spanned 96.42-96.80% of lambda_L=1000,
+        # i.e. 3.8 rps, which at C=2000 is 0.0019 in rho -- below 0.0025 but
+        # close, and that was the better-behaved of the two terms.
+        d = spread_diagnostic([(1000 * 0.9642 + 840) / 2000, (1000 * 0.9680 + 840) / 2000], 2000)
+        self.assertFalse(d['spreadExceedsResolution'])
+        self.assertGreater(d['spreadRatio'], 0.7)
+
+    def test_zero_capacity_does_not_divide_by_zero(self):
+        d = spread_diagnostic([0.9, 0.91], 0)
+        self.assertIsNone(d['spreadRatio'])
+
+    def test_single_rep_has_no_spread(self):
+        self.assertEqual(spread_diagnostic([0.919], 2000)['rhoAchievedSpread'], 0.0)
 
 
 class TestSearchPlan(unittest.TestCase):

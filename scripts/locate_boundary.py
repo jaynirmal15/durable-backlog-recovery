@@ -75,6 +75,29 @@ def classify(vslos):
     return 'MARGINAL'
 
 
+def spread_diagnostic(rhos, fault_capacity):
+    """Is the within-point achieved-rho spread larger than the search resolution?
+
+    PRE-REGISTRATION.md A3. Bisection resolves to RESOLUTION_RPS, which in rho is
+    RESOLUTION_RPS / C_d -- 0.0025 at C=2000, 0.0036 at C=1400. If the same
+    nominal rl lands at achieved rho values further apart than that across its
+    repetitions, the search is resolving finer than its own instrument and the
+    interval at that point cannot be trusted.
+
+    This exists because the two terms of rho are paced differently: the injector
+    moved to a deadline pacer, the consumer's recovery limiter is still a
+    tick-dropping ticker, and rl is the term being bisected.
+    """
+    resolution = (RESOLUTION_RPS / fault_capacity) if fault_capacity else 0.0
+    spread = (max(rhos) - min(rhos)) if rhos else 0.0
+    return {
+        'rhoAchievedSpread': round(spread, 5),
+        'rhoResolution': round(resolution, 5),
+        'spreadExceedsResolution': spread > resolution,
+        'spreadRatio': round(spread / resolution, 2) if resolution else None,
+    }
+
+
 def bisect_step(lo, hi):
     """Next rate to probe between a SAFE floor and a non-SAFE ceiling.
 
@@ -314,13 +337,23 @@ def probe(args, rl, log):
             % (rl, len(invalid), ', '.join(r['invalidReason'] or '?' for r in invalid))
         )
     vslos = [r['vSLO'] for r in runs]
-    return {
+    rhos = [r['rhoAchieved'] for r in runs]
+    diag = spread_diagnostic(rhos, runs[0]['faultCapacity'])
+    if diag['spreadExceedsResolution']:
+        log('    FLAG rl=%d: achieved-rho spread %.4f across %d reps exceeds the search '
+            'resolution %.4f (%d rps / C_d %.0f). The limiter\'s run-to-run noise is larger '
+            'than the distance bisection is trying to resolve at this point.'
+            % (rl, diag['rhoAchievedSpread'], len(rhos), diag['rhoResolution'],
+               RESOLUTION_RPS, runs[0]['faultCapacity']))
+    point = {
         'rl': rl,
         'class': classify(vslos),
         'vSLO': vslos,
-        'rhoAchieved': [r['rhoAchieved'] for r in runs],
+        'rhoAchieved': rhos,
         'runs': runs,
     }
+    point.update(diag)
+    return point
 
 
 def search(args, log):
@@ -434,6 +467,17 @@ def build_output(args, points, lo, hi, by_rate):
                     'averaged, narrowed, or quoted to more figures than its width supports.',
         },
         'latencyInvisibility': latency,
+        'spreadDiagnostic': {
+            'rule': 'PRE-REGISTRATION.md A3: a point whose achieved-rho spread across '
+                    'repetitions exceeds RESOLUTION_RPS / C_d is resolving finer than its '
+                    'own instrument. More than two flagged points across E1 moves the '
+                    'consumer limiter to a deadline pacer before E2 and re-runs the '
+                    'affected boundaries.',
+            'resolutionRps': RESOLUTION_RPS,
+            'flaggedRates': [p['rl'] for p in points if p.get('spreadExceedsResolution')],
+            'flaggedCount': sum(1 for p in points if p.get('spreadExceedsResolution')),
+            'maxSpread': max((p.get('rhoAchievedSpread', 0) for p in points), default=0),
+        },
         'points': sorted(points, key=lambda p: p['rl']),
     }
 
@@ -507,6 +551,12 @@ def main():
         b['rhoStarInterval'][0], b['rhoStarInterval'][1], b['rhoIntervalWidth']))
     if b['marginalRates']:
         log('MARGINAL rates inside the interval: %s' % b['marginalRates'])
+    sd = out['spreadDiagnostic']
+    if sd['flaggedCount']:
+        log('SPREAD FLAG: %d point(s) whose achieved-rho spread exceeds the search '
+            'resolution: %s (max spread %.4f)' % (sd['flaggedCount'], sd['flaggedRates'], sd['maxSpread']))
+    else:
+        log('spread diagnostic: no point exceeded the search resolution (max spread %.4f)' % sd['maxSpread'])
     log('wrote %s' % dest)
     return 0
 

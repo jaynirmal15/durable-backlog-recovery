@@ -244,6 +244,31 @@ def main():
           % (' -> '.join(str(x) for x in seq), b['boundary']['lastSafeRl']))
         w('')
 
+    # ---- interval well-formedness --------------------------------------
+    w('### Is the interval well formed?')
+    w('')
+    w('The interval is [min rho at the last SAFE point, max rho at the first '
+      'non-SAFE point]. That is only meaningful if rho actually rises between the '
+      'two. It need not: the recovery limiter saturates, so past the boundary a '
+      'higher nominal rate can deliver no more recovery and rho can fall.')
+    w('')
+    w('| cell | rho rises across the interval | width | monotonic across all probed points |')
+    w('|---|---|---:|---|')
+    for k, label in [('c10', 'c10 @ Q=2500'), ('c50', 'c50 @ Q=500')]:
+        b = e2[k]
+        if not b:
+            w('| %s | _pending_ | | |' % label)
+            continue
+        i = b['boundary']['rhoStarInterval']
+        seq = [max(p['rhoAchieved']) for p in sorted(b['points'], key=lambda x: x['rl'])]
+        mono = all(seq[j] <= seq[j + 1] for j in range(len(seq) - 1))
+        w('| %s | %s | %+.4f | %s |'
+          % (label, 'yes' if i[1] > i[0] else '**NO — interval is inverted**',
+             i[1] - i[0],
+             'yes' if mono else 'no, and it does not need to be: the departures are '
+             'at deep non-SAFE points that bound nothing'))
+    w('')
+
     # ---- bimodality ----------------------------------------------------
     w('## Bimodality at the last SAFE point')
     w('')

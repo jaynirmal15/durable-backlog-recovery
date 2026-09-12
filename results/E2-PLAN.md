@@ -277,3 +277,57 @@ the correction does not touch them. `retain 20.57 / swap 103` for c10@2500 and
 
 Computed by `scripts/cap_occupancy.py`, which uses the drain-window cap
 throughout; full per-point output in `results/E2-cap-occupancy.json`.
+
+---
+
+## Addendum 3 — the sign of f, registered mid-search
+
+**Recorded 2026-09-12, with the c50 @ Q=500 search in progress. State of
+knowledge at the time of writing, stated so it can be discounted:** the anchor
+rl=975 classified SAFE on all three reps, and the first ceiling candidate
+rl=1075 returned vSLO=0.75 on its first rep. Nothing else about the cell is
+known — no bisection probe has run, and the interval is unmeasured. But those two
+facts already place the boundary **above 975**, and E1's c50 @ Q=2500 boundary
+was [975, 980]. So the direction is partly visible, and this entry is written
+knowing it. It is registered anyway, because the alternative is deciding how to
+read a negative number after seeing its value.
+
+### The gap in the registered criteria
+
+`f_c50 = (m50 - m(c50@500)) / D` was written expecting the cell to land somewhere
+between the two E1 diagonal values. If the smaller cap instead pushes c50's
+boundary **higher** than its own E1 value, then `m(c50@500) > m50` and **f_c50 is
+negative**.
+
+A negative f satisfies the literal text of the concurrency-driven criterion,
+`both f <= 0.25`. That reading would be wrong, and this entry exists to forbid
+it. The plan glosses `f ≈ 0` as "it did not move". A negative f does not mean the
+cell did not move. It means it moved **in the opposite direction to the one the
+scale was built to measure** — away from the other arm rather than towards it.
+
+### The rule, fixed now
+
+1. **The sign is reported before the magnitude**, for both f and g, and a
+   negative value is never described as concurrency-driven on the strength of
+   being `<= 0.25`.
+2. **`CONCURRENCY-DRIVEN` requires `0 <= f <= 0.25` for both cells.** A negative
+   f in either cell disqualifies the verdict outright; the outcome is reported as
+   **OFF-SCALE** with both signed fractions given.
+3. An off-scale result is **not** evidence for the cap hypothesis either. Moving
+   away from the other arm is not moving towards it. Both registered verdicts
+   fail together, and neither is claimed.
+4. The same three rules apply unchanged to `g`, the occupancy statistic, whose
+   scale has the identical shape and the identical gap.
+
+### What an off-scale c50 result would and would not license
+
+It would establish that the cap is **not** inert in the c50 arm, which the c10
+cell alone could not: c10 returned f = 0.000, indistinguishable from a cap that
+does nothing. A signed difference between the arms is an **asymmetry**, and the
+attribution section already requires asymmetries be reported as such and not
+averaged.
+
+It would **not** identify a mechanism, and no mechanism is proposed here. In
+particular, an interval **above** E1's would mean a five-times **smaller** queue
+tolerated a **higher** recovery rate, which no reading in this plan predicts in
+either direction.

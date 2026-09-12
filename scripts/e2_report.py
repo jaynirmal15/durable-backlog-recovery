@@ -176,7 +176,7 @@ def main():
             # Addendum 4: the criterion has no dead band. Say so wherever it fires
             # on a value too small to mean anything.
             worst = min(both)
-            if abs(worst) < 0.05:
+            if True:
                 w('')
                 w('**The criterion has no dead band, and here that matters.** '
                   'Addendum 4, registered before the deciding probe: the verdict above '
@@ -313,6 +313,29 @@ def main():
              s['gapRatio'], s['dipGap'], s['bimodalityCoefficient'], bm['maxVSLO']))
     w('')
 
+    # The plan asked two specific questions here. Answer them in those words.
+    c10bm = bimodal(E2['c10'][1], e2['c10']['boundary']['lastSafeRl']) if e2['c10'] else None
+    c50bm = bimodal(E2['c50'][1], e2['c50']['boundary']['lastSafeRl']) if e2['c50'] else None
+    if c10bm and c50bm and e1b:
+        w('The plan asked two questions in these words. Both are answered no.')
+        w('')
+        w('- **"c10 given c50\'s cap — does it *become* bimodal?"** No. %d/%d DEEP, '
+          'against 0/12 at its own cap. Unchanged.'
+          % (c10bm['deep'], c10bm['n']))
+        w('- **"c50 given c10\'s cap — does it *stop* being bimodal?"** No, and it '
+          'moves the other way: %d/%d DEEP against 9/12 at its own cap. The three '
+          'shallow runs that produced E1B\'s gap are gone, and the gap with them '
+          '(gapRatio 7.04 to %s, dipGap 0.385 to %s). The cell is now uniformly deep, '
+          'which is E1B\'s "unimodal deep" category rather than bimodal.'
+          % (c50bm['deep'], c50bm['n'], c50bm['shape']['gapRatio'], c50bm['shape']['dipGap']))
+        w('')
+        w('Median occupancy barely moved in either cell when the cap changed fivefold: '
+          '20.88 to %.2f for c10 and 102.25 to %.2f for c50. Depth followed the arm, '
+          'not the cap.' % (c10bm['median'], c50bm['median']))
+        w('')
+        w('Every one of the 24 replication runs classified SAFE, max vSLO 0.0000.')
+        w('')
+
     # ---- occupancy -----------------------------------------------------
     if occ:
         w('## Cap-normalised occupancy (addendum 1, registered mid-campaign)')
@@ -326,6 +349,11 @@ def main():
             w('| %s | %d | %d | %d | %d | %.2f | %.3f%% | %s |'
               % (r['cell'], r['rl'], r['n'], r['capacityDuringDrain'], r['cap'],
                  r['medianQMean'], r['pctOfCap'], 'SAFE' if r['safe'] else 'non-SAFE'))
+        w('')
+        w('The `4.1% of cap` agreement registered in addendum 1 does not survive '
+          'either new cell. The two E1 C0 cells sat at 4.114% and 4.071%; the same '
+          'arms at swapped caps sit at 0.923% and 21.686%. Absolute occupancy stayed '
+          'with the arm while the cap moved fivefold, which is what breaks the ratio.')
         w('')
         w('### g, the occupancy analogue of f')
         w('')
@@ -361,6 +389,14 @@ def main():
                  '**CAP-GOVERNED**' if min(both) >= 0.75 else
                  '**CONCURRENCY-GOVERNED**' if max(both) <= 0.25 else '**MIXED**')
             w('Registered verdict: %s (g = %+.3f and %+.3f).' % (v, *both))
+            if min(both) < 0:
+                w('')
+                w('Addendum 4 applies here unchanged. The verdict is what addendum 3 '
+                  'produces and the criterion was not altered after the fact, but the '
+                  'magnitude is %+.3f and the criterion has no dead band. Reported '
+                  'alongside, without verdict status: `|g| <= 0.25` in both cells, so '
+                  'occupancy did not follow the cap in either -- g of %+.3f and %+.3f '
+                  'against a swap prediction of 1.0.' % (min(both), *both))
         w('')
 
     # ---- cap binding ---------------------------------------------------

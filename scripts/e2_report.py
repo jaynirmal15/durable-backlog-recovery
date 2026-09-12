@@ -264,6 +264,36 @@ def main():
       'directory, which `provenanceOutputPrefixes` does not cover. No code differs '
       'from the pinned commit. |' % dirty)
     w('')
+    w('### Configuration conformance')
+    w('')
+    w('Every E2 record checked against the cap its cell is supposed to impose. The '
+      'two cells share run-id namespaces with E1 (`c50-c0-rl975-r1` exists in both), '
+      'which is why each writes to its own directory; the last row checks that no '
+      'E2 record reached the E1 corpus.')
+    w('')
+    w('| cell | expected cap | expected S | records | conforming |')
+    w('|---|---:|---:|---:|---|')
+    for k, svc in (('c10', 5), ('c50', 25)):
+        cap = E2[k][2]
+        paths = glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json'))
+        ok = 0
+        for pth in paths:
+            pa = json.load(open(pth))['params']
+            if (pa['downstreamQueueCap'] == cap and pa['downstreamServiceTimeMs'] == svc
+                    and pa['injectorPacer'] == 'lanes'):
+                ok += 1
+        w('| %s @ Q=%d | %d | %d ms | %d | %s |'
+          % (k, cap, cap, svc, len(paths),
+             'all %d' % ok if ok == len(paths) else '**%d of %d**' % (ok, len(paths))))
+    leaked = 0
+    for pth in glob.glob('results/c*-c*-rl*-r*.json') + glob.glob('results/e1b-*.json'):
+        pa = json.load(open(pth))['params']
+        if pa['downstreamQueueCap'] != (500 if pa['downstreamServiceTimeMs'] == 5 else 2500):
+            leaked += 1
+    w('| E1 corpus (`results/`) | 500 for c10, 2500 for c50 | | %d | %s |'
+      % (len(glob.glob('results/c*-c*-rl*-r*.json')) + len(glob.glob('results/e1b-*.json')),
+         'no E2 record present' if leaked == 0 else '**%d carry an E2 cap**' % leaked))
+    w('')
     print('\n'.join(out))
     return 0
 

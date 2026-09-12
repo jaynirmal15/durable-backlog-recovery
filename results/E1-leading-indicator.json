@@ -94,26 +94,26 @@
         },
         {
           "rl": 825,
-          "rho": 0.9124,
+          "rho": 0.9125,
           "p50": {
-            "mean": 50.66667,
-            "sd": 55.39154
+            "mean": 22.26667,
+            "sd": 28.73666
           },
           "p90": {
-            "mean": 75.33333,
-            "sd": 74.05103
+            "mean": 37.86667,
+            "sd": 38.7984
           },
           "p99": {
-            "mean": 95.0,
-            "sd": 90.68995
+            "mean": 46.6,
+            "sd": 47.9344
           },
           "qMean": {
-            "mean": 75.74286,
-            "sd": 86.97221
+            "mean": 32.3783,
+            "sd": 45.07048
           },
           "ifMean": {
-            "mean": 46.84048,
-            "sd": 47.36394
+            "mean": 23.24255,
+            "sd": 24.55006
           },
           "timeout": {
             "mean": 0.0,
@@ -124,17 +124,17 @@
       "trends": {
         "p50": {
           "first": 5.33333,
-          "last": 50.66667,
-          "total": 45.33333,
-          "totalSigma": 90.66667,
+          "last": 22.26667,
+          "total": 16.93333,
+          "totalSigma": 33.86667,
           "preLast": 1.66667,
           "preLastSigma": 3.33333,
-          "detectAtLastSafe": 0.81842,
+          "detectAtLastSafe": 0.58926,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 820,
           "firstWarningRho": 0.91,
-          "warningRoomRho": 0.0024,
+          "warningRoomRho": 0.0025,
           "warningRoomPoints": 1,
           "perPoint": [
             {
@@ -166,12 +166,12 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
-              "mean": 50.6667,
-              "sd": 55.3915,
-              "rise": 45.3333,
-              "riseSigma": 90.7,
-              "detectAtPoint": 0.8
+              "rho": 0.9125,
+              "mean": 22.2667,
+              "sd": 28.7367,
+              "rise": 16.9333,
+              "riseSigma": 33.9,
+              "detectAtPoint": 0.6
             }
           ],
           "monotone": true,
@@ -181,17 +181,17 @@
         },
         "p90": {
           "first": 7.33333,
-          "last": 75.33333,
-          "total": 68.0,
-          "totalSigma": 136.0,
+          "last": 37.86667,
+          "total": 30.53333,
+          "totalSigma": 61.06667,
           "preLast": 2.66667,
           "preLastSigma": 5.33333,
-          "detectAtLastSafe": 0.91829,
+          "detectAtLastSafe": 0.78697,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 820,
           "firstWarningRho": 0.91,
-          "warningRoomRho": 0.0024,
+          "warningRoomRho": 0.0025,
           "warningRoomPoints": 1,
           "perPoint": [
             {
@@ -223,12 +223,12 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
-              "mean": 75.3333,
-              "sd": 74.051,
-              "rise": 68.0,
-              "riseSigma": 136.0,
-              "detectAtPoint": 0.9
+              "rho": 0.9125,
+              "mean": 37.8667,
+              "sd": 38.7984,
+              "rise": 30.5333,
+              "riseSigma": 61.1,
+              "detectAtPoint": 0.8
             }
           ],
           "monotone": false,
@@ -238,17 +238,17 @@
         },
         "p99": {
           "first": 8.33333,
-          "last": 95.0,
-          "total": 86.66667,
-          "totalSigma": 173.33333,
+          "last": 46.6,
+          "total": 38.26667,
+          "totalSigma": 76.53333,
           "preLast": 7.33333,
           "preLastSigma": 14.66667,
-          "detectAtLastSafe": 0.95564,
+          "detectAtLastSafe": 0.79831,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 820,
           "firstWarningRho": 0.91,
-          "warningRoomRho": 0.0024,
+          "warningRoomRho": 0.0025,
           "warningRoomPoints": 1,
           "perPoint": [
             {
@@ -280,12 +280,12 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
-              "mean": 95.0,
-              "sd": 90.6899,
-              "rise": 86.6667,
-              "riseSigma": 173.3,
-              "detectAtPoint": 1.0
+              "rho": 0.9125,
+              "mean": 46.6,
+              "sd": 47.9344,
+              "rise": 38.2667,
+              "riseSigma": 76.5,
+              "detectAtPoint": 0.8
             }
           ],
           "monotone": true,
@@ -295,17 +295,17 @@
         },
         "qMean": {
           "first": 0.57507,
-          "last": 75.74286,
-          "total": 75.16779,
-          "totalSigma": 624.33216,
+          "last": 32.3783,
+          "total": 31.80323,
+          "totalSigma": 264.15279,
           "preLast": 3.69363,
           "preLastSigma": 30.67871,
-          "detectAtLastSafe": 0.86427,
+          "detectAtLastSafe": 0.70563,
           "noise": 0.1204,
           "noiseFloored": false,
           "firstWarningRl": 800,
           "firstWarningRho": 0.9,
-          "warningRoomRho": 0.0124,
+          "warningRoomRho": 0.0125,
           "warningRoomPoints": 2,
           "perPoint": [
             {
@@ -337,12 +337,12 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
-              "mean": 75.7429,
-              "sd": 86.9722,
-              "rise": 75.1678,
-              "riseSigma": 624.3,
-              "detectAtPoint": 0.9
+              "rho": 0.9125,
+              "mean": 32.3783,
+              "sd": 45.0705,
+              "rise": 31.8032,
+              "riseSigma": 264.2,
+              "detectAtPoint": 0.7
             }
           ],
           "monotone": true,
@@ -352,17 +352,17 @@
         },
         "ifMean": {
           "first": 6.03616,
-          "last": 46.84048,
-          "total": 40.80432,
-          "totalSigma": 293.89288,
+          "last": 23.24255,
+          "total": 17.20639,
+          "totalSigma": 123.92894,
           "preLast": 2.05911,
           "preLastSigma": 14.83074,
-          "detectAtLastSafe": 0.86151,
+          "detectAtLastSafe": 0.70087,
           "noise": 0.13884,
           "noiseFloored": false,
           "firstWarningRl": 820,
           "firstWarningRho": 0.91,
-          "warningRoomRho": 0.0024,
+          "warningRoomRho": 0.0025,
           "warningRoomPoints": 1,
           "perPoint": [
             {
@@ -394,12 +394,12 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
-              "mean": 46.8405,
-              "sd": 47.3639,
-              "rise": 40.8043,
-              "riseSigma": 293.9,
-              "detectAtPoint": 0.9
+              "rho": 0.9125,
+              "mean": 23.2426,
+              "sd": 24.5501,
+              "rise": 17.2064,
+              "riseSigma": 123.9,
+              "detectAtPoint": 0.7
             }
           ],
           "monotone": true,
@@ -451,7 +451,7 @@
             },
             {
               "rl": 825,
-              "rho": 0.9124,
+              "rho": 0.9125,
               "mean": 0.0,
               "sd": 0.0,
               "rise": 0.0,
@@ -473,6 +473,62 @@
         280
       ],
       "safePoints": [
+        {
+          "rl": 240,
+          "rho": 0.8857,
+          "p50": {
+            "mean": 5.33333,
+            "sd": 0.4714
+          },
+          "p90": {
+            "mean": 7.33333,
+            "sd": 0.4714
+          },
+          "p99": {
+            "mean": 9.33333,
+            "sd": 0.4714
+          },
+          "qMean": {
+            "mean": 1.5659,
+            "sd": 0.38208
+          },
+          "ifMean": {
+            "mean": 6.09703,
+            "sd": 0.14945
+          },
+          "timeout": {
+            "mean": 0.0,
+            "sd": 0.0
+          }
+        },
+        {
+          "rl": 255,
+          "rho": 0.8964,
+          "p50": {
+            "mean": 5.66667,
+            "sd": 0.4714
+          },
+          "p90": {
+            "mean": 7.66667,
+            "sd": 0.4714
+          },
+          "p99": {
+            "mean": 9.66667,
+            "sd": 0.4714
+          },
+          "qMean": {
+            "mean": 1.52002,
+            "sd": 0.44732
+          },
+          "ifMean": {
+            "mean": 6.80592,
+            "sd": 0.35035
+          },
+          "timeout": {
+            "mean": 0.0,
+            "sd": 0.0
+          }
+        },
         {
           "rl": 260,
           "rho": 0.9,
@@ -532,13 +588,13 @@
       ],
       "trends": {
         "p50": {
-          "first": 6.0,
+          "first": 5.33333,
           "last": 8.66667,
-          "total": 2.66667,
-          "totalSigma": 5.33333,
-          "preLast": 0.0,
-          "preLastSigma": 0.0,
-          "detectAtLastSafe": 5.33333,
+          "total": 3.33333,
+          "totalSigma": 6.66667,
+          "preLast": 0.66667,
+          "preLastSigma": 1.33333,
+          "detectAtLastSafe": 6.66667,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 275,
@@ -547,22 +603,40 @@
           "warningRoomPoints": 0,
           "perPoint": [
             {
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 5.3333,
+              "sd": 0.4714,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
+            {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 5.6667,
+              "sd": 0.4714,
+              "rise": 0.3333,
+              "riseSigma": 0.7,
+              "detectAtPoint": 0.7
+            },
+            {
               "rl": 260,
               "rho": 0.9,
               "mean": 6.0,
               "sd": 0.0,
-              "rise": 0.0,
-              "riseSigma": 0.0,
-              "detectAtPoint": 0.0
+              "rise": 0.6667,
+              "riseSigma": 1.3,
+              "detectAtPoint": 1.3
             },
             {
               "rl": 275,
               "rho": 0.9107,
               "mean": 8.6667,
               "sd": 0.4714,
-              "rise": 2.6667,
-              "riseSigma": 5.3,
-              "detectAtPoint": 5.3
+              "rise": 3.3333,
+              "riseSigma": 6.7,
+              "detectAtPoint": 6.7
             }
           ],
           "monotone": true,
@@ -571,53 +645,71 @@
           "verdict": "rises only at the last safe point"
         },
         "p90": {
-          "first": 8.66667,
+          "first": 7.33333,
           "last": 22.33333,
-          "total": 13.66667,
-          "totalSigma": 2.69458,
-          "preLast": 0.0,
-          "preLastSigma": 0.0,
-          "detectAtLastSafe": 1.41295,
-          "noise": 5.07191,
-          "noiseFloored": false,
-          "firstWarningRl": null,
-          "firstWarningRho": null,
-          "warningRoomRho": null,
-          "warningRoomPoints": null,
+          "total": 15.0,
+          "totalSigma": 30.0,
+          "preLast": 1.33333,
+          "preLastSigma": 2.66667,
+          "detectAtLastSafe": 1.5508,
+          "noise": 0.5,
+          "noiseFloored": true,
+          "firstWarningRl": 275,
+          "firstWarningRho": 0.9107,
+          "warningRoomRho": 0.0,
+          "warningRoomPoints": 0,
           "perPoint": [
             {
-              "rl": 260,
-              "rho": 0.9,
-              "mean": 8.6667,
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 7.3333,
               "sd": 0.4714,
               "rise": 0.0,
               "riseSigma": 0.0,
               "detectAtPoint": 0.0
             },
             {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 7.6667,
+              "sd": 0.4714,
+              "rise": 0.3333,
+              "riseSigma": 0.7,
+              "detectAtPoint": 0.7
+            },
+            {
+              "rl": 260,
+              "rho": 0.9,
+              "mean": 8.6667,
+              "sd": 0.4714,
+              "rise": 1.3333,
+              "riseSigma": 2.7,
+              "detectAtPoint": 2.7
+            },
+            {
               "rl": 275,
               "rho": 0.9107,
               "mean": 22.3333,
               "sd": 9.6724,
-              "rise": 13.6667,
-              "riseSigma": 2.7,
-              "detectAtPoint": 1.4
+              "rise": 15.0,
+              "riseSigma": 30.0,
+              "detectAtPoint": 1.6
             }
           ],
           "monotone": true,
-          "warns": false,
+          "warns": true,
           "early": false,
-          "verdict": "flat"
+          "verdict": "rises only at the last safe point"
         },
         "p99": {
-          "first": 10.33333,
+          "first": 9.33333,
           "last": 34.33333,
-          "total": 24.0,
-          "totalSigma": 5.51527,
-          "preLast": 0.0,
-          "preLastSigma": 0.0,
-          "detectAtLastSafe": 3.09266,
-          "noise": 4.35155,
+          "total": 25.0,
+          "totalSigma": 35.35534,
+          "preLast": 1.0,
+          "preLastSigma": 1.41421,
+          "detectAtLastSafe": 3.22153,
+          "noise": 0.70711,
           "noiseFloored": false,
           "firstWarningRl": 275,
           "firstWarningRho": 0.9107,
@@ -625,22 +717,40 @@
           "warningRoomPoints": 0,
           "perPoint": [
             {
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 9.3333,
+              "sd": 0.4714,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
+            {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 9.6667,
+              "sd": 0.4714,
+              "rise": 0.3333,
+              "riseSigma": 0.5,
+              "detectAtPoint": 0.7
+            },
+            {
               "rl": 260,
               "rho": 0.9,
               "mean": 10.3333,
               "sd": 0.9428,
-              "rise": 0.0,
-              "riseSigma": 0.0,
-              "detectAtPoint": 0.0
+              "rise": 1.0,
+              "riseSigma": 1.4,
+              "detectAtPoint": 1.1
             },
             {
               "rl": 275,
               "rho": 0.9107,
               "mean": 34.3333,
               "sd": 7.7603,
-              "rise": 24.0,
-              "riseSigma": 5.5,
-              "detectAtPoint": 3.1
+              "rise": 25.0,
+              "riseSigma": 35.4,
+              "detectAtPoint": 3.2
             }
           ],
           "monotone": true,
@@ -649,53 +759,14 @@
           "verdict": "rises only at the last safe point"
         },
         "qMean": {
-          "first": 2.79951,
+          "first": 1.5659,
           "last": 8.44952,
-          "total": 5.65,
-          "totalSigma": 2.99074,
-          "preLast": 0.0,
-          "preLastSigma": 0.0,
-          "detectAtLastSafe": 2.07949,
-          "noise": 1.88917,
-          "noiseFloored": false,
-          "firstWarningRl": null,
-          "firstWarningRho": null,
-          "warningRoomRho": null,
-          "warningRoomPoints": null,
-          "perPoint": [
-            {
-              "rl": 260,
-              "rho": 0.9,
-              "mean": 2.7995,
-              "sd": 1.0613,
-              "rise": 0.0,
-              "riseSigma": 0.0,
-              "detectAtPoint": 0.0
-            },
-            {
-              "rl": 275,
-              "rho": 0.9107,
-              "mean": 8.4495,
-              "sd": 2.717,
-              "rise": 5.65,
-              "riseSigma": 3.0,
-              "detectAtPoint": 2.1
-            }
-          ],
-          "monotone": true,
-          "warns": false,
-          "early": false,
-          "verdict": "flat"
-        },
-        "ifMean": {
-          "first": 6.7998,
-          "last": 11.8244,
-          "total": 5.0246,
-          "totalSigma": 4.28575,
-          "preLast": 0.0,
-          "preLastSigma": 0.0,
-          "detectAtLastSafe": 2.31775,
-          "noise": 1.1724,
+          "total": 6.88362,
+          "totalSigma": 9.12563,
+          "preLast": 1.23361,
+          "preLastSigma": 1.6354,
+          "detectAtLastSafe": 2.53352,
+          "noise": 0.75432,
           "noiseFloored": false,
           "firstWarningRl": 275,
           "firstWarningRho": 0.9107,
@@ -703,25 +774,100 @@
           "warningRoomPoints": 0,
           "perPoint": [
             {
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 1.5659,
+              "sd": 0.3821,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
+            {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 1.52,
+              "sd": 0.4473,
+              "rise": -0.0459,
+              "riseSigma": -0.1,
+              "detectAtPoint": -0.1
+            },
+            {
+              "rl": 260,
+              "rho": 0.9,
+              "mean": 2.7995,
+              "sd": 1.0613,
+              "rise": 1.2336,
+              "riseSigma": 1.6,
+              "detectAtPoint": 1.2
+            },
+            {
+              "rl": 275,
+              "rho": 0.9107,
+              "mean": 8.4495,
+              "sd": 2.717,
+              "rise": 6.8836,
+              "riseSigma": 9.1,
+              "detectAtPoint": 2.5
+            }
+          ],
+          "monotone": false,
+          "warns": true,
+          "early": false,
+          "verdict": "rises only at the last safe point"
+        },
+        "ifMean": {
+          "first": 6.09703,
+          "last": 11.8244,
+          "total": 5.72737,
+          "totalSigma": 21.72522,
+          "preLast": 0.70277,
+          "preLastSigma": 2.66575,
+          "detectAtLastSafe": 2.64192,
+          "noise": 0.26363,
+          "noiseFloored": false,
+          "firstWarningRl": 275,
+          "firstWarningRho": 0.9107,
+          "warningRoomRho": 0.0,
+          "warningRoomPoints": 0,
+          "perPoint": [
+            {
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 6.097,
+              "sd": 0.1494,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
+            {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 6.8059,
+              "sd": 0.3503,
+              "rise": 0.7089,
+              "riseSigma": 2.7,
+              "detectAtPoint": 2.0
+            },
+            {
               "rl": 260,
               "rho": 0.9,
               "mean": 6.7998,
               "sd": 0.1769,
-              "rise": 0.0,
-              "riseSigma": 0.0,
-              "detectAtPoint": 0.0
+              "rise": 0.7028,
+              "riseSigma": 2.7,
+              "detectAtPoint": 4.0
             },
             {
               "rl": 275,
               "rho": 0.9107,
               "mean": 11.8244,
               "sd": 2.1679,
-              "rise": 5.0246,
-              "riseSigma": 4.3,
-              "detectAtPoint": 2.3
+              "rise": 5.7274,
+              "riseSigma": 21.7,
+              "detectAtPoint": 2.6
             }
           ],
-          "monotone": true,
+          "monotone": false,
           "warns": true,
           "early": false,
           "verdict": "rises only at the last safe point"
@@ -741,6 +887,24 @@
           "warningRoomRho": null,
           "warningRoomPoints": null,
           "perPoint": [
+            {
+              "rl": 240,
+              "rho": 0.8857,
+              "mean": 0.0,
+              "sd": 0.0,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
+            {
+              "rl": 255,
+              "rho": 0.8964,
+              "mean": 0.0,
+              "sd": 0.0,
+              "rise": 0.0,
+              "riseSigma": 0.0,
+              "detectAtPoint": 0.0
+            },
             {
               "rl": 260,
               "rho": 0.9,
@@ -888,26 +1052,26 @@
         },
         {
           "rl": 975,
-          "rho": 0.9819,
+          "rho": 0.9821,
           "p50": {
-            "mean": 80.33333,
-            "sd": 17.44197
+            "mean": 75.0,
+            "sd": 22.3875
           },
           "p90": {
-            "mean": 105.33333,
-            "sd": 18.92676
+            "mean": 105.93333,
+            "sd": 28.62974
           },
           "p99": {
-            "mean": 115.66667,
-            "sd": 16.49916
+            "mean": 121.8,
+            "sd": 30.10913
           },
           "qMean": {
-            "mean": 103.59269,
-            "sd": 27.03634
+            "mean": 97.16777,
+            "sd": 38.78784
           },
           "ifMean": {
-            "mean": 78.27098,
-            "sd": 13.85709
+            "mean": 74.96691,
+            "sd": 19.79541
           },
           "timeout": {
             "mean": 0.0,
@@ -918,17 +1082,17 @@
       "trends": {
         "p50": {
           "first": 25.0,
-          "last": 80.33333,
-          "total": 55.33333,
-          "totalSigma": 110.66667,
+          "last": 75.0,
+          "total": 50.0,
+          "totalSigma": 100.0,
           "preLast": 4.33333,
           "preLastSigma": 8.66667,
-          "detectAtLastSafe": 3.17243,
+          "detectAtLastSafe": 2.23339,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 965,
           "firstWarningRho": 0.97813,
-          "warningRoomRho": 0.0038,
+          "warningRoomRho": 0.0039,
           "warningRoomPoints": 2,
           "perPoint": [
             {
@@ -969,12 +1133,12 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
-              "mean": 80.3333,
-              "sd": 17.442,
-              "rise": 55.3333,
-              "riseSigma": 110.7,
-              "detectAtPoint": 3.2
+              "rho": 0.9821,
+              "mean": 75.0,
+              "sd": 22.3875,
+              "rise": 50.0,
+              "riseSigma": 100.0,
+              "detectAtPoint": 2.2
             }
           ],
           "monotone": true,
@@ -984,17 +1148,17 @@
         },
         "p90": {
           "first": 30.0,
-          "last": 105.33333,
-          "total": 75.33333,
-          "totalSigma": 150.66667,
+          "last": 105.93333,
+          "total": 75.93333,
+          "totalSigma": 151.86667,
           "preLast": 5.66667,
           "preLastSigma": 11.33333,
-          "detectAtLastSafe": 3.98026,
+          "detectAtLastSafe": 2.65225,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 965,
           "firstWarningRho": 0.97813,
-          "warningRoomRho": 0.0038,
+          "warningRoomRho": 0.0039,
           "warningRoomPoints": 2,
           "perPoint": [
             {
@@ -1035,12 +1199,12 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
-              "mean": 105.3333,
-              "sd": 18.9268,
-              "rise": 75.3333,
-              "riseSigma": 150.7,
-              "detectAtPoint": 4.0
+              "rho": 0.9821,
+              "mean": 105.9333,
+              "sd": 28.6297,
+              "rise": 75.9333,
+              "riseSigma": 151.9,
+              "detectAtPoint": 2.7
             }
           ],
           "monotone": true,
@@ -1050,17 +1214,17 @@
         },
         "p99": {
           "first": 34.0,
-          "last": 115.66667,
-          "total": 81.66667,
-          "totalSigma": 163.33333,
+          "last": 121.8,
+          "total": 87.8,
+          "totalSigma": 175.6,
           "preLast": 7.33333,
           "preLastSigma": 14.66667,
-          "detectAtLastSafe": 4.94975,
+          "detectAtLastSafe": 2.91606,
           "noise": 0.5,
           "noiseFloored": true,
           "firstWarningRl": 965,
           "firstWarningRho": 0.97813,
-          "warningRoomRho": 0.0038,
+          "warningRoomRho": 0.0039,
           "warningRoomPoints": 2,
           "perPoint": [
             {
@@ -1101,12 +1265,12 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
-              "mean": 115.6667,
-              "sd": 16.4992,
-              "rise": 81.6667,
-              "riseSigma": 163.3,
-              "detectAtPoint": 4.9
+              "rho": 0.9821,
+              "mean": 121.8,
+              "sd": 30.1091,
+              "rise": 87.8,
+              "riseSigma": 175.6,
+              "detectAtPoint": 2.9
             }
           ],
           "monotone": true,
@@ -1116,17 +1280,17 @@
         },
         "qMean": {
           "first": 0.52972,
-          "last": 103.59269,
-          "total": 103.06297,
-          "totalSigma": 377.7526,
+          "last": 97.16777,
+          "total": 96.63806,
+          "totalSigma": 354.20361,
           "preLast": 7.42247,
           "preLastSigma": 27.20527,
-          "detectAtLastSafe": 3.81202,
+          "detectAtLastSafe": 2.49145,
           "noise": 0.27283,
           "noiseFloored": false,
           "firstWarningRl": 940,
           "firstWarningRho": 0.96947,
-          "warningRoomRho": 0.0125,
+          "warningRoomRho": 0.0126,
           "warningRoomPoints": 3,
           "perPoint": [
             {
@@ -1167,12 +1331,12 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
-              "mean": 103.5927,
-              "sd": 27.0363,
-              "rise": 103.063,
-              "riseSigma": 377.8,
-              "detectAtPoint": 3.8
+              "rho": 0.9821,
+              "mean": 97.1678,
+              "sd": 38.7878,
+              "rise": 96.6381,
+              "riseSigma": 354.2,
+              "detectAtPoint": 2.5
             }
           ],
           "monotone": true,
@@ -1182,17 +1346,17 @@
         },
         "ifMean": {
           "first": 25.74935,
-          "last": 78.27098,
-          "total": 52.52162,
-          "totalSigma": 121.16142,
+          "last": 74.96691,
+          "total": 49.21755,
+          "totalSigma": 113.5393,
           "preLast": 4.07574,
           "preLastSigma": 9.40226,
-          "detectAtLastSafe": 3.79024,
+          "detectAtLastSafe": 2.48631,
           "noise": 0.43348,
           "noiseFloored": false,
           "firstWarningRl": 965,
           "firstWarningRho": 0.97813,
-          "warningRoomRho": 0.0038,
+          "warningRoomRho": 0.0039,
           "warningRoomPoints": 2,
           "perPoint": [
             {
@@ -1233,12 +1397,12 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
-              "mean": 78.271,
-              "sd": 13.8571,
-              "rise": 52.5216,
-              "riseSigma": 121.2,
-              "detectAtPoint": 3.8
+              "rho": 0.9821,
+              "mean": 74.9669,
+              "sd": 19.7954,
+              "rise": 49.2176,
+              "riseSigma": 113.5,
+              "detectAtPoint": 2.5
             }
           ],
           "monotone": true,
@@ -1299,7 +1463,7 @@
             },
             {
               "rl": 975,
-              "rho": 0.9819,
+              "rho": 0.9821,
               "mean": 0.0,
               "sd": 0.0,
               "rise": 0.0,

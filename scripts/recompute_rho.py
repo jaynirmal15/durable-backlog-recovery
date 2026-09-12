@@ -63,6 +63,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--boundary', required=True)
     ap.add_argument('--raw-dir', action='append', default=[])
+    ap.add_argument('--results', default='results',
+                    help='directory holding the run records. E2 writes each cap '
+                         'condition to its own directory, so this cannot be assumed.')
     ap.add_argument('--write', action='store_true')
     a = ap.parse_args()
     dirs = a.raw_dir or ['results', '../rhc-raw-data/results']
@@ -78,7 +81,7 @@ def main():
     for pt in b['points']:
         new_rhos = []
         for run in pt['runs']:
-            rec = json.load(open('results/%s.json' % run['runId']))
+            rec = json.load(open(os.path.join(a.results, '%s.json' % run['runId'])))
             fh = open_trace(dirs, run['runId'])
             if fh is None:
                 # Leaving one run on the old estimator would mix estimators inside

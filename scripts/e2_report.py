@@ -182,6 +182,57 @@ def main():
                                 'yes' if overlaps(iv(e2[k]), iv(e1[other])) else 'no'))
     w('')
 
+    # ---- per point -----------------------------------------------------
+    w('## Every probed point, both E2 cells')
+    w('')
+    w('`rec rps` is the achieved recovery rate over the delivery span (A4), against '
+      'the nominal `rl` the search was bisecting. Where the two diverge the limiter '
+      'is saturating and the nominal rate overstates the load actually offered.')
+    w('')
+    for k, label, cap in [('c10', 'c10 @ Q=2500', 2500), ('c50', 'c50 @ Q=500', 500)]:
+        b = e2[k]
+        w('### %s' % label)
+        w('')
+        if not b:
+            w('_Search in progress; no boundary file written yet._')
+            w('')
+            continue
+        w('| rl | class | n | vSLO per rep | rho (A4) | median rec rps | rec / rl |')
+        w('|---:|---|---:|---|---|---:|---:|')
+        for pt in b['points']:
+            rec = [r.get('recoveryAchievedRps') for r in pt['runs']]
+            rec = [x for x in rec if x is not None]
+            mr = statistics.median(rec) if rec else None
+            rhos = pt['rhoAchieved']
+            w('| %s%d%s | %s | %d | %s | %s | %s | %s |'
+              % ('**' if pt['rl'] in (b['boundary']['lastSafeRl'],
+                                      b['boundary']['firstNonSafeRl']) else '',
+                 pt['rl'],
+                 '**' if pt['rl'] in (b['boundary']['lastSafeRl'],
+                                      b['boundary']['firstNonSafeRl']) else '',
+                 pt['class'], len(pt['runs']),
+                 ', '.join('%.4f' % v for v in pt['vSLO'][:6])
+                 + (' ...' if len(pt['vSLO']) > 6 else ''),
+                 '%.4f-%.4f' % (min(rhos), max(rhos)) if len(set(rhos)) > 1
+                 else '%.4f' % rhos[0],
+                 '%.1f' % mr if mr else 'n/a',
+                 '%.3f' % (mr / pt['rl']) if mr else 'n/a'))
+        w('')
+        # The boundary file sorts points by rl, so its order is NOT probe order.
+        # Derive the real order from when each point's first run started.
+        firsts = {}
+        for pth in glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json')):
+            r = json.load(open(pth))
+            rl = r['params']['rateLimitRps']
+            firsts.setdefault(rl, []).append(r['startedAt'])
+        seq = []
+        for t, rl in sorted((min(v), rl) for rl, v in firsts.items()):
+            seq.append(rl)
+        w('Probe order, from run timestamps rather than the order points are stored '
+          'in: %s. The replication runs then returned to rl=%d.'
+          % (' -> '.join(str(x) for x in seq), b['boundary']['lastSafeRl']))
+        w('')
+
     # ---- bimodality ----------------------------------------------------
     w('## Bimodality at the last SAFE point')
     w('')

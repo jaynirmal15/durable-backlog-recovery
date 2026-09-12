@@ -80,3 +80,72 @@ and no E1 point needs re-running to show the boundary is unmoved.
 Cap is set per boundary via the `QUEUE_CAP` environment variable and asserted
 against `/admin/capacity` before the search starts, alongside the existing
 service-time assertion.
+
+## Addendum, registered 2026-09-12 before the replication phase
+
+Added while the c10@Q=2500 boundary search was still running and **before any
+n=12 replication run**. It concerns occupancy, which the plan above did not
+cover.
+
+### The observation
+
+Median queue depth at the last SAFE point is very nearly the same **fraction of
+the cap** in the two E1 C0 cells:
+
+| cell | cap | median qMean at last SAFE | % of cap |
+|---|---:|---:|---:|
+| c10 / C0 (n=15) | 500 | 20.57 | **4.11%** |
+| c50 / C0 (n=15) | 2500 | 101.79 | **4.07%** |
+
+The 5× difference in absolute occupancy is exactly the 5× difference in cap.
+
+### Registered prediction
+
+If the cap is the governing variable, occupancy swaps with it:
+
+| cell | if CAP governs | if CONCURRENCY governs |
+|---|---:|---:|
+| c10 @ Q=2500 | median qMean ≈ **103** (4.1% of 2500) | ≈ **21**, unchanged from E1 |
+| c50 @ Q=500 | median qMean ≈ **21** (4.1% of 500) | ≈ **102**, unchanged from E1 |
+
+Scored with the same shape of statistic as the ρ* attribution, fixed now:
+
+```
+g = (observed median - retain value) / (swap value - retain value)
+
+  c10@2500:  retain 20.57   swap 103
+  c50@500:   retain 101.79  swap 21
+```
+
+`g ≈ 1` means occupancy followed the cap; `g ≈ 0` means it stayed with the arm.
+**Cap-governed if both g ≥ 0.75; concurrency-governed if both ≤ 0.25; mixed
+otherwise, with both reported.** Medians, not means, because the E1B replication
+showed these distributions are right-skewed and at least one is gapped.
+
+### A caveat that weakens the premise, registered rather than left out
+
+**The coincidence holds only at C0.** The same normalisation across all four E1
+cells:
+
+| cell | cap | median qMean | % of cap |
+|---|---:|---:|---:|
+| c10 / C0 | 500 | 20.57 | 4.11% |
+| c50 / C0 | 2500 | 101.79 | 4.07% |
+| c10 / C1 | 500 | 6.85 | **1.37%** |
+| c50 / C1 | 2500 | 4.71 | **0.19%** |
+
+The two C1 cells sit at 1.37% and 0.19% — differing from each other by seven
+times, and from the C0 pair by three to twenty times. So "occupancy at the
+boundary is a fixed fraction of cap" is a **two-point agreement at C0, not a
+regularity across the four E1 cells**, and it is registered here as such. Two
+points agreeing to within 1% of each other is also exactly the kind of thing that
+happens by chance often enough to deserve suspicion before it deserves a
+mechanism.
+
+E2 tests it at C0, where it was observed. Nothing here extends it to C1.
+
+### Reporting
+
+Cap-normalised occupancy (% of cap) is reported for **every probed point** in
+both E2 cells alongside the absolute value, and the same column is added
+retrospectively to all four E1 cells so the 2×2 is comparable on one scale.

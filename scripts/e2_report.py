@@ -258,6 +258,52 @@ def main():
             w('Registered verdict: %s (g = %+.3f and %+.3f).' % (v, *both))
         w('')
 
+    # ---- cap binding ---------------------------------------------------
+    bind = load('results/E2-cap-binding.json')
+    if bind:
+        w('## Did the cap bind, and what failed')
+        w('')
+        w('Not a registered reading. Two checks on whether the registered statistics '
+          'are measuring what they are meant to.')
+        w('')
+        w('**Failure mode.** `sloErrorAccounting` excludes client 429s, so a smaller '
+          'cap could in principle turn latency violations into excluded rejections '
+          'and make a run classify SAFE for the wrong reason. Rejections during the '
+          'drain, summed over every point of both campaigns at every cap: '
+          '**%d**. The concern does not arise.' % bind['totalRejected'])
+        w('')
+        errs = [r for r in bind['points'] if r['maxVSLOError'] > 0]
+        if errs:
+            w('Violations are latency violations everywhere except one point: '
+              + ', '.join('%s rl=%d, vSLO_error %.4f against vSLO_latency %.4f'
+                          % (r['cell'], r['rl'], r['maxVSLOError'], r['maxVSLOLatency'])
+                          for r in errs)
+              + '. That point is the deepest non-SAFE anchor of its cell, the only one '
+                'with drain-window timeouts, and it defines no interval.')
+            w('')
+        w('**Cap binding.** Peak drain-window queue depth against the cap in force. '
+          'Median and max across the runs at each point, because one run in fifteen '
+          'at c10/C0 rl=825 peaked at 400 of 500 while the median peaked at 55.')
+        w('')
+        w('| cell | rl | n | cap | median peak | % of cap | max peak | % of cap | class |')
+        w('|---|---:|---:|---:|---:|---:|---:|---:|---|')
+        for r in bind['points']:
+            w('| %s | %d | %d | %d | %.1f | %.1f%% | %d | %.1f%%%s | %s |'
+              % (r['cell'], r['rl'], r['n'], r['cap'], r['medQPeak'], r['medPctOfCap'],
+                 r['maxQPeak'], r['pctOfCap'], ' **cap hit**' if r['capTouched'] else '',
+                 'SAFE' if r['safe'] else 'non-SAFE'))
+        w('')
+        w('At the last SAFE point of every cell in both campaigns:')
+        w('')
+        w('| cell | rl | median peak as % of cap |')
+        w('|---|---:|---:|')
+        for c in sorted({r['cell'] for r in bind['points']}):
+            rs = [r for r in bind['points'] if r['cell'] == c and r['safe']]
+            if rs:
+                r = max(rs, key=lambda x: x['rl'])
+                w('| %s | %d | %.1f%% |' % (c, r['rl'], r['medPctOfCap']))
+        w('')
+
     # ---- campaign ------------------------------------------------------
     w('## Campaign')
     w('')

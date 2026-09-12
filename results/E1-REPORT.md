@@ -13,7 +13,8 @@
 | OS / kernel | Ubuntu 24.04, Linux 7.0.0-1012-aws |
 | Go / Docker | go1.25.3 / 29.1.3 |
 | Harness commit | `026be6242d26` — **all 66 runs, no exceptions** |
-| Queue cap | 500, `profile_relative` (default), full-queue delay 250 ms |
+| Queue cap | `profile_relative` (default) — **not one value**: `50 x concurrency`, so **c10 = 500** (full-queue delay 250 ms) and **c50 = 2500** (1250 ms) |
+| Cap under C1 | the cap tracks capacity: `SetCapacity` recomputes `Q = 50 x ceil(C x S)`, so at C=1400 c10 holds 350 and c50 holds 1750. The `downstreamQueueCap` field records the value at t=0. |
 | Service-time jitter | σ = 0.15 |
 | Injector pacer | `lanes` (A3) |
 | Recovery limiter | `time.Ticker`, unchanged (A3) |

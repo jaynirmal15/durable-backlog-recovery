@@ -244,3 +244,36 @@ sharper statement is that it changes **concurrency** — the very variable E2
 exists to separate — and does **not** change cap-in-ms at all. E2, which varies Q
 at fixed C, S and concurrency, remains the only clean test, and it is now more
 clearly the only one rather than merely the best one.
+
+---
+
+## Correction to the caveat table (recorded before the c50 cell completed)
+
+The four-cell caveat table above divides by `downstreamQueueCap`, which is the
+cap at t=0. Under C1 the cap does not stay there: `SetCapacity` recomputes
+`Q = 50 x ceil(C x S)` when capacity steps to 1400 at t=20, so the cap in force
+during the drain window — the window the occupancy is measured over — is 350 for
+c10 and 1750 for c50, not 500 and 2500.
+
+Recomputed against the cap actually in force:
+
+| cell | cap at t=0 | cap during drain | median qMean | % as registered | % corrected |
+|---|---:|---:|---:|---:|---:|
+| c10 / C0 | 500 | 500 | 20.57 | 4.11% | **4.11%** |
+| c50 / C0 | 2500 | 2500 | 101.79 | 4.07% | **4.07%** |
+| c10 / C1 | 500 | 350 | 6.85 | 1.37% | **1.96%** |
+| c50 / C1 | 2500 | 1750 | 4.71 | 0.19% | **0.27%** |
+
+**The caveat's conclusion is unchanged and is not weakened.** The two C0 cells
+are untouched, because at C0 the cap never moves. The two C1 cells move closer to
+the C0 pair but remain far from it — 1.96% and 0.27% against 4.11% and 4.07% —
+and still differ from each other by seven times. "Occupancy at the boundary is a
+fixed fraction of cap" remains a two-point agreement at C0 rather than a
+regularity across the four cells.
+
+The registered scoring values for `g` are **not** restated: both are C0 cells, so
+the correction does not touch them. `retain 20.57 / swap 103` for c10@2500 and
+`retain 101.79 / swap 21` for c50@500 stand exactly as registered.
+
+Computed by `scripts/cap_occupancy.py`, which uses the drain-window cap
+throughout; full per-point output in `results/E2-cap-occupancy.json`.

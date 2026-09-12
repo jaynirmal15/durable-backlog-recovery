@@ -173,6 +173,24 @@ def main():
               'fraction means the cell moved **away** from the other arm, so it does '
               'not satisfy `CONCURRENCY-DRIVEN` despite being below 0.25, and moving '
               'away is not evidence for the cap. Neither registered verdict is claimed.')
+            # Addendum 4: the criterion has no dead band. Say so wherever it fires
+            # on a value too small to mean anything.
+            worst = min(both)
+            if abs(worst) < 0.05:
+                w('')
+                w('**The criterion has no dead band, and here that matters.** '
+                  'Addendum 4, registered before the deciding probe: the verdict above '
+                  'is what addendum 3 produces, and the criterion was deliberately not '
+                  'changed once the arithmetic showed it was about to fire. But the '
+                  'magnitude is %+.3f. Addendum 3 was written against a cell that moves '
+                  'materially the wrong way and was tested at -0.057. At %+.3f the cell '
+                  'has not moved.' % (worst, worst))
+                w('')
+                w('Reported alongside, with no verdict status: `|f| <= 0.25` in both '
+                  'cells, so **neither cell moved materially in either direction**. '
+                  'The plan can express "moved" and "did not move"; it cannot '
+                  'distinguish %+.3f from %+.3f, and the data does not settle which '
+                  'side of zero this fell on.' % (worst, -worst))
         if (min(both) <= 0.25) != (max(both) <= 0.25):
             w('')
             w('The two fractions disagree. The plan requires this be reported as an '

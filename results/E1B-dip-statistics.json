@@ -1,0 +1,78 @@
+{
+  "E1B c10/C0 @ Q=500": {
+    "n": 12,
+    "deep": 0,
+    "shape": {
+      "n": 12,
+      "min": 10.442857142857143,
+      "max": 38.46099290780142,
+      "mean": 21.537,
+      "median": 20.876,
+      "sd": 7.778,
+      "gapRatio": 3.9,
+      "largestGap": 7.55,
+      "medianGap": 1.94,
+      "dipGap": 0.269,
+      "bimodalityCoefficient": 0.387,
+      "bcRefUniform": 0.5556,
+      "kmeans2SplitAt": 29.35,
+      "kmeans2LowN": 10,
+      "kmeans2HighN": 2,
+      "kmeans2Separation": 4.62,
+      "sorted": [
+        10.4,
+        12.5,
+        15.0,
+        17.0,
+        17.9,
+        20.6,
+        21.2,
+        22.5,
+        24.1,
+        25.6,
+        33.1,
+        38.5
+      ]
+    },
+    "medianPctOfCap": 4.175,
+    "maxVSLO": 0
+  },
+  "E1B c50/C0 @ Q=2500": {
+    "n": 12,
+    "deep": 9,
+    "shape": {
+      "n": 12,
+      "min": 23.363636363636363,
+      "max": 158.65254237288136,
+      "mean": 95.562,
+      "median": 102.25,
+      "sd": 41.049,
+      "gapRatio": 7.04,
+      "largestGap": 52.12,
+      "medianGap": 7.4,
+      "dipGap": 0.385,
+      "bimodalityCoefficient": 0.351,
+      "bcRefUniform": 0.5556,
+      "kmeans2SplitAt": 66.05,
+      "kmeans2LowN": 3,
+      "kmeans2HighN": 9,
+      "kmeans2Separation": 5.54,
+      "sorted": [
+        23.4,
+        37.0,
+        40.0,
+        92.1,
+        92.1,
+        101.8,
+        102.7,
+        110.1,
+        117.1,
+        120.8,
+        151.0,
+        158.7
+      ]
+    },
+    "medianPctOfCap": 4.09,
+    "maxVSLO": 0
+  }
+}

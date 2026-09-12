@@ -37,7 +37,7 @@ DEEP rate were the 33% the original triplet implied, seeing zero in twelve has
 probability 0.008. A *rare* mode is not excluded — twelve runs bound the rate
 only below 26.5%.
 
-### c50/C0 rl=975 — genuinely bimodal
+### c50/C0 rl=975 — a clear gap, but "bimodal" is stronger than n=12 can support
 
 ```
 qMean, 12 fresh runs, sorted:
@@ -45,10 +45,43 @@ qMean, 12 fresh runs, sorted:
 ```
 
 **Nine of twelve** are DEEP. The gap of **52.1** after 40.0, against a median
-gap of 7.4 (ratio **7.0**), is a clean separation — three runs cluster near
-23–40 and nine near 92–159, with nothing between. The DEEP fraction's
-confidence interval excludes both 0 and 1, which is the pre-registered
-definition of "bimodal with a stable fraction".
+gap of 7.4 (ratio **7.0**), is a clean separation in the raw values — three runs
+cluster near 23–40 and nine near 92–159, with nothing between. The DEEP
+fraction's confidence interval excludes both 0 and 1, which satisfies the
+pre-registered definition of "bimodal with a stable fraction".
+
+That definition is threshold-based, and the threshold-free statistics below are
+more equivocal. See them before relying on the word "bimodal".
+
+
+### Threshold-free shape statistics (E1B-PLAN promised these; the first version of this report omitted them)
+
+| statistic | c10/C0 rl=825 | c50/C0 rl=975 | reads as |
+|---|---:|---:|---|
+| gap ratio (largest ÷ median) | 3.9 | **7.0** | c50 has one gap far out of line with the rest |
+| dip gap (largest gap ÷ range) | 0.269 | **0.385** | c50 puts 39% of its range in one empty stretch |
+| bimodality coefficient | 0.387 | 0.351 | **neither exceeds the 0.5556 uniform reference** |
+| two-means separation | 4.62× | 5.54× | both split "well", which at n=12 is nearly automatic |
+
+**This is weaker support than the DEEP/SHALLOW split alone suggested, and it
+changes how the c50 result should be stated.** The gap in the c50 sample is real
+and visible — three runs at 23–40, nine at 92–159, nothing between — but the
+bimodality coefficient does not corroborate two modes at either point, and the
+two-means separation barely distinguishes the two samples.
+
+Two honest caveats on the instruments themselves. The bimodality coefficient is
+most sensitive to *symmetric* two-cluster structure and is known to behave poorly
+for unequal group sizes, which is exactly the 3-versus-9 case here, so its
+failure to fire is weak evidence against. And **at n = 12 no shape statistic can
+establish multimodality**; a formal Hartigan dip test is not reported for the
+same reason, since its power at this sample size would make any p-value
+decorative.
+
+What the data supports without qualification is the difference in **location**:
+median queue depth 20.6 at c10 against 101.8 at c50, with the DEEP threshold
+crossed 0 times out of 12 versus 9. What it suggests but does not establish is
+that the c50 point is genuinely two-state rather than one broad, right-skewed
+mode. Separating those needs a larger n, which E2 does not provide either.
 
 ## Neither boundary changes
 

@@ -137,15 +137,31 @@ def main():
         if f[k] is None:
             w('| %s | _pending_ | _pending_ | |' % label)
         else:
-            r = ('cap-driven' if f[k] >= 0.75 else
+            r = ('**off-scale** — moved away from the other arm, not towards it '
+                 '(addendum 3)' if f[k] < 0 else
+                 'cap-driven' if f[k] >= 0.75 else
                  'concurrency-driven' if f[k] <= 0.25 else 'neither threshold')
-            w('| %s | %.4f | **%.3f** | %s |' % (label, mid(iv(e2[k])), f[k], r))
+            w('| %s | %.4f | **%+.3f** | %s |' % (label, mid(iv(e2[k])), f[k], r))
     w('')
     if f['c10'] is not None and f['c50'] is not None:
         both = [f['c10'], f['c50']]
-        verdict = ('**CAP-DRIVEN**' if min(both) >= 0.75 else
-                   '**CONCURRENCY-DRIVEN**' if max(both) <= 0.25 else '**MIXED**')
-        w('Registered verdict: %s (f = %.3f and %.3f).' % (verdict, *both))
+        # Addendum 3: a negative f disqualifies CONCURRENCY-DRIVEN outright and
+        # is not evidence for the cap either. Both verdicts fail together.
+        if min(both) < 0:
+            verdict = '**OFF-SCALE**'
+        elif min(both) >= 0.75:
+            verdict = '**CAP-DRIVEN**'
+        elif max(both) <= 0.25:
+            verdict = '**CONCURRENCY-DRIVEN**'
+        else:
+            verdict = '**MIXED**'
+        w('Registered verdict: %s (f = %+.3f and %+.3f).' % (verdict, *both))
+        if min(both) < 0:
+            w('')
+            w('Per addendum 3, registered before this cell was measured: the negative '
+              'fraction means the cell moved **away** from the other arm, so it does '
+              'not satisfy `CONCURRENCY-DRIVEN` despite being below 0.25, and moving '
+              'away is not evidence for the cap. Neither registered verdict is claimed.')
         if (min(both) <= 0.25) != (max(both) <= 0.25):
             w('')
             w('The two fractions disagree. The plan requires this be reported as an '
@@ -229,15 +245,17 @@ def main():
             ret, swp = G_REF[k]
             g = round((m - ret) / (swp - ret), 3)
             gs[k] = g
-            r = ('cap-governed' if g >= 0.75 else
+            r = ('**off-scale** (addendum 3)' if g < 0 else
+                 'cap-governed' if g >= 0.75 else
                  'concurrency-governed' if g <= 0.25 else 'neither threshold')
-            w('| %s | %.2f | **%.3f** | %s |' % (label, m, g, r))
+            w('| %s | %.2f | **%+.3f** | %s |' % (label, m, g, r))
         w('')
         if gs.get('c10') is not None and gs.get('c50') is not None:
             both = [gs['c10'], gs['c50']]
-            v = ('**CAP-GOVERNED**' if min(both) >= 0.75 else
+            v = ('**OFF-SCALE**' if min(both) < 0 else
+                 '**CAP-GOVERNED**' if min(both) >= 0.75 else
                  '**CONCURRENCY-GOVERNED**' if max(both) <= 0.25 else '**MIXED**')
-            w('Registered verdict: %s (g = %.3f and %.3f).' % (v, *both))
+            w('Registered verdict: %s (g = %+.3f and %+.3f).' % (v, *both))
         w('')
 
     # ---- campaign ------------------------------------------------------

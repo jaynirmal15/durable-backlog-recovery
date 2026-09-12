@@ -8,6 +8,14 @@ rests on: a controller can only act on a signal it can see coming.
 ## Answer
 
 > **(c) A signal warns in both arms. It is mean queue depth.**
+>
+> **This answer is sensitive to the noise scale — see A5.** Under a mean-pooled
+> within-point σ the answer is **(b)**, the registered expectation. Under a
+> median-pooled σ and under a two-sample Welch σ that involves no pooling
+> choice at all, it is **(c)**. The scale was changed from mean to median
+> *after* the data was seen. `results/E1-noise-scale-sensitivity.json` has the
+> full side-by-side; A5 explains why median is defensible and why the change is
+> nonetheless the most attackable step here.
 
 The registered expectation in `NOTES.md` was **(b)**, a signal at c50 but not
 at c10. **The data does not support (b).** Queue depth warns in every boundary
@@ -149,4 +157,19 @@ pre-EC2 corpus. Whether a warning of this size and this reliability is
 *sufficient* to control on is an E2/E4 question. This establishes only that a
 signal exists inside the safe region, in both arms, and identifies which one.
 
-Raw output: `results/E1-leading-indicator.json`.
+## Noise-scale sensitivity
+
+Detection criterion held fixed; only the scale varies.
+
+| noise scale | c10-C0 | c10-C1 | c50-C0 | c50-C1 | answer |
+|---|---|---|---|---|---|
+| mean | none | none | none | queue depth | **(b)** |
+| median | 5 metrics | none | 5 metrics | queue depth | **(c)** |
+| welch (no pooling) | 5 metrics | none | 5 metrics | p99, queue depth | **(c)** |
+
+Only the c50/C1 cell is stable across all three, and it is queue depth in every
+case. `c10-C1` reads "none" everywhere for a geometric reason — two SAFE
+points — not an empirical one.
+
+Raw output: `results/E1-leading-indicator.json`,
+`results/E1-noise-scale-sensitivity.json`.

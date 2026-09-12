@@ -651,3 +651,100 @@ honestly*, not *valid to draw conclusions from*.
 recovery term is now measured over the delivery span rather than the drain
 window. The live term is unchanged. Applied to every E1 boundary as it lands,
 retrospectively for boundary 1, by recomputation from retained traces.
+
+### A5 — 2026-09-12: the leading-indicator noise scale was changed after seeing the data
+
+**Registered after the fact.** This is the one amendment in this document made
+with the numbers already in view, and it changes an answer. It is written at
+length because it is the most attackable step in the leading-indicator analysis
+and a reader should be able to attack it with the evidence in front of them.
+
+#### What was changed, and when
+
+The E1 leading-indicator analysis asks whether any observable rises before a
+boundary. That requires a noise scale: a rise only counts if it clears the
+run-to-run scatter of the metric.
+
+The first implementation used the **mean** of the within-point standard
+deviations across a boundary's SAFE points. On seeing the output I changed it to
+the **median**, because the mean was dominated by a single point. **That change
+was made with the data in view.**
+
+Fixed **before** the numbers were seen, and unchanged since:
+
+- the **3σ** detection threshold;
+- the **0.5 ms** quantisation floor on millisecond-reported percentiles (and
+  0.05 requests on queue depth), so a metric with zero observed spread cannot
+  manufacture unbounded significance;
+- the six observables, and the requirement that a warning arrive with at least
+  one probed point of room before the last SAFE point.
+
+#### It changes the answer
+
+The detection criterion held fixed, only the scale varying:
+
+| noise scale | c10-C0 | c10-C1 | c50-C0 | c50-C1 | **answer** |
+|---|---|---|---|---|---|
+| **mean** | none | none | none | queue depth | **(b) c50 only** |
+| **median** | 5 metrics | none | 5 metrics | queue depth | **(c) both arms** |
+| **welch** | 5 metrics | none | 5 metrics | p99, queue depth | **(c) both arms** |
+
+**The mean-pooled scale returns (b), which is the registered expectation from
+`NOTES.md`. The median-pooled scale returns (c), which contradicts it.** A
+reviewer is entitled to note that the estimator was changed, after the data was
+seen, in the direction that overturns the project's own prior. That is exactly
+what happened, and it is why this amendment exists.
+
+#### Why median is nonetheless the defensible estimator
+
+Not because of the answer it gives. Because the mean-pooled scale is
+**incoherent as a noise model** at the points it is applied to.
+
+Take c10/C0. The within-point SDs of queue depth across its four SAFE points are
+**0.141, 0.070, 0.100 and 86.97**. The last is the bimodal near-boundary point,
+where three repetitions gave queue depths of 198.7, 13.3 and 15.2. The mean of
+those four SDs is **21.8**.
+
+That 21.8 is then used to ask whether the point at rl=820, whose own scatter is
+**0.100**, differs from the point at rl=755, whose scatter is **0.141**. It
+does — by 3.69 requests, which is roughly 30 times either point's actual
+scatter — but measured against a σ borrowed from a *different* point in a
+*different* regime, it registers as 0.17σ and vanishes.
+
+The mean-pooled estimator does not say "this rise is within the noise". It says
+"this rise is small compared to how unstable the system becomes somewhere else".
+Those are different claims and only the first is a reason to discount a signal.
+
+#### The estimator that settles it needs no such choice
+
+`welch` compares each point against the deepest-safe point using
+√(sd_i²/n_i + sd_0²/n_0) — the ordinary two-sample standard error, using only
+the two points being compared. It involves **no pooling across the curve and no
+mean-versus-median decision at all**, so it cannot be tuned by the choice this
+amendment is about.
+
+**It agrees with median, and returns (c).** Two of three scales, including the
+one with no free choice in it, give the same answer, and the one that differs
+does so through a mechanism that can be pointed at.
+
+#### What would have been better
+
+Registering the noise scale in advance, alongside the 3σ threshold and the
+quantisation floor. It was not, because the bimodality that breaks mean-pooling
+was itself discovered by this analysis. The honest statement is that the
+threshold and floor were pre-committed and the scale was not.
+
+#### Standing limitations of the result either way
+
+- **n = 3 per point.** A standard error estimated from three observations is
+  itself poorly determined; 3σ under a t-distribution with ~4 degrees of freedom
+  is nearer p ≈ 0.04 than p ≈ 0.003. The E1B replication at n = 12 addresses this
+  for the two near-boundary points specifically.
+- **c10/C1 cannot answer the question under any scale**, having only two SAFE
+  points. Its cell is "none" in all three rows for a geometric reason, not an
+  empirical one. E1B item 2 adds rl=240 and rl=255 to fix that.
+- The c50/C1 row is the only one stable across all three scales, and it is
+  queue depth in every case.
+
+Full table and per-metric detail: `results/E1-noise-scale-sensitivity.json`,
+regenerated by `scripts/noise_scale_sensitivity.py`.

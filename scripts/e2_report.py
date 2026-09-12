@@ -156,6 +156,17 @@ def main():
         else:
             verdict = '**MIXED**'
         w('Registered verdict: %s (f = %+.3f and %+.3f).' % (verdict, *both))
+        # CAP-DRIVEN needs BOTH fractions >= 0.75. Once one cell comes in low the
+        # verdict is arithmetically out of reach, and a reader should not take
+        # "not cap-driven" as a finding the second cell contributed to.
+        if f['c10'] < 0.75:
+            w('')
+            w('**`CAP-DRIVEN` was already unreachable before this cell was measured.** '
+              'It requires both fractions to be at least 0.75, and the c10 cell '
+              'returned %+.3f. So the absence of a cap verdict is settled by the c10 '
+              'cell alone and the c50 cell cannot count as evidence for it. What the '
+              'c50 cell decides is which of the remaining readings applies.'
+              % f['c10'])
         if min(both) < 0:
             w('')
             w('Per addendum 3, registered before this cell was measured: the negative '

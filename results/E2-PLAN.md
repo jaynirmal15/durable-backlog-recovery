@@ -331,3 +331,60 @@ It would **not** identify a mechanism, and no mechanism is proposed here. In
 particular, an interval **above** E1's would mean a five-times **smaller** queue
 tolerated a **higher** recovery rate, which no reading in this plan predicts in
 either direction.
+
+---
+
+## Addendum 4 — addendum 3 has no dead band, registered before the deciding probe
+
+**Recorded 2026-09-12 while `c50-c0-rl980-r1` was running. State of knowledge:**
+rl=975 SAFE on three reps at A4 rho 0.9823–0.9824; rl=990, 1000, 1025 and 1075
+all UNSAFE on three reps each; **rl=980 unknown, in progress**. So the boundary is
+one of [975, 980], [980, 985] or [985, 990], and which one is not yet known.
+
+### The defect
+
+Addendum 3 rules that any negative `f` yields **OFF-SCALE** and disqualifies
+`CONCURRENCY-DRIVEN`. It has no dead band around zero. Working the arithmetic for
+the three outcomes still possible:
+
+| if the boundary is | rho midpoint | f_c50 | addendum 3 says |
+|---|---:|---:|---|
+| [975, 980] | 0.98265 | **−0.001** | OFF-SCALE |
+| [980, 985] | 0.98350 | **−0.013** | OFF-SCALE |
+| [985, 990] | 0.98435 | **−0.025** | OFF-SCALE |
+
+**Every remaining outcome fires the rule**, at a magnitude between 0.001 and
+0.025 — one to two orders of magnitude below the 0.25 threshold the scale is
+graded in. Addendum 3 was written against a cell that moves materially the wrong
+way; the synthetic case used to test it sat at −0.057. A cell at −0.001 has not
+moved at all.
+
+Reporting **OFF-SCALE** as the headline for f = −0.001 would misrepresent the
+result as strongly as calling it concurrency-driven would have.
+
+### What is and is not changed
+
+**The registered criterion is not changed.** Adding a dead band now, having
+computed that the rule is about to fire, is precisely the post-hoc adjustment
+pre-registration exists to prevent. The verdict is reported exactly as addendum 3
+produces it.
+
+**What is fixed now is the reporting, not the rule.** The E2 report will state,
+together and in this order:
+
+1. the signed magnitude of `f` for both cells;
+2. the literal registered verdict from addendum 3;
+3. this defect, named — that the criterion has no dead band, so a negligible
+   negative value produces the same verdict as a large one;
+4. the magnitude reading alongside: `|f| <= 0.25` in both cells means neither
+   cell moved materially in either direction.
+
+Point 4 is not a new verdict and is not given verdict status. It is the
+observation that the two readings the plan can express — moved, did not move —
+do not distinguish a cell at −0.001 from one at +0.001, and the data cannot be
+made to say which side of zero it fell on to three decimal places.
+
+### The same applies to g
+
+`g` inherits the identical scale and the identical gap. If `g` comes back
+slightly negative it is reported the same way, and for the same reason.

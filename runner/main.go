@@ -157,6 +157,10 @@ func main() {
 	nominalCap := flag.Float64("capacity", 2000, "nominal downstream capacity")
 	outageSec := flag.Int("outage", 120, "outage duration seconds")
 	serviceTimeMs := flag.Int("service-time-ms", 5, "downstream service time")
+	expectServiceUs := flag.Int("expect-service-us", 0, "E2e: the arm guard expects this "+
+		"service time in microseconds instead of the arm's nominal, while still checking "+
+		"concurrency. Needed because the corrected sleep is sub-millisecond and no arm "+
+		"names it. 0 leaves the guard exactly as it was.")
 	arm := flag.String("arm", "", "concurrency arm c10|c50 — asserts downstream S/concurrency match before start")
 	profile := flag.String("profile", "graceful", "downstream profile")
 	workers := flag.Int("workers", 64, "consumer workers")
@@ -250,7 +254,7 @@ func main() {
 	setCapacity(client, *downstream, *nominalCap)
 	time.Sleep(300 * time.Millisecond)
 	dsCap := getCapacity(client, *downstream)
-	if err := assertDownstreamArm(*arm, *serviceTimeMs, *nominalCap, dsCap); err != nil {
+	if err := assertDownstreamArm(*arm, *serviceTimeMs, *nominalCap, dsCap, *expectServiceUs); err != nil {
 		log.Fatalf("arm mismatch: %v", err)
 	}
 	dsConc := int(asFloat(dsCap["concurrency"]))
@@ -280,6 +284,7 @@ func main() {
 			"serviceTimeMs":           *serviceTimeMs,
 			"concurrencyArm":          *arm,
 			"downstreamServiceTimeMs": dsSvcMs,
+			"downstreamServiceTimeUs": int(asFloat(dsCap["serviceTimeUs"])),
 			"downstreamConcurrency":   dsConc,
 			"downstreamQueueCap":      asFloat(dsCap["queueCap"]),
 			// How the cap was chosen, and the wait a request faces when it is
@@ -1001,7 +1006,7 @@ func assertHeadroom(cond string, steps []HeadroomStep) error {
 
 // assertDownstreamArm refuses runs when declared arm does not match live downstream
 // configuration (guards against forgotten SERVICE_TIME_MS toggles).
-func assertDownstreamArm(arm string, declaredSvcMs int, nominalCap float64, ds map[string]any) error {
+func assertDownstreamArm(arm string, declaredSvcMs int, nominalCap float64, ds map[string]any, expectSvcUs int) error {
 	if arm == "" {
 		return nil
 	}
@@ -1009,8 +1014,23 @@ func assertDownstreamArm(arm string, declaredSvcMs int, nominalCap float64, ds m
 	if err != nil {
 		return err
 	}
-	gotSvc := int(asFloat(ds["serviceTimeMs"]))
 	gotConc := int(asFloat(ds["concurrency"]))
+	// E2e corrects the sleep by a sub-millisecond amount, which no arm names. The
+	// guard still runs: it checks the exact microsecond value and the concurrency,
+	// so a stale downstream is caught the same way. Only the expected service time
+	// is supplied from outside instead of derived from the arm.
+	if expectSvcUs > 0 {
+		gotUs := int(asFloat(ds["serviceTimeUs"]))
+		if gotUs != expectSvcUs {
+			return fmt.Errorf("expected serviceTimeUs=%d but downstream has %d", expectSvcUs, gotUs)
+		}
+		if gotConc != wantConc {
+			return fmt.Errorf("arm %s expects concurrency=%d at C=%.0f but downstream has %d",
+				arm, wantConc, nominalCap, gotConc)
+		}
+		return nil
+	}
+	gotSvc := int(asFloat(ds["serviceTimeMs"]))
 	if gotSvc != wantSvc {
 		return fmt.Errorf("arm %s expects serviceTimeMs=%d but downstream has %d", arm, wantSvc, gotSvc)
 	}

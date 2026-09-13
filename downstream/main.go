@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -201,6 +202,10 @@ func (s *Server) worker() {
 	idle := time.NewTimer(50 * time.Millisecond)
 	defer idle.Stop()
 	for {
+		var tTop time.Time
+		if overheadProbe {
+			tTop = time.Now()
+		}
 		live := s.liveW.Load()
 		target := s.targetW.Load()
 		if live > target && s.liveW.CompareAndSwap(live, live-1) {
@@ -213,6 +218,10 @@ func (s *Server) worker() {
 			}
 		}
 		idle.Reset(50 * time.Millisecond)
+		var tAfterTimer time.Time
+		if overheadProbe {
+			tAfterTimer = time.Now()
+		}
 		select {
 		case <-s.stopAll:
 			s.liveW.Add(-1)
@@ -222,6 +231,11 @@ func (s *Server) worker() {
 				s.liveW.Add(-1)
 				return
 			}
+			// Charged only when a job was actually received: an idle worker pays
+			// the timer cost too, but that is not a per-request cost.
+			if overheadProbe {
+				ovTimer.add(tAfterTimer.Sub(tTop).Nanoseconds())
+			}
 			s.handleJob(j)
 		case <-idle.C:
 			// re-check shrink
@@ -229,7 +243,104 @@ func (s *Server) worker() {
 	}
 }
 
+// ---------------------------------------------------------------- overhead probe
+//
+// E2e experiment 1. OFF unless OVERHEAD_PROBE=1, in which case it records where
+// a worker's per-request time goes beyond the sleep it was asked to perform.
+// That excess is what makes true capacity fall short of `concurrency / S`, so it
+// is measured on the worker path only: HTTP handling runs on the request
+// goroutine, consumes no worker time, and cannot reduce capacity.
+var overheadProbe = false
+
+type ovStat struct {
+	sum   atomic.Int64 // nanoseconds
+	count atomic.Int64
+	max   atomic.Int64
+}
+
+func (o *ovStat) add(ns int64) {
+	o.sum.Add(ns)
+	o.count.Add(1)
+	for {
+		m := o.max.Load()
+		if ns <= m || o.max.CompareAndSwap(m, ns) {
+			return
+		}
+	}
+}
+
+func (o *ovStat) report() map[string]any {
+	n := o.count.Load()
+	if n == 0 {
+		return map[string]any{"count": 0}
+	}
+	return map[string]any{
+		"count":  n,
+		"meanNs": o.sum.Load() / n,
+		"maxNs":  o.max.Load(),
+	}
+}
+
+var (
+	ovTimer, ovPreSleep, ovSleepExcess, ovPostSleep, ovTotal ovStat
+	// Percentiles need samples. Written lock-free: each index is claimed once
+	// by an atomic increment and written exactly once, and reads happen only
+	// from /admin/overhead after the load has stopped.
+	ovSampIdx   atomic.Int64
+	ovSampSleep []int64
+	ovSampTotal []int64
+)
+
+func ovSample(sleepExcess, total int64) {
+	i := ovSampIdx.Add(1) - 1
+	if i >= 0 && int(i) < len(ovSampTotal) {
+		ovSampSleep[i] = sleepExcess
+		ovSampTotal[i] = total
+	}
+}
+
+func ovPct(v []int64, q float64) int64 {
+	if len(v) == 0 {
+		return 0
+	}
+	c := append([]int64(nil), v...)
+	sort.Slice(c, func(a, b int) bool { return c[a] < c[b] })
+	i := int(q * float64(len(c)-1))
+	return c[i]
+}
+
+func overheadReport() map[string]any {
+	n := int(ovSampIdx.Load())
+	if n > len(ovSampTotal) {
+		n = len(ovSampTotal)
+	}
+	sleep, total := ovSampSleep[:n], ovSampTotal[:n]
+	out := map[string]any{
+		"enabled":     overheadProbe,
+		"samples":     n,
+		"timer":       ovTimer.report(),
+		"preSleep":    ovPreSleep.report(),
+		"sleepExcess": ovSleepExcess.report(),
+		"postSleep":   ovPostSleep.report(),
+		"total":       ovTotal.report(),
+		"note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side " +
+			"cost per request beyond the sleep it was asked to perform. HTTP handling " +
+			"is excluded: it does not run on a worker and cannot reduce capacity.",
+	}
+	for name, v := range map[string][]int64{"sleepExcess": sleep, "total": total} {
+		out[name+"Pct"] = map[string]any{
+			"p50Ns": ovPct(v, 0.50), "p90Ns": ovPct(v, 0.90),
+			"p99Ns": ovPct(v, 0.99), "p999Ns": ovPct(v, 0.999),
+		}
+	}
+	return out
+}
+
 func (s *Server) handleJob(j *job) {
+	var tRecv time.Time
+	if overheadProbe {
+		tRecv = time.Now()
+	}
 	s.stats.queued.Add(-1)
 	// Release the admission token as soon as the job leaves the queue, waking
 	// exactly one waiter.
@@ -252,9 +363,26 @@ func (s *Server) handleJob(j *job) {
 		j.done <- http.StatusGatewayTimeout
 		return
 	}
+	if !overheadProbe {
+		time.Sleep(st)
+		s.stats.served.Add(1)
+		j.done <- http.StatusOK
+		return
+	}
+	tSleep0 := time.Now()
 	time.Sleep(st)
+	tSleep1 := time.Now()
 	s.stats.served.Add(1)
 	j.done <- http.StatusOK
+	tDone := time.Now()
+	pre := tSleep0.Sub(tRecv).Nanoseconds()
+	excess := tSleep1.Sub(tSleep0).Nanoseconds() - st.Nanoseconds()
+	post := tDone.Sub(tSleep1).Nanoseconds()
+	ovPreSleep.add(pre)
+	ovSleepExcess.add(excess)
+	ovPostSleep.add(post)
+	ovTotal.add(pre + excess + post)
+	ovSample(excess, pre+excess+post)
 }
 
 // serviceTimeJitterSigma is SERVICE_TIME_JITTER: the standard deviation of the
@@ -329,6 +457,7 @@ func (s *Server) CapacityInfo() map[string]any {
 			int(s.queueCap.Load()), int(s.targetW.Load()), st)*10) / 10,
 		"profile":       profile,
 		"serviceTimeMs": st.Milliseconds(),
+		"serviceTimeUs": st.Microseconds(),
 		"timeoutMs":     to.Milliseconds(),
 	}
 }
@@ -532,12 +661,25 @@ func writeJSON(w http.ResponseWriter, v any) {
 
 func main() {
 	capacity := float64(envInt("CAPACITY", 2000))
+	// SERVICE_TIME_US takes precedence when set: E2e needs a sub-millisecond
+	// correction (4537 us) that SERVICE_TIME_MS cannot express. Unset, behaviour
+	// is exactly as before.
 	serviceTime := time.Duration(envInt("SERVICE_TIME_MS", 5)) * time.Millisecond
+	if us := envInt("SERVICE_TIME_US", 0); us > 0 {
+		serviceTime = time.Duration(us) * time.Microsecond
+	}
 	timeout := time.Duration(envInt("TIMEOUT_MS", 2000)) * time.Millisecond
 	profile := envStr("PROFILE", "graceful")
 	port := envInt("PORT", 8080)
 	queueCapOverride = envInt("QUEUE_CAP", 0)
 	serviceTimeJitterSigma = envFloat("SERVICE_TIME_JITTER", 0.15)
+	if envInt("OVERHEAD_PROBE", 0) > 0 {
+		overheadProbe = true
+		n := envInt("OVERHEAD_SAMPLES", 200000)
+		ovSampSleep = make([]int64, n)
+		ovSampTotal = make([]int64, n)
+		log.Printf("overhead probe ON, %d sample slots", n)
+	}
 	// Arrival-process capture. 0 (default) leaves it off entirely.
 	if n := envInt("ARRIVAL_LOG_CAP", 0); n > 0 {
 		arrivals.cap = n
@@ -562,6 +704,9 @@ func main() {
 	mux.HandleFunc("/admin/arrivals", s.AdminArrivals)
 	mux.HandleFunc("/admin/capacity", s.AdminCapacity)
 	mux.HandleFunc("/admin/stats", s.AdminStats)
+	mux.HandleFunc("/admin/overhead", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, overheadReport())
+	})
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))

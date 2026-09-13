@@ -13,17 +13,28 @@
 # file; applying it is a deliberate act, not a side effect of syncing.
 #
 # Usage: scripts/fetch_e2.sh c50-Q500          -> results/e2/c50-Q500
-#        scripts/fetch_e2.sh e2b results/e2b   -> results/e2b, remote results-e2b
+#        scripts/fetch_e2.sh e2b results/e2b results/e2b
+#                                              -> records results/e2b, traces
+#                                                 rhc-raw-data/results/e2b, remote results-e2b
 set -euo pipefail
 TAG="${1:?usage: fetch_e2.sh <tag> [local-dest]   e.g. c50-Q500}"
 DEST_REL="${2:-}"
-IP="$(cat /tmp/e1/ip3)"
+RAW_REL="${3:-results/e2}"
+# Ask AWS rather than trusting a file. The instance is stopped between
+# campaigns and comes back with a new public address every time, so a cached IP
+# is stale by default -- it silently pointed at the previous address once and the
+# fetch just timed out.
+IP="${RHC_IP:-$(aws ec2 describe-instances --profile medialab --region us-east-1 \
+  --instance-ids i-099dca965768db94a \
+  --query 'Reservations[0].Instances[0].PublicIpAddress' --output text 2>/dev/null)}"
+[ -n "$IP" ] && [ "$IP" != "None" ] || { echo "no public IP: is the instance running?"; exit 1; }
+echo "instance $IP"
 KEY="$HOME/.ssh/rhc-ec2"
 SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=20 -i $KEY"
 HOST="ubuntu@$IP"
 REPO="$HOME/Jay_NIW/durable-backlog-recovery"
 DEST="$REPO/${DEST_REL:-results/e2/$TAG}"
-RAW="$HOME/Jay_NIW/rhc-raw-data/results/e2"
+RAW="$HOME/Jay_NIW/rhc-raw-data/$RAW_REL"
 SRC="ubuntu@$IP:rhc/results-$TAG"
 
 mkdir -p "$DEST/boundaries" "$RAW"

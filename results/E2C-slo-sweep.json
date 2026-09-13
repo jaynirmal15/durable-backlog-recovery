@@ -1,0 +1,1815 @@
+{
+  "thresholds": [
+    50,
+    100,
+    250,
+    500
+  ],
+  "baselineMargin": 0.5,
+  "cells": {
+    "E1 c10/C0": {
+      "S": 5,
+      "C": 2000,
+      "baselineP99": {
+        "p50": 7.0,
+        "max": 7,
+        "n": 450
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "755": "SAFE",
+            "800": "SAFE",
+            "820": "SAFE",
+            "825": "UNSAFE",
+            "830": "UNSAFE",
+            "840": "UNSAFE"
+          },
+          "vSLO": {
+            "755": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "800": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "820": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "825": [
+              0.7152,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.1538,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.7643,
+              0.6772,
+              0.7436
+            ],
+            "840": [
+              0.8397,
+              0.8662,
+              0.8679
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            820,
+            825
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.91,
+            0.9125
+          ],
+          "rhoStarMid": 0.9113
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "755": "SAFE",
+            "800": "SAFE",
+            "820": "SAFE",
+            "825": "MARGINAL",
+            "830": "UNSAFE",
+            "840": "UNSAFE"
+          },
+          "vSLO": {
+            "755": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "800": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "820": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "825": [
+              0.5669,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.6306,
+              0.538,
+              0.5256
+            ],
+            "840": [
+              0.7885,
+              0.8344,
+              0.8113
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            820,
+            825
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.91,
+            0.9125
+          ],
+          "rhoStarMid": 0.9113
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.02,
+          "classes": {
+            "755": "SAFE",
+            "800": "SAFE",
+            "820": "SAFE",
+            "825": "SAFE",
+            "830": "UNSAFE",
+            "840": "UNSAFE"
+          },
+          "vSLO": {
+            "755": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "800": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "820": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "825": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.0769,
+              0.0,
+              0.1355
+            ],
+            "840": [
+              0.6474,
+              0.707,
+              0.6792
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            825,
+            830
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9124,
+            0.915
+          ],
+          "rhoStarMid": 0.9137
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.01,
+          "classes": {
+            "755": "SAFE",
+            "800": "SAFE",
+            "820": "SAFE",
+            "825": "SAFE",
+            "830": "SAFE",
+            "840": "UNSAFE"
+          },
+          "vSLO": {
+            "755": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "800": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "820": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "825": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "840": [
+              0.4064,
+              0.4679,
+              0.4717
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            830,
+            840
+          ],
+          "bracketWidthRps": 10,
+          "atRegisteredResolution": false,
+          "rhoStarInterval": [
+            0.9149,
+            0.9196
+          ],
+          "rhoStarMid": 0.9173
+        }
+      }
+    },
+    "E1 c10/C1": {
+      "S": 5,
+      "C": 1400,
+      "baselineP99": {
+        "p50": 7.0,
+        "max": 8,
+        "n": 270
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "240": "SAFE",
+            "255": "SAFE",
+            "260": "SAFE",
+            "275": "SAFE",
+            "280": "UNSAFE",
+            "290": "UNSAFE"
+          },
+          "vSLO": {
+            "240": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "255": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "260": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "275": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "280": [
+              0.8224,
+              0.75,
+              0.8718
+            ],
+            "290": [
+              0.9031,
+              0.9071,
+              0.9069
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            275,
+            280
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9107,
+            0.9143
+          ],
+          "rhoStarMid": 0.9125
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "240": "SAFE",
+            "255": "SAFE",
+            "260": "SAFE",
+            "275": "SAFE",
+            "280": "UNSAFE",
+            "290": "UNSAFE"
+          },
+          "vSLO": {
+            "240": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "255": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "260": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "275": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "280": [
+              0.7874,
+              0.6706,
+              0.8368
+            ],
+            "290": [
+              0.8932,
+              0.8974,
+              0.8974
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            275,
+            280
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9107,
+            0.9143
+          ],
+          "rhoStarMid": 0.9125
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.02,
+          "classes": {
+            "240": "SAFE",
+            "255": "SAFE",
+            "260": "SAFE",
+            "275": "SAFE",
+            "280": "UNSAFE",
+            "290": "UNSAFE"
+          },
+          "vSLO": {
+            "240": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "255": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "260": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "275": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "280": [
+              0.63,
+              0.4941,
+              0.7336
+            ],
+            "290": [
+              0.8447,
+              0.8473,
+              0.8544
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            275,
+            280
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9107,
+            0.9143
+          ],
+          "rhoStarMid": 0.9125
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.01,
+          "classes": {
+            "240": "SAFE",
+            "255": "SAFE",
+            "260": "SAFE",
+            "275": "SAFE",
+            "280": "UNSAFE",
+            "290": "UNSAFE"
+          },
+          "vSLO": {
+            "240": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "255": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "260": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "275": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "280": [
+              0.0,
+              0.2512,
+              0.5667
+            ],
+            "290": [
+              0.7859,
+              0.7775,
+              0.7919
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            275,
+            280
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9107,
+            0.9143
+          ],
+          "rhoStarMid": 0.9125
+        }
+      }
+    },
+    "E1 c50/C0": {
+      "S": 25,
+      "C": 2000,
+      "baselineP99": {
+        "p50": 34,
+        "max": 35,
+        "n": 495
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": false,
+          "sOverSlo": 0.5,
+          "classes": {
+            "890": "SAFE",
+            "940": "SAFE",
+            "965": "SAFE",
+            "970": "SAFE",
+            "975": "UNSAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE"
+          },
+          "vSLO": {
+            "890": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "940": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "965": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "970": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "975": [
+              0.8321,
+              0.8478,
+              0.8235,
+              0.6906,
+              0.705,
+              0.837,
+              0.8333,
+              0.3382,
+              0.6619,
+              0.8333,
+              0.8345,
+              0.6906,
+              0.7391,
+              0.8129,
+              0.413
+            ],
+            "980": [
+              0.8102,
+              0.8102,
+              0.8518
+            ],
+            "990": [
+              0.8696,
+              0.8406,
+              0.8613
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            970,
+            975
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9797,
+            0.9823
+          ],
+          "rhoStarMid": 0.981
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.25,
+          "classes": {
+            "890": "SAFE",
+            "940": "SAFE",
+            "965": "SAFE",
+            "970": "SAFE",
+            "975": "UNSAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE"
+          },
+          "vSLO": {
+            "890": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "940": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "965": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "970": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "975": [
+              0.0657,
+              0.5797,
+              0.1642,
+              0.4532,
+              0.3022,
+              0.6741,
+              0.4565,
+              0.0,
+              0.0,
+              0.6812,
+              0.2374,
+              0.3261,
+              0.3551,
+              0.4855,
+              0.0652
+            ],
+            "980": [
+              0.6912,
+              0.635,
+              0.7259
+            ],
+            "990": [
+              0.8116,
+              0.7609,
+              0.7664
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            970,
+            975
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9797,
+            0.9823
+          ],
+          "rhoStarMid": 0.981
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "890": "SAFE",
+            "940": "SAFE",
+            "965": "SAFE",
+            "970": "SAFE",
+            "975": "SAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE"
+          },
+          "vSLO": {
+            "890": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "940": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "965": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "970": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "975": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "980": [
+              0.25,
+              0.1022,
+              0.2667
+            ],
+            "990": [
+              0.6014,
+              0.5942,
+              0.5474
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            975,
+            980
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9817,
+            0.9835
+          ],
+          "rhoStarMid": 0.9826
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "890": "SAFE",
+            "940": "SAFE",
+            "965": "SAFE",
+            "970": "SAFE",
+            "975": "SAFE",
+            "980": "SAFE",
+            "990": "UNSAFE"
+          },
+          "vSLO": {
+            "890": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "940": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "965": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "970": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "975": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "980": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "990": [
+              0.292,
+              0.2029,
+              0.1387
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            980,
+            990
+          ],
+          "bracketWidthRps": 10,
+          "atRegisteredResolution": false,
+          "rhoStarInterval": [
+            0.9833,
+            0.9862
+          ],
+          "rhoStarMid": 0.9848
+        }
+      }
+    },
+    "E1 c50/C1": {
+      "S": 25,
+      "C": 1400,
+      "baselineP99": {
+        "p50": 34,
+        "max": 34,
+        "n": 225
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": false,
+          "sOverSlo": 0.5,
+          "classes": {
+            "340": "SAFE",
+            "360": "SAFE",
+            "370": "MARGINAL",
+            "375": "UNSAFE",
+            "380": "UNSAFE"
+          },
+          "vSLO": {
+            "340": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "360": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "370": [
+              0.0124,
+              0.0,
+              0.0124
+            ],
+            "375": [
+              0.8168,
+              0.7662,
+              0.8434
+            ],
+            "380": [
+              0.875,
+              0.8781,
+              0.8789
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            360,
+            370
+          ],
+          "bracketWidthRps": 10,
+          "atRegisteredResolution": false,
+          "rhoStarInterval": [
+            0.9714,
+            0.9786
+          ],
+          "rhoStarMid": 0.975
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.25,
+          "classes": {
+            "340": "SAFE",
+            "360": "SAFE",
+            "370": "SAFE",
+            "375": "UNSAFE",
+            "380": "UNSAFE"
+          },
+          "vSLO": {
+            "340": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "360": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "370": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "375": [
+              0.6863,
+              0.6975,
+              0.741
+            ],
+            "380": [
+              0.8281,
+              0.8531,
+              0.8509
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            370,
+            375
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9786,
+            0.9822
+          ],
+          "rhoStarMid": 0.9804
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "340": "SAFE",
+            "360": "SAFE",
+            "370": "SAFE",
+            "375": "UNSAFE",
+            "380": "UNSAFE"
+          },
+          "vSLO": {
+            "340": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "360": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "370": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "375": [
+              0.0966,
+              0.2972,
+              0.2356
+            ],
+            "380": [
+              0.65,
+              0.7375,
+              0.7671
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            370,
+            375
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9786,
+            0.9822
+          ],
+          "rhoStarMid": 0.9804
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "340": "SAFE",
+            "360": "SAFE",
+            "370": "SAFE",
+            "375": "SAFE",
+            "380": "UNSAFE"
+          },
+          "vSLO": {
+            "340": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "360": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "370": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "375": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "380": [
+              0.4263,
+              0.5925,
+              0.595
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            375,
+            380
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9821,
+            0.9857
+          ],
+          "rhoStarMid": 0.9839
+        }
+      }
+    },
+    "E2 c10@Q2500": {
+      "S": 5,
+      "C": 2000,
+      "baselineP99": {
+        "p50": 7,
+        "max": 7,
+        "n": 405
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "825": "MARGINAL",
+            "830": "UNSAFE",
+            "835": "UNSAFE",
+            "845": "UNSAFE",
+            "865": "UNSAFE",
+            "905": "UNSAFE"
+          },
+          "vSLO": {
+            "825": [
+              0.0,
+              0.0,
+              0.0318,
+              0.0,
+              0.0,
+              0.0258,
+              0.0,
+              0.0,
+              0.0,
+              0.0258,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.7848,
+              0.8101,
+              0.7834
+            ],
+            "835": [
+              0.8544,
+              0.8654,
+              0.8064
+            ],
+            "845": [
+              0.879,
+              0.8726,
+              0.8766
+            ],
+            "865": [
+              0.8917,
+              0.8981,
+              0.8917
+            ],
+            "905": [
+              0.8987,
+              0.8981,
+              0.8981
+            ]
+          },
+          "indeterminate": {},
+          "bracket": null,
+          "whyNotBracketed": "every probed point is non-SAFE",
+          "wouldBracket": {
+            "direction": "below",
+            "lowestProbed": 825,
+            "probe": [
+              820,
+              815,
+              810
+            ],
+            "note": "the boundary is below every rate this cell probed; run these three and the highest SAFE of them brackets it against rl=825"
+          }
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "825": "SAFE",
+            "830": "UNSAFE",
+            "835": "UNSAFE",
+            "845": "UNSAFE",
+            "865": "UNSAFE",
+            "905": "UNSAFE"
+          },
+          "vSLO": {
+            "825": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.6879,
+              0.6962,
+              0.6923
+            ],
+            "835": [
+              0.8101,
+              0.7885,
+              0.7226
+            ],
+            "845": [
+              0.8471,
+              0.8408,
+              0.8441
+            ],
+            "865": [
+              0.879,
+              0.879,
+              0.8726
+            ],
+            "905": [
+              0.8924,
+              0.8917,
+              0.8853
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            825,
+            830
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9124,
+            0.915
+          ],
+          "rhoStarMid": 0.9137
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.02,
+          "classes": {
+            "825": "SAFE",
+            "830": "UNSAFE",
+            "835": "UNSAFE",
+            "845": "UNSAFE",
+            "865": "UNSAFE",
+            "905": "UNSAFE"
+          },
+          "vSLO": {
+            "825": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.2548,
+              0.3248,
+              0.2628
+            ],
+            "835": [
+              0.6266,
+              0.5897,
+              0.4968
+            ],
+            "845": [
+              0.758,
+              0.7389,
+              0.7597
+            ],
+            "865": [
+              0.828,
+              0.8344,
+              0.828
+            ],
+            "905": [
+              0.8671,
+              0.8662,
+              0.8662
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            825,
+            830
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9124,
+            0.915
+          ],
+          "rhoStarMid": 0.9137
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.01,
+          "classes": {
+            "825": "SAFE",
+            "830": "SAFE",
+            "835": "UNSAFE",
+            "845": "UNSAFE",
+            "865": "UNSAFE",
+            "905": "UNSAFE"
+          },
+          "vSLO": {
+            "825": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "830": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "835": [
+              0.2468,
+              0.3205,
+              0.098
+            ],
+            "845": [
+              0.5924,
+              0.5897,
+              0.5948
+            ],
+            "865": [
+              0.758,
+              0.758,
+              0.7516
+            ],
+            "905": [
+              0.8291,
+              0.828,
+              0.8269
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            830,
+            835
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.9149,
+            0.9173
+          ],
+          "rhoStarMid": 0.9161
+        }
+      }
+    },
+    "E2 c50@Q500": {
+      "S": 25,
+      "C": 2000,
+      "baselineP99": {
+        "p50": 34,
+        "max": 35,
+        "n": 405
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": false,
+          "sOverSlo": 0.5,
+          "classes": {
+            "975": "UNSAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE",
+            "1000": "UNSAFE",
+            "1025": "UNSAFE",
+            "1075": "UNSAFE"
+          },
+          "vSLO": {
+            "975": [
+              0.8321,
+              0.8148,
+              0.7852,
+              0.7647,
+              0.6131,
+              0.8333,
+              0.8248,
+              0.8321,
+              0.6889,
+              0.6029,
+              0.8029,
+              0.854
+            ],
+            "980": [
+              0.8394,
+              0.8248,
+              0.854
+            ],
+            "990": [
+              0.8529,
+              0.8623,
+              0.8467
+            ],
+            "1000": [
+              0.8696,
+              0.8613,
+              0.8676
+            ],
+            "1025": [
+              0.8841,
+              0.8676,
+              0.8696
+            ],
+            "1075": [
+              0.8849,
+              0.8832,
+              0.8832
+            ]
+          },
+          "indeterminate": {},
+          "bracket": null,
+          "whyNotBracketed": "every probed point is non-SAFE",
+          "wouldBracket": {
+            "direction": "below",
+            "lowestProbed": 975,
+            "probe": [
+              970,
+              965,
+              960
+            ],
+            "note": "the boundary is below every rate this cell probed; run these three and the highest SAFE of them brackets it against rl=975"
+          }
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.25,
+          "classes": {
+            "975": "UNSAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE",
+            "1000": "UNSAFE",
+            "1025": "UNSAFE",
+            "1075": "UNSAFE"
+          },
+          "vSLO": {
+            "975": [
+              0.6496,
+              0.5852,
+              0.3037,
+              0.4559,
+              0.1241,
+              0.7029,
+              0.4015,
+              0.4161,
+              0.1111,
+              0.2794,
+              0.0,
+              0.4526
+            ],
+            "980": [
+              0.7007,
+              0.7007,
+              0.7226
+            ],
+            "990": [
+              0.7941,
+              0.7898,
+              0.7372
+            ],
+            "1000": [
+              0.8188,
+              0.8102,
+              0.7941
+            ],
+            "1025": [
+              0.8406,
+              0.8309,
+              0.8116
+            ],
+            "1075": [
+              0.8561,
+              0.8394,
+              0.8467
+            ]
+          },
+          "indeterminate": {},
+          "bracket": null,
+          "whyNotBracketed": "every probed point is non-SAFE",
+          "wouldBracket": {
+            "direction": "below",
+            "lowestProbed": 975,
+            "probe": [
+              970,
+              965,
+              960
+            ],
+            "note": "the boundary is below every rate this cell probed; run these three and the highest SAFE of them brackets it against rl=975"
+          }
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "975": "SAFE",
+            "980": "UNSAFE",
+            "990": "UNSAFE",
+            "1000": "UNSAFE",
+            "1025": "UNSAFE",
+            "1075": "UNSAFE"
+          },
+          "vSLO": {
+            "975": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "980": [
+              0.2482,
+              0.2206,
+              0.1397
+            ],
+            "990": [
+              0.6103,
+              0.5912,
+              0.5693
+            ],
+            "1000": [
+              0.6594,
+              0.5912,
+              0.6176
+            ],
+            "1025": [
+              0.7174,
+              0.7059,
+              0.6812
+            ],
+            "1075": [
+              0.7536,
+              0.7591,
+              0.7591
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            975,
+            980
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.982,
+            0.9841
+          ],
+          "rhoStarMid": 0.983
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "975": "SAFE",
+            "980": "SAFE",
+            "990": "UNSAFE",
+            "1000": "UNSAFE",
+            "1025": "UNSAFE",
+            "1075": "UNSAFE"
+          },
+          "vSLO": {
+            "975": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "980": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "990": [
+              0.2444,
+              0.1752,
+              0.1618
+            ],
+            "1000": [
+              0.3285,
+              0.2574,
+              0.2296
+            ],
+            "1025": [
+              0.4744,
+              0.4265,
+              0.4817
+            ],
+            "1075": [
+              0.587,
+              0.5839,
+              0.5839
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            980,
+            990
+          ],
+          "bracketWidthRps": 10,
+          "atRegisteredResolution": false,
+          "rhoStarInterval": [
+            0.9835,
+            0.986
+          ],
+          "rhoStarMid": 0.9848
+        }
+      }
+    },
+    "E2b C=400": {
+      "S": 25,
+      "C": 400,
+      "baselineP99": {
+        "p50": 34,
+        "max": 36,
+        "n": 315
+      },
+      "byThreshold": {
+        "50": {
+          "wellPosed": false,
+          "sOverSlo": 0.5,
+          "classes": {
+            "180": "SAFE",
+            "190": "UNSAFE",
+            "195": "UNSAFE",
+            "200": "UNSAFE"
+          },
+          "vSLO": {
+            "180": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "190": [
+              0.042,
+              0.1399,
+              0.028,
+              0.2517,
+              0.0629,
+              0.2378,
+              0.0769,
+              0.1399,
+              0.1259,
+              0.1748,
+              0.1469,
+              0.035
+            ],
+            "195": [
+              0.8819,
+              0.8828,
+              0.875
+            ],
+            "200": [
+              0.8881,
+              0.8881,
+              0.8951
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            180,
+            190
+          ],
+          "bracketWidthRps": 10,
+          "atRegisteredResolution": false,
+          "rhoStarInterval": [
+            0.95,
+            0.975
+          ],
+          "rhoStarMid": 0.9625
+        },
+        "100": {
+          "wellPosed": true,
+          "sOverSlo": 0.25,
+          "classes": {
+            "180": "SAFE",
+            "190": "SAFE",
+            "195": "UNSAFE",
+            "200": "UNSAFE"
+          },
+          "vSLO": {
+            "180": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "190": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "195": [
+              0.8264,
+              0.8207,
+              0.8333
+            ],
+            "200": [
+              0.8811,
+              0.8601,
+              0.8741
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            190,
+            195
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.975,
+            0.9875
+          ],
+          "rhoStarMid": 0.9812
+        },
+        "250": {
+          "wellPosed": true,
+          "sOverSlo": 0.1,
+          "classes": {
+            "180": "SAFE",
+            "190": "SAFE",
+            "195": "UNSAFE",
+            "200": "UNSAFE"
+          },
+          "vSLO": {
+            "180": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "190": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "195": [
+              0.7014,
+              0.6667,
+              0.6806
+            ],
+            "200": [
+              0.8182,
+              0.8112,
+              0.8042
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            190,
+            195
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.975,
+            0.9875
+          ],
+          "rhoStarMid": 0.9812
+        },
+        "500": {
+          "wellPosed": true,
+          "sOverSlo": 0.05,
+          "classes": {
+            "180": "SAFE",
+            "190": "SAFE",
+            "195": "UNSAFE",
+            "200": "UNSAFE"
+          },
+          "vSLO": {
+            "180": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "190": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "195": [
+              0.4685,
+              0.4722,
+              0.4583
+            ],
+            "200": [
+              0.7413,
+              0.7203,
+              0.7133
+            ]
+          },
+          "indeterminate": {},
+          "bracket": [
+            190,
+            195
+          ],
+          "bracketWidthRps": 5,
+          "atRegisteredResolution": true,
+          "rhoStarInterval": [
+            0.975,
+            0.9875
+          ],
+          "rhoStarMid": 0.9812
+        }
+      }
+    }
+  }
+}

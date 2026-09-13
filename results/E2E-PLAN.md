@@ -259,3 +259,58 @@ lower bound on rho\* together with the ceiling that bounds it above.
 Stopping the walk saves roughly an hour of probes that are safe for reasons
 unrelated to the boundary. The revised set is 12 to 15 runs, about 80 to 100
 minutes, against the 3.5 hours the original two searches would have taken.
+
+---
+
+## Addendum 3 — correcting addendum 2: the boundary exists and was found
+
+**Recorded immediately on the first rl=1400 result, before the point completed.**
+
+Addendum 2 argued the bisection could not terminate, because achieved rho is
+bounded by capacity and the registered prediction puts the boundary at that
+ceiling. **That argument was wrong, and it was wrong on the evidence available
+when I made it.** rl=1400 classifies UNSAFE:
+
+| rl | total rps | achieved rho | queue peak | live p99 | class |
+|---:|---:|---:|---:|---:|---|
+| 975 | 1948.5 | 0.9743 | 7 | 8 ms | SAFE |
+| 1075 | 1967.0 | 0.9835 | 18 | 14 ms | SAFE |
+| 1185 | 1976.7 | 0.9883 | 111 | 58 ms | SAFE |
+| **1400** | **1988.2** | **0.9941** | **500 (cap)** | **1030 ms** | **UNSAFE** |
+
+The error was reading two flat points as an asymptote. By rl=1185 the queue had
+already gone 7 → 18 → 111 and live p99 8 → 14 → 58 ms; the cell was visibly
+degrading toward its limit, and the +10% walk would have found the boundary at
+1305 or 1435, one or two probes on. The claim that no non-SAFE point exists was
+not supported by the data I had.
+
+The change of instrument still helped — a direct jump found the ceiling in one
+probe rather than two — but it was justified by a wrong argument, and the record
+says so rather than keeping the outcome and quietly dropping the reasoning.
+
+The mechanism withdrawn in addendum 2 stays withdrawn; nothing here revives it.
+
+### What the result says about which overhead governs
+
+The cell broke at achieved rho **0.9941**, against:
+
+| prediction | source | rho\* | verdict |
+|---|---|---:|---|
+| **0.9937** | saturated calibration (registered) | ceiling 1987.4/2000 | **the break sits 0.0004 above it** |
+| 0.9972 | in-situ drain cycle, 0.478 ms | ceiling 1994.4/2000 | **excluded** — the cell broke below it |
+| 0.9894 | 90%-load calibration | ceiling 1978.8/2000 | excluded — the cell was SAFE well above it |
+
+So the **saturated** figure is the one that governs the boundary, which is what
+addendum 1 registered as primary and gave a reason for. The in-situ cycle time is
+a real and stable third value — 0.478 ms across every rate, against 0.4947
+saturated — but it does **not** predict where the cell breaks.
+
+That is worth stating plainly: the in-situ measurement was the better instrument
+in principle and turned out to be the wrong predictor in practice.
+
+### Refinement still needed
+
+The bracket is [1185 SAFE, 1400 UNSAFE], which is 215 rps wide — far coarser than
+the registered 5 rps. In rho it is [0.9883, 0.9941], a width of 0.0058, because
+rho compresses hard near the ceiling. One probe at **rl = 1290** should close it
+to under one rho-step. That is run after the c50 probes, at n=3.

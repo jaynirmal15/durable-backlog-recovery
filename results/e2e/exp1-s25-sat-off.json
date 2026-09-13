@@ -1,0 +1,45 @@
+{
+  "closedLoopConns": 400,
+  "concurrency": 50,
+  "configuredCapacity": 2000,
+  "label": "s25-sat-off",
+  "offeredRate": 0,
+  "overhead": {
+    "enabled": false,
+    "note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side cost per request beyond the sleep it was asked to perform. HTTP handling is excluded: it does not run on a worker and cannot reduce capacity.",
+    "postSleep": {
+      "count": 0
+    },
+    "preSleep": {
+      "count": 0
+    },
+    "samples": 0,
+    "sleepExcess": {
+      "count": 0
+    },
+    "sleepExcessPct": {
+      "p50Ns": 0,
+      "p90Ns": 0,
+      "p999Ns": 0,
+      "p99Ns": 0
+    },
+    "timer": {
+      "count": 0
+    },
+    "total": {
+      "count": 0
+    },
+    "totalPct": {
+      "p50Ns": 0,
+      "p90Ns": 0,
+      "p999Ns": 0,
+      "p99Ns": 0
+    }
+  },
+  "queueCap": 2500,
+  "rejected": 0,
+  "servedRps": 1963.066107460958,
+  "serviceTimeUs": 25000,
+  "timedOut": 0,
+  "windowSec": 60.000526499
+}

@@ -1,0 +1,55 @@
+{
+  "closedLoopConns": 400,
+  "concurrency": 10,
+  "configuredCapacity": 2000,
+  "label": "s5-sat-on",
+  "offeredRate": 0,
+  "overhead": {
+    "enabled": true,
+    "note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side cost per request beyond the sleep it was asked to perform. HTTP handling is excluded: it does not run on a worker and cannot reduce capacity.",
+    "postSleep": {
+      "count": 127380,
+      "maxNs": 22443,
+      "meanNs": 770
+    },
+    "preSleep": {
+      "count": 127380,
+      "maxNs": 23528,
+      "meanNs": 414
+    },
+    "samples": 127380,
+    "sleepExcess": {
+      "count": 127380,
+      "maxNs": 1639798,
+      "meanNs": 493513
+    },
+    "sleepExcessPct": {
+      "p50Ns": 485640,
+      "p90Ns": 959562,
+      "p999Ns": 1129124,
+      "p99Ns": 1070102
+    },
+    "timer": {
+      "count": 127390,
+      "maxNs": 18142,
+      "meanNs": 285
+    },
+    "total": {
+      "count": 127380,
+      "maxNs": 1640946,
+      "meanNs": 494698
+    },
+    "totalPct": {
+      "p50Ns": 486794,
+      "p90Ns": 960874,
+      "p999Ns": 1130481,
+      "p99Ns": 1071223
+    }
+  },
+  "queueCap": 500,
+  "rejected": 0,
+  "servedRps": 1819.9147100641892,
+  "serviceTimeUs": 5000,
+  "timedOut": 0,
+  "windowSec": 60.001163459
+}

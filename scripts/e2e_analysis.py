@@ -1,28 +1,24 @@
 #!/usr/bin/env python3
-"""E2e analysis: the measured overhead, and the boundary after correcting for it.
+"""E2e analysis: the overhead measured three ways, and the corrected boundary.
 
-Three ways of measuring the same per-request cost, and they do not agree:
+Works from run records rather than boundary files. The bisection was abandoned
+mid-campaign (E2E-PLAN addendum 2, corrected by addendum 3) and replaced by
+direct probes, so the bracket is computed here from the same SAFE/UNSAFE rules
+locate_boundary applies.
 
-  90% load, smooth driver   experiment 1, open-loop pacer below saturation
-  saturated, smooth driver  experiment 1, closed loop
-  in situ, during a drain   experiment 2, probe reset at restore and read at
-                            drain completion, under the campaign's real arrival
-                            process
+Three measurements of one per-request cost, which do not agree:
 
-The third is the one that acts where the boundary is set, and it is reported
-against the two calibration figures rather than instead of them.
+  90% load, smooth driver    experiment 1, open-loop pacer below saturation
+  saturated, smooth driver   experiment 1, closed loop
+  in situ, during the drain  experiment 2, probe reset at restore, read at drain
 
-Effective utilisation is computed per run from the cycle time measured in that
-same run:
-
-    rho_eff = achieved_rate / (concurrency / mean_cycle)
-
-using the MEAN cycle, because throughput per worker is the reciprocal of the mean.
-The distribution is strongly right-skewed, so the median understates the cost and
-is reported only to show the skew.
+Only the saturated figure predicts where the cell actually breaks. The in-situ
+figure is the better instrument in principle and the wrong predictor in practice,
+and both are reported.
 
 Usage: python3 scripts/e2e_analysis.py
 """
+import collections
 import glob
 import json
 import os
@@ -30,160 +26,171 @@ import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from locate_boundary import RESOLUTION_RPS  # noqa: E402
+from locate_boundary import RESOLUTION_RPS, classify  # noqa: E402
 
-# Registered in E2E-PLAN addendum 1, before any boundary run.
-REGISTERED = {'c10': {'sleepUs': 4537, 'conc': 10, 'ovSat': 0.4947, 'ov90': 0.5165,
-                      'rhoSat': 0.9937, 'rho90': 0.9894, 'plateau': 1987.4},
-              'c50': {'sleepUs': 24537, 'conc': 50, 'ovSat': 0.4914, 'ov90': 0.5114,
-                      'rhoSat': 0.9989, 'rho90': 0.9981, 'plateau': 1997.7}}
 C_D = 2000.0
+UNCORRECTED = {'c10': 0.9137, 'c50': 0.9826}      # E1 midpoints, uncorrected
 UNCORRECTED_GAP = 0.0706
+# Registered in E2E-PLAN addendum 1, before any boundary run.
+REG = {'c10': {'sleepUs': 4537, 'conc': 10, 'svcMs': 5,
+               'ovSat': 0.4947, 'ov90': 0.5165, 'rhoSat': 0.9937, 'rho90': 0.9894,
+               'predPlateau': 1987.4},
+       'c50': {'sleepUs': 24537, 'conc': 50, 'svcMs': 25,
+               'ovSat': 0.4914, 'ov90': 0.5114, 'rhoSat': 0.9989, 'rho90': 0.9981,
+               'predPlateau': 1997.7}}
 
 
 def ms(ns):
     return ns / 1e6
 
 
-def run_cycle(rec):
-    o = rec.get('overheadDrain')
-    if not o:
+def achieved(rec):
+    """Total delivered rate over the drain: live issue rate plus recovery."""
+    td = rec.get('tDrainSec') or 0
+    if td <= 0:
         return None
-    c = o.get('cycle') or {}
-    if not c.get('count'):
+    inj = [p['injRate'] for p in (rec.get('timeline') or [])
+           if p['tSec'] <= td and p.get('injRate')]
+    if not inj:
         return None
-    return {'meanMs': ms(c['meanNs']), 'n': c['count'],
-            'medianMs': ms((o.get('cyclePct') or {}).get('p50Ns', 0)),
-            'p90Ms': ms((o.get('cyclePct') or {}).get('p90Ns', 0)),
-            'overheadMs': ms((o.get('total') or {}).get('meanNs', 0)),
-            'sleepExcessMs': ms((o.get('sleepExcess') or {}).get('meanNs', 0))}
+    return rec['backlogAtRestore'] / td + statistics.median(inj)
 
 
 def main():
-    out = {'registered': REGISTERED, 'uncorrectedGap': UNCORRECTED_GAP, 'cells': {}}
+    out = {'registered': REG, 'uncorrected': UNCORRECTED, 'cells': {}}
 
-    print('=== experiment 1 calibration, and the probe control ===')
-    print('%-14s %10s %12s %10s' % ('condition', 'served rps', 'overhead ms', 'probe'))
+    print('=== experiment 1: calibration and the probe control ===')
+    print('%-14s %11s %13s %7s' % ('condition', 'served rps', 'overhead ms', 'probe'))
     for p in sorted(glob.glob('results/e2e/exp1-*.json')):
         d = json.load(open(p))
         o = d['overhead']
-        print('%-14s %10.1f %12s %10s' % (
+        print('%-14s %11.1f %13s %7s' % (
             d['label'], d['servedRps'],
             '%.4f' % ms(o['total']['meanNs']) if o.get('enabled') else '-',
             'on' if o.get('enabled') else 'off'))
+    for s in ('s5', 's25'):
+        try:
+            on = json.load(open('results/e2e/exp1-%s-sat-on.json' % s))['servedRps']
+            off = json.load(open('results/e2e/exp1-%s-sat-off.json' % s))['servedRps']
+            print('  probe control %-4s off %.1f on %.1f  delta %+.2f%%  %s'
+                  % (s, off, on, 100 * (on - off) / off,
+                     'PASS' if abs(on - off) / off < 0.005 else 'FAIL'))
+        except Exception:
+            pass
 
     print()
-    print('=== experiment 2: plateau gate, then the boundary ===')
-    for arm, reg in REGISTERED.items():
-        bpath = 'results/e2e/boundaries/%s-C0.json' % arm
+    print('=== experiment 2: plateau gate, probes, and the bracket ===')
+    for arm, reg in REG.items():
         cell = {'registered': reg}
         pl = 'results/e2e/exp2-%s-plateau.json' % arm
         if os.path.exists(pl):
             d = json.load(open(pl))
-            cell['plateauMeasured'] = round(d['servedRps'], 1)
-            cell['plateauErrPct'] = round(100 * (d['servedRps'] - reg['plateau']) / reg['plateau'], 3)
-            cell['plateauOverheadMs'] = round(ms(d['overhead']['total']['meanNs']), 4) \
-                if d['overhead'].get('enabled') else None
-        l99 = 'results/e2e/exp2-%s-load99.json' % arm
-        if os.path.exists(l99):
-            d = json.load(open(l99))
-            cell['load99ServedRps'] = round(d['servedRps'], 1)
-            cell['load99OverheadMs'] = round(ms(d['overhead']['total']['meanNs']), 4) \
-                if d['overhead'].get('enabled') else None
+            cell['plateau'] = round(d['servedRps'], 1)
+            cell['plateauErrPct'] = round(100 * (d['servedRps'] - reg['predPlateau'])
+                                          / reg['predPlateau'], 3)
+            cell['ceilingRho'] = round(d['servedRps'] / C_D, 4)
 
-        recs = [json.load(open(p)) for p in sorted(glob.glob('results/e2e/%s-*rl*-r*.json'
-                                                             % ('e2e-' + arm)))]
-        cyc = [run_cycle(r) for r in recs]
-        cyc = [c for c in cyc if c]
-        if cyc:
-            cell['inSitu'] = {
-                'runs': len(cyc),
-                'meanCycleMs': round(statistics.median(c['meanMs'] for c in cyc), 4),
-                'medianCycleMs': round(statistics.median(c['medianMs'] for c in cyc), 4),
-                'overheadMs': round(statistics.median(c['overheadMs'] for c in cyc), 4),
-                'sleepExcessMs': round(statistics.median(c['sleepExcessMs'] for c in cyc), 4),
-                'requestsMeasured': sum(c['n'] for c in cyc),
-            }
-            mc = cell['inSitu']['meanCycleMs']
-            cell['inSitu']['impliedCapacity'] = round(reg['conc'] / (mc / 1000.0), 1)
-            cell['inSitu']['impliedRhoStar'] = round(
-                cell['inSitu']['impliedCapacity'] / C_D, 4)
-
-        if os.path.exists(bpath):
-            b = json.load(open(bpath))
-            bd = b['boundary']
-            by = {p['rl']: p for p in b['points']}
-            lo, hi = bd['lastSafeRl'], bd['firstNonSafeRl']
-            cell['boundary'] = {
-                'rlInterval': [lo, hi], 'endpointClass': bd['firstNonSafeClass'],
-                'rhoStarInterval': bd['rhoStarInterval'],
-                'rhoStarMid': round(sum(bd['rhoStarInterval']) / 2.0, 4),
-                'probes': len(b['points']),
-                'runs': sum(len(p['runs']) for p in b['points']),
-                'spreadFlags': [p['rl'] for p in b['points']
-                                if p.get('spreadExceedsResolution')],
-            }
-            # effective utilisation from each run's own measured cycle
-            effs = []
-            for r in recs:
-                if r['params']['rateLimitRps'] != lo:
-                    continue
-                c = run_cycle(r)
-                if not c:
-                    continue
-                run = next((x for x in by[lo]['runs'] if x['runId'] == r['runId']), None)
-                if not run:
-                    continue
-                achieved = run['rhoAchieved'] * C_D
-                effs.append(achieved * (c['meanMs'] / 1000.0) / reg['conc'])
-            if effs:
-                cell['boundary']['rhoEffectiveAtLastSafe'] = round(statistics.median(effs), 4)
-                cell['boundary']['rhoEffectiveRange'] = [round(min(effs), 4), round(max(effs), 4)]
+        by = collections.defaultdict(list)
+        for p in sorted(glob.glob('results/e2e/e2e-%s-c0-rl*-r*.json' % arm)):
+            by[json.load(open(p))['params']['rateLimitRps']].append(json.load(open(p)))
+        pts = []
+        for rl in sorted(by):
+            rs = by[rl]
+            v = [r['vSLO'] for r in rs]
+            ach = [a for a in (achieved(r) for r in rs) if a]
+            cy = [ms((r.get('overheadDrain', {}).get('cycle') or {}).get('meanNs', 0))
+                  for r in rs]
+            ov = [ms((r.get('overheadDrain', {}).get('total') or {}).get('meanNs', 0))
+                  for r in rs]
+            cy = [x for x in cy if x]
+            ov = [x for x in ov if x]
+            pts.append({
+                'rl': rl, 'n': len(rs), 'class': classify(v),
+                'vSLO': [round(x, 4) for x in v],
+                'achievedRps': round(statistics.median(ach), 1) if ach else None,
+                'rho': round(statistics.median(ach) / C_D, 4) if ach else None,
+                'queuePeak': max(r['supplementary']['drainQueueDepthPeak'] for r in rs),
+                'liveP99Ms': max(r['supplementary']['drainLiveP99Ms'] for r in rs),
+                'cycleMs': round(statistics.median(cy), 4) if cy else None,
+                'overheadMs': round(statistics.median(ov), 4) if ov else None,
+            })
+        cell['points'] = pts
+        safe = [p for p in pts if p['class'] == 'SAFE']
+        uns = [p for p in pts if p['class'] == 'UNSAFE']
+        if safe and uns:
+            lo = max(safe, key=lambda p: p['rl'])
+            above = [p for p in uns if p['rl'] > lo['rl']]
+            if above:
+                hi = min(above, key=lambda p: p['rl'])
+                cell['bracket'] = {
+                    'rl': [lo['rl'], hi['rl']], 'rlWidth': hi['rl'] - lo['rl'],
+                    'rho': [lo['rho'], hi['rho']],
+                    'rhoWidth': round(hi['rho'] - lo['rho'], 4),
+                    'rhoMid': round((lo['rho'] + hi['rho']) / 2.0, 4),
+                    'atRlResolution': (hi['rl'] - lo['rl']) <= RESOLUTION_RPS,
+                }
+        insitu = [p['overheadMs'] for p in pts if p['overheadMs']]
+        if insitu:
+            cell['inSituOverheadMs'] = round(statistics.median(insitu), 4)
+            cell['inSituCapacity'] = round(
+                reg['conc'] / (statistics.median([p['cycleMs'] for p in pts if p['cycleMs']])
+                               / 1000.0), 1)
+            cell['inSituRho'] = round(cell['inSituCapacity'] / C_D, 4)
         out['cells'][arm] = cell
 
         print()
-        print('--- %s ---' % arm)
-        if 'plateauMeasured' in cell:
-            print('  plateau      measured %.1f, predicted %.1f, error %+.2f%%  %s'
-                  % (cell['plateauMeasured'], reg['plateau'], cell['plateauErrPct'],
-                     'MATCHES' if abs(cell['plateauErrPct']) < 1.0 else 'DOES NOT MATCH'))
-        if 'inSitu' in cell:
-            s = cell['inSitu']
-            print('  overhead     90%% load %.4f | saturated %.4f | IN SITU %.4f ms'
-                  % (reg['ov90'], reg['ovSat'], s['overheadMs']))
-            print('  cycle        mean %.4f ms, median %.4f ms (skewed), %d requests over %d runs'
-                  % (s['meanCycleMs'], s['medianCycleMs'], s['requestsMeasured'], s['runs']))
-            print('  in-situ implies capacity %.1f -> rho* %.4f'
-                  % (s['impliedCapacity'], s['impliedRhoStar']))
-        if 'boundary' in cell:
-            b = cell['boundary']
-            print('  boundary     rl [%d, %d] %s   rho* %s  mid %.4f'
-                  % (b['rlInterval'][0], b['rlInterval'][1], b['endpointClass'],
-                     b['rhoStarInterval'], b['rhoStarMid']))
-            if 'rhoEffectiveAtLastSafe' in b:
-                print('  measured effective utilisation at the last SAFE point: %.4f'
-                      % b['rhoEffectiveAtLastSafe'])
-            for name, key in [('saturated (registered)', 'rhoSat'), ('90% load', 'rho90')]:
-                d = b['rhoStarMid'] - reg[key]
-                print('    vs %-22s %.4f   diff %+.4f = %+.1f bisection steps'
-                      % (name, reg[key], d, d / (RESOLUTION_RPS / C_D)))
-            if 'inSitu' in cell:
-                d = b['rhoStarMid'] - cell['inSitu']['impliedRhoStar']
-                print('    vs %-22s %.4f   diff %+.4f = %+.1f bisection steps'
-                      % ('in-situ prediction', cell['inSitu']['impliedRhoStar'], d,
-                         d / (RESOLUTION_RPS / C_D)))
+        print('--- %s (sleep %d us, concurrency %d) ---' % (arm, reg['sleepUs'], reg['conc']))
+        if 'plateau' in cell:
+            print('  plateau gate: measured %.1f, predicted %.1f, error %+.2f%%  %s'
+                  % (cell['plateau'], reg['predPlateau'], cell['plateauErrPct'],
+                     'PASS' if abs(cell['plateauErrPct']) < 1.0 else 'FAIL'))
+        print('  %6s %3s %10s %8s %8s %8s %9s %-22s %s'
+              % ('rl', 'n', 'achieved', 'rho', 'qPeak', 'liveP99', 'cycle ms', 'vSLO', 'class'))
+        for p in pts:
+            print('  %6d %3d %10s %8s %8d %8.0f %9s %-22s %s'
+                  % (p['rl'], p['n'],
+                     '%.1f' % p['achievedRps'] if p['achievedRps'] else '-',
+                     '%.4f' % p['rho'] if p['rho'] else '-',
+                     p['queuePeak'], p['liveP99Ms'],
+                     '%.4f' % p['cycleMs'] if p['cycleMs'] else '-',
+                     ', '.join('%.3f' % x for x in p['vSLO'][:3]), p['class']))
+        if 'bracket' in cell:
+            b = cell['bracket']
+            print('  bracket rl [%d, %d] (%d rps%s) -> rho [%.4f, %.4f] width %.4f mid %.4f'
+                  % (b['rl'][0], b['rl'][1], b['rlWidth'],
+                     '' if b['atRlResolution'] else ', coarser than %d' % RESOLUTION_RPS,
+                     b['rho'][0], b['rho'][1], b['rhoWidth'], b['rhoMid']))
+            step = RESOLUTION_RPS / C_D
+            for name, val in [('saturated (registered)', reg['rhoSat']),
+                              ('90% load', reg['rho90']),
+                              ('in situ', cell.get('inSituRho')),
+                              ('measured ceiling', cell.get('ceilingRho'))]:
+                if val is None:
+                    continue
+                inside = b['rho'][0] <= val <= b['rho'][1]
+                print('    %-22s %.4f  %s' % (
+                    name, val,
+                    'INSIDE the bracket' if inside
+                    else 'outside, by %+.4f = %+.1f steps'
+                         % (b['rhoMid'] - val, (b['rhoMid'] - val) / step)))
+        if 'inSituOverheadMs' in cell:
+            print('  overhead: 90%% load %.4f | saturated %.4f | in situ %.4f ms'
+                  % (reg['ov90'], reg['ovSat'], cell['inSituOverheadMs']))
 
-    mids = [c['boundary']['rhoStarMid'] for c in out['cells'].values() if 'boundary' in c]
+    print()
+    print('=== the gap between the arms ===')
+    mids = {a: c['bracket']['rhoMid'] for a, c in out['cells'].items() if 'bracket' in c}
     if len(mids) == 2:
-        gap = abs(mids[1] - mids[0])
+        gap = abs(mids['c50'] - mids['c10'])
         out['residualGap'] = round(gap, 4)
         out['fractionRemoved'] = round(100 * (1 - gap / UNCORRECTED_GAP), 1)
-        print()
-        print('=== the gap ===')
-        print('  uncorrected            0.0706')
-        print('  predicted residual     0.0052   (registered, from saturated overhead)')
-        print('  measured residual      %.4f   (%.1f%% of the uncorrected gap removed)'
+        print('  uncorrected        %.4f  (c10 %.4f, c50 %.4f)'
+              % (UNCORRECTED_GAP, UNCORRECTED['c10'], UNCORRECTED['c50']))
+        print('  predicted residual 0.0052  (registered)')
+        print('  measured residual  %.4f  -> %.1f%% of the gap removed'
               % (gap, out['fractionRemoved']))
+    else:
+        print('  pending: %s' % ', '.join(a for a in REG if a not in mids))
 
     json.dump(out, open('results/E2E-analysis.json', 'w'), indent=2)
     print()

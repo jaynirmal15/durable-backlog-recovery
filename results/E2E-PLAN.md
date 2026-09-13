@@ -314,3 +314,42 @@ The bracket is [1185 SAFE, 1400 UNSAFE], which is 215 rps wide — far coarser t
 the registered 5 rps. In rho it is [0.9883, 0.9941], a width of 0.0058, because
 rho compresses hard near the ceiling. One probe at **rl = 1290** should close it
 to under one rho-step. That is run after the c50 probes, at n=3.
+
+---
+
+## Addendum 4 — correcting addendum 3: the bracket does not yet discriminate
+
+**Recorded before the refinement probe runs, while its outcome is unknown.**
+
+Addendum 3 said the saturated prediction governs and the 90%-load prediction is
+"excluded — the cell was SAFE well above it". **That is wrong.** The c10 bracket
+is rho [0.9883, 0.9941], and it contains *both* candidates:
+
+| prediction | rho\* | in the bracket [0.9883, 0.9941]? |
+|---|---:|---|
+| saturated (registered) | 0.9937 | **yes** |
+| 90% load | 0.9894 | **yes** |
+| in situ | 0.9973 | no — excluded |
+| measured ceiling | 0.9937 | yes |
+
+The highest SAFE point is 0.9883, which is *below* 0.9894, not above it. Nothing
+observed so far is inconsistent with the 90%-load figure. The only claim the data
+supports is the negative one: **the in-situ overhead does not predict where the
+cell breaks**, being 2.4 bisection steps above the bracket.
+
+I reached the stronger conclusion by comparing the single UNSAFE point against
+0.9937 and ignoring that the bracket's lower end sits below the other candidate.
+A bracket 215 rps wide cannot separate two predictions 0.0043 apart.
+
+### What the refinement decides
+
+The probe at rl = 1290 discriminates cleanly, and the reading is fixed here
+before it runs:
+
+| outcome | bracket becomes | reading |
+|---|---|---|
+| 1290 SAFE | rho [~0.991, 0.9941] | excludes 0.9894, retains 0.9937 — **the saturated figure governs** |
+| 1290 UNSAFE | rho [0.9883, ~0.991] | excludes 0.9937, retains 0.9894 — **the 90%-load figure governs** |
+
+Either way one candidate survives and one dies. That is the whole purpose of the
+refinement, and addendum 3 should have said so instead of announcing a winner.

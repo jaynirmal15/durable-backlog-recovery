@@ -396,6 +396,50 @@
       "pctOfCap": 90.185,
       "maxVSLO": 0.7591,
       "safe": false
+    },
+    {
+      "cell": "E2b C=400",
+      "rl": 180,
+      "n": 3,
+      "cap": 500,
+      "capacityDuringDrain": 400,
+      "medianQMean": 0.66,
+      "pctOfCap": 0.132,
+      "maxVSLO": 0,
+      "safe": true
+    },
+    {
+      "cell": "E2b C=400",
+      "rl": 190,
+      "n": 12,
+      "cap": 500,
+      "capacityDuringDrain": 400,
+      "medianQMean": 2.63,
+      "pctOfCap": 0.526,
+      "maxVSLO": 0,
+      "safe": true
+    },
+    {
+      "cell": "E2b C=400",
+      "rl": 195,
+      "n": 3,
+      "cap": 500,
+      "capacityDuringDrain": 400,
+      "medianQMean": 180.21,
+      "pctOfCap": 36.043,
+      "maxVSLO": 0.7014,
+      "safe": false
+    },
+    {
+      "cell": "E2b C=400",
+      "rl": 200,
+      "n": 3,
+      "cap": 500,
+      "capacityDuringDrain": 400,
+      "medianQMean": 364.99,
+      "pctOfCap": 72.998,
+      "maxVSLO": 0.8182,
+      "safe": false
     }
   ],
   "lastSafePerCell": {
@@ -462,6 +506,17 @@
       "capacityDuringDrain": 2000,
       "medianQMean": 108.43,
       "pctOfCap": 21.686,
+      "maxVSLO": 0,
+      "safe": true
+    },
+    "E2b C=400": {
+      "cell": "E2b C=400",
+      "rl": 190,
+      "n": 12,
+      "cap": 500,
+      "capacityDuringDrain": 400,
+      "medianQMean": 2.63,
+      "pctOfCap": 0.526,
       "maxVSLO": 0,
       "safe": true
     }

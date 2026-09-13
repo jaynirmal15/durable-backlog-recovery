@@ -191,10 +191,10 @@ def main():
         w('')
         w('E2\'s null has a candidate mechanism: across all six cells measured '
           'before this one, the median queue peak at the last SAFE point sat below '
-          'the cap, 1.5%% to 50.6%% of it. The brief asks for the same check at a '
+          'the cap, 1.5% to 50.6% of it. The brief asks for the same check at a '
           'fifth of the absolute rate.')
         w('')
-        w('| rl | class | n | cap | median peak | %% of cap | max peak | %% of cap | reaches cap |')
+        w('| rl | class | n | cap | median peak | % of cap | max peak | % of cap | reaches cap |')
         w('|---:|---|---:|---:|---:|---:|---:|---:|---|')
         by = {}
         for pth in recs:

@@ -231,12 +231,16 @@ func (s *Server) worker() {
 				s.liveW.Add(-1)
 				return
 			}
+			jobNs, excessNs, totalNs := s.handleJob(j)
 			// Charged only when a job was actually received: an idle worker pays
 			// the timer cost too, but that is not a per-request cost.
-			if overheadProbe {
-				ovTimer.add(tAfterTimer.Sub(tTop).Nanoseconds())
+			if overheadProbe && jobNs > 0 {
+				t := tAfterTimer.Sub(tTop).Nanoseconds()
+				ovTimer.add(t)
+				cyc := t + jobNs
+				ovCycle.add(cyc)
+				ovSample(excessNs, totalNs, cyc)
 			}
-			s.handleJob(j)
 		case <-idle.C:
 			// re-check shrink
 		}
@@ -283,6 +287,12 @@ func (o *ovStat) report() map[string]any {
 
 var (
 	ovTimer, ovPreSleep, ovSleepExcess, ovPostSleep, ovTotal ovStat
+	// ovCycle is the BUSY cycle: timer + preSleep + the actual sleep + postSleep.
+	// It deliberately excludes the worker's wait for the next job. Including idle
+	// would make concurrency/cycle equal the achieved rate by construction, and
+	// the effective utilisation computed from it identically 1.
+	ovCycle     ovStat
+	ovSampCycle []int64
 	// Percentiles need samples. Written lock-free: each index is claimed once
 	// by an atomic increment and written exactly once, and reads happen only
 	// from /admin/overhead after the load has stopped.
@@ -291,12 +301,28 @@ var (
 	ovSampTotal []int64
 )
 
-func ovSample(sleepExcess, total int64) {
+func ovSample(sleepExcess, total, cycle int64) {
 	i := ovSampIdx.Add(1) - 1
 	if i >= 0 && int(i) < len(ovSampTotal) {
 		ovSampSleep[i] = sleepExcess
 		ovSampTotal[i] = total
+		ovSampCycle[i] = cycle
 	}
+}
+
+// overheadReset zeroes every counter and rewinds the sample buffer, so a reader
+// can scope the probe to one window -- the runner resets at restore and reads at
+// drain, making every figure drain-window-only. A handful of samples in flight
+// across the reset are lost or double-counted; against ~100k per window that is
+// immaterial.
+func overheadReset() {
+	for _, o := range []*ovStat{&ovTimer, &ovPreSleep, &ovSleepExcess, &ovPostSleep,
+		&ovTotal, &ovCycle} {
+		o.sum.Store(0)
+		o.count.Store(0)
+		o.max.Store(0)
+	}
+	ovSampIdx.Store(0)
 }
 
 func ovPct(v []int64, q float64) int64 {
@@ -323,11 +349,13 @@ func overheadReport() map[string]any {
 		"sleepExcess": ovSleepExcess.report(),
 		"postSleep":   ovPostSleep.report(),
 		"total":       ovTotal.report(),
+		"cycle":       ovCycle.report(),
 		"note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side " +
 			"cost per request beyond the sleep it was asked to perform. HTTP handling " +
 			"is excluded: it does not run on a worker and cannot reduce capacity.",
 	}
-	for name, v := range map[string][]int64{"sleepExcess": sleep, "total": total} {
+	for name, v := range map[string][]int64{"sleepExcess": sleep, "total": total,
+		"cycle": ovSampCycle[:n]} {
 		out[name+"Pct"] = map[string]any{
 			"p50Ns": ovPct(v, 0.50), "p90Ns": ovPct(v, 0.90),
 			"p99Ns": ovPct(v, 0.99), "p999Ns": ovPct(v, 0.999),
@@ -336,7 +364,7 @@ func overheadReport() map[string]any {
 	return out
 }
 
-func (s *Server) handleJob(j *job) {
+func (s *Server) handleJob(j *job) (jobNs, excessNs, totalNs int64) {
 	var tRecv time.Time
 	if overheadProbe {
 		tRecv = time.Now()
@@ -353,7 +381,7 @@ func (s *Server) handleJob(j *job) {
 	if waited >= timeout {
 		s.stats.timedOut.Add(1)
 		j.done <- http.StatusGatewayTimeout
-		return
+		return 0, 0, 0
 	}
 	budget := timeout - waited
 	st := s.jitteredServiceTime()
@@ -361,13 +389,13 @@ func (s *Server) handleJob(j *job) {
 		time.Sleep(budget)
 		s.stats.timedOut.Add(1)
 		j.done <- http.StatusGatewayTimeout
-		return
+		return 0, 0, 0
 	}
 	if !overheadProbe {
 		time.Sleep(st)
 		s.stats.served.Add(1)
 		j.done <- http.StatusOK
-		return
+		return 0, 0, 0
 	}
 	tSleep0 := time.Now()
 	time.Sleep(st)
@@ -382,7 +410,7 @@ func (s *Server) handleJob(j *job) {
 	ovSleepExcess.add(excess)
 	ovPostSleep.add(post)
 	ovTotal.add(pre + excess + post)
-	ovSample(excess, pre+excess+post)
+	return tDone.Sub(tRecv).Nanoseconds(), excess, pre + excess + post
 }
 
 // serviceTimeJitterSigma is SERVICE_TIME_JITTER: the standard deviation of the
@@ -678,6 +706,7 @@ func main() {
 		n := envInt("OVERHEAD_SAMPLES", 200000)
 		ovSampSleep = make([]int64, n)
 		ovSampTotal = make([]int64, n)
+		ovSampCycle = make([]int64, n)
 		log.Printf("overhead probe ON, %d sample slots", n)
 	}
 	// Arrival-process capture. 0 (default) leaves it off entirely.
@@ -706,6 +735,10 @@ func main() {
 	mux.HandleFunc("/admin/stats", s.AdminStats)
 	mux.HandleFunc("/admin/overhead", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, overheadReport())
+	})
+	mux.HandleFunc("/admin/overhead/reset", func(w http.ResponseWriter, r *http.Request) {
+		overheadReset()
+		writeJSON(w, map[string]any{"reset": true})
 	})
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

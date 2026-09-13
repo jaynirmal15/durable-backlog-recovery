@@ -71,13 +71,16 @@ type TimelinePoint struct {
 }
 
 type RunRecord struct {
-	RunID            string          `json:"runId"`
-	Condition        string          `json:"condition"`
-	GitCommit        string          `json:"gitCommit"` // short (12-hex) HEAD; runner refuses to start if unresolvable
-	GitCommitFull    string          `json:"gitCommitFull"`
-	GitBranch        string          `json:"gitBranch"`
-	GitDirty         bool            `json:"gitDirty"` // uncommitted changes outside results/ and bin/
-	GitDirtyFiles    []string        `json:"gitDirtyFiles,omitempty"`
+	RunID         string   `json:"runId"`
+	Condition     string   `json:"condition"`
+	GitCommit     string   `json:"gitCommit"` // short (12-hex) HEAD; runner refuses to start if unresolvable
+	GitCommitFull string   `json:"gitCommitFull"`
+	GitBranch     string   `json:"gitBranch"`
+	GitDirty      bool     `json:"gitDirty"` // uncommitted changes outside results/ and bin/
+	GitDirtyFiles []string `json:"gitDirtyFiles,omitempty"`
+	// Realized worker cycle time over the drain window, from the downstream's
+	// overhead probe, reset at restore. Present only with -overhead-probe.
+	OverheadDrain    map[string]any  `json:"overheadDrain,omitempty"`
 	StartedAt        string          `json:"startedAt"`
 	Params           map[string]any  `json:"params"`
 	BacklogAtRestore int64           `json:"backlogAtRestore"`
@@ -157,6 +160,10 @@ func main() {
 	nominalCap := flag.Float64("capacity", 2000, "nominal downstream capacity")
 	outageSec := flag.Int("outage", 120, "outage duration seconds")
 	serviceTimeMs := flag.Int("service-time-ms", 5, "downstream service time")
+	overheadProbe := flag.Bool("overhead-probe", false, "reset the downstream's "+
+		"overhead probe at restore and read it when the drain completes, recording the "+
+		"realized worker cycle time IN SITU over the drain window. Requires the "+
+		"downstream to be started with OVERHEAD_PROBE=1.")
 	expectServiceUs := flag.Int("expect-service-us", 0, "E2e: the arm guard expects this "+
 		"service time in microseconds instead of the arm's nominal, while still checking "+
 		"concurrency. Needed because the corrected sleep is sub-millisecond and no arm "+
@@ -466,6 +473,17 @@ func main() {
 	defer stopCmd(consumer)
 
 	t0 := time.Now()
+	if *overheadProbe {
+		// Scope the probe to the drain window: everything it reports from here is
+		// measured in situ, under the real arrival process, not under a smooth
+		// load driver.
+		if resp, err := client.Post(*downstream+"/admin/overhead/reset",
+			"application/json", nil); err == nil {
+			resp.Body.Close()
+		} else {
+			log.Printf("WARNING: overhead probe reset failed: %v", err)
+		}
+	}
 	applySchedule(client, *downstream, schedule, 0)
 	prevIssued := injStats.Issued.Load()
 
@@ -770,6 +788,9 @@ func main() {
 				log.Printf("recovery drained at t=%.1fs (recoveryAcked=%d backlogAtRestore=%d totalPending=%d)",
 					tSec, recAcked, rec.BacklogAtRestore, totalPending)
 			}
+		}
+		if *overheadProbe && !drainAt.IsZero() && rec.OverheadDrain == nil {
+			rec.OverheadDrain = getJSON(client, *downstream+"/admin/overhead")
 		}
 		drainDone := !drainAt.IsZero()
 		if drainDone {

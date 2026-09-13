@@ -295,6 +295,10 @@ def runner_argv(args, rl, run_id):
         argv += ['-profile', args.profile]
     if args.injector_pacer:
         argv += ['-injector-pacer', args.injector_pacer]
+    if getattr(args, 'expect_service_us', 0):
+        argv += ['-expect-service-us', str(args.expect_service_us)]
+    if getattr(args, 'overhead_probe', False):
+        argv += ['-overhead-probe']
     return argv
 
 
@@ -503,6 +507,11 @@ def main():
     ap.add_argument('--nats', default='nats://127.0.0.1:14222')
     ap.add_argument('--downstream', default='http://127.0.0.1:8080')
     ap.add_argument('--runner', default='./bin/runner')
+    ap.add_argument('--expect-service-us', type=int, default=0,
+                    help='passed to the runner: the arm guard expects this exact '
+                         'service time in microseconds, while still checking '
+                         'concurrency. Needed for E2e, whose corrected sleep is '
+                         'sub-millisecond and named by no arm.')
     ap.add_argument('--capacity', type=int,
                     help='override the regime nominal capacity C (E2b runs at C=400). '
                          'Only accepted for regimes whose fault capacity equals their '
@@ -510,6 +519,10 @@ def main():
                          'rate that does not follow a changed nominal, and scaling it '
                          'silently would change the manipulation. Concurrency and queue '
                          'cap follow from C in the downstream, not from here.')
+    ap.add_argument('--overhead-probe', action='store_true',
+                    help='pass -overhead-probe to the runner, recording the realized '
+                         'worker cycle time in situ over each drain window. The '
+                         'downstream must be started with OVERHEAD_PROBE=1.')
     ap.add_argument('--run-prefix', default='',
                     help='prepended to every run id. Run ids are otherwise derived from '
                          'arm and regime alone, so two campaigns on the same arm collide '

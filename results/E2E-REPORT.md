@@ -100,7 +100,7 @@ A4 is specifically suspect at the non-SAFE points: its values there exceed each 
 
 ### What survives regardless of estimator
 
-1. **The plateau gates**, above: direct throughput, no rho estimator involved, errors of -0.00%% and +0.02%%. The additive model is confirmed by these alone.
+1. **The plateau gates**, above: direct throughput, no rho estimator involved, errors of -0.00% and +0.02%. The additive model is confirmed by these alone.
 2. **The gap between the arms is essentially eliminated**: 0.0026 as-measured, 0.0045 under A4, against 0.0706 uncorrected. **94% to 96% removed** either way, bracketing the registered 92.7%.
 3. **Both arms land within about 0.008 of 1.000**, the brief's original prediction before addendum 1 refined it.
 

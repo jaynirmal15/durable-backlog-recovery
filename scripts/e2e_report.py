@@ -156,7 +156,7 @@ def main():
     w('### What survives regardless of estimator')
     w('')
     w('1. **The plateau gates**, above: direct throughput, no rho estimator '
-      'involved, errors of -0.00%% and +0.02%%. The additive model is confirmed by '
+      'involved, errors of -0.00% and +0.02%. The additive model is confirmed by '
       'these alone.')
     w('2. **The gap between the arms is essentially eliminated**: 0.0026 '
       'as-measured, 0.0045 under A4, against 0.0706 uncorrected. **94% to 96% '

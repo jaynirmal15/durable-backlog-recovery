@@ -186,3 +186,76 @@ One bisection step is 5 rps, or 0.0025 in rho.
 **Plateau check first.** Each corrected cell's saturation plateau must match
 1987.4 and 1997.7 before its boundary is read. If the plateaus match and the
 boundaries do not, that is a real finding and not the correction.
+
+---
+
+## Addendum 2 — the bisection cannot terminate, and why
+
+**Recorded mid-campaign, with the c10 search in progress.** State of knowledge:
+the c10 plateau gate passed exactly (measured 1987.4 against 1987.4 predicted),
+rl=975 classified SAFE on three reps, rl=1075 classified SAFE on three reps, and
+the search has stepped to rl=1185. No c50 boundary run has started.
+
+### The problem
+
+Achieved rho is bounded by capacity. True capacity in the corrected c10 cell is
+1987.4, so achieved rho against the configured C=2000 **cannot exceed 0.9937** no
+matter how high `rl` is set. That number is the registered prediction.
+
+So the prediction is that the boundary sits **at the capacity ceiling**, and the
+cell is therefore SAFE at every load it is possible to offer. A bisection
+terminates only by finding a non-SAFE point. If the prediction is right, no such
+point exists, and `upward_step` walks +10% for ever: 1185, 1305, 1435, and on.
+
+This is not a defect in the correction. It is the instrument being wrong for the
+hypothesis: the search was built to bracket a boundary from above, and the
+corrected cell has no reachable region above it.
+
+### What the data shows so far
+
+| rl | recovery delivered | total | achieved rho (vs C) | queue peak | class |
+|---:|---:|---:|---:|---:|---|
+| 975 | 945–949 | ~1948 | 0.974 | 6–7 | SAFE |
+| 1075 | 967–969 | ~1968 | 0.984 | 16–18 | SAFE |
+| ceiling | — | 1987.4 | **0.9937** | — | — |
+
+The queue is nowhere near its 500 cap and live p99 is 8–13 ms against a 250 ms
+SLO. The cell is not close to breaking; it is running out of offerable load.
+
+### A mechanism I proposed and then withdrew
+
+Mid-campaign I attributed this to the recovery consumer self-throttling below the
+headroom, contrasting it with the uncorrected cell. **That explanation does not
+survive the comparison and is withdrawn.** In the uncorrected E2 c10 cell the
+consumer also delivered just below its headroom — 823.4 against 828.6, a ratio of
+0.994 — and those points were UNSAFE with the queue at 2257 of 2500. Delivered
+versus headroom does not separate the two cases. Queue behaviour does, and the
+reason is not established here. It is recorded as unexplained rather than given a
+story that fits one cell and not the other.
+
+### Registered change of instrument
+
+The +10% walk is replaced by **direct probes near the ceiling**, because achieved
+rho asymptotes and the walk would take several probes to arrive where one can:
+
+- **c10**: rl = 1185 (already running), then **rl = 1400**.
+- **c50**: rl = 975, 1150, 1400. Its ceiling is 1997.7/2000 = **0.9989**.
+
+Each at n=3, same runner, same in-situ probe, same everything else.
+
+Readings, fixed now:
+
+| outcome | reading |
+|---|---|
+| SAFE at every probe, achieved rho approaching the ceiling | rho\* equals the capacity ratio: the corrected cell is stable at every offerable load. The registered value is confirmed as a ceiling reached from below, not as a bracketed boundary. |
+| a probe classifies non-SAFE | a boundary exists below the ceiling; bisect the bracket normally and report it against the registered value |
+
+The first outcome cannot be expressed as a `[last SAFE, first non-SAFE]`
+interval, and **no interval will be manufactured for it.** It is reported as a
+lower bound on rho\* together with the ceiling that bounds it above.
+
+### Cost
+
+Stopping the walk saves roughly an hour of probes that are safe for reasons
+unrelated to the boundary. The revised set is 12 to 15 runs, about 80 to 100
+minutes, against the 3.5 hours the original two searches would have taken.

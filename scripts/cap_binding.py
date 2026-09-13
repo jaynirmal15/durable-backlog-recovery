@@ -78,8 +78,9 @@ def main():
         if p:
             cells += rows_for(p, label)
     for d, label in [('results/e2/c10-Q2500', 'E2 c10 Q=2500'),
-                     ('results/e2/c50-Q500', 'E2 c50 Q=500')]:
-        p = glob.glob(os.path.join(d, 'c*-c*-rl*-r*.json'))
+                     ('results/e2/c50-Q500', 'E2 c50 Q=500'),
+                     ('results/e2b', 'E2b C=400 Q=500')]:
+        p = glob.glob(os.path.join(d, '*c*-c*-rl*-r*.json'))
         if p:
             cells += rows_for(p, label)
 

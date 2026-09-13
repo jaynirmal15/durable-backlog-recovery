@@ -250,7 +250,7 @@ def main():
         # The boundary file sorts points by rl, so its order is NOT probe order.
         # Derive the real order from when each point's first run started.
         firsts = {}
-        for pth in glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json')):
+        for pth in glob.glob(os.path.join(E2[k][1], '*c*-c*-rl*-r*.json')):
             r = json.load(open(pth))
             rl = r['params']['rateLimitRps']
             firsts.setdefault(rl, []).append(r['startedAt'])
@@ -452,14 +452,14 @@ def main():
     w('|---|---|')
     tot = 0
     for k in ('c10', 'c50'):
-        n = len(glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json')))
+        n = len(glob.glob(os.path.join(E2[k][1], '*c*-c*-rl*-r*.json')))
         tot += n
         w('| %s @ Q=%d records | %d |' % (k, E2[k][2], n))
     w('| Total E2 runs | **%d** |' % tot)
     dirty = 0
     commits = set()
     for k in ('c10', 'c50'):
-        for p in glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json')):
+        for p in glob.glob(os.path.join(E2[k][1], '*c*-c*-rl*-r*.json')):
             r = json.load(open(p))
             commits.add(r['gitCommit'])
             if r['gitDirty']:
@@ -480,7 +480,7 @@ def main():
     w('|---|---:|---:|---:|---|')
     for k, svc in (('c10', 5), ('c50', 25)):
         cap = E2[k][2]
-        paths = glob.glob(os.path.join(E2[k][1], 'c*-c*-rl*-r*.json'))
+        paths = glob.glob(os.path.join(E2[k][1], '*c*-c*-rl*-r*.json'))
         ok = 0
         for pth in paths:
             pa = json.load(open(pth))['params']

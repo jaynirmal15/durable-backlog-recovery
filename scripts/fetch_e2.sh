@@ -12,15 +12,17 @@
 # So the box's copy is fetched to a .from-box sidecar and never over the local
 # file; applying it is a deliberate act, not a side effect of syncing.
 #
-# Usage: scripts/fetch_e2.sh c50-Q500
+# Usage: scripts/fetch_e2.sh c50-Q500          -> results/e2/c50-Q500
+#        scripts/fetch_e2.sh e2b results/e2b   -> results/e2b, remote results-e2b
 set -euo pipefail
-TAG="${1:?usage: fetch_e2.sh <tag>   e.g. c50-Q500}"
+TAG="${1:?usage: fetch_e2.sh <tag> [local-dest]   e.g. c50-Q500}"
+DEST_REL="${2:-}"
 IP="$(cat /tmp/e1/ip3)"
 KEY="$HOME/.ssh/rhc-ec2"
 SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=20 -i $KEY"
 HOST="ubuntu@$IP"
 REPO="$HOME/Jay_NIW/durable-backlog-recovery"
-DEST="$REPO/results/e2/$TAG"
+DEST="$REPO/${DEST_REL:-results/e2/$TAG}"
 RAW="$HOME/Jay_NIW/rhc-raw-data/results/e2"
 SRC="ubuntu@$IP:rhc/results-$TAG"
 
@@ -41,7 +43,7 @@ done
 
 echo
 echo "records:  $(ls "$DEST"/*.json 2>/dev/null | wc -l | tr -d ' ')"
-echo "traces:   $(ls "$RAW"/${TAG%%-*}-*.gz 2>/dev/null | wc -l | tr -d ' ')"
+echo "traces:   $(ls "$RAW"/*.gz 2>/dev/null | wc -l | tr -d ' ') total in raw dir"
 echo "sidecars: $(ls "$DEST"/boundaries/*.from-box 2>/dev/null | wc -l | tr -d ' ')"
 echo
 for f in "$DEST"/boundaries/*.from-box; do

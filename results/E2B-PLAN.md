@@ -160,3 +160,47 @@ guard is doing the right thing under a name that no longer describes it.
 
 Nothing downstream should read `concurrencyArm` as a concurrency. The analysis
 reads `downstreamConcurrency`, which records the actual value.
+
+---
+
+## Campaign note — the first attempt was stopped by the cost guard
+
+**2026-09-13.** The first E2b attempt started 03:13 UTC and was killed at 04:06
+UTC, part-way through the third rep at rl=190, when the CloudWatch idle-stop
+alarm stopped the instance.
+
+The alarm stops the box after 60 minutes below 5% CPU. It was calibrated against
+the C=2000 campaigns. E2b runs at a fifth of the absolute rate and draws
+**3.1–4.1% CPU**, so a working campaign looked idle to it:
+
+| state | CPU (5-minute maximum) |
+|---|---:|
+| genuinely idle | **0.15%** |
+| E2b, C=400 | **3.1–4.1%** |
+| E1/E2, C=2000 | **~10%** |
+
+The guard did what it was configured to do. The threshold was moved to **1.5%**,
+which keeps a tenfold margin over true idle while clearing this campaign. The
+guard was **not** disabled — it is the cost control — and no synthetic load was
+added to lift the reading, which would have contaminated the very measurement
+environment the campaign is characterising.
+
+### What happened to the seven completed runs
+
+Three at rl=180 (SAFE), three at rl=200 (UNSAFE) and one at rl=190 (SAFE) had
+completed. They are **archived on the instance at `results-e2b-interrupted/`**,
+not deleted, and are **excluded from the reported cell**.
+
+The search was restarted from the anchor rather than resumed. Resuming would not
+have been cheaper: `locate_boundary` re-probes a supplied ceiling, so
+`--anchor 180 --hi 200` runs the same twelve probes as a fresh search. It would
+only have produced a boundary file stitched from two searches separated by an
+instance restart, for no saving.
+
+**The interrupted runs agree with the restarted ones** where they overlap — the
+first rep at rl=180 returned an identical vSLO of 0.0000 and an identical
+as-measured ρ of 0.9442 in both attempts — so nothing about the restart is
+suspected of having changed the condition. That agreement is offered as a check,
+not as data: the archived runs are not pooled into any reported statistic.
+
+The overrun against the brief's estimate is about 45 minutes and roughly $0.15.

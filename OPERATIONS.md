@@ -119,3 +119,24 @@ Check progress:
 ```bash
 ssh -i ~/.ssh/rhc-ec2 ubuntu@$IP 'tail -20 ~/campaign.log; ls ~/.done-*'
 ```
+
+
+## Idle-stop alarm calibration
+
+`rhc-runner-idle-stop` stops the instance after 60 minutes (12 x 300 s) below a
+CPU threshold. **The threshold must be set against the lightest campaign that
+will run, not the heaviest.**
+
+| state | CPU, 5-minute maximum |
+|---|---:|
+| idle | 0.15% |
+| campaign at C=400 | 3.1-4.1% |
+| campaign at C=2000 | ~10% |
+
+Current threshold **1.5%**, set 2026-09-13. The previous 5% was calibrated
+against C=2000 and stopped an E2b run mid-campaign, costing seven runs.
+
+Before running a campaign at a materially lower rate than the last one, check
+that its expected CPU clears the threshold. Do not disable the alarm to work
+around this, and never add synthetic load to lift the reading: the box's CPU
+contention is part of what the harness measures.

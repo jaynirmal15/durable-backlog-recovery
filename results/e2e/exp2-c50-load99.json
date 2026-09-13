@@ -1,0 +1,66 @@
+{
+  "closedLoopConns": 400,
+  "concurrency": 50,
+  "configuredCapacity": 2000,
+  "label": "c50-l99",
+  "offeredRate": 1978,
+  "overhead": {
+    "cycle": {
+      "count": 278607,
+      "maxNs": 37871644,
+      "meanNs": 25031004
+    },
+    "cyclePct": {
+      "p50Ns": 24954586,
+      "p90Ns": 29721270,
+      "p999Ns": 36629860,
+      "p99Ns": 33685461
+    },
+    "enabled": true,
+    "note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side cost per request beyond the sleep it was asked to perform. HTTP handling is excluded: it does not run on a worker and cannot reduce capacity.",
+    "postSleep": {
+      "count": 278607,
+      "maxNs": 32033,
+      "meanNs": 566
+    },
+    "preSleep": {
+      "count": 278607,
+      "maxNs": 168845,
+      "meanNs": 384
+    },
+    "samples": 200000,
+    "sleepExcess": {
+      "count": 278607,
+      "maxNs": 1616623,
+      "meanNs": 500865
+    },
+    "sleepExcessPct": {
+      "p50Ns": 490063,
+      "p90Ns": 959941,
+      "p999Ns": 1126473,
+      "p99Ns": 1068920
+    },
+    "timer": {
+      "count": 278607,
+      "maxNs": 30345,
+      "meanNs": 292
+    },
+    "total": {
+      "count": 278607,
+      "maxNs": 1618113,
+      "meanNs": 501816
+    },
+    "totalPct": {
+      "p50Ns": 491017,
+      "p90Ns": 960868,
+      "p999Ns": 1127267,
+      "p99Ns": 1069876
+    }
+  },
+  "queueCap": 2500,
+  "rejected": 0,
+  "servedRps": 1977.9172339441466,
+  "serviceTimeUs": 24537,
+  "timedOut": 0,
+  "windowSec": 60.000488374
+}

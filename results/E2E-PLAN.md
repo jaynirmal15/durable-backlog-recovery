@@ -353,3 +353,68 @@ before it runs:
 
 Either way one candidate survives and one dies. That is the whole purpose of the
 refinement, and addendum 3 should have said so instead of announcing a winner.
+
+---
+
+## Addendum 5 — the estimator disagreement is as large as the thing being measured
+
+**Recorded on completing the campaign, before the report was written.**
+
+Addenda 3 and 4 compared the candidate overheads against brackets computed with
+the **as-measured** (drain-window) estimator. The registered estimator is **A4**,
+the delivery-span one used by E1, E2, E2b, E2c and E2d. Applying A4 changes the
+answer:
+
+| arm | estimator | bracket | which candidate is inside |
+|---|---|---|---|
+| c10 | as-measured | [0.9883, 0.9924] | 90% load (0.9894) |
+| c10 | **A4 (registered)** | **[0.9956, 1.0016]** | **in situ (0.9974)** |
+| c50 | as-measured | [0.9915, 0.9944] | none |
+| c50 | **A4 (registered)** | **[0.9999, 1.0064]** | none |
+
+So the c10 verdict **inverts** with the estimator: the 90%-load figure under one,
+the in-situ figure under the other. That is not a result, it is an artefact of a
+choice, and reporting either as the answer would be wrong.
+
+### Why neither estimator can settle it
+
+The two disagree by about **0.0080** in rho. The candidate predictions span
+**0.0080** in the c10 arm (0.9894 to 0.9974). **The measurement uncertainty is the
+same size as the effect being discriminated**, so this experiment cannot say
+which overhead figure governs the boundary. That conclusion is forced by the
+data, not chosen.
+
+There is a reason to distrust A4 specifically at the non-SAFE points. Its values
+there exceed each cell's own **measured saturation plateau** — by +0.0079 in c10
+and +0.0073 in c50 — and no system can sustain more than its plateau. A4 measures
+the recovery rate over the span the traffic occupied, which on a collapsed run
+excludes stalled intervals and so overstates the sustained rate. A4 was designed
+to remove the drain-detector tail bias at SAFE points and does that well; it was
+never validated on collapsed runs, and this is the first campaign whose interval
+endpoints depend on it there.
+
+The as-measured estimator has the opposite bias, dividing an exact backlog by a
+window padded with the drain-detector tail. The true value lies between, and each
+cell's measured plateau — 0.9937 and 0.9991 — does sit between the two brackets.
+
+### What survives regardless of estimator
+
+1. **The plateau gates.** Predicted 1987.4 and 1997.7, measured 1987.4 and
+   1998.1, errors of -0.00% and +0.02%. These are direct throughput
+   measurements and involve no rho estimator at all. The additive model is
+   confirmed by them alone.
+2. **The gap between the arms is essentially eliminated**: 0.0026 under
+   as-measured, 0.0045 under A4, against 0.0706 uncorrected — **94% to 96%
+   removed** either way, bracketing the registered 92.7%.
+3. **Both arms land within about 0.008 of 1.000** under either estimator, which
+   is the brief's original prediction before addendum 1 refined it.
+
+### What does not survive
+
+The addendum-1 refinement — that the correction under-corrects and predicts
+0.9937 and 0.9989 specifically — **cannot be tested by this campaign.** Under A4
+both arms sit above those values, under as-measured both sit below, and the
+difference between the two candidate positions is smaller than the estimator
+spread.
+
+Addenda 3 and 4 are superseded in their conclusions and retained for the record.

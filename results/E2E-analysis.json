@@ -1,0 +1,276 @@
+{
+  "registered": {
+    "c10": {
+      "sleepUs": 4537,
+      "conc": 10,
+      "svcMs": 5,
+      "ovSat": 0.4947,
+      "ov90": 0.5165,
+      "rhoSat": 0.9937,
+      "rho90": 0.9894,
+      "predPlateau": 1987.4
+    },
+    "c50": {
+      "sleepUs": 24537,
+      "conc": 50,
+      "svcMs": 25,
+      "ovSat": 0.4914,
+      "ov90": 0.5114,
+      "rhoSat": 0.9989,
+      "rho90": 0.9981,
+      "predPlateau": 1997.7
+    }
+  },
+  "uncorrected": {
+    "c10": 0.9137,
+    "c50": 0.9826
+  },
+  "cells": {
+    "c10": {
+      "registered": {
+        "sleepUs": 4537,
+        "conc": 10,
+        "svcMs": 5,
+        "ovSat": 0.4947,
+        "ov90": 0.5165,
+        "rhoSat": 0.9937,
+        "rho90": 0.9894,
+        "predPlateau": 1987.4
+      },
+      "plateau": 1987.4,
+      "plateauErrPct": -0.001,
+      "ceilingRho": 0.9937,
+      "points": [
+        {
+          "rl": 975,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1948.5,
+          "rho": 0.9743,
+          "queuePeak": 7,
+          "liveP99Ms": 8,
+          "cycleMs": 5.014,
+          "overheadMs": 0.4778
+        },
+        {
+          "rl": 1075,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1967.0,
+          "rho": 0.9835,
+          "queuePeak": 18,
+          "liveP99Ms": 14,
+          "cycleMs": 5.0174,
+          "overheadMs": 0.4778
+        },
+        {
+          "rl": 1185,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1976.7,
+          "rho": 0.9883,
+          "queuePeak": 111,
+          "liveP99Ms": 58,
+          "cycleMs": 5.0132,
+          "overheadMs": 0.4781
+        },
+        {
+          "rl": 1240,
+          "n": 3,
+          "class": "UNSAFE",
+          "vSLO": [
+            0.5182,
+            0.5109,
+            0.4667
+          ],
+          "achievedRps": 1984.8,
+          "rho": 0.9924,
+          "queuePeak": 500,
+          "liveP99Ms": 508,
+          "cycleMs": 5.0125,
+          "overheadMs": 0.4749
+        },
+        {
+          "rl": 1290,
+          "n": 3,
+          "class": "UNSAFE",
+          "vSLO": [
+            0.7629,
+            0.7647,
+            0.7698
+          ],
+          "achievedRps": 1986.0,
+          "rho": 0.993,
+          "queuePeak": 500,
+          "liveP99Ms": 1033,
+          "cycleMs": 5.0128,
+          "overheadMs": 0.4756
+        },
+        {
+          "rl": 1400,
+          "n": 3,
+          "class": "UNSAFE",
+          "vSLO": [
+            0.7121,
+            0.7424,
+            0.7461
+          ],
+          "achievedRps": 1988.2,
+          "rho": 0.9941,
+          "queuePeak": 500,
+          "liveP99Ms": 1036,
+          "cycleMs": 5.0128,
+          "overheadMs": 0.4771
+        }
+      ],
+      "bracket": {
+        "rl": [
+          1185,
+          1240
+        ],
+        "rlWidth": 55,
+        "rho": [
+          0.9883,
+          0.9924
+        ],
+        "rhoWidth": 0.0041,
+        "rhoMid": 0.9903,
+        "atRlResolution": false
+      },
+      "inSituOverheadMs": 0.4775,
+      "inSituCapacity": 1994.8,
+      "inSituRho": 0.9974
+    },
+    "c50": {
+      "registered": {
+        "sleepUs": 24537,
+        "conc": 50,
+        "svcMs": 25,
+        "ovSat": 0.4914,
+        "ov90": 0.5114,
+        "rhoSat": 0.9989,
+        "rho90": 0.9981,
+        "predPlateau": 1997.7
+      },
+      "plateau": 1998.1,
+      "plateauErrPct": 0.022,
+      "ceilingRho": 0.9991,
+      "points": [
+        {
+          "rl": 975,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1946.5,
+          "rho": 0.9733,
+          "queuePeak": 8,
+          "liveP99Ms": 34,
+          "cycleMs": 25.0269,
+          "overheadMs": 0.475
+        },
+        {
+          "rl": 1150,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1975.9,
+          "rho": 0.988,
+          "queuePeak": 107,
+          "liveP99Ms": 80,
+          "cycleMs": 25.0149,
+          "overheadMs": 0.4762
+        },
+        {
+          "rl": 1210,
+          "n": 3,
+          "class": "SAFE",
+          "vSLO": [
+            0,
+            0,
+            0
+          ],
+          "achievedRps": 1983.1,
+          "rho": 0.9915,
+          "queuePeak": 363,
+          "liveP99Ms": 207,
+          "cycleMs": 25.0092,
+          "overheadMs": 0.4746
+        },
+        {
+          "rl": 1275,
+          "n": 3,
+          "class": "UNSAFE",
+          "vSLO": [
+            0.6742,
+            0.6716,
+            0.7037
+          ],
+          "achievedRps": 1988.8,
+          "rho": 0.9944,
+          "queuePeak": 1480,
+          "liveP99Ms": 761,
+          "cycleMs": 25.004,
+          "overheadMs": 0.4733
+        },
+        {
+          "rl": 1400,
+          "n": 3,
+          "class": "UNSAFE",
+          "vSLO": [
+            0.7185,
+            0.7045,
+            0.7293
+          ],
+          "achievedRps": 1991.0,
+          "rho": 0.9955,
+          "queuePeak": 1998,
+          "liveP99Ms": 1028,
+          "cycleMs": 25.0083,
+          "overheadMs": 0.4736
+        }
+      ],
+      "bracket": {
+        "rl": [
+          1210,
+          1275
+        ],
+        "rlWidth": 65,
+        "rho": [
+          0.9915,
+          0.9944
+        ],
+        "rhoWidth": 0.0029,
+        "rhoMid": 0.9929,
+        "atRlResolution": false
+      },
+      "inSituOverheadMs": 0.4746,
+      "inSituCapacity": 1999.3,
+      "inSituRho": 0.9996
+    }
+  },
+  "residualGap": 0.0026,
+  "fractionRemoved": 96.3
+}

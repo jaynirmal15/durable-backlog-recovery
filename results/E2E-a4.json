@@ -1,0 +1,46 @@
+{
+  "c10-975": {
+    "a4Rho": 0.982,
+    "class": "SAFE"
+  },
+  "c10-1075": {
+    "a4Rho": 0.9917,
+    "class": "SAFE"
+  },
+  "c10-1185": {
+    "a4Rho": 0.9956,
+    "class": "SAFE"
+  },
+  "c10-1240": {
+    "a4Rho": 1.0016,
+    "class": "UNSAFE"
+  },
+  "c10-1290": {
+    "a4Rho": 1.006,
+    "class": "UNSAFE"
+  },
+  "c10-1400": {
+    "a4Rho": 1.0068,
+    "class": "UNSAFE"
+  },
+  "c50-975": {
+    "a4Rho": 0.9819,
+    "class": "SAFE"
+  },
+  "c50-1150": {
+    "a4Rho": 0.9977,
+    "class": "SAFE"
+  },
+  "c50-1210": {
+    "a4Rho": 0.9999,
+    "class": "SAFE"
+  },
+  "c50-1275": {
+    "a4Rho": 1.0064,
+    "class": "UNSAFE"
+  },
+  "c50-1400": {
+    "a4Rho": 1.0085,
+    "class": "UNSAFE"
+  }
+}

@@ -124,7 +124,54 @@ def main():
     else:
         w('_Pending: one arm has no bracket yet._')
         w('')
-    w('## The three overhead measurements disagree, and only one predicts')
+    w('## The estimator disagreement is as large as the effect')
+    w('')
+    w('The brackets above use the **as-measured** (drain-window) estimator. The '
+      'registered estimator is **A4**, the delivery-span one used by every earlier '
+      'campaign. Applying A4 moves both brackets up by about 0.008 and **inverts '
+      'the c10 verdict**:')
+    w('')
+    w('| arm | estimator | bracket | candidate inside |')
+    w('|---|---|---|---|')
+    w('| c10 | as-measured | [0.9883, 0.9924] | 90% load, 0.9894 |')
+    w('| c10 | **A4 (registered)** | **[0.9956, 1.0016]** | **in situ, 0.9974** |')
+    w('| c50 | as-measured | [0.9915, 0.9944] | none |')
+    w('| c50 | **A4 (registered)** | **[0.9999, 1.0064]** | none |')
+    w('')
+    w('The two estimators differ by 0.0080 in rho. The candidates span 0.0080 in '
+      'the c10 arm. **The measurement uncertainty is the same size as the thing '
+      'being discriminated, so this campaign cannot say which overhead governs the '
+      'boundary.** That is forced by the data, not chosen.')
+    w('')
+    w('A4 is specifically suspect at the non-SAFE points: its values there exceed '
+      'each cell\'s own measured saturation plateau, by +0.0079 in c10 and +0.0073 '
+      'in c50, and nothing sustains more than its plateau. A4 measures recovery over '
+      'the span the traffic occupied, which on a collapsed run excludes stalled '
+      'intervals and overstates the rate. It was built to remove the drain-tail bias '
+      'at SAFE points, was never validated on collapsed runs, and this is the first '
+      'campaign whose interval endpoints depend on it there. The as-measured '
+      'estimator carries the opposite bias, and each cell\'s measured plateau sits '
+      'between the two brackets.')
+    w('')
+    w('### What survives regardless of estimator')
+    w('')
+    w('1. **The plateau gates**, above: direct throughput, no rho estimator '
+      'involved, errors of -0.00%% and +0.02%%. The additive model is confirmed by '
+      'these alone.')
+    w('2. **The gap between the arms is essentially eliminated**: 0.0026 '
+      'as-measured, 0.0045 under A4, against 0.0706 uncorrected. **94% to 96% '
+      'removed** either way, bracketing the registered 92.7%.')
+    w('3. **Both arms land within about 0.008 of 1.000**, the brief\'s original '
+      'prediction before addendum 1 refined it.')
+    w('')
+    w('### What does not survive')
+    w('')
+    w('The addendum-1 refinement, that the correction under-corrects and gives '
+      '0.9937 and 0.9989 specifically, **cannot be tested here**. Under A4 both arms '
+      'sit above those values, under as-measured both sit below, and the distance '
+      'between the candidates is smaller than the estimator spread.')
+    w('')
+    w('## The three overhead measurements disagree, and none reliably predicts')
     w('')
     w('The in-situ figure is the lowest and the most stable — about 0.478 ms in '
       'c10 and 0.474 in c50, holding across every probed rate. It was the better '

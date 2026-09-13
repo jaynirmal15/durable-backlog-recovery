@@ -9,12 +9,13 @@ changing where the boundary lands.
 """
 import os
 import sys
+import argparse
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from locate_boundary import (  # noqa: E402
-    RESOLUTION_RPS, bisect_step, classify, downward_step, plan, spread_diagnostic,
-    upward_step,
+    RESOLUTION_RPS, bisect_step, classify, downward_step, plan, runner_argv,
+    spread_diagnostic, upward_step,
 )
 
 
@@ -244,6 +245,62 @@ class TestSearchPlan(unittest.TestCase):
     def test_all_safe_within_the_probe_budget_gives_no_ceiling(self):
         seq, lo, hi = plan(100, hi=None, oracle=lambda rl: 'SAFE', max_probes=5)
         self.assertIsNone(hi)
+
+
+
+
+class CapacityOverrideAndPrefix(unittest.TestCase):
+    """The two flags E2b needs: a non-default C, and run ids that cannot collide.
+
+    E2b runs at C=400 with S=25 ms, which gives concurrency 10 -- the c10 arm's
+    concurrency at the c50 arm's service time. No regime expresses that, and run
+    ids derived from arm and regime alone would collide with the c50 records of
+    E1 and E2.
+    """
+
+    def _args(self, **kw):
+        base = dict(runner='./bin/runner', arm='c50', regime='C0', capacity=None,
+                    run_prefix='', live_rate=1000, outage=120, workers=1024,
+                    profile='graceful', injector_pacer='lanes',
+                    nats='nats://x', downstream='http://y', results='results')
+        base.update(kw)
+        return argparse.Namespace(**base)
+
+    def test_capacity_defaults_to_the_regime_nominal(self):
+        argv = runner_argv(self._args(), 975, 'r')
+        self.assertEqual(argv[argv.index('-capacity') + 1], '2000')
+
+    def test_capacity_override_reaches_the_runner(self):
+        argv = runner_argv(self._args(capacity=400, live_rate=200), 180, 'r')
+        self.assertEqual(argv[argv.index('-capacity') + 1], '400')
+        self.assertEqual(argv[argv.index('-live-rate') + 1], '200')
+
+    def test_override_changes_nothing_else(self):
+        a = runner_argv(self._args(), 180, 'r')
+        b = runner_argv(self._args(capacity=400), 180, 'r')
+        ai, bi = a.index('-capacity'), b.index('-capacity')
+        self.assertEqual(a[:ai] + a[ai + 2:], b[:bi] + b[bi + 2:])
+
+    def test_service_time_still_comes_from_the_arm(self):
+        argv = runner_argv(self._args(capacity=400), 180, 'r')
+        self.assertEqual(argv[argv.index('-service-time-ms') + 1], '25')
+
+    def test_run_prefix_absent_by_default(self):
+        self.assertEqual('%s%s-%s-rl%d-r%d' % ('', 'c50', 'c0', 975, 1),
+                         'c50-c0-rl975-r1')
+
+    def test_run_prefix_namespaces_the_id(self):
+        self.assertEqual('%s%s-%s-rl%d-r%d' % ('e2b-', 'c50', 'c0', 180, 1),
+                         'e2b-c50-c0-rl180-r1')
+
+    def test_classification_and_bisection_are_untouched(self):
+        # The override must not reach the estimator. These are the same
+        # assertions the suite already makes; repeated here so a regression in
+        # the flag work fails in this class too.
+        self.assertEqual(classify([0.0, 0.0, 0.0]), 'SAFE')
+        self.assertEqual(classify([0.2, 0.2, 0.0]), 'UNSAFE')
+        self.assertEqual(bisect_step(180, 200), 190)
+        self.assertIsNone(bisect_step(185, 190))
 
 
 if __name__ == '__main__':

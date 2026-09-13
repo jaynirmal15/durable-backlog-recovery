@@ -275,13 +275,14 @@ def summarise_run(rec):
 
 def runner_argv(args, rl, run_id):
     regime = REGIMES[args.regime]
+    nominal = getattr(args, 'capacity', None) or regime['nominal']
     argv = [
         args.runner,
         '-condition', regime['condition'],
         '-run-id', run_id,
         '-arm', args.arm,
         '-service-time-ms', str(ARMS[args.arm]['service_time_ms']),
-        '-capacity', str(regime['nominal']),
+        '-capacity', str(nominal),
         '-live-rate', str(args.live_rate),
         '-outage', str(args.outage),
         '-workers', str(args.workers),
@@ -311,7 +312,8 @@ def probe(args, rl, log):
                 log('    settling %ds' % args.settle_seconds)
                 time.sleep(args.settle_seconds)
         probe._started = True
-        run_id = '%s-%s-rl%d-r%d' % (args.arm, args.regime.lower(), rl, rep)
+        run_id = '%s%s-%s-rl%d-r%d' % (getattr(args, 'run_prefix', '') or '',
+                                        args.arm, args.regime.lower(), rl, rep)
         argv = runner_argv(args, rl, run_id)
         log('    run %s' % run_id)
         started = time.time()
@@ -501,6 +503,18 @@ def main():
     ap.add_argument('--nats', default='nats://127.0.0.1:14222')
     ap.add_argument('--downstream', default='http://127.0.0.1:8080')
     ap.add_argument('--runner', default='./bin/runner')
+    ap.add_argument('--capacity', type=int,
+                    help='override the regime nominal capacity C (E2b runs at C=400). '
+                         'Only accepted for regimes whose fault capacity equals their '
+                         'nominal, i.e. C0: for C1/C2/C3 the fault value is an absolute '
+                         'rate that does not follow a changed nominal, and scaling it '
+                         'silently would change the manipulation. Concurrency and queue '
+                         'cap follow from C in the downstream, not from here.')
+    ap.add_argument('--run-prefix', default='',
+                    help='prepended to every run id. Run ids are otherwise derived from '
+                         'arm and regime alone, so two campaigns on the same arm collide '
+                         'by name; E2 solved that with separate --results directories and '
+                         'this makes the ids themselves distinct as well.')
     ap.add_argument('--results', default='results')
     ap.add_argument('--out-dir', default='results/boundaries')
     ap.add_argument('--settle-seconds', type=int, default=60,
@@ -510,12 +524,23 @@ def main():
 
     log = lambda m: print(m, flush=True)
 
+    if args.capacity is not None:
+        reg = REGIMES[args.regime]
+        if reg['fault'] != reg['nominal']:
+            print('--capacity is not accepted with regime %s: its fault capacity (%d) is an '
+                  'absolute rate, not a fraction of nominal (%d), so a changed nominal '
+                  'leaves the manipulation undefined. Use C0, or add an explicit regime.'
+                  % (args.regime, reg['fault'], reg['nominal']))
+            return 2
+
     if args.dry_run:
         seq, lo, hi = plan(args.anchor, args.hi)
         print('DRY RUN — %s / %s, anchor rl=%d, n=%d' % (args.arm, args.regime, args.anchor, args.n))
         print('  condition %s, C %d -> %d at fault, S=%d ms'
-              % (REGIMES[args.regime]['condition'], REGIMES[args.regime]['nominal'],
-                 REGIMES[args.regime]['fault'], ARMS[args.arm]['service_time_ms']))
+              % (REGIMES[args.regime]['condition'],
+                 args.capacity or REGIMES[args.regime]['nominal'],
+                 args.capacity or REGIMES[args.regime]['fault'],
+                 ARMS[args.arm]['service_time_ms']))
         print('  classification: SAFE vSLO<=%.2f all %d; UNSAFE vSLO>%.2f in >=%d; else MARGINAL'
               % (SAFE_MAX_VSLO, args.n, UNSAFE_MIN_VSLO, UNSAFE_MIN_REPS))
         print('  stop at %d rps resolution' % RESOLUTION_RPS)
@@ -533,7 +558,8 @@ def main():
         print('  writes: %s/%s-%s.json' % (args.out_dir, args.arm, args.regime))
         print()
         print('  runner argv for the first probe:')
-        print('    ' + ' '.join(runner_argv(args, args.anchor, '%s-%s-rl%d-r1' % (args.arm, args.regime.lower(), args.anchor))))
+        print('    ' + ' '.join(runner_argv(args, args.anchor, '%s%s-%s-rl%d-r1' % (
+            args.run_prefix or '', args.arm, args.regime.lower(), args.anchor))))
         return 0
 
     points, lo, hi, by_rate = search(args, log)

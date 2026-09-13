@@ -1,0 +1,528 @@
+{
+  "cells": {
+    "E1 c10/C0": {
+      "C_d": 2000,
+      "plateau": 1828.6,
+      "ceiling": 0.9143,
+      "unsafePoints": [
+        {
+          "rl": 830,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1829.8,
+          "a4Rho": 0.9149,
+          "excessRps": 1.2,
+          "excessRho": 0.0006
+        },
+        {
+          "rl": 840,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1839.2,
+          "a4Rho": 0.9196,
+          "excessRps": 10.6,
+          "excessRho": 0.0053
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 755,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1755.0,
+          "a4Rho": 0.8775,
+          "excessRps": -73.6,
+          "excessRho": -0.0368
+        },
+        {
+          "rl": 800,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1800.0,
+          "a4Rho": 0.9,
+          "excessRps": -28.6,
+          "excessRho": -0.0143
+        },
+        {
+          "rl": 820,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1820.0,
+          "a4Rho": 0.91,
+          "excessRps": -8.6,
+          "excessRho": -0.0043
+        },
+        {
+          "rl": 825,
+          "n": 15,
+          "class": "SAFE",
+          "a4Rate": 1825.0,
+          "a4Rho": 0.9125,
+          "excessRps": -3.6,
+          "excessRho": -0.0018
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          825,
+          830
+        ],
+        "lastSafeRl": 825,
+        "rhoAtLastSafe": [
+          0.9124,
+          0.9125
+        ],
+        "ceiling": 0.9143,
+        "headroomToCeiling": 0.0018
+      }
+    },
+    "E1 c10/C1": {
+      "C_d": 1400,
+      "plateau": 1280.9,
+      "ceiling": 0.9149,
+      "unsafePoints": [
+        {
+          "rl": 280,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1280.0,
+          "a4Rho": 0.9143,
+          "excessRps": -0.9,
+          "excessRho": -0.0006
+        },
+        {
+          "rl": 290,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1290.0,
+          "a4Rho": 0.9214,
+          "excessRps": 9.1,
+          "excessRho": 0.0065
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 240,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1240.0,
+          "a4Rho": 0.8857,
+          "excessRps": -40.9,
+          "excessRho": -0.0292
+        },
+        {
+          "rl": 255,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1255.0,
+          "a4Rho": 0.8964,
+          "excessRps": -25.9,
+          "excessRho": -0.0185
+        },
+        {
+          "rl": 260,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1260.0,
+          "a4Rho": 0.9,
+          "excessRps": -20.9,
+          "excessRho": -0.0149
+        },
+        {
+          "rl": 275,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1275.0,
+          "a4Rho": 0.9107,
+          "excessRps": -5.9,
+          "excessRho": -0.0042
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          275,
+          280
+        ],
+        "lastSafeRl": 275,
+        "rhoAtLastSafe": [
+          0.9107,
+          0.9107
+        ],
+        "ceiling": 0.9149,
+        "headroomToCeiling": 0.0042
+      }
+    },
+    "E1 c50/C0": {
+      "C_d": 2000,
+      "plateau": 1964.3,
+      "ceiling": 0.9821,
+      "unsafePoints": [
+        {
+          "rl": 980,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1966.8,
+          "a4Rho": 0.9834,
+          "excessRps": 2.5,
+          "excessRho": 0.0013
+        },
+        {
+          "rl": 990,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1971.8,
+          "a4Rho": 0.9859,
+          "excessRps": 7.5,
+          "excessRho": 0.0037
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 890,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1889.8,
+          "a4Rho": 0.9449,
+          "excessRps": -74.5,
+          "excessRho": -0.0372
+        },
+        {
+          "rl": 940,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1939.0,
+          "a4Rho": 0.9695,
+          "excessRps": -25.3,
+          "excessRho": -0.0126
+        },
+        {
+          "rl": 965,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1956.4,
+          "a4Rho": 0.9782,
+          "excessRps": -7.9,
+          "excessRho": -0.004
+        },
+        {
+          "rl": 970,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1960.0,
+          "a4Rho": 0.98,
+          "excessRps": -4.3,
+          "excessRho": -0.0021
+        },
+        {
+          "rl": 975,
+          "n": 15,
+          "class": "SAFE",
+          "a4Rate": 1964.2,
+          "a4Rho": 0.9821,
+          "excessRps": -0.1,
+          "excessRho": -0.0
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          975,
+          980
+        ],
+        "lastSafeRl": 975,
+        "rhoAtLastSafe": [
+          0.9817,
+          0.9823
+        ],
+        "ceiling": 0.9821,
+        "headroomToCeiling": -0.0002
+      }
+    },
+    "E1 c50/C1": {
+      "C_d": 1400,
+      "plateau": 1375.7,
+      "ceiling": 0.9826,
+      "unsafePoints": [
+        {
+          "rl": 375,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1374.9,
+          "a4Rho": 0.9821,
+          "excessRps": -0.8,
+          "excessRho": -0.0005
+        },
+        {
+          "rl": 380,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1380.0,
+          "a4Rho": 0.9857,
+          "excessRps": 4.3,
+          "excessRho": 0.0031
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 340,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1339.9,
+          "a4Rho": 0.9571,
+          "excessRps": -35.8,
+          "excessRho": -0.0255
+        },
+        {
+          "rl": 360,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1360.0,
+          "a4Rho": 0.9714,
+          "excessRps": -15.7,
+          "excessRho": -0.0112
+        },
+        {
+          "rl": 370,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 1370.0,
+          "a4Rho": 0.9786,
+          "excessRps": -5.7,
+          "excessRho": -0.004
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          370,
+          375
+        ],
+        "lastSafeRl": 370,
+        "rhoAtLastSafe": [
+          0.9786,
+          0.9786
+        ],
+        "ceiling": 0.9826,
+        "headroomToCeiling": 0.004
+      }
+    },
+    "E2 c10@Q2500": {
+      "C_d": 2000,
+      "plateau": 1827.1,
+      "ceiling": 0.9135,
+      "unsafePoints": [
+        {
+          "rl": 830,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1829.8,
+          "a4Rho": 0.9149,
+          "excessRps": 2.7,
+          "excessRho": 0.0014
+        },
+        {
+          "rl": 835,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1834.4,
+          "a4Rho": 0.9172,
+          "excessRps": 7.3,
+          "excessRho": 0.0037
+        },
+        {
+          "rl": 845,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1842.2,
+          "a4Rho": 0.9211,
+          "excessRps": 15.1,
+          "excessRho": 0.0076
+        },
+        {
+          "rl": 865,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1841.4,
+          "a4Rho": 0.9207,
+          "excessRps": 14.3,
+          "excessRho": 0.0071
+        },
+        {
+          "rl": 905,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1841.8,
+          "a4Rho": 0.9209,
+          "excessRps": 14.7,
+          "excessRho": 0.0074
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 825,
+          "n": 12,
+          "class": "SAFE",
+          "a4Rate": 1825.0,
+          "a4Rho": 0.9125,
+          "excessRps": -2.1,
+          "excessRho": -0.001
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          825,
+          830
+        ],
+        "lastSafeRl": 825,
+        "rhoAtLastSafe": [
+          0.9124,
+          0.9125
+        ],
+        "ceiling": 0.9135,
+        "headroomToCeiling": 0.001
+      }
+    },
+    "E2 c50@Q500": {
+      "C_d": 2000,
+      "plateau": 1964.8,
+      "ceiling": 0.9824,
+      "unsafePoints": [
+        {
+          "rl": 980,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1967.8,
+          "a4Rho": 0.9839,
+          "excessRps": 3.0,
+          "excessRho": 0.0015
+        },
+        {
+          "rl": 990,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1971.6,
+          "a4Rho": 0.9858,
+          "excessRps": 6.8,
+          "excessRho": 0.0034
+        },
+        {
+          "rl": 1000,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1973.6,
+          "a4Rho": 0.9868,
+          "excessRps": 8.8,
+          "excessRho": 0.0044
+        },
+        {
+          "rl": 1025,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1977.4,
+          "a4Rho": 0.9887,
+          "excessRps": 12.6,
+          "excessRho": 0.0063
+        },
+        {
+          "rl": 1075,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 1981.0,
+          "a4Rho": 0.9905,
+          "excessRps": 16.2,
+          "excessRho": 0.0081
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 975,
+          "n": 12,
+          "class": "SAFE",
+          "a4Rate": 1964.6,
+          "a4Rho": 0.9823,
+          "excessRps": -0.2,
+          "excessRho": -0.0001
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          975,
+          980
+        ],
+        "lastSafeRl": 975,
+        "rhoAtLastSafe": [
+          0.982,
+          0.9826
+        ],
+        "ceiling": 0.9824,
+        "headroomToCeiling": -0.0002
+      }
+    },
+    "E2b C=400": {
+      "C_d": 400,
+      "plateau": 392.7,
+      "ceiling": 0.9818,
+      "unsafePoints": [
+        {
+          "rl": 195,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 395.0,
+          "a4Rho": 0.9875,
+          "excessRps": 2.3,
+          "excessRho": 0.0058
+        },
+        {
+          "rl": 200,
+          "n": 3,
+          "class": "UNSAFE",
+          "a4Rate": 400.0,
+          "a4Rho": 1.0,
+          "excessRps": 7.3,
+          "excessRho": 0.0183
+        }
+      ],
+      "safePoints": [
+        {
+          "rl": 180,
+          "n": 3,
+          "class": "SAFE",
+          "a4Rate": 380.0,
+          "a4Rho": 0.95,
+          "excessRps": -12.7,
+          "excessRho": -0.0317
+        },
+        {
+          "rl": 190,
+          "n": 12,
+          "class": "SAFE",
+          "a4Rate": 390.0,
+          "a4Rho": 0.975,
+          "excessRps": -2.7,
+          "excessRho": -0.0067
+        }
+      ],
+      "reported": {
+        "rlInterval": [
+          190,
+          195
+        ],
+        "lastSafeRl": 190,
+        "rhoAtLastSafe": [
+          0.975,
+          0.975
+        ],
+        "ceiling": 0.9818,
+        "headroomToCeiling": 0.0068
+      }
+    }
+  },
+  "unsafeTotal": 20,
+  "unsafeImpossible": 18,
+  "excessRhoRange": [
+    0.0006,
+    0.0183
+  ],
+  "intervalWidthRange": [
+    0.0018,
+    0.0125
+  ]
+}

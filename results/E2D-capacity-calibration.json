@@ -1,0 +1,188 @@
+{
+  "windowSec": 30.0,
+  "claimedOverheadMs": 0.46,
+  "cells": {
+    "E1 c10/C0": {
+      "S": 5,
+      "faultCapacity": 2000,
+      "nUnsafeRuns": 6,
+      "trueCapacity": 1828.6,
+      "trueCapacityMin": 1828.0,
+      "trueCapacityMax": 1829.9,
+      "naiveWholeWindow": 1818.6,
+      "perTickCV": 0.004,
+      "impliedOverheadMs": 0.469,
+      "predictedAt046": 1831.5,
+      "predErrPct": -0.158,
+      "rhoStarInterval": [
+        0.9124,
+        0.915
+      ],
+      "rhoEffInterval": [
+        0.9979,
+        1.0008
+      ],
+      "bracketsUnity": true,
+      "resolutionInEff": 0.0027
+    },
+    "E1 c10/C1": {
+      "S": 5,
+      "faultCapacity": 1400,
+      "nUnsafeRuns": 6,
+      "trueCapacity": 1280.9,
+      "trueCapacityMin": 1279.1,
+      "trueCapacityMax": 1282.0,
+      "naiveWholeWindow": 1257.9,
+      "perTickCV": 0.0247,
+      "impliedOverheadMs": 0.465,
+      "predictedAt046": 1282.1,
+      "predErrPct": -0.086,
+      "rhoStarInterval": [
+        0.9107,
+        0.9143
+      ],
+      "rhoEffInterval": [
+        0.9954,
+        0.9993
+      ],
+      "bracketsUnity": false,
+      "resolutionInEff": 0.0039
+    },
+    "E1 c50/C0": {
+      "S": 25,
+      "faultCapacity": 2000,
+      "nUnsafeRuns": 6,
+      "trueCapacity": 1964.3,
+      "trueCapacityMin": 1962.7,
+      "trueCapacityMax": 1965.3,
+      "naiveWholeWindow": 1949.6,
+      "perTickCV": 0.0039,
+      "impliedOverheadMs": 0.454,
+      "predictedAt046": 1963.9,
+      "predErrPct": 0.024,
+      "rhoStarInterval": [
+        0.9817,
+        0.9835
+      ],
+      "rhoEffInterval": [
+        0.9995,
+        1.0014
+      ],
+      "bracketsUnity": true,
+      "resolutionInEff": 0.0025
+    },
+    "E1 c50/C1": {
+      "S": 25,
+      "faultCapacity": 1400,
+      "nUnsafeRuns": 6,
+      "trueCapacity": 1375.7,
+      "trueCapacityMin": 1375.0,
+      "trueCapacityMax": 1378.3,
+      "naiveWholeWindow": 1372.8,
+      "perTickCV": 0.0045,
+      "impliedOverheadMs": 0.441,
+      "predictedAt046": 1374.7,
+      "predErrPct": 0.075,
+      "rhoStarInterval": [
+        0.9786,
+        0.9822
+      ],
+      "rhoEffInterval": [
+        0.9959,
+        0.9995
+      ],
+      "bracketsUnity": false,
+      "resolutionInEff": 0.0036
+    },
+    "E2 c10@Q2500": {
+      "S": 5,
+      "faultCapacity": 2000,
+      "nUnsafeRuns": 15,
+      "trueCapacity": 1827.1,
+      "trueCapacityMin": 1825.5,
+      "trueCapacityMax": 1829.5,
+      "naiveWholeWindow": 1822.2,
+      "perTickCV": 0.0037,
+      "impliedOverheadMs": 0.473,
+      "predictedAt046": 1831.5,
+      "predErrPct": -0.239,
+      "rhoStarInterval": [
+        0.9124,
+        0.915
+      ],
+      "rhoEffInterval": [
+        0.9987,
+        1.0016
+      ],
+      "bracketsUnity": true,
+      "resolutionInEff": 0.0027
+    },
+    "E2 c50@Q500": {
+      "S": 25,
+      "faultCapacity": 2000,
+      "nUnsafeRuns": 15,
+      "trueCapacity": 1964.8,
+      "trueCapacityMin": 1963.7,
+      "trueCapacityMax": 1965.7,
+      "naiveWholeWindow": 1952.8,
+      "perTickCV": 0.0038,
+      "impliedOverheadMs": 0.447,
+      "predictedAt046": 1963.9,
+      "predErrPct": 0.05,
+      "rhoStarInterval": [
+        0.982,
+        0.9841
+      ],
+      "rhoEffInterval": [
+        0.9996,
+        1.0017
+      ],
+      "bracketsUnity": true,
+      "resolutionInEff": 0.0025
+    },
+    "E2b C=400": {
+      "S": 25,
+      "faultCapacity": 400,
+      "nUnsafeRuns": 6,
+      "trueCapacity": 392.7,
+      "trueCapacityMin": 392.5,
+      "trueCapacityMax": 393.0,
+      "naiveWholeWindow": 385.7,
+      "perTickCV": 0.0388,
+      "impliedOverheadMs": 0.463,
+      "predictedAt046": 392.8,
+      "predErrPct": -0.012,
+      "rhoStarInterval": [
+        0.975,
+        0.9875
+      ],
+      "rhoEffInterval": [
+        0.9931,
+        1.0059
+      ],
+      "bracketsUnity": true,
+      "resolutionInEff": 0.0127
+    }
+  },
+  "overheadMs": {
+    "min": 0.441,
+    "max": 0.473,
+    "median": 0.463,
+    "sd": 0.011,
+    "cvPct": 2.39
+  },
+  "collapse": {
+    "rhoStarSpread": 0.0706,
+    "rhoStarSD": 0.0339,
+    "rhoEffSpread": 0.0033,
+    "rhoEffSD": 0.0012,
+    "rhoEffMedian": 0.9995,
+    "cellsBracketingUnity": 5,
+    "cellsTotal": 7,
+    "notBracketing": [
+      "E1 c10/C1",
+      "E1 c50/C1"
+    ],
+    "worstResolutionInEff": 0.0127
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "allSevenMedian": 0.463,
+  "stepRps": 5.0,
+  "cells": [
+    {
+      "cell": "E1 c10/C0",
+      "S": 5,
+      "conc": 10,
+      "deltaLOO": 0.4585,
+      "predicted": 1832.0,
+      "measured": 1828.6,
+      "errorRps": -3.41,
+      "errorSteps": -0.681,
+      "errorPct": -0.186
+    },
+    {
+      "cell": "E1 c10/C1",
+      "S": 5,
+      "conc": 7,
+      "deltaLOO": 0.4585,
+      "predicted": 1282.4,
+      "measured": 1280.9,
+      "errorRps": -1.5,
+      "errorSteps": -0.301,
+      "errorPct": -0.117
+    },
+    {
+      "cell": "E1 c50/C0",
+      "S": 25,
+      "conc": 50,
+      "deltaLOO": 0.464,
+      "predicted": 1963.6,
+      "measured": 1964.3,
+      "errorRps": 0.74,
+      "errorSteps": 0.149,
+      "errorPct": 0.038
+    },
+    {
+      "cell": "E1 c50/C1",
+      "S": 25,
+      "conc": 35,
+      "deltaLOO": 0.464,
+      "predicted": 1374.5,
+      "measured": 1375.7,
+      "errorRps": 1.21,
+      "errorSteps": 0.242,
+      "errorPct": 0.088
+    },
+    {
+      "cell": "E2 c10@Q2500",
+      "S": 5,
+      "conc": 10,
+      "deltaLOO": 0.4585,
+      "predicted": 1832.0,
+      "measured": 1827.1,
+      "errorRps": -4.91,
+      "errorSteps": -0.981,
+      "errorPct": -0.268
+    },
+    {
+      "cell": "E2 c50@Q500",
+      "S": 25,
+      "conc": 50,
+      "deltaLOO": 0.464,
+      "predicted": 1963.6,
+      "measured": 1964.8,
+      "errorRps": 1.24,
+      "errorSteps": 0.249,
+      "errorPct": 0.063
+    },
+    {
+      "cell": "E2b C=400",
+      "S": 25,
+      "conc": 10,
+      "deltaLOO": 0.4595,
+      "predicted": 392.8,
+      "measured": 392.7,
+      "errorRps": -0.08,
+      "errorSteps": -0.016,
+      "errorPct": -0.021
+    }
+  ],
+  "worstAbsRps": -4.91,
+  "worstSteps": -0.981,
+  "rmsRps": 2.436
+}

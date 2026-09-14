@@ -351,3 +351,205 @@ the downstream actually runs.
    1.0000**, and the honest precision is roughly two decimal places in effective
    utilisation, or one bisection step in rate.
 6. One arithmetic correction: 9.26%, not 9.3%.
+
+
+---
+
+# W2 addendum — arithmetic confirmation, leave-one-out, precision sweep
+
+Appended 2026-09-13. Offline, committed data only.
+Regenerate with `scripts/loo_overhead.py` and `scripts/precision_sweep.py`.
+
+## 1. The prediction arithmetic — confirmed, with one term corrected
+
+The derivation in the brief is **the one that was registered**, and it reproduces
+both values exactly. Source: `results/E2E-PLAN.md`, addendum 1, commit `67c448b`,
+2026-09-13 17:31:47 UTC. The committed table reads:
+
+| arm | sleep | + overhead | cycle | true capacity | rho* | boundary rl |
+|---|---:|---:|---:|---:|---:|---:|
+| c10 | 4.537 | 0.4947 | 5.0317 ms | 1987.4 | 0.9937 | 987.4 |
+| c50 | 24.537 | 0.4914 | 25.0284 ms | 1997.7 | 0.9989 | 997.7 |
+
+Recomputed term by term:
+
+```
+c10   sleep    5.000 - 0.463  = 4.537 ms
+      cycle    4.537 + 0.4947 = 5.0317 ms
+      capacity 10 / 0.0050317 s = 1987.3999 rps   -> 1987.4   EXACT
+      rho*     1987.4 / 2000    = 0.99370         -> 0.9937
+
+c50   sleep   25.000 - 0.463   = 24.537 ms
+      cycle   24.537 + 0.4914  = 25.0284 ms
+      capacity 50 / 0.0250284 s = 1997.7306 rps   -> 1997.7   EXACT
+      rho*     1997.7 / 2000    = 0.99885         -> 0.9989
+```
+
+**This is not a coincidence of rounding.** The registered values carry one
+decimal, and the derivation reproduces them to four.
+
+### One term in the brief differs from what the code does
+
+The brief writes concurrency as `ceil(2000 * 0.005) = 10`, using the
+**uncorrected** service time. The downstream computes it from the **configured**
+service time, which under the correction is 4.537 ms:
+
+```
+downstream/main.go:91   concurrencyFor(capacity, serviceTime) = ceil(capacity * serviceTime)
+
+c10   ceil(2000 * 0.004537) = ceil(9.074)  = 10
+c50   ceil(2000 * 0.024537) = ceil(49.074) = 50
+```
+
+Both routes give the same integers, and the run records confirm the downstream
+ran at concurrency 10 and 50 with `serviceTimeUs` 4537 and 24537
+(`results/e2e/e2e-c10-c0-rl1075-r1.json`, `e2e-c50-c0-rl1150-r1.json`).
+
+**For the paper, state the corrected form.** That concurrency is unchanged by the
+correction is a designed property — `ceil` absorbing a 9 percent reduction in S —
+not an accident, and writing `ceil(2000 * 0.005)` describes a configuration that
+was never run.
+
+### Where the constants live
+
+The predicted plateaus are **hardcoded registered constants** in
+`scripts/e2e_analysis.py:37,40` (`'predPlateau': 1987.4` / `1997.7`). They are not
+recomputed at analysis time, deliberately: they are the values registered before
+the runs, and recomputing them would let a later change to the inputs move the
+prediction. The derivation lives in the plan; the analysis compares against it.
+
+## 2. Leave-one-out test
+
+Now authorised and run. For each cell, delta is the median of the **other six**
+per-cell estimates; the held-out cell's plateau is predicted as
+`concurrency / (S + delta_LOO)` and compared with its measured plateau. Nothing
+is retuned. Script `scripts/loo_overhead.py`, output
+`results/W2-leave-one-out.json`.
+
+```
+all-seven median delta: 0.4630 ms  (the constant the paper uses)
+
+held out           S  conc  delta_LOO  predicted    measured  error rps  err/step     err %
+E1 c10/C0          5    10     0.4585     1832.0      1828.6      -3.41    -0.681   -0.186%
+E1 c10/C1          5     7     0.4585     1282.4      1280.9      -1.50    -0.301   -0.117%
+E1 c50/C0         25    50     0.4640     1963.6      1964.3      +0.74    +0.149   +0.038%
+E1 c50/C1         25    35     0.4640     1374.5      1375.7      +1.21    +0.242   +0.088%
+E2 c10@Q2500       5    10     0.4585     1832.0      1827.1      -4.91    -0.981   -0.268%
+E2 c50@Q500       25    50     0.4640     1963.6      1964.8      +1.24    +0.249   +0.063%
+E2b C=400         25    10     0.4595      392.8       392.7      -0.08    -0.016   -0.021%
+
+worst absolute error : -4.91 rps  (E2 c10@Q2500)
+worst in step units  : -0.981 steps (E2 c10@Q2500)
+worst relative error : -0.268%   (E2 c10@Q2500)
+RMS error            : 2.44 rps
+delta_LOO range      : 0.4585 to 0.4640 ms (all-seven median 0.4630)
+
+Every held-out prediction lands within 0.98 of one bisection step.
+wrote results/W2-leave-one-out.json
+```
+
+### What it shows
+
+**Every held-out prediction lands within one bisection step.** The worst case is
+E2 c10@Q2500 at -4.91 rps, which is 0.98 of a step and -0.268 percent of that
+cell's capacity. RMS error across the seven is 2.44 rps.
+
+**But the errors are not random in sign.** Every S=5 cell is over-predicted and
+every S=25 cell but one is under-predicted:
+
+| S | cells | LOO errors (rps) |
+|---:|---|---|
+| 5 | c10/C0, c10/C1, c10@Q2500 | -3.41, -1.50, -4.91 |
+| 25 | c50/C0, c50/C1, c50@Q500, E2b | +0.74, +1.21, +1.24, -0.08 |
+
+The per-arm medians differ: **0.4690 ms at S=5 against 0.4505 ms at S=25**, a gap
+of 0.0185 ms, or 4.1 percent. So delta is not perfectly constant across service
+time, and the single-constant model absorbs that as a systematic capacity error
+of up to 0.27 percent.
+
+**This does not overturn the constant-versus-proportional result.** A proportional
+cost would predict a fivefold difference between the arms; the measured
+difference is 4 percent. But the paper should say the constant is constant to
+within about 4 percent, not exactly, and the leave-one-out errors are the
+evidence for that figure.
+
+## 3. Precision sweep — scope, not yet applied
+
+Applying the stated rules: utilisation ratios to two significant figures,
+`delta/S` as 9.26 and 1.85 percent, and any four-decimal utilisation figure
+flagged. A utilisation figure is a decimal in [0.80, 1.05] with three or more
+decimal places. Script `scripts/precision_sweep.py`. **Nothing has been
+rewritten.**
+
+### Tier 1 — paper-facing artefacts, actionable
+
+| file | occurrences | at 4 dp | fixed by |
+|---|---:|---:|---|
+| results/E1-REPORT.md | 81 | 81 | hand-written |
+| results/E2C-REPORT.md | 80 | 80 | scripts/e2c_report.py |
+| results/E2-REPORT.md | 68 | 52 | scripts/e2_report.py |
+| results/A6-REPORT.md | 57 | 52 | hand-written |
+| results/E2E-REPORT.md | 41 | 39 | scripts/e2e_report.py |
+| results/E2D-REPORT.md | 32 | 31 | scripts/e2d_report.py |
+| results/E2B-REPORT.md | 19 | 18 | scripts/e2b_report.py |
+| results/E1-LEADING-INDICATOR.md | 17 | 17 | hand-written |
+| results/E1B-REPORT.md | 4 | 4 | hand-written |
+| figures/CAPTIONS.md | 1 | 0 | hand-written |
+| figures/T1-false-findings.md | 1 | 0 | scripts/make_table1.py |
+| **total** | **401** | **374** | 241 generated, 160 hand-written |
+
+### Tier 2 — registrations, which should NOT be rewritten
+
+109 occurrences across `PRE-REGISTRATION.md` and the four plans. These record
+what was predicted before the data existed. Reducing their precision after the
+fact would falsify the record: a reader comparing a registered 0.9937 against a
+measured value needs the registered digits as they were written.
+
+### Tier 3 — out of scope
+
+282 occurrences across 21 Phase 0/1 and GATE reports from prior work. Not Paper 2
+artefacts.
+
+### The distinct values, and what the rule does to them
+
+255 distinct over-precise values appear. The most frequent, with their
+two-significant-figure forms:
+
+| value | occurrences | two sig figs |
+|---:|---:|---:|
+| 1.000 | 35 | 1.0 |
+| 0.9124 | 20 | 0.91 |
+| 0.9125 | 18 | 0.91 |
+| 0.9937 | 18 | 0.99 |
+| 0.9150 | 16 | 0.92 |
+| 0.9137 | 15 | 0.91 |
+| 0.9107 | 14 | 0.91 |
+| 0.9826 | 14 | 0.98 |
+| 0.9999 | 12 | 1.0 |
+| 0.9989 | 10 | 1.0 |
+
+**Two significant figures is stricter than the measurement warrants, and applying
+it literally would destroy real results.** The bisection resolution is 0.0025 in
+the finest cells, which is the third decimal place. At two significant figures
+0.9124 and 0.9137 both become 0.91, and the 0.0689 concurrency gap — the paper's
+central uncorrected finding — survives only as "0.91 versus 0.98".
+
+Three decimal places matches the instrument for the six cells at C >= 1400, and
+is one place finer than E2b supports. **Recommendation: three decimals for
+utilisation, with E2b quoted at two, rather than two significant figures
+throughout.** The brief's rule is recorded here as stated; this is a flagged
+disagreement, not a silent deviation.
+
+### Percentages
+
+`delta/S` appears correctly as 9.26 and 1.85 percent only in this response
+document. The 9.3 percent figure the paper intends to state does not yet appear
+in any committed artefact, so there is nothing to correct there — only something
+to get right when it is written.
+
+Occupancy percentages are quoted to three decimals in five places: 4.114, 4.071,
+0.923 and 21.686 percent, in `results/E2-REPORT.md`,
+`figures/T1-false-findings.md`, `scripts/e2_report.py`, `scripts/make_table1.py`
+and `scripts/cap_occupancy.py`. They derive from queue-depth medians whose
+run-to-run spread far exceeds the third decimal, and should be two decimals at
+most.

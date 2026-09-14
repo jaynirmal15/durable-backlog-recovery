@@ -840,3 +840,59 @@ This applies to reporting from 2026-09-13 onward and to the retrospective
 restatement above. No run is repeated and no measurement is discarded: the same
 records support the corrected reporting, which uses fewer of their derived
 quantities rather than different ones.
+
+### A7 — 2026-09-14: the leading-indicator analysis is re-run over the corrected-harness corpus
+
+**Registered before the analysis is run.** Nothing in the analysis is changed.
+This entry exists so the prediction is on record before the numbers are in view,
+which is exactly what A5 could not claim for itself.
+
+#### What is already frozen, and is not being touched
+
+| what | where | frozen at |
+|---|---|---|
+| DEEP criterion, `drainQueueDepthMean >= 50` | `results/E1B-PLAN.md` | `09e41e5`, 2026-09-12 03:18:03 -0400 |
+| noise statistic: median of within-point SDs | A5, `PRE-REGISTRATION.md` | `fe36734`, 2026-09-12 07:31:30 UTC |
+| warning bar, `WARN_SIGMA = 3.0` | `scripts/leading_indicator.py` | unchanged since E1 |
+| the six observables | `scripts/leading_indicator.py:METRICS` | unchanged since E1 |
+
+**Neither the statistic, the threshold, nor the criterion is changed.** The only
+thing that changes is which corpus the unchanged analysis reads.
+
+#### Why the corrected-harness corpus is independent of A5
+
+A5 changed the noise scale from mean to median with the E1 numbers in view. The
+E1 corpus was collected 2026-09-11 17:44:37 → 2026-09-12 02:43:58 UTC, about five
+hours before A5 froze.
+
+The corrected-harness corpus was collected **2026-09-13 18:10:27 → 21:45:51
+UTC**, roughly **34 hours after A5 froze**. It could not have informed the choice
+of statistic, and it did not: `scripts/leading_indicator.py` and
+`scripts/noise_scale_sensitivity.py` contain **zero** references to `results/e2`,
+`e2b` or `e2e`, and `results/E1-leading-indicator.json` covers exactly the four
+E1 boundaries. This is established in `results/METHOD-AUDIT.md` item 3.
+
+#### The prediction, stated before looking
+
+> **Queue depth crosses its criterion before live p99 does, and timeout rate does
+> not cross at all.**
+
+That is the E1 result. If the corrected corpus reproduces it, C3 is confirmatory
+on data that played no part in choosing the statistic. If it does not, C3 is
+exploratory and the E1 finding is a single-corpus result.
+
+#### A limitation recorded in advance
+
+The corrected cells carry **three SAFE points each** against four and five in the
+E1 cells. The analysis compares every point against the deepest-safe one, so
+three points give two comparisons per metric rather than three or four. A
+non-replication could therefore mean the signal is absent, or only that the
+corrected corpus has less room to show it. **That ambiguity is stated now, before
+the result, so it cannot be reached for afterwards if the answer is
+inconvenient.**
+
+#### Commitment
+
+The outcome is reported whichever way it falls, per cell, with the margin. A
+non-replication will be reported as a non-replication and C3 labelled
+exploratory.

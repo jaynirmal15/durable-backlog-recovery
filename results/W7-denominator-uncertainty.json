@@ -1,0 +1,438 @@
+{
+  "windowSec": 30.0,
+  "cells": {
+    "E1 c10/C0": {
+      "n": 6,
+      "min": 1827.96,
+      "median": 1828.61,
+      "max": 1829.88,
+      "rangeRps": 1.92,
+      "rangeFracPct": 0.105,
+      "sdRps": 0.74,
+      "runs": [
+        {
+          "runId": "c10-c0-rl840-r3",
+          "rl": 840,
+          "plateau": 1827.96
+        },
+        {
+          "runId": "c10-c0-rl830-r3",
+          "rl": 830,
+          "plateau": 1828.13
+        },
+        {
+          "runId": "c10-c0-rl840-r2",
+          "rl": 840,
+          "plateau": 1828.25
+        },
+        {
+          "runId": "c10-c0-rl830-r2",
+          "rl": 830,
+          "plateau": 1828.96
+        },
+        {
+          "runId": "c10-c0-rl830-r1",
+          "rl": 830,
+          "plateau": 1829.6
+        },
+        {
+          "runId": "c10-c0-rl840-r1",
+          "rl": 840,
+          "plateau": 1829.88
+        }
+      ],
+      "R_achLastSafe": 1825.0,
+      "rhoEffAtCmax": 0.9973,
+      "rhoEffAtCmedian": 0.998,
+      "rhoEffAtCmin": 0.9984,
+      "rhoEffSpan": 0.001,
+      "resolutionInEff": 0.0027,
+      "spanOverResolution": 0.383,
+      "combinedQuadrature": 0.0029
+    },
+    "E1 c10/C1": {
+      "n": 6,
+      "min": 1279.08,
+      "median": 1280.95,
+      "max": 1281.99,
+      "rangeRps": 2.91,
+      "rangeFracPct": 0.227,
+      "sdRps": 0.91,
+      "runs": [
+        {
+          "runId": "c10-c1-rl280-r3",
+          "rl": 280,
+          "plateau": 1279.08
+        },
+        {
+          "runId": "c10-c1-rl280-r2",
+          "rl": 280,
+          "plateau": 1280.06
+        },
+        {
+          "runId": "c10-c1-rl290-r2",
+          "rl": 290,
+          "plateau": 1280.82
+        },
+        {
+          "runId": "c10-c1-rl290-r1",
+          "rl": 290,
+          "plateau": 1281.07
+        },
+        {
+          "runId": "c10-c1-rl280-r1",
+          "rl": 280,
+          "plateau": 1281.12
+        },
+        {
+          "runId": "c10-c1-rl290-r3",
+          "rl": 290,
+          "plateau": 1281.99
+        }
+      ],
+      "R_achLastSafe": 1275.0,
+      "rhoEffAtCmax": 0.9945,
+      "rhoEffAtCmedian": 0.9954,
+      "rhoEffAtCmin": 0.9968,
+      "rhoEffSpan": 0.0023,
+      "resolutionInEff": 0.0039,
+      "spanOverResolution": 0.58,
+      "combinedQuadrature": 0.0045
+    },
+    "E1 c50/C0": {
+      "n": 6,
+      "min": 1962.68,
+      "median": 1964.33,
+      "max": 1965.26,
+      "rangeRps": 2.58,
+      "rangeFracPct": 0.131,
+      "sdRps": 0.88,
+      "runs": [
+        {
+          "runId": "c50-c0-rl990-r1",
+          "rl": 990,
+          "plateau": 1962.68
+        },
+        {
+          "runId": "c50-c0-rl980-r1",
+          "rl": 980,
+          "plateau": 1963.5
+        },
+        {
+          "runId": "c50-c0-rl990-r2",
+          "rl": 990,
+          "plateau": 1964.05
+        },
+        {
+          "runId": "c50-c0-rl980-r3",
+          "rl": 980,
+          "plateau": 1964.61
+        },
+        {
+          "runId": "c50-c0-rl980-r2",
+          "rl": 980,
+          "plateau": 1964.91
+        },
+        {
+          "runId": "c50-c0-rl990-r3",
+          "rl": 990,
+          "plateau": 1965.26
+        }
+      ],
+      "R_achLastSafe": 1964.2,
+      "rhoEffAtCmax": 0.9995,
+      "rhoEffAtCmedian": 0.9999,
+      "rhoEffAtCmin": 1.0008,
+      "rhoEffSpan": 0.0013,
+      "resolutionInEff": 0.0025,
+      "spanOverResolution": 0.517,
+      "combinedQuadrature": 0.0028
+    },
+    "E1 c50/C1": {
+      "n": 6,
+      "min": 1375.04,
+      "median": 1375.74,
+      "max": 1378.3,
+      "rangeRps": 3.26,
+      "rangeFracPct": 0.237,
+      "sdRps": 1.04,
+      "runs": [
+        {
+          "runId": "c50-c1-rl380-r2",
+          "rl": 380,
+          "plateau": 1375.04
+        },
+        {
+          "runId": "c50-c1-rl375-r2",
+          "rl": 375,
+          "plateau": 1375.6
+        },
+        {
+          "runId": "c50-c1-rl375-r1",
+          "rl": 375,
+          "plateau": 1375.7
+        },
+        {
+          "runId": "c50-c1-rl375-r3",
+          "rl": 375,
+          "plateau": 1375.79
+        },
+        {
+          "runId": "c50-c1-rl380-r3",
+          "rl": 380,
+          "plateau": 1376.02
+        },
+        {
+          "runId": "c50-c1-rl380-r1",
+          "rl": 380,
+          "plateau": 1378.3
+        }
+      ],
+      "R_achLastSafe": 1370.0,
+      "rhoEffAtCmax": 0.994,
+      "rhoEffAtCmedian": 0.9958,
+      "rhoEffAtCmin": 0.9963,
+      "rhoEffSpan": 0.0024,
+      "resolutionInEff": 0.0036,
+      "spanOverResolution": 0.648,
+      "combinedQuadrature": 0.0043
+    },
+    "E2 c10@Q2500": {
+      "n": 15,
+      "min": 1825.49,
+      "median": 1827.13,
+      "max": 1829.49,
+      "rangeRps": 4.0,
+      "rangeFracPct": 0.219,
+      "sdRps": 0.99,
+      "runs": [
+        {
+          "runId": "c10-c0-rl865-r1",
+          "rl": 865,
+          "plateau": 1825.49
+        },
+        {
+          "runId": "c10-c0-rl905-r3",
+          "rl": 905,
+          "plateau": 1825.99
+        },
+        {
+          "runId": "c10-c0-rl865-r3",
+          "rl": 865,
+          "plateau": 1826.43
+        },
+        {
+          "runId": "c10-c0-rl835-r2",
+          "rl": 835,
+          "plateau": 1826.58
+        },
+        {
+          "runId": "c10-c0-rl905-r1",
+          "rl": 905,
+          "plateau": 1826.68
+        },
+        {
+          "runId": "c10-c0-rl845-r3",
+          "rl": 845,
+          "plateau": 1826.96
+        },
+        {
+          "runId": "c10-c0-rl845-r1",
+          "rl": 845,
+          "plateau": 1827.05
+        },
+        {
+          "runId": "c10-c0-rl905-r2",
+          "rl": 905,
+          "plateau": 1827.13
+        },
+        {
+          "runId": "c10-c0-rl830-r2",
+          "rl": 830,
+          "plateau": 1827.29
+        },
+        {
+          "runId": "c10-c0-rl845-r2",
+          "rl": 845,
+          "plateau": 1827.37
+        },
+        {
+          "runId": "c10-c0-rl830-r3",
+          "rl": 830,
+          "plateau": 1827.48
+        },
+        {
+          "runId": "c10-c0-rl830-r1",
+          "rl": 830,
+          "plateau": 1827.52
+        },
+        {
+          "runId": "c10-c0-rl865-r2",
+          "rl": 865,
+          "plateau": 1827.86
+        },
+        {
+          "runId": "c10-c0-rl835-r3",
+          "rl": 835,
+          "plateau": 1828.94
+        },
+        {
+          "runId": "c10-c0-rl835-r1",
+          "rl": 835,
+          "plateau": 1829.49
+        }
+      ],
+      "R_achLastSafe": 1825.0,
+      "rhoEffAtCmax": 0.9975,
+      "rhoEffAtCmedian": 0.9988,
+      "rhoEffAtCmin": 0.9997,
+      "rhoEffSpan": 0.0022,
+      "resolutionInEff": 0.0027,
+      "spanOverResolution": 0.798,
+      "combinedQuadrature": 0.0035
+    },
+    "E2 c50@Q500": {
+      "n": 15,
+      "min": 1963.72,
+      "median": 1964.85,
+      "max": 1965.72,
+      "rangeRps": 2.0,
+      "rangeFracPct": 0.102,
+      "sdRps": 0.69,
+      "runs": [
+        {
+          "runId": "c50-c0-rl990-r1",
+          "rl": 990,
+          "plateau": 1963.72
+        },
+        {
+          "runId": "c50-c0-rl990-r3",
+          "rl": 990,
+          "plateau": 1963.77
+        },
+        {
+          "runId": "c50-c0-rl1075-r2",
+          "rl": 1075,
+          "plateau": 1963.85
+        },
+        {
+          "runId": "c50-c0-rl990-r2",
+          "rl": 990,
+          "plateau": 1963.92
+        },
+        {
+          "runId": "c50-c0-rl980-r2",
+          "rl": 980,
+          "plateau": 1964.17
+        },
+        {
+          "runId": "c50-c0-rl1025-r3",
+          "rl": 1025,
+          "plateau": 1964.31
+        },
+        {
+          "runId": "c50-c0-rl1075-r3",
+          "rl": 1075,
+          "plateau": 1964.64
+        },
+        {
+          "runId": "c50-c0-rl1000-r1",
+          "rl": 1000,
+          "plateau": 1964.85
+        },
+        {
+          "runId": "c50-c0-rl1025-r1",
+          "rl": 1025,
+          "plateau": 1964.89
+        },
+        {
+          "runId": "c50-c0-rl1000-r3",
+          "rl": 1000,
+          "plateau": 1964.91
+        },
+        {
+          "runId": "c50-c0-rl1025-r2",
+          "rl": 1025,
+          "plateau": 1965.13
+        },
+        {
+          "runId": "c50-c0-rl980-r1",
+          "rl": 980,
+          "plateau": 1965.33
+        },
+        {
+          "runId": "c50-c0-rl1075-r1",
+          "rl": 1075,
+          "plateau": 1965.63
+        },
+        {
+          "runId": "c50-c0-rl980-r3",
+          "rl": 980,
+          "plateau": 1965.67
+        },
+        {
+          "runId": "c50-c0-rl1000-r2",
+          "rl": 1000,
+          "plateau": 1965.72
+        }
+      ],
+      "R_achLastSafe": 1964.6,
+      "rhoEffAtCmax": 0.9994,
+      "rhoEffAtCmedian": 0.9999,
+      "rhoEffAtCmin": 1.0004,
+      "rhoEffSpan": 0.001,
+      "resolutionInEff": 0.0025,
+      "spanOverResolution": 0.399,
+      "combinedQuadrature": 0.0027
+    },
+    "E2b C=400": {
+      "n": 6,
+      "min": 392.52,
+      "median": 392.73,
+      "max": 393.0,
+      "rangeRps": 0.47,
+      "rangeFracPct": 0.121,
+      "sdRps": 0.15,
+      "runs": [
+        {
+          "runId": "e2b-c50-c0-rl200-r2",
+          "rl": 200,
+          "plateau": 392.52
+        },
+        {
+          "runId": "e2b-c50-c0-rl195-r2",
+          "rl": 195,
+          "plateau": 392.59
+        },
+        {
+          "runId": "e2b-c50-c0-rl195-r3",
+          "rl": 195,
+          "plateau": 392.69
+        },
+        {
+          "runId": "e2b-c50-c0-rl195-r1",
+          "rl": 195,
+          "plateau": 392.76
+        },
+        {
+          "runId": "e2b-c50-c0-rl200-r3",
+          "rl": 200,
+          "plateau": 392.81
+        },
+        {
+          "runId": "e2b-c50-c0-rl200-r1",
+          "rl": 200,
+          "plateau": 393.0
+        }
+      ],
+      "R_achLastSafe": 390.0,
+      "rhoEffAtCmax": 0.9924,
+      "rhoEffAtCmedian": 0.9931,
+      "rhoEffAtCmin": 0.9936,
+      "rhoEffSpan": 0.0012,
+      "resolutionInEff": 0.0127,
+      "spanOverResolution": 0.094,
+      "combinedQuadrature": 0.0128
+    }
+  }
+}

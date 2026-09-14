@@ -1,0 +1,515 @@
+{
+  "estimator": "drain-window as-measured: backlogAtRestore / tDrainSec + median(injRate over the drain window). Identical to e2e_analysis.achieved(); not A4.",
+  "C_d": 2000.0,
+  "cells": {
+    "c10": {
+      "points": [
+        {
+          "rl": 975,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1945.01,
+            1948.54,
+            1948.64
+          ],
+          "rho": [
+            0.9725,
+            0.9743,
+            0.9743
+          ],
+          "median": 1948.5,
+          "committedMedian": 1948.5,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl975-r2",
+              "rate": 1945.01
+            },
+            {
+              "runId": "e2e-c10-c0-rl975-r1",
+              "rate": 1948.54
+            },
+            {
+              "runId": "e2e-c10-c0-rl975-r3",
+              "rate": 1948.64
+            }
+          ],
+          "spreadRps": 3.63,
+          "rhoAchievedSpread": 0.00182,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        },
+        {
+          "rl": 1075,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1966.89,
+            1967.01,
+            1969.0
+          ],
+          "rho": [
+            0.9834,
+            0.9835,
+            0.9845
+          ],
+          "median": 1967.0,
+          "committedMedian": 1967.0,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl1075-r3",
+              "rate": 1966.89
+            },
+            {
+              "runId": "e2e-c10-c0-rl1075-r2",
+              "rate": 1967.01
+            },
+            {
+              "runId": "e2e-c10-c0-rl1075-r1",
+              "rate": 1969.0
+            }
+          ],
+          "spreadRps": 2.11,
+          "rhoAchievedSpread": 0.00105,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        },
+        {
+          "rl": 1185,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1974.62,
+            1976.65,
+            1976.81
+          ],
+          "rho": [
+            0.9873,
+            0.9883,
+            0.9884
+          ],
+          "median": 1976.7,
+          "committedMedian": 1976.7,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl1185-r2",
+              "rate": 1974.62
+            },
+            {
+              "runId": "e2e-c10-c0-rl1185-r3",
+              "rate": 1976.65
+            },
+            {
+              "runId": "e2e-c10-c0-rl1185-r1",
+              "rate": 1976.81
+            }
+          ],
+          "spreadRps": 2.19,
+          "rhoAchievedSpread": 0.0011,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        },
+        {
+          "rl": 1240,
+          "class": "UNSAFE",
+          "n": 3,
+          "achievedRps": [
+            1979.59,
+            1984.79,
+            1985.42
+          ],
+          "rho": [
+            0.9898,
+            0.9924,
+            0.9927
+          ],
+          "median": 1984.8,
+          "committedMedian": 1984.8,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl1240-r3",
+              "rate": 1979.59
+            },
+            {
+              "runId": "e2e-c10-c0-rl1240-r1",
+              "rate": 1984.79
+            },
+            {
+              "runId": "e2e-c10-c0-rl1240-r2",
+              "rate": 1985.42
+            }
+          ],
+          "spreadRps": 5.83,
+          "rhoAchievedSpread": 0.00292,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": true
+        },
+        {
+          "rl": 1290,
+          "class": "UNSAFE",
+          "n": 3,
+          "achievedRps": [
+            1984.17,
+            1986.0,
+            1989.59
+          ],
+          "rho": [
+            0.9921,
+            0.993,
+            0.9948
+          ],
+          "median": 1986.0,
+          "committedMedian": 1986.0,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl1290-r2",
+              "rate": 1984.17
+            },
+            {
+              "runId": "e2e-c10-c0-rl1290-r1",
+              "rate": 1986.0
+            },
+            {
+              "runId": "e2e-c10-c0-rl1290-r3",
+              "rate": 1989.59
+            }
+          ],
+          "spreadRps": 5.42,
+          "rhoAchievedSpread": 0.00271,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": true
+        },
+        {
+          "rl": 1400,
+          "class": "UNSAFE",
+          "n": 3,
+          "achievedRps": [
+            1984.05,
+            1988.2,
+            1988.39
+          ],
+          "rho": [
+            0.992,
+            0.9941,
+            0.9942
+          ],
+          "median": 1988.2,
+          "committedMedian": 1988.2,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c10-c0-rl1400-r2",
+              "rate": 1984.05
+            },
+            {
+              "runId": "e2e-c10-c0-rl1400-r1",
+              "rate": 1988.2
+            },
+            {
+              "runId": "e2e-c10-c0-rl1400-r3",
+              "rate": 1988.39
+            }
+          ],
+          "spreadRps": 4.34,
+          "rhoAchievedSpread": 0.00217,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        }
+      ]
+    },
+    "c50": {
+      "points": [
+        {
+          "rl": 975,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1943.35,
+            1946.53,
+            1947.71
+          ],
+          "rho": [
+            0.9717,
+            0.9733,
+            0.9739
+          ],
+          "median": 1946.5,
+          "committedMedian": 1946.5,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c50-c0-rl975-r2",
+              "rate": 1943.35
+            },
+            {
+              "runId": "e2e-c50-c0-rl975-r3",
+              "rate": 1946.53
+            },
+            {
+              "runId": "e2e-c50-c0-rl975-r1",
+              "rate": 1947.71
+            }
+          ],
+          "spreadRps": 4.36,
+          "rhoAchievedSpread": 0.00218,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        },
+        {
+          "rl": 1150,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1975.03,
+            1975.91,
+            1978.37
+          ],
+          "rho": [
+            0.9875,
+            0.988,
+            0.9892
+          ],
+          "median": 1975.9,
+          "committedMedian": 1975.9,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c50-c0-rl1150-r2",
+              "rate": 1975.03
+            },
+            {
+              "runId": "e2e-c50-c0-rl1150-r1",
+              "rate": 1975.91
+            },
+            {
+              "runId": "e2e-c50-c0-rl1150-r3",
+              "rate": 1978.37
+            }
+          ],
+          "spreadRps": 3.34,
+          "rhoAchievedSpread": 0.00167,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": false
+        },
+        {
+          "rl": 1210,
+          "class": "SAFE",
+          "n": 3,
+          "achievedRps": [
+            1980.6,
+            1983.05,
+            1987.04
+          ],
+          "rho": [
+            0.9903,
+            0.9915,
+            0.9935
+          ],
+          "median": 1983.1,
+          "committedMedian": 1983.1,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c50-c0-rl1210-r3",
+              "rate": 1980.6
+            },
+            {
+              "runId": "e2e-c50-c0-rl1210-r2",
+              "rate": 1983.05
+            },
+            {
+              "runId": "e2e-c50-c0-rl1210-r1",
+              "rate": 1987.04
+            }
+          ],
+          "spreadRps": 6.44,
+          "rhoAchievedSpread": 0.00322,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": true
+        },
+        {
+          "rl": 1275,
+          "class": "UNSAFE",
+          "n": 3,
+          "achievedRps": [
+            1986.85,
+            1988.77,
+            1992.32
+          ],
+          "rho": [
+            0.9934,
+            0.9944,
+            0.9962
+          ],
+          "median": 1988.8,
+          "committedMedian": 1988.8,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c50-c0-rl1275-r2",
+              "rate": 1986.85
+            },
+            {
+              "runId": "e2e-c50-c0-rl1275-r3",
+              "rate": 1988.77
+            },
+            {
+              "runId": "e2e-c50-c0-rl1275-r1",
+              "rate": 1992.32
+            }
+          ],
+          "spreadRps": 5.47,
+          "rhoAchievedSpread": 0.00274,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": true
+        },
+        {
+          "rl": 1400,
+          "class": "UNSAFE",
+          "n": 3,
+          "achievedRps": [
+            1985.36,
+            1991.0,
+            1992.5
+          ],
+          "rho": [
+            0.9927,
+            0.9955,
+            0.9962
+          ],
+          "median": 1991.0,
+          "committedMedian": 1991.0,
+          "matchesCommitted": true,
+          "runs": [
+            {
+              "runId": "e2e-c50-c0-rl1400-r2",
+              "rate": 1985.36
+            },
+            {
+              "runId": "e2e-c50-c0-rl1400-r3",
+              "rate": 1991.0
+            },
+            {
+              "runId": "e2e-c50-c0-rl1400-r1",
+              "rate": 1992.5
+            }
+          ],
+          "spreadRps": 7.14,
+          "rhoAchievedSpread": 0.00357,
+          "rhoResolution": 0.0025,
+          "spreadExceedsResolution": true
+        }
+      ]
+    }
+  },
+  "a3": {
+    "flagged": [
+      [
+        "c10",
+        1240,
+        "UNSAFE",
+        0.00292
+      ],
+      [
+        "c10",
+        1290,
+        "UNSAFE",
+        0.00271
+      ],
+      [
+        "c50",
+        1210,
+        "SAFE",
+        0.00322
+      ],
+      [
+        "c50",
+        1275,
+        "UNSAFE",
+        0.00274
+      ],
+      [
+        "c50",
+        1400,
+        "UNSAFE",
+        0.00357
+      ]
+    ],
+    "rhoResolution": 0.0025
+  },
+  "bracketSensitivity": {
+    "c10": {
+      "min": {
+        "bracket": [
+          0.9873,
+          0.9898
+        ],
+        "width": 0.0025,
+        "mid": 0.9886
+      },
+      "max": {
+        "bracket": [
+          0.9884,
+          0.9927
+        ],
+        "width": 0.0043,
+        "mid": 0.9906
+      },
+      "mean": {
+        "bracket": [
+          0.988,
+          0.9916
+        ],
+        "width": 0.0036,
+        "mid": 0.9898
+      },
+      "median": {
+        "bracket": [
+          0.9883,
+          0.9924
+        ],
+        "width": 0.0041,
+        "mid": 0.9903
+      }
+    },
+    "c50": {
+      "min": {
+        "bracket": [
+          0.9903,
+          0.9934
+        ],
+        "width": 0.0031,
+        "mid": 0.9918
+      },
+      "max": {
+        "bracket": [
+          0.9935,
+          0.9962
+        ],
+        "width": 0.0027,
+        "mid": 0.9949
+      },
+      "mean": {
+        "bracket": [
+          0.9918,
+          0.9947
+        ],
+        "width": 0.0029,
+        "mid": 0.9932
+      },
+      "median": {
+        "bracket": [
+          0.9915,
+          0.9944
+        ],
+        "width": 0.0029,
+        "mid": 0.9929
+      }
+    }
+  }
+}

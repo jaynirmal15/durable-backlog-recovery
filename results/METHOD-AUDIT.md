@@ -640,6 +640,11 @@ consistent reading is more than one invocation, or points probed outside the
 search; the artefact cannot distinguish those, because it does not record the
 invocation.
 
+> **CORRECTED IN ITEM 12.** The last sentence is wrong. The artefact *does*
+> distinguish them: the run ids at rl=240 and rl=255 carry the `e1b-` prefix,
+> marking them as E1B probes rather than search probes. With E1B separated, this
+> cell reconstructs exactly, like the other six. See item 12.
+
 ### The gap, stated as a gap
 
 This is the concrete reproducibility defect: **`locate_boundary.py` does not
@@ -659,4 +664,220 @@ after the campaigns closed, and that is your call, not mine.
 | 8. quoted endpoint | **max**, at `collapsed_estimator_audit.py:108` → `make_figures.py:66`; none of (a), (b), (c) changes under min/max/mean/median — a reporting detail, not a real issue |
 | 8, incidental | **unflattering** — F5's two axes use different aggregators; under `max` two cells sit at 1.0002, above their own plateau; the headline's "0.993" lower end comes from the one cell restricted to two decimals |
 | 9. spread diagnostic | **never fired** — 0 of 40 points, worst at 40% of its resolution; but **not computed at all for the two corrected-harness cells**, whose boundaries directory is empty |
-| 10. initial bracket | documented above; `--hi` optional, always freshly probed, a SAFE ceiling is promoted to floor; six of seven cells reconstruct with no `--hi`; **E1 c10/C1 is not reconstructible and the invocation is not recorded** |
+| 10. initial bracket | documented above; `--hi` optional, always freshly probed, a SAFE ceiling is promoted to floor; six of seven cells reconstruct with no `--hi` — **seven of seven once E1B is separated, see item 12** |
+
+---
+---
+
+# Round 3 — dataset map and the E1 c10/C1 provenance gap
+
+## 11. Which data support which claim
+
+### A prior note on the labels
+
+The labels C1, C2 and C3 appear in **no committed artefact**. They exist only in
+the paper draft, which is not in this repository. Everything below is therefore
+mapped by *description* — "the seven-cell boundary result", "predict and
+eliminate" — and the reader has to carry the label across. **That is itself part
+of the reviewer's objection**, and the cheapest fix is to name the datasets in
+the paper by their directory, which is unambiguous, rather than by a claim label
+that has no definition on disk.
+
+### The seven cells: confirmed, E1 x4 + E2 x2 + E2b x1
+
+Your recollection is correct. All seven are produced by
+`scripts/locate_boundary.py` and enumerated identically in three places
+(`method_audit.py:15`, `collapsed_estimator_audit.py:23`,
+`capacity_calibration.py:61`, `reviewer_w2_analysis.py:24`):
+
+| # | cell | boundary file | points | runs |
+|---|---|---|---|---|
+| 1 | E1 c10/C0 | `results/boundaries/c10-C0.json` | 6 | 30 |
+| 2 | E1 c10/C1 | `results/boundaries/c10-C1.json` | 6 | 18 |
+| 3 | E1 c50/C0 | `results/boundaries/c50-C0.json` | 7 | 33 |
+| 4 | E1 c50/C1 | `results/boundaries/c50-C1.json` | 5 | 15 |
+| 5 | E2 c10@Q2500 | `results/e2/c10-Q2500/boundaries/c10-C0.json` | 6 | 27 |
+| 6 | E2 c50@Q500 | `results/e2/c50-Q500/boundaries/c50-C0.json` | 6 | 27 |
+| 7 | E2b C=400 | `results/e2b/boundaries/c50-C0.json` | 4 | 21 |
+
+40 points, 171 runs.
+
+**The seven cells are self-contained.** Their effective-utilisation denominator,
+`trueCapacity`, is computed per cell from *that cell's own* UNSAFE-point run
+records — `capacity_calibration.py:61-74` globs `results/c10-c0-rl*`,
+`results/e2/c10-Q2500/*` and so on — not from E2e. No E2e measurement flows into
+any number in the seven-cell result.
+
+### The two E2e cells are SEPARATE. They are not members of the seven.
+
+`results/e2e/boundaries/` is an empty directory; the E2e cells were never built
+by `locate_boundary.py`. They live in `results/E2E-analysis.json`, assembled by
+`scripts/e2e_analysis.py` from `results/e2e/e2e-*-r*.json` (33 run records).
+
+What they support, exhaustively — every consumer of `results/e2e`:
+
+| consumer | what it takes from E2e |
+|---|---|
+| predict-and-eliminate (the "corrected" campaign) | both cells: plateau gates, boundary brackets, in-situ overhead |
+| **F3** `F3-overhead-measured` | **neither cell** — `results/e2e/exp1-s5-load90.json` and `exp1-s25-load90.json`, the direct-observation runs, not the boundary probes |
+| **F4** `F4-plateau-predicted-measured` | **two of its four bars** (`E2E['c10']`, `E2E['c50']`) |
+| **F6** `F6-signal-selection` | the **c10 cell only** |
+| **A7** | both cells, via `leading_indicator_corrected.py` reading `results/e2e/` |
+| `reviewer_w2_analysis.py` | both cells, for the fit-vs-test separation |
+
+And what they do **not** support: F5, the leave-one-out test
+(`loo_overhead.py:25` reads only `results/E2D-capacity-calibration.json`, i.e.
+the seven cells), the capacity calibration, the monotonicity audit, the spread
+census, or T1 (which is a hand-written narrative table with no data source at
+all).
+
+So the overhead constant is **fitted on the seven cells and tested on E2e** —
+which is the separation the W2 response claims, and it survives this check.
+
+### Does any cell contributing to the seven-cell result come from the lossy path?
+
+**No. Not one.** Verified directly: in all seven boundary files, every point's
+`rhoAchieved` is a list whose length equals `len(point['runs'])`, and every
+individual run carries its own `rhoAchieved`. 171 of 171 repetitions retain their
+own rate.
+
+The lossy path is **E2e, and only E2e**. `e2e_analysis.py:110-111` stores
+`achievedRps` and `rho` as a single `statistics.median(ach)` per point; the
+per-repetition rate list is not written. The only per-repetition array surviving
+in `E2E-analysis.json` is `vSLO`.
+
+**The consequence, stated precisely.** The repetition-level sensitivity analysis
+of item 8 — that min, max, mean and median give identical results — covers the
+seven cells and therefore F5, and does **not** cover E2e, and therefore does not
+cover C2's predict-and-eliminate brackets, F4's two corrected bars, F6 or A7. The
+paper must say that. But note which way the limitation points: **it does not
+touch the seven-cell result at all.** If the Section 4 sentence means the
+seven-cell collapse when it says "the corrected cells on which Section 6's
+central comparison rests", it is **wrong on two counts** — those cells are not
+the seven, and they are the ones the sensitivity check cannot reach.
+
+Two mitigations, both worth stating rather than leaning on:
+
+1. **The loss is at the analysis layer, not the data layer.** All 33 E2e run
+   records are on disk and each carries `backlogAtRestore`, `tDrainSec` and the
+   full `timeline`, which is exactly what `e2e_analysis.a4_rate()` consumes. The
+   per-repetition rates are re-derivable, so this is repairable by re-running the
+   analysis with the list retained — not a lost measurement.
+2. **The two corpora are on different rho estimators**, which is a second and
+   independent reason not to describe them as one dataset. The seven cells use
+   **A4**, the delivery-span estimator (`recompute_rho.py`). E2e uses the
+   **as-measured / drain-window** estimator. This is documented and deliberate —
+   `results/E2E-REPORT.md` §"The estimator disagreement is as large as the
+   effect" and E2E-PLAN addendum 5 — but the function that computes it is named
+   **`a4_rate()`** (`e2e_analysis.py:47`) while its body is
+   `backlogAtRestore / tDrainSec + median(injRate)`, which is not A4. The
+   substance is on the record; **the name in the code contradicts it**, and an
+   auditor reading only the source would conclude A4 was applied. Renaming it is
+   a docs-level fix with no numerical effect.
+
+### Which dataset each figure plots
+
+| figure | dataset | detail |
+|---|---|---|
+| **F3** | E2e, observation runs only | `results/e2e/exp1-s5-load90.json`, `exp1-s25-load90.json` |
+| **F4** | **mixed** | bars 1–2 from the seven cells (`CAL['E1 c10/C0']`, `CAL['E1 c50/C0']`); bars 3–4 from E2e (`E2E['c10']`, `E2E['c50']`) |
+| **F5** | **the seven cells only** | via `results/A6-collapsed-estimator.json`, which reads the seven boundary files plus the seven per-cell plateaus. No E2e input |
+| **F6** | E2e, c10 cell only | `E2E['c10']['points']` |
+
+**F4 is the one to be careful with in the caption.** It is the only figure that
+puts the two corpora side by side, its four bars are two datasets on two rho
+estimators, and nothing in the current caption says so. The comparison it draws
+is legitimate — predicted versus measured plateau is a direct throughput
+quantity with no rho estimator involved in either pair — but a reviewer who
+notices the mixture and is not told about it will assume the worse reading.
+
+## 12. E1 c10/C1 — does the provenance gap touch any result?
+
+**It does not. Every run is retained and analysed. Nothing is missing.**
+
+### Retention
+
+- **All six rates retained**: 240, 255, 260, 275 (SAFE), 280, 290 (UNSAFE).
+- **All repetitions retained**: n=3 at every point, 18 runs total.
+- **All classifications retained**, with per-repetition `vSLO` for each:
+  240/255/260/275 all `0.0000, 0.0000, 0.0000`; 280 `0.6300, 0.4941, 0.7336`;
+  290 `0.8446, 0.8472, 0.8544`.
+- **Terminal bracket retained and at resolution**: `lastSafeRl 275`,
+  `firstNonSafeRl 280`, `resolutionReachedRps 5`, `firstNonSafeClass UNSAFE`,
+  `marginalRates []`.
+
+### Are 240 and 255 analysed, or only recorded?
+
+**Analysed.** They are not inert records:
+
+- `results/E1-leading-indicator.json` — this cell's `safePoints` are
+  `[240, 255, 260, 275]`, and every metric's `perPoint` array lists all four. The
+  two E1B points are half the evidence in the leading-indicator analysis for this
+  cell.
+- `results/A6-collapsed-estimator.json` — `safePoints` are
+  `[(240, 1240.0), (255, 1255.0), (260, 1260.0), (275, 1275.0)]`.
+- The monotonicity audit and the round-2 aggregator sweep iterate all six points.
+
+They are correctly *not* used by F5 (which plots the last SAFE point, 275, only)
+or by the plateau fit (UNSAFE points only). That is by design, not omission.
+
+### Is any run absent?
+
+**No, in both directions.**
+
+- Run records on disk matching this cell (`results/c10-c1-rl*-r*.json` plus
+  `results/e1b-c10-c1-*.json`): **18**.
+- Runs listed in `results/boundaries/c10-C1.json`: **18**.
+- Disk records absent from the boundary file: **0**.
+- Boundary run ids with no record on disk: **0**.
+- Runs carrying `invalid` or `invalidReason`: **0**.
+
+There is no excluded run, so there is no `invalidReason` to inspect. (The search
+could not have proceeded past one in any case: `locate_boundary.py:338` raises
+`SystemExit` on an invalid run rather than dropping it.)
+
+### The gap is smaller than item 10 said — a correction
+
+Item 10 recorded that E1 c10/C1 "does not reconstruct under any single
+invocation" and that "the artefact cannot distinguish" the readings. **The second
+half is wrong.** The run ids record the campaign:
+
+| rl | run ids | campaign |
+|---|---|---|
+| 240 | `e1b-c10-c1-rl240-r1..r3` | **E1B** |
+| 255 | `e1b-c10-c1-rl255-r1..r3` | **E1B** |
+| 260, 275, 280, 290 | `c10-c1-rl*-r1..r3` | original search |
+
+Separate the two E1B rates and replay the committed planner on what remains:
+`plan(anchor=290, hi=None)` over `{260, 275, 280, 290}` returns **exactly those
+four rates** — anchor 290 UNSAFE, downward step to 260 SAFE, bisect 275 SAFE,
+bisect 280 UNSAFE, terminate at 5 rps. An exact match.
+
+So **all seven cells reconstruct**, every one of them with `--hi` absent, and
+this cell is not anomalous. E1B's footprint across the corpus is small and
+visible: two new rates here, and additional repetitions at two existing rates
+elsewhere (c10/C0 rl=825 to n=15, c50/C0 rl=975 to n=15). It added no new rate to
+any other cell.
+
+### Verdict
+
+**The gap affects reproducibility of probe selection, and not the measurements.**
+Concretely: a reader cannot reconstruct the exact command line, because
+`build_output()` does not echo `vars(args)`. A reader *can* reconstruct which
+campaign contributed each rate, from the run-id prefix, and can verify that the
+search path is the one the code would have taken. Every probed rate, every
+repetition, every classification and the terminal bracket are present and in use.
+You can write that.
+
+---
+
+## Summary for Section 4 — round 3
+
+| item | outcome |
+|---|---|
+| 11a. the seven cells | **confirmed** E1 x4 + E2 x2 + E2b x1, 40 points, 171 runs; self-contained, no E2e input |
+| 11b. the E2e cells | **separate, not members**; they support predict-and-eliminate, F3, two of F4's four bars, F6, A7 and the W2 fit-vs-test — not F5, not the LOO, not the calibration |
+| 11c. lossy path | **no seven-cell data is lossy** — 171/171 repetitions retain their own rate. E2e alone is lossy, at the analysis layer only, and is re-derivable from its 33 run records. The item-8 sensitivity therefore covers the seven cells and F5 and **does not** cover C2/F4-corrected/F6/A7 — a limitation to state, but one that does not touch the seven-cell result |
+| 11d. F4 / F5 | **F5 = the seven cells only. F4 = mixed**, two bars per corpus, on two different rho estimators, and its caption says neither |
+| 11e. incidental | **unflattering** — `e2e_analysis.a4_rate()` is named for A4 but computes the drain-window estimator; documented in E2E-REPORT, contradicted by the code's own name |
+| 12. E1 c10/C1 | **clean** — 18 of 18 runs retained and analysed, 0 absent, 0 invalid, bracket at 5 rps resolution; 240 and 255 are E1B probes and are used, not merely recorded; the cell reconstructs exactly once E1B is separated. Reproducibility of probe selection only; measurements untouched |

@@ -134,12 +134,38 @@ def main():
       'campaign. Applying A4 moves both brackets up by about 0.008 and **inverts '
       'the c10 verdict**:')
     w('')
+    # The as-measured rows are computed from the committed analysis. The A4 rows
+    # are NOT: they are literals, no script produces them, and they cannot be
+    # recomputed. See the provenance note emitted below the table.
+    A4_LITERAL = {'c10': '[0.996, 1.002]', 'c50': '[1.000, 1.006]'}
+    A4_INSIDE = {'c10': '**in situ, 0.9974 (registered)**', 'c50': 'none'}
+    AM_INSIDE = {'c10': '90%% load, 0.9894 (registered)', 'c50': 'none'}
     w('| arm | estimator | bracket | candidate inside |')
     w('|---|---|---|---|')
-    w('| c10 | as-measured | [0.988, 0.992] | 90% load, 0.9894 (registered) |')
-    w('| c10 | **A4** | **[0.996, 1.002]** | **in situ, 0.9974 (registered)** |')
-    w('| c50 | as-measured | [0.992, 0.994] | none |')
-    w('| c50 | **A4** | **[1.000, 1.006]** | none |')
+    for arm in ('c10', 'c50'):
+        lo, hi = C[arm]['bracket']['rho']
+        w('| %s | as-measured | [%s, %s] | %s |'
+          % (arm, u(lo), u(hi), AM_INSIDE[arm] % ()))
+        w('| %s | **A4**&nbsp;[^a4] | **%s** | %s |'
+          % (arm, A4_LITERAL[arm], A4_INSIDE[arm]))
+    w('')
+    w('[^a4]: **The A4 rows are not reproducible from committed data and are not '
+      'generated.** They are literals carried in `scripts/e2e_report.py`; no '
+      'script computes them and re-running the analysis will not reproduce them. '
+      'A4 measures the recovery rate over the delivery span, which requires '
+      'per-arrival timestamps from the consumer trace; the one-second `timeline` '
+      'cannot supply them. Consumer traces are excluded from the repository '
+      'corpus-wide (`.gitignore`: `*.jsonl`, `*.jsonl.*`), and the E2e campaign '
+      'produced no boundary file in which A4 values would have been retained, as '
+      'they were for E1, E2 and E2b. **No trace survives at the c10 arm\'s last '
+      'SAFE point (rl=1185), so A4 cannot be computed there at all.** In the c50 '
+      'arm two of three repetitions survive at each endpoint; recomputing from '
+      'those gives [1.0006, 1.0076] against the [1.000, 1.006] quoted here — the '
+      'same verdict, different digits. The values are retained rather than '
+      'removed because the conclusion they support, that the two estimators '
+      'disagree by about the size of the effect, is corroborated independently by '
+      'the plateau comparison below and by `results/METHOD-AUDIT.md` item 15. '
+      'They should not be quoted as measurements.')
     w('')
     w('The two estimators differ by 0.0080 in rho. The candidates span 0.0080 in '
       'the c10 arm. **The measurement uncertainty is the same size as the thing '

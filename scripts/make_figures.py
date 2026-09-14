@@ -53,7 +53,12 @@ def save(fig, name, pad=True):
             fig.tight_layout(pad=0.25)
         except Exception:
             pass
-    fig.savefig(p)
+    # metadata={'CreationDate': None} suppresses the wall-clock timestamp the
+    # PDF backend otherwise embeds, which made every figure differ byte-for-byte
+    # between two runs of identical code on identical data and so falsified the
+    # "regenerates byte-identically" claim for figures/. Added 2026-09-15; the
+    # rendered content is unchanged.
+    fig.savefig(p, metadata={'CreationDate': None})
     plt.close(fig)
     print('  %-28s %6.1f KB' % (p, os.path.getsize(p) / 1024.0))
 

@@ -1299,6 +1299,7 @@ capacity** condition, not saturation.
    right — *"the worker also pays ~0.0003 ms of runtime timer work per request,
    which `total` excludes"* — and the artefact contradicts it. Anyone computing
    the bookkeeping share from the note would get it wrong.
+   **FIXED in item 20**, at the source and in all 43 affected records.
 2. The 99.8% in the figure title is a literal. If the underlying records are ever
    regenerated it will not follow them.
 
@@ -1408,3 +1409,131 @@ untouched — but the numerator should be made consistent with its own amendment
 | 17. plateau repeatability | **n = 1 per corrected cell.** No spread exists; none synthesised. Quote raw differences; "−0.00%" must not appear. The seven cells have 6–15 each — the more load-bearing measurement is the less replicated one |
 | 18. attribution figures | both from the **direct per-request timing probe at 90% of capacity**. 99.8% holds there in both arms; at saturation the long arm is 99.7%. 1.3 µs = pre+post+timer at **S = 5 ms**, 90% load (1.38 µs at S = 25). **The records' own `note` field mis-states its own `total`**, and F3's 99.8% title is hardcoded |
 | 19. matched audit | **not matched on four dimensions**, including the statistic itself — 0.0706 is a seven-cell **range**, mislabelled in E2E-REPORT as a two-arm gap. Recomputed under one recipe: **0.0670 → 0.0032, 95.2% removed**, identical in throughput space (134.0 → 6.4 rps). **The claim survives; replace "94–96%" with a matched 95%** |
+
+---
+---
+
+# Round 6 — three repo fixes from the Section 5 audit
+
+No analysis; these are corrections to artefacts and generators. Every numeric
+result in the repository is unchanged, and that is verified rather than asserted.
+
+## 20. The overhead records' `note` contradicted its own arithmetic
+
+**Established at the source, not inferred.** `downstream/main.go:412` accumulates
+
+```go
+ovTotal.add(pre + excess + post)
+```
+
+while `timer` is a separate counter added at line 239. `total` has never included
+`timer`. Across the 41 probe-enabled overhead blocks in `results/e2e/`:
+
+| formula | agreement with the recorded `total` |
+|---|---|
+| `preSleep + sleepExcess + postSleep` | within **2 ns** (integer-mean rounding) |
+| `timer + preSleep + sleepExcess + postSleep` — *what the note claimed* | off by **277–341 ns** |
+
+**Fixed in both places.**
+
+- `downstream/main.go`: the note string now reads *"total = preSleep +
+  sleepExcess + postSleep … timer is measured and reported alongside but is NOT
+  a term of total"*, with a source comment recording that it said otherwise until
+  2026-09-15. `gofmt` clean, `go build` passes.
+- The 43 committed records carrying the old string were rewritten to the new one.
+
+**Nothing but the note changed.** Each record was hashed before and after with the
+`note` key stripped recursively from the JSON: **0 of 43** differ. No measurement,
+no counter, no percentile moved.
+
+### Byte-identical reproduction elsewhere: confirmed, with one exception found
+
+Every generator was re-run and all 477 artefacts in `results/` and `figures/`
+compared by SHA-256 against their pre-edit state.
+
+**Reproduced byte-identically:** `E2E-analysis.json`,
+`E2D-capacity-calibration.json`, `A6-collapsed-estimator.json`,
+`E2C-slo-sweep.json`, `W7-denominator-uncertainty.json`,
+`W7-e2e-per-repetition.json`, `W8-effect-size-accounting.json`,
+`A7-leading-indicator-corrected.json`, and the E2, E2B, E2C, E2D reports — every
+artefact that consumes these records. The `note` is metadata; no analysis reads
+it.
+
+**Changed, and expected to:** the 43 records, `A6-REPORT.md` (item 22),
+`E2E-REPORT.md` (item 21).
+
+**The exception: the figures were never byte-reproducible at all.** All six PDFs
+changed, and re-running `make_figures.py` twice with no source change between
+runs also produced six different files. The cause is a wall-clock
+`/CreationDate` embedded by matplotlib's PDF backend — `F5-collapse.pdf` carried
+`D:20260914193048-04'00'`. This is unrelated to the note fix and predates it; it
+quietly falsified the *"Every committed report regenerates byte-identically from
+committed data"* claim in `scripts/make_deposit.py` for `figures/`.
+
+Fixed: `save()` now passes `metadata={'CreationDate': None}`. The figures now
+regenerate byte-identically across runs, verified by two consecutive runs. Their
+**drawn content is unchanged** — decompressing every PDF content stream and
+hashing the marks gives an identical digest to the committed versions for all
+six.
+
+## 21. The delivery-span brackets in E2E-REPORT are marked non-reproducible
+
+`scripts/e2e_report.py` emitted a four-row estimator-comparison table in which
+all four brackets were hardcoded literals. Two of them — the as-measured rows —
+**are** derivable from the committed analysis; two — the A4 rows — are not.
+
+- The as-measured rows are now **computed** from `C[arm]['bracket']['rho']`. They
+  regenerate to [0.988, 0.992] and [0.992, 0.994], identical to the literals they
+  replace.
+- The A4 rows keep their values and carry a footnote marker. The footnote states
+  that they are literals produced by no script; that A4 needs per-arrival
+  timestamps from the consumer trace, which the one-second `timeline` cannot
+  supply; that traces are gitignored corpus-wide so none was ever committed; that
+  E2e produced no boundary file in which A4 values would have been retained as
+  they were for E1, E2 and E2b; that **no trace survives at the c10 arm's last
+  SAFE point, so A4 cannot be computed there at all**; and that the c50 arm's two
+  surviving repetitions give [1.0006, 1.0076] against the [1.000, 1.006] quoted.
+
+They are retained, not deleted, because the verdict they support — that the two
+estimators disagree by about the size of the effect — is corroborated
+independently by the plateau comparison and by item 15. The footnote says they
+must not be quoted as measurements.
+
+## 22. A6's collapse factor is now internally consistent
+
+The factor divided E2d's `rhoStarSpread` of **0.0706** — the range of interval
+**midpoints**, each averaging the last SAFE endpoint with a collapsed non-SAFE
+one — by a denominator A6 had already recomputed from **SAFE points only**. Half
+the ratio obeyed the amendment and half did not.
+
+Both terms are now the across-cell range of a quantity read at the last SAFE
+point:
+
+| | numerator | denominator | factor |
+|---|---|---|---|
+| as published | 0.0706 (midpoints) | 0.0068 (SAFE only) | 10.3× |
+| **corrected** | **0.0716 (SAFE only)** | 0.0068 (SAFE only) | **10.5×** |
+
+**Immaterial** — the order-of-magnitude collapse is untouched and nothing
+downstream moves — but the ratio no longer mixes two conventions.
+`results/A6-REPORT.md` carries the correction in place, as a block quote beside
+the original figure rather than a silent edit.
+
+**A related gap closed.** The `(a)–(e)` conclusions block quoted in A6-REPORT was
+produced by `conclusions()` in `scripts/collapsed_estimator_audit.py`, which was
+**unreachable dead code** — the file ended with `if __name__ != '__main__': pass`
+— so the block had been pasted by hand and could not be regenerated. It now runs
+under `python3 scripts/collapsed_estimator_audit.py --conclusions`, and the block
+in the report is verified to match its output verbatim. Default behaviour is
+unchanged, so the JSON artefact still regenerates byte-identically.
+
+---
+
+## Summary — round 6
+
+| item | outcome |
+|---|---|
+| 20. `note` field | fixed at the Go source and in 43 records; **0 of 43** differ outside the `note` key; every consuming artefact reproduced byte-identically |
+| 20, incidental | **the figures were never byte-reproducible** — a wall-clock `/CreationDate` made every run differ. Fixed; drawn content verified unchanged in all six |
+| 21. A4 brackets | as-measured rows now computed and identical to the literals they replace; A4 rows retained, marked non-reproducible with the reason, and flagged as not quotable as measurements |
+| 22. A6 collapse factor | numerator recomputed SAFE-side, 0.0706 → 0.0716, factor 10.3× → **10.5×**; corrected in place. `conclusions()` was dead code and is now reachable and verified against the report |

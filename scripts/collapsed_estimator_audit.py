@@ -123,8 +123,6 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
-    sys.exit(main())
 
 
 def conclusions():
@@ -207,17 +205,35 @@ def conclusions():
 
     print()
     print('(e) E2d: the collapse to effective utilisation ~1.0')
-    effs = []
+    effs, confs = [], []
     for label, path, cd in CELLS:
         c = A[label]
         last = max(c['safePoints'], key=lambda p: p['rl'])
         e = last['a4Rate'] / c['plateau']
         effs.append(e)
+        confs.append(last['a4Rho'])
         print('    %-14s effective at last SAFE = %.1f / %.1f = %.4f'
               % (label, last['a4Rate'], c['plateau'], e))
     sp = max(effs) - min(effs)
+    # CORRECTED 2026-09-15. This factor previously divided E2d's published
+    # rhoStarSpread, 0.0706, by the spread above. That numerator is the range of
+    # INTERVAL MIDPOINTS, each of which averages the last SAFE endpoint with a
+    # collapsed non-SAFE one -- the values this very amendment rules invalid --
+    # while the denominator had already been recomputed from SAFE points only.
+    # Numerator and denominator are now on the same footing: both are the range
+    # across cells of a quantity read at the last SAFE point. The factor moves
+    # from 10.4x to 10.5x, so nothing downstream changes.
+    spc = max(confs) - min(confs)
     print('    corrected spread %.4f (was 0.0033 using UNSAFE endpoints)' % sp)
-    print('    collapse factor 0.0706 / %.4f = %.1fx  (E2d reported 21.4x)' % (sp, 0.0706 / sp))
+    print('    against configured C, SAFE points only: %.4f' % spc)
+    print('    collapse factor %.4f / %.4f = %.1fx  (E2d reported 21.4x)'
+          % (spc, sp, spc / sp))
+    print('    CORRECTION: the numerator was 0.0706, E2d\'s midpoint-based spread,')
+    print('    which carries the collapsed endpoints this amendment rules invalid.')
+    print('    Recomputed from SAFE points only it is %.4f, and the factor %.1fx'
+          % (spc, spc / sp))
+    print('    rather than %.1fx. Immaterial; made consistent with A6\'s own rule.'
+          % (0.0706 / sp))
     print('    every cell sits BELOW 1.0, at %.4f to %.4f: the boundary is at or just'
           % (min(effs), max(effs)))
     print('    under saturation, but the "interval brackets 1.0" phrasing does not survive,')
@@ -225,5 +241,11 @@ def conclusions():
     return 0
 
 
-if __name__ != '__main__':
-    pass
+if __name__ == '__main__':
+    # conclusions() re-derives the (a)-(e) block quoted in results/A6-REPORT.md.
+    # It was unreachable until 2026-09-15, which is why that block had to be
+    # pasted by hand. Default behaviour is unchanged so the JSON artefact
+    # regenerates byte-identically.
+    if '--conclusions' in sys.argv:
+        sys.exit(conclusions())
+    sys.exit(main())

@@ -18,7 +18,7 @@
       "p99Ns": 6887432
     },
     "enabled": true,
-    "note": "total = timer + preSleep + sleepExcess + postSleep, the worker-side cost per request beyond the sleep it was asked to perform. HTTP handling is excluded: it does not run on a worker and cannot reduce capacity.",
+    "note": "total = preSleep + sleepExcess + postSleep, the worker-side cost per request beyond the sleep it was asked to perform. timer is measured and reported alongside but is NOT a term of total. HTTP handling is excluded: it does not run on a worker and cannot reduce capacity.",
     "postSleep": {
       "count": 236273,
       "maxNs": 33203,

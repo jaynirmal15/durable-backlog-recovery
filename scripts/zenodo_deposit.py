@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -29,8 +30,41 @@ SANDBOX = 'https://sandbox.zenodo.org/api'
 CHUNK = 1 << 20
 
 
+RETRY_STATUS = (0, 429, 500, 502, 503, 504)
+
+
 def request(url, token, method='GET', payload=None, body=None, ctype=None,
-            length=None, verbose=False):
+            length=None, verbose=False, retries=4, backoff=5.0):
+    """One API call, retried on transient failures.
+
+    Zenodo returns 504 across the whole API during an outage, including
+    unauthenticated reads, and a 758-file upload is long enough that a transient
+    5xx partway through is likely rather than exceptional. A body that is a file
+    object is re-opened per attempt, since a consumed stream cannot be replayed.
+    """
+    path = None
+    if hasattr(body, 'read'):
+        path = body.name
+        body.close()
+    last = (0, {'error': 'no attempt made'})
+    for attempt in range(retries + 1):
+        payload_body = open(path, 'rb') if path else body
+        st, out = _once(url, token, method, payload, payload_body, ctype, length,
+                        verbose and attempt == retries)
+        if st not in RETRY_STATUS:
+            return st, out
+        last = (st, out)
+        if attempt < retries:
+            wait = backoff * (2 ** attempt)
+            if verbose:
+                sys.stderr.write('    %s on %s, retrying in %.0fs (attempt %d/%d)\n'
+                                 % (st, method, wait, attempt + 1, retries))
+            time.sleep(wait)
+    return last
+
+
+def _once(url, token, method='GET', payload=None, body=None, ctype=None,
+          length=None, verbose=False):
     """One API call. Auth goes in the header: Zenodo's files API answers 404,
     not 401, when a request is unauthorised, so a token passed only as a query
     parameter fails in a way that looks exactly like a missing object."""

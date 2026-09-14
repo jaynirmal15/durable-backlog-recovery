@@ -34,18 +34,45 @@ META = {
     'creators': [{'name': 'Nirmal, Jay Suresh',
                   'orcid': '0009-0003-0886-4663'}],
     'description': (
-        '<p>Complete measurement artifact for the Recovery Headroom Control study: '
-        'the pre-registration and all six amendments, every run record and '
-        'per-request trace from the reported campaigns, the analysis code that '
-        'regenerates every reported number, and the regression fixture that pins '
-        'the metrics path.</p>'
-        '<p>Campaigns: E1 (four boundaries), E1B (replication and the 2x2), '
-        'E2 (queue-cap swap), E2b (service time against concurrency), '
-        'E2c (SLO sweep, analysis only), E2d (capacity calibration, analysis only), '
-        'E2e (overhead observed and eliminated), and amendment A6 (estimator '
-        'validity at collapsed points).</p>'
-        '<p>Every committed report regenerates byte-identically from the committed '
-        'data by running its own script; see MANIFEST.json.</p>'),
+        '<p><strong>What this is.</strong> The complete measurement artifact for '
+        'the Recovery Headroom Control study: the pre-registration and all six '
+        'amendments, every run record and per-request trace from the reported '
+        'campaigns, the analysis code that regenerates every reported number, the '
+        'figures, and the regression fixture that pins the metrics path.</p>'
+        '<p><strong>Campaigns.</strong> E1 locates four safe-recovery boundaries; '
+        'E1B replicates two of them at n=12 and completes the 2x2; E2 swaps the '
+        'queue caps between concurrency arms; E2b separates service time from '
+        'concurrency at a reduced capacity; E2c sweeps the latency objective '
+        'offline; E2d calibrates true capacity against configured capacity; E2e '
+        'observes the per-request overhead directly and then eliminates it; '
+        'amendment A6 establishes where the utilisation estimator is and is not '
+        'valid.</p>'
+        '<p><strong>Reproducibility.</strong> Every committed report regenerates '
+        'byte-identically from the committed data by running its own script. '
+        'MANIFEST.json lists every file with its SHA-256 and records the git '
+        'commit the package was built from. README.md gives the layout and the '
+        'exact commands.</p>'
+        '<p><strong>Licensing.</strong> The data, traces, reports and figures are '
+        'released under CC BY 4.0. The source code under scripts/ and harness/ is '
+        'released under the MIT License, reproduced in LICENSE in this package and '
+        'in the repository. Where the two differ, the MIT License governs the '
+        'code.</p>'
+        '<p><strong>Caveats carried in the record.</strong> The utilisation '
+        'estimator is valid at safe points only and over-reads on collapsed runs, '
+        'so boundary intervals are reported in rate. Three findings entered the '
+        'record and were later refuted by further measurement; they are listed '
+        'with what killed them in figures/T1-false-findings.md.</p>'),
+    'related_identifiers': [
+        {'relation': 'isSupplementedBy',
+         'identifier': 'https://github.com/jaynirmal15/durable-backlog-recovery',
+         'scheme': 'url'},
+        {'relation': 'references',
+         'identifier': '10.5281/zenodo.22061184',
+         'scheme': 'doi'},
+    ],
+    # The article's own DOI is unknown until acceptance. In W6 add
+    #   {'relation': 'isSupplementTo', 'identifier': '<article DOI>', 'scheme': 'doi'}
+    # Do NOT invent one.
 }
 
 
@@ -149,6 +176,10 @@ def main():
                             os.path.join(REPO, 'PRE-REGISTRATION.md')],
                            capture_output=True, text=True).stdout.strip()
     parts['pre-registration'] = {'files': 1, 'amendments': int(amend)}
+
+    # The repo LICENSE ships with the package so the MIT terms travel with the
+    # code, which CC BY 4.0 on the record does not cover.
+    shutil.copy2(os.path.join(REPO, 'LICENSE'), STAGE)
 
     # 2. run records, boundary files, derived JSON, reports.
     # Traces are excluded here and collected once under traces/: some were

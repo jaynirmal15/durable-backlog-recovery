@@ -1,0 +1,314 @@
+{
+  "warnSigma": 3.0,
+  "deepThreshold": 50.0,
+  "cells": {
+    "corrected c10": {
+      "safeRates": [
+        975,
+        1075,
+        1185
+      ],
+      "metrics": {
+        "p50": {
+          "label": "live p50",
+          "noise": 0.5,
+          "firstWarnRl": 1185,
+          "warningRoomPoints": 0,
+          "totalSigma": 17.333333333333332,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 5.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 6.3333,
+              "riseSigma": 2.7
+            },
+            {
+              "rl": 1185,
+              "mean": 13.6667,
+              "riseSigma": 17.3
+            }
+          ]
+        },
+        "p90": {
+          "label": "live p90",
+          "noise": 0.816496580927726,
+          "firstWarnRl": 1075,
+          "warningRoomPoints": 1,
+          "totalSigma": 29.393876913398138,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 6.6667,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 10.0,
+              "riseSigma": 4.1
+            },
+            {
+              "rl": 1185,
+              "mean": 30.6667,
+              "riseSigma": 29.4
+            }
+          ]
+        },
+        "p99": {
+          "label": "live p99",
+          "noise": 0.816496580927726,
+          "firstWarnRl": 1075,
+          "warningRoomPoints": 1,
+          "totalSigma": 39.191835884530846,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 8.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 13.0,
+              "riseSigma": 6.1
+            },
+            {
+              "rl": 1185,
+              "mean": 40.0,
+              "riseSigma": 39.2
+            }
+          ]
+        },
+        "qMean": {
+          "label": "mean queue depth",
+          "noise": 0.6587511541802266,
+          "firstWarnRl": 1075,
+          "warningRoomPoints": 1,
+          "totalSigma": 32.976478491684134,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 1.4041,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 4.7767,
+              "riseSigma": 5.1
+            },
+            {
+              "rl": 1185,
+              "mean": 23.1274,
+              "riseSigma": 33.0
+            }
+          ]
+        },
+        "ifMean": {
+          "label": "mean in-flight",
+          "noise": 0.2859454810959495,
+          "firstWarnRl": 1075,
+          "warningRoomPoints": 1,
+          "totalSigma": 38.084441979733676,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 5.7415,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 7.4162,
+              "riseSigma": 5.9
+            },
+            {
+              "rl": 1185,
+              "mean": 16.6315,
+              "riseSigma": 38.1
+            }
+          ]
+        },
+        "timeout": {
+          "label": "timeout rate",
+          "noise": 1e-06,
+          "firstWarnRl": null,
+          "warningRoomPoints": null,
+          "totalSigma": 0.0,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1075,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1185,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            }
+          ]
+        }
+      },
+      "queueDeepCrossRl": null
+    },
+    "corrected c50": {
+      "safeRates": [
+        975,
+        1150,
+        1210
+      ],
+      "metrics": {
+        "p50": {
+          "label": "live p50",
+          "noise": 2.943920288775949,
+          "firstWarnRl": 1210,
+          "warningRoomPoints": 0,
+          "totalSigma": 19.475164987287048,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 25.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 32.0,
+              "riseSigma": 2.4
+            },
+            {
+              "rl": 1210,
+              "mean": 82.3333,
+              "riseSigma": 19.5
+            }
+          ]
+        },
+        "p90": {
+          "label": "live p90",
+          "noise": 7.586537784494028,
+          "firstWarnRl": 1210,
+          "warningRoomPoints": 0,
+          "totalSigma": 15.729616950862138,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 30.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 45.6667,
+              "riseSigma": 2.1
+            },
+            {
+              "rl": 1210,
+              "mean": 149.3333,
+              "riseSigma": 15.7
+            }
+          ]
+        },
+        "p99": {
+          "label": "live p99",
+          "noise": 15.15109090315135,
+          "firstWarnRl": 1210,
+          "warningRoomPoints": 0,
+          "totalSigma": 8.602240866116425,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 34.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 60.6667,
+              "riseSigma": 1.8
+            },
+            {
+              "rl": 1210,
+              "mean": 164.3333,
+              "riseSigma": 8.6
+            }
+          ]
+        },
+        "qMean": {
+          "label": "mean queue depth",
+          "noise": 7.307083272338307,
+          "firstWarnRl": 1210,
+          "warningRoomPoints": 0,
+          "totalSigma": 17.02946956094324,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 1.0141,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 17.8036,
+              "riseSigma": 2.3
+            },
+            {
+              "rl": 1210,
+              "mean": 125.4499,
+              "riseSigma": 17.0
+            }
+          ]
+        },
+        "ifMean": {
+          "label": "mean in-flight",
+          "noise": 3.6455307597121798,
+          "firstWarnRl": 1210,
+          "warningRoomPoints": 0,
+          "totalSigma": 17.07946748888778,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 25.538,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 33.9799,
+              "riseSigma": 2.3
+            },
+            {
+              "rl": 1210,
+              "mean": 87.8018,
+              "riseSigma": 17.1
+            }
+          ]
+        },
+        "timeout": {
+          "label": "timeout rate",
+          "noise": 1e-06,
+          "firstWarnRl": null,
+          "warningRoomPoints": null,
+          "totalSigma": 0.0,
+          "perPoint": [
+            {
+              "rl": 975,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1150,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            },
+            {
+              "rl": 1210,
+              "mean": 0.0,
+              "riseSigma": 0.0
+            }
+          ]
+        }
+      },
+      "queueDeepCrossRl": 1210
+    }
+  }
+}

@@ -22,20 +22,20 @@ The record field `concurrencyArm` reads `c50`. That names the **service time**, 
 | | |
 |---|---|
 | rl interval | **[190, 195]** UNSAFE |
-| rho* interval (A4) | **[0.9750, 0.9875]** |
-| width | 0.0125 |
-| midpoint | 0.9812 |
+| rho* interval (A4) | **[0.97, 0.99]** |
+| width | 0.01 |
+| midpoint | 0.98 |
 | probes / runs | 4 / 21 |
 | spread-diagnostic flags | none |
 
 ```
-h = (rho* - rho10) / D = (0.9812 - 0.9137) / 0.0689 = +0.980
+h = (rho* - rho10) / D = (0.98 - 0.9137) / 0.0689 = +0.980
 ```
 
 | hypothesis | predicted rho* | predicted rl | distance from observed |
 |---|---:|---:|---:|
-| c10-like: concurrency governs | 0.9137 | 165 | +0.0675 |
-| c50-like: S governs | 0.9826 | 195 | -0.0014 |
+| c10-like: concurrency governs | 0.9137 | 165 | +0.068 |
+| c50-like: S governs | 0.9826 | 195 | -0.001 |
 
 ### Registered verdict: **S GOVERNS**
 
@@ -47,10 +47,10 @@ At C=400 the 5 rps resolution is a rho resolution of 0.0125, so **h resolves to 
 
 | rl | nominal rho | class | n | vSLO per rep | rho (A4) | median rec rps |
 |---:|---:|---|---:|---|---|---:|
-| 180 | 0.9500 | SAFE | 3 | 0.0000, 0.0000, 0.0000 | 0.9500 | 180.0 |
-| **190** | 0.9750 | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.9750 | 190.0 |
-| **195** | 0.9875 | UNSAFE | 3 | 0.7014, 0.6667, 0.6805 | 0.9875 | 195.0 |
-| 200 | 1.0000 | UNSAFE | 3 | 0.8182, 0.8112, 0.8042 | 1.0000 | 200.0 |
+| 180 | 0.95 | SAFE | 3 | 0.0000, 0.0000, 0.0000 | 0.95 | 180.0 |
+| **190** | 0.97 | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.97 | 190.0 |
+| **195** | 0.99 | UNSAFE | 3 | 0.7014, 0.6667, 0.6805 | 0.99 | 195.0 |
+| 200 | 1.00 | UNSAFE | 3 | 0.8182, 0.8112, 0.8042 | 1.00 | 200.0 |
 
 Probe order from run timestamps: 180 -> 200 -> 190 -> 195.
 

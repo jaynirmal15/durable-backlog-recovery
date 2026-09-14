@@ -37,14 +37,14 @@ Sleep reduced by 0.463 ms with concurrency held fixed, so integer rounding of `c
 
 | rl | n | achieved | rho | queue peak | live p99 | cycle | vSLO | class |
 |---:|---:|---:|---:|---:|---:|---:|---|---|
-| 975 | 3 | 1948.5 | 0.9743 | 7 | 8 ms | 5.0140 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1075 | 3 | 1967.0 | 0.9835 | 18 | 14 ms | 5.0174 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1185 | 3 | 1976.7 | 0.9883 | 111 | 58 ms | 5.0132 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1240 | 3 | 1984.8 | 0.9924 | 500 | 508 ms | 5.0125 ms | 0.518, 0.511, 0.467 | UNSAFE |
-| 1290 | 3 | 1986.0 | 0.9930 | 500 | 1033 ms | 5.0128 ms | 0.763, 0.765, 0.770 | UNSAFE |
-| 1400 | 3 | 1988.2 | 0.9941 | 500 | 1036 ms | 5.0128 ms | 0.712, 0.742, 0.746 | UNSAFE |
+| 975 | 3 | 1948.5 | 0.974 | 7 | 8 ms | 5.0140 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1075 | 3 | 1967.0 | 0.984 | 18 | 14 ms | 5.0174 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1185 | 3 | 1976.7 | 0.988 | 111 | 58 ms | 5.0132 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1240 | 3 | 1984.8 | 0.992 | 500 | 508 ms | 5.0125 ms | 0.518, 0.511, 0.467 | UNSAFE |
+| 1290 | 3 | 1986.0 | 0.993 | 500 | 1033 ms | 5.0128 ms | 0.763, 0.765, 0.770 | UNSAFE |
+| 1400 | 3 | 1988.2 | 0.994 | 500 | 1036 ms | 5.0128 ms | 0.712, 0.742, 0.746 | UNSAFE |
 
-Bracket rl [1185, 1240], 55 rps — coarser than the registered 5. In rho: **[0.9883, 0.9924]**, width 0.0041.
+Bracket rl [1185, 1240], 55 rps — coarser than the registered 5. In rho: **[0.988, 0.992]**, width 0.004.
 
 | prediction | rho* | inside the bracket? |
 |---|---:|---|
@@ -57,13 +57,13 @@ Bracket rl [1185, 1240], 55 rps — coarser than the registered 5. In rho: **[0.
 
 | rl | n | achieved | rho | queue peak | live p99 | cycle | vSLO | class |
 |---:|---:|---:|---:|---:|---:|---:|---|---|
-| 975 | 3 | 1946.5 | 0.9733 | 8 | 34 ms | 25.0269 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1150 | 3 | 1975.9 | 0.9880 | 107 | 80 ms | 25.0149 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1210 | 3 | 1983.1 | 0.9915 | 363 | 207 ms | 25.0092 ms | 0.000, 0.000, 0.000 | SAFE |
-| 1275 | 3 | 1988.8 | 0.9944 | 1480 | 761 ms | 25.0040 ms | 0.674, 0.672, 0.704 | UNSAFE |
-| 1400 | 3 | 1991.0 | 0.9955 | 1998 | 1028 ms | 25.0083 ms | 0.719, 0.705, 0.729 | UNSAFE |
+| 975 | 3 | 1946.5 | 0.973 | 8 | 34 ms | 25.0269 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1150 | 3 | 1975.9 | 0.988 | 107 | 80 ms | 25.0149 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1210 | 3 | 1983.1 | 0.992 | 363 | 207 ms | 25.0092 ms | 0.000, 0.000, 0.000 | SAFE |
+| 1275 | 3 | 1988.8 | 0.994 | 1480 | 761 ms | 25.0040 ms | 0.674, 0.672, 0.704 | UNSAFE |
+| 1400 | 3 | 1991.0 | 0.996 | 1998 | 1028 ms | 25.0083 ms | 0.719, 0.705, 0.729 | UNSAFE |
 
-Bracket rl [1210, 1275], 65 rps — coarser than the registered 5. In rho: **[0.9915, 0.9944]**, width 0.0029.
+Bracket rl [1210, 1275], 65 rps — coarser than the registered 5. In rho: **[0.992, 0.994]**, width 0.003.
 
 | prediction | rho* | inside the bracket? |
 |---|---:|---|
@@ -78,10 +78,10 @@ Bracket rl [1210, 1275], 65 rps — coarser than the registered 5. In rho: **[0.
 |---|---:|
 | uncorrected, E1 midpoints 0.9137 and 0.9826 | **0.0706** |
 | predicted residual (registered) | 0.0052 |
-| **measured residual** | **0.0026** |
+| **measured residual** | **0.003** |
 | fraction of the gap removed | **96.3%** |
 
-Bracket midpoints: c10 0.9903, c50 0.9929.
+Bracket midpoints: c10 0.990, c50 0.993.
 
 ## The estimator disagreement is as large as the effect
 
@@ -89,10 +89,10 @@ The brackets above use the **as-measured** (drain-window) estimator. The registe
 
 | arm | estimator | bracket | candidate inside |
 |---|---|---|---|
-| c10 | as-measured | [0.9883, 0.9924] | 90% load, 0.9894 |
-| c10 | **A4 (registered)** | **[0.9956, 1.0016]** | **in situ, 0.9974** |
-| c50 | as-measured | [0.9915, 0.9944] | none |
-| c50 | **A4 (registered)** | **[0.9999, 1.0064]** | none |
+| c10 | as-measured | [0.988, 0.992] | 90% load, 0.9894 (registered) |
+| c10 | **A4** | **[0.996, 1.002]** | **in situ, 0.9974 (registered)** |
+| c50 | as-measured | [0.992, 0.994] | none |
+| c50 | **A4** | **[1.000, 1.006]** | none |
 
 The two estimators differ by 0.0080 in rho. The candidates span 0.0080 in the c10 arm. **The measurement uncertainty is the same size as the thing being discriminated, so this campaign cannot say which overhead governs the boundary.** That is forced by the data, not chosen.
 

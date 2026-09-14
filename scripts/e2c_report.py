@@ -8,6 +8,9 @@ import json
 import statistics
 import sys
 
+sys.path.insert(0, __file__.rsplit('/', 1)[0])
+from precision import u, is_coarse  # noqa: E402
+
 D = json.load(open('results/E2C-slo-sweep.json'))
 THS = [str(t) for t in D['thresholds']]
 
@@ -56,8 +59,8 @@ def main():
     tot = statistics.pstdev([x['rho'] for x in rs])
     for name, key in [('absolute S (milliseconds)', 'S'), ('S/SLO (ratio)', 'ratio')]:
         r = resid(rs, key)
-        w('| %s | %.4f | %.1f%% |' % (name, r, 100 * (1 - (r / tot) ** 2)))
-    w('| _(ungrouped total)_ | %.4f | |' % tot)
+        w('| %s | %s | %.1f%% |' % (name, u(r), 100 * (1 - (r / tot) ** 2)))
+    w('| _(ungrouped total)_ | %s | |' % u(tot))
     w('')
     w('Per the brief, that is the second outcome: **the effect is tied to '
       'milliseconds** and needs a mechanism or a threats paragraph. It is not the '
@@ -76,8 +79,8 @@ def main():
         g = [x for x in rs if x['ratio'] == r]
         v = [x['rho'] for x in g]
         arms = {x['S'] for x in g}
-        w('| %.3f | %d | %.4f - %.4f | **%.4f** | %s |'
-          % (r, len(g), min(v), max(v), max(v) - min(v),
+        w('| %.3f | %d | %s - %s | **%s** | %s |'
+          % (r, len(g), u(min(v)), u(max(v)), u(max(v) - min(v)),
              '**yes, both arms**' if len(arms) > 1 else 'no, S=%d only' % arms.pop()))
     w('')
     w('At both discriminating ratios the spread is about **0.07**, which is the '
@@ -91,7 +94,7 @@ def main():
     w('|---:|---:|---|---:|')
     for S in sorted({x['S'] for x in rs}):
         g = [x['rho'] for x in rs if x['S'] == S]
-        w('| %d ms | %d | %.4f - %.4f | **%.4f** |' % (S, len(g), min(g), max(g), max(g) - min(g)))
+        w('| %d ms | %d | %s - %s | **%s** |' % (S, len(g), u(min(g)), u(max(g)), u(max(g) - min(g))))
     w('')
 
     w('## Why the SLO has so little leverage')
@@ -155,10 +158,12 @@ def main():
                 w('| %s | %s | %.3f | **dropped** | | | | |' % (label, th, e['sOverSlo']))
                 continue
             if e.get('bracket'):
-                w('| %s | %s | %.3f | yes | %d-%d | %d%s | [%.4f, %.4f] | %.4f |'
+                cz = is_coarse(label)
+                w('| %s | %s | %.3f | yes | %d-%d | %d%s | [%s, %s] | %s |'
                   % (label, th, e['sOverSlo'], e['bracket'][0], e['bracket'][1],
                      e['bracketWidthRps'], '' if e['atRegisteredResolution'] else ' **coarse**',
-                     e['rhoStarInterval'][0], e['rhoStarInterval'][1], e['rhoStarMid']))
+                     u(e['rhoStarInterval'][0], cz), u(e['rhoStarInterval'][1], cz),
+                     u(e['rhoStarMid'], cz)))
             else:
                 w('| %s | %s | %.3f | yes | **not bracketed** | | %s | |'
                   % (label, th, e['sOverSlo'], e['whyNotBracketed']))

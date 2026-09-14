@@ -3,6 +3,9 @@
 import json
 import sys
 
+sys.path.insert(0, __file__.rsplit('/', 1)[0])
+from precision import u  # noqa: E402
+
 D = json.load(open('results/E2E-analysis.json'))
 REG, C = D['registered'], D['cells']
 STEP = 5 / 2000.0
@@ -81,17 +84,17 @@ def main():
             w('| %d | %d | %s | %s | %d | %.0f ms | %s | %s | %s |'
               % (p['rl'], p['n'],
                  '%.1f' % p['achievedRps'] if p['achievedRps'] else '-',
-                 '%.4f' % p['rho'] if p['rho'] else '-',
+                 u(p['rho']) if p['rho'] else '-',
                  p['queuePeak'], p['liveP99Ms'],
                  '%.4f ms' % p['cycleMs'] if p['cycleMs'] else '-',
                  ', '.join('%.3f' % x for x in p['vSLO'][:3]), p['class']))
         w('')
         if 'bracket' in c:
             b = c['bracket']
-            w('Bracket rl [%d, %d], %d rps%s. In rho: **[%.4f, %.4f]**, width %.4f.'
+            w('Bracket rl [%d, %d], %d rps%s. In rho: **[%s, %s]**, width %s.'
               % (b['rl'][0], b['rl'][1], b['rlWidth'],
                  '' if b['atRlResolution'] else ' — coarser than the registered 5',
-                 b['rho'][0], b['rho'][1], b['rhoWidth']))
+                 u(b['rho'][0]), u(b['rho'][1]), u(b['rhoWidth'])))
             w('')
             w('| prediction | rho* | inside the bracket? |')
             w('|---|---:|---|')
@@ -112,14 +115,14 @@ def main():
     if 'residualGap' in D:
         w('| | |')
         w('|---|---:|')
-        w('| uncorrected, E1 midpoints %.4f and %.4f | **0.0706** |'
+        w('| uncorrected, E1 midpoints %.4f and %.4f | **0.0706** |'  # registered
           % (D['uncorrected']['c10'], D['uncorrected']['c50']))
         w('| predicted residual (registered) | 0.0052 |')
-        w('| **measured residual** | **%.4f** |' % D['residualGap'])
+        w('| **measured residual** | **%s** |' % u(D['residualGap']))
         w('| fraction of the gap removed | **%.1f%%** |' % D['fractionRemoved'])
         w('')
-        w('Bracket midpoints: c10 %.4f, c50 %.4f.'
-          % (C['c10']['bracket']['rhoMid'], C['c50']['bracket']['rhoMid']))
+        w('Bracket midpoints: c10 %s, c50 %s.'
+          % (u(C['c10']['bracket']['rhoMid']), u(C['c50']['bracket']['rhoMid'])))
         w('')
     else:
         w('_Pending: one arm has no bracket yet._')
@@ -133,10 +136,10 @@ def main():
     w('')
     w('| arm | estimator | bracket | candidate inside |')
     w('|---|---|---|---|')
-    w('| c10 | as-measured | [0.9883, 0.9924] | 90% load, 0.9894 |')
-    w('| c10 | **A4 (registered)** | **[0.9956, 1.0016]** | **in situ, 0.9974** |')
-    w('| c50 | as-measured | [0.9915, 0.9944] | none |')
-    w('| c50 | **A4 (registered)** | **[0.9999, 1.0064]** | none |')
+    w('| c10 | as-measured | [0.988, 0.992] | 90% load, 0.9894 (registered) |')
+    w('| c10 | **A4** | **[0.996, 1.002]** | **in situ, 0.9974 (registered)** |')
+    w('| c50 | as-measured | [0.992, 0.994] | none |')
+    w('| c50 | **A4** | **[1.000, 1.006]** | none |')
     w('')
     w('The two estimators differ by 0.0080 in rho. The candidates span 0.0080 in '
       'the c10 arm. **The measurement uncertainty is the same size as the thing '

@@ -16,6 +16,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bimodality import shape  # noqa: E402
+from precision import u  # noqa: E402
 
 BOUNDARY = 'results/e2b/boundaries/c50-C0.json'
 RECORDS = 'results/e2b'
@@ -99,23 +100,27 @@ def main():
         w('|---|---|')
         w('| rl interval | **[%d, %d]** %s |' % (bd['lastSafeRl'], bd['firstNonSafeRl'],
                                                  bd['firstNonSafeClass']))
-        w('| rho* interval (A4) | **[%.4f, %.4f]** |' % (i[0], i[1]))
-        w('| width | %.4f |' % (i[1] - i[0]))
-        w('| midpoint | %.4f |' % m)
+        # E2b resolution is 0.0127, so two decimals. Registered predictions
+        # further down keep the digits they were registered with.
+        w('| rho* interval (A4) | **[%s, %s]** |' % (u(i[0], True), u(i[1], True)))
+        w('| width | %s |' % u(i[1] - i[0], True))
+        w('| midpoint | %s |' % u(m, True))
         w('| probes / runs | %d / %d |' % (len(b['points']),
                                            sum(len(p['runs']) for p in b['points'])))
         w('| spread-diagnostic flags | %s |'
           % ([p['rl'] for p in b['points'] if p.get('spreadExceedsResolution')] or 'none'))
         w('')
         w('```')
-        w('h = (rho* - rho10) / D = (%.4f - %.4f) / %.4f = %+.3f' % (m, RHO10, D, h))
+        w('h = (rho* - rho10) / D = (%s - %.4f) / %.4f = %+.3f' % (u(m, True), RHO10, D, h))
         w('```')
         w('')
         w('| hypothesis | predicted rho* | predicted rl | distance from observed |')
         w('|---|---:|---:|---:|')
         for name, rho in [('c10-like: concurrency governs', RHO10),
                           ('c50-like: S governs', RHO50)]:
-            w('| %s | %.4f | %d | %+.4f |'
+            # `rho` is the REGISTERED hypothesis value and keeps its digits;
+            # the distance from the measured boundary is rounded.
+            w('| %s | %.4f | %d | %+.3f |'
               % (name, rho, round((rho * C - LAMBDA_L) / 5) * 5, m - rho))
         w('')
         w('### Registered verdict: **%s**' % verdict(h))
@@ -140,13 +145,13 @@ def main():
             rec = [x for x in rec if x is not None]
             rhos = pt['rhoAchieved']
             mark = '**' if pt['rl'] in (bd['lastSafeRl'], bd['firstNonSafeRl']) else ''
-            w('| %s%d%s | %.4f | %s | %d | %s | %s | %s |'
-              % (mark, pt['rl'], mark, (LAMBDA_L + pt['rl']) / float(C), pt['class'],
+            w('| %s%d%s | %s | %s | %d | %s | %s | %s |'
+              % (mark, pt['rl'], mark, u((LAMBDA_L + pt['rl']) / float(C), True), pt['class'],
                  len(pt['runs']),
                  ', '.join('%.4f' % v for v in pt['vSLO'][:6])
                  + (' ...' if len(pt['vSLO']) > 6 else ''),
-                 '%.4f-%.4f' % (min(rhos), max(rhos)) if len(set(rhos)) > 1
-                 else '%.4f' % rhos[0],
+                 '%s-%s' % (u(min(rhos), True), u(max(rhos), True))
+                 if len(set(rhos)) > 1 else u(rhos[0], True),
                  '%.1f' % statistics.median(rec) if rec else 'n/a'))
         w('')
         firsts = {}

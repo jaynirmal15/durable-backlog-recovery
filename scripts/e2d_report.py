@@ -2,6 +2,10 @@
 """Generate results/E2D-REPORT.md from results/E2D-capacity-calibration.json."""
 import json
 import statistics
+import sys
+
+sys.path.insert(0, __file__.rsplit('/', 1)[0])
+from precision import u, is_coarse  # noqa: E402
 
 D = json.load(open('results/E2D-capacity-calibration.json'))
 C = D['cells']
@@ -31,7 +35,7 @@ def main():
       '21x.** The order-of-magnitude collapse stands; the factor of two does not. '
       'The claim that five of seven intervals bracket 1.0 does **not** stand — it '
       'depended on the inflated endpoint, and every cell in fact sits just below '
-      '1.0, at 0.9931 to 0.9999. See `results/A6-REPORT.md`.')
+      '1.0, at 0.993 to 1.000. See `results/A6-REPORT.md`.')
     w('')
     w('## Answer')
     w('')
@@ -43,10 +47,10 @@ def main():
       % (OV['min'], OV['max'], OV['median'], OV['cvPct']))
     w('| every measured plateau vs the value predicted at 0.46 ms | within **%.2f%%** |'
       % max(abs(c['predErrPct']) for c in C.values()))
-    w('| spread of the boundary against configured C | %.4f |' % COL['rhoStarSpread'])
-    w('| spread against measured true capacity | **%.4f** |' % COL['rhoEffSpread'])
+    w('| spread of the boundary against configured C | %s |' % u(COL['rhoStarSpread']))
+    w('| spread against measured true capacity | **%s** |' % u(COL['rhoEffSpread']))
     w('| collapse factor | **%.0fx** |' % (COL['rhoStarSpread'] / COL['rhoEffSpread']))
-    w('| median effective utilisation at the boundary | **%.4f** |' % COL['rhoEffMedian'])
+    w('| median effective utilisation at the boundary | **%s** |' % u(COL['rhoEffMedian']))
     w('')
     w('**Test 3 is not needed.** It was contingent on tests 1 and 2 being '
       'ambiguous. An overhead constant to 2.4%% across two service times and three '
@@ -84,9 +88,10 @@ def main():
     w('|---|---|---|---|---:|')
     for l, c in C.items():
         m = miss(c)
-        w('| %s | [%.4f, %.4f] | **[%.4f, %.4f]** | %s | %.2f |'
-          % (l, c['rhoStarInterval'][0], c['rhoStarInterval'][1],
-             c['rhoEffInterval'][0], c['rhoEffInterval'][1],
+        cz = is_coarse(l)
+        w('| %s | [%s, %s] | **[%s, %s]** | %s | %.2f |'
+          % (l, u(c['rhoStarInterval'][0], cz), u(c['rhoStarInterval'][1], cz),
+             u(c['rhoEffInterval'][0], cz), u(c['rhoEffInterval'][1], cz),
              'yes' if c['bracketsUnity'] else 'no', m / c['resolutionInEff']))
     w('')
     nb = COL['notBracketing']
@@ -96,11 +101,11 @@ def main():
       'a fifth of a step is not a discrepancy the experiment can resolve.')
     w('')
     w('**Is the residual within measurement resolution?** The residual spread across '
-      'cells is %.4f. One 5 rps step is %.4f in effective units for the C=2000 cells '
-      'and %.4f for E2b. So the entire remaining spread is about one bisection step '
+      'cells is %s. One 5 rps step is %s in effective units for the C=2000 cells '
+      'and %s for E2b. So the entire remaining spread is about one bisection step '
       'wide, and no cell departs from 1.0 by as much as a quarter of a step.'
-      % (COL['rhoEffSpread'], min(c['resolutionInEff'] for c in C.values()),
-         max(c['resolutionInEff'] for c in C.values())))
+      % (u(COL['rhoEffSpread']), u(min(c['resolutionInEff'] for c in C.values())),
+         u(max(c['resolutionInEff'] for c in C.values()))))
     w('')
 
     w('## Method note — the window decided this, not the statistic')

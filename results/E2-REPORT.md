@@ -8,17 +8,17 @@ E1 measured the diagonal where arm and cap vary together. E2 fills the other.
 
 | | Q=500 (250 ms full-queue delay) | Q=2500 (1250 ms) |
 |---|---|---|
-| **c10** (S=5 ms, concurrency 10) | E1: [0.9124, 0.9150] | E2: [0.9124, 0.9150] |
-| **c50** (S=25 ms, concurrency 50) | E2: [0.9820, 0.9841] | E1: [0.9817, 0.9835] |
+| **c10** (S=5 ms, concurrency 10) | E1: [0.912, 0.915] | E2: [0.912, 0.915] |
+| **c50** (S=25 ms, concurrency 50) | E2: [0.982, 0.984] | E1: [0.982, 0.984] |
 
 Intervals are [last SAFE, first NON-SAFE] achieved rho under A4.
 
 | cell | rl interval | endpoint | rho* interval | width | probes | runs |
 |---|---|---|---|---:|---:|---:|
-| **E1 c10 @ Q=500** | [825, 830] | UNSAFE | **[0.9124, 0.9150]** | 0.0026 | 6 | 30 |
-| **E1 c50 @ Q=2500** | [975, 980] | UNSAFE | **[0.9817, 0.9835]** | 0.0018 | 7 | 33 |
-| **E2 c10 @ Q=2500** | [825, 830] | UNSAFE | **[0.9124, 0.9150]** | 0.0026 | 6 | 27 |
-| **E2 c50 @ Q=500** | [975, 980] | UNSAFE | **[0.9820, 0.9841]** | 0.0021 | 6 | 27 |
+| **E1 c10 @ Q=500** | [825, 830] | UNSAFE | **[0.912, 0.915]** | 0.003 | 6 | 30 |
+| **E1 c50 @ Q=2500** | [975, 980] | UNSAFE | **[0.982, 0.984]** | 0.002 | 7 | 33 |
+| **E2 c10 @ Q=2500** | [825, 830] | UNSAFE | **[0.912, 0.915]** | 0.003 | 6 | 27 |
+| **E2 c50 @ Q=500** | [975, 980] | UNSAFE | **[0.982, 0.984]** | 0.002 | 6 | 27 |
 
 Run counts for the two E1 cells include the twelve E1B replication runs pooled into their last SAFE points, so they exceed the 18 and 21 stated in `E1-REPORT.md`, which counted the boundary search alone.
 
@@ -34,8 +34,8 @@ CAP-DRIVEN both f >= 0.75    CONCURRENCY-DRIVEN both f <= 0.25    else MIXED
 
 | cell | midpoint | f | reading |
 |---|---:|---:|---|
-| c10 @ Q=2500 | 0.9137 | **+0.000** | concurrency-driven |
-| c50 @ Q=500 | 0.9830 | **-0.006** | **off-scale** — moved away from the other arm, not towards it (addendum 3) |
+| c10 @ Q=2500 | 0.914 | **+0.000** | concurrency-driven |
+| c50 @ Q=500 | 0.983 | **-0.006** | **off-scale** — moved away from the other arm, not towards it (addendum 3) |
 
 Registered verdict: **OFF-SCALE** (f = +0.000 and -0.006).
 
@@ -62,12 +62,12 @@ Reported alongside, with no verdict status: `|f| <= 0.25` in both cells, so **ne
 
 | rl | class | n | vSLO per rep | rho (A4) | median rec rps | rec / rl |
 |---:|---|---:|---|---|---:|---:|
-| **825** | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.9124-0.9125 | 825.0 | 1.000 |
-| **830** | UNSAFE | 3 | 0.2548, 0.3248, 0.2628 | 0.9149-0.9150 | 829.9 | 1.000 |
-| 835 | UNSAFE | 3 | 0.6266, 0.5897, 0.4968 | 0.9172-0.9173 | 834.4 | 0.999 |
-| 845 | UNSAFE | 3 | 0.7579, 0.7388, 0.7597 | 0.9210-0.9213 | 842.3 | 0.997 |
-| 865 | UNSAFE | 3 | 0.8280, 0.8344, 0.8280 | 0.9205-0.9208 | 841.4 | 0.973 |
-| 905 | UNSAFE | 3 | 0.8671, 0.8662, 0.8662 | 0.9209-0.9211 | 841.7 | 0.930 |
+| **825** | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.912-0.912 | 825.0 | 1.000 |
+| **830** | UNSAFE | 3 | 0.2548, 0.3248, 0.2628 | 0.915-0.915 | 829.9 | 1.000 |
+| 835 | UNSAFE | 3 | 0.6266, 0.5897, 0.4968 | 0.917-0.917 | 834.4 | 0.999 |
+| 845 | UNSAFE | 3 | 0.7579, 0.7388, 0.7597 | 0.921-0.921 | 842.3 | 0.997 |
+| 865 | UNSAFE | 3 | 0.8280, 0.8344, 0.8280 | 0.920-0.921 | 841.4 | 0.973 |
+| 905 | UNSAFE | 3 | 0.8671, 0.8662, 0.8662 | 0.921-0.921 | 841.7 | 0.930 |
 
 Probe order, from run timestamps rather than the order points are stored in: 825 -> 905 -> 865 -> 845 -> 835 -> 830. The replication runs then returned to rl=825.
 
@@ -75,12 +75,12 @@ Probe order, from run timestamps rather than the order points are stored in: 825
 
 | rl | class | n | vSLO per rep | rho (A4) | median rec rps | rec / rl |
 |---:|---|---:|---|---|---:|---:|
-| **975** | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.9820-0.9826 | 964.6 | 0.989 |
-| **980** | UNSAFE | 3 | 0.2482, 0.2206, 0.1397 | 0.9835-0.9841 | 967.9 | 0.988 |
-| 990 | UNSAFE | 3 | 0.6103, 0.5912, 0.5693 | 0.9857-0.9860 | 971.6 | 0.981 |
-| 1000 | UNSAFE | 3 | 0.6594, 0.5912, 0.6176 | 0.9868-0.9869 | 973.7 | 0.974 |
-| 1025 | UNSAFE | 3 | 0.7174, 0.7059, 0.6811 | 0.9884-0.9894 | 977.5 | 0.954 |
-| 1075 | UNSAFE | 3 | 0.7536, 0.7591, 0.7591 | 0.9900-0.9905 | 981.0 | 0.913 |
+| **975** | SAFE | 12 | 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ... | 0.982-0.983 | 964.6 | 0.989 |
+| **980** | UNSAFE | 3 | 0.2482, 0.2206, 0.1397 | 0.984-0.984 | 967.9 | 0.988 |
+| 990 | UNSAFE | 3 | 0.6103, 0.5912, 0.5693 | 0.986-0.986 | 971.6 | 0.981 |
+| 1000 | UNSAFE | 3 | 0.6594, 0.5912, 0.6176 | 0.987-0.987 | 973.7 | 0.974 |
+| 1025 | UNSAFE | 3 | 0.7174, 0.7059, 0.6811 | 0.988-0.989 | 977.5 | 0.954 |
+| 1075 | UNSAFE | 3 | 0.7536, 0.7591, 0.7591 | 0.990-0.991 | 981.0 | 0.913 |
 
 Probe order, from run timestamps rather than the order points are stored in: 975 -> 1075 -> 1025 -> 1000 -> 990 -> 980. The replication runs then returned to rl=975.
 
@@ -90,8 +90,8 @@ The interval is [min rho at the last SAFE point, max rho at the first non-SAFE p
 
 | cell | rho rises across the interval | width | monotonic across all probed points |
 |---|---|---:|---|
-| c10 @ Q=2500 | yes | +0.0026 | no, and it does not need to be: the departures are at deep non-SAFE points that bound nothing |
-| c50 @ Q=500 | yes | +0.0021 | yes |
+| c10 @ Q=2500 | yes | +0.003 | no, and it does not need to be: the departures are at deep non-SAFE points that bound nothing |
+| c50 @ Q=500 | yes | +0.002 | yes |
 
 ## Bimodality at the last SAFE point
 

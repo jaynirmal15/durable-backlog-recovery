@@ -18,6 +18,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bimodality import shape  # noqa: E402
+from precision import u, ud  # noqa: E402
 
 E1 = {'c10': 'results/boundaries/c10-C0.json', 'c50': 'results/boundaries/c50-C0.json'}
 E2 = {'c10': ('results/e2/c10-Q2500/boundaries/c10-C0.json', 'results/e2/c10-Q2500', 2500),
@@ -46,7 +47,7 @@ def overlaps(a, b):
 
 
 def fmt_iv(i):
-    return '[%.4f, %.4f]' % (i[0], i[1]) if i else '_pending_'
+    return '[%s, %s]' % (u(i[0]), u(i[1])) if i else '_pending_'
 
 
 def bimodal(rdir, rl):
@@ -101,9 +102,9 @@ def main():
             continue
         bd = b['boundary']
         i = bd['rhoStarInterval']
-        w('| **%s** | [%d, %d] | %s | **%s** | %.4f | %d | %d |'
+        w('| **%s** | [%d, %d] | %s | **%s** | %s | %d | %d |'
           % (label, bd['lastSafeRl'], bd['firstNonSafeRl'], bd['firstNonSafeClass'],
-             fmt_iv(i), i[1] - i[0], len(b['points']), sum(len(p['runs']) for p in b['points'])))
+             fmt_iv(i), u(i[1] - i[0]), len(b['points']), sum(len(p['runs']) for p in b['points'])))
     w('')
     w('Run counts for the two E1 cells include the twelve E1B replication runs '
       'pooled into their last SAFE points, so they exceed the 18 and 21 stated in '
@@ -141,7 +142,7 @@ def main():
                  '(addendum 3)' if f[k] < 0 else
                  'cap-driven' if f[k] >= 0.75 else
                  'concurrency-driven' if f[k] <= 0.25 else 'neither threshold')
-            w('| %s | %.4f | **%+.3f** | %s |' % (label, mid(iv(e2[k])), f[k], r))
+            w('| %s | %s | **%+.3f** | %s |' % (label, u(mid(iv(e2[k]))), f[k], r))
     w('')
     if f['c10'] is not None and f['c50'] is not None:
         both = [f['c10'], f['c50']]
@@ -242,8 +243,8 @@ def main():
                  pt['class'], len(pt['runs']),
                  ', '.join('%.4f' % v for v in pt['vSLO'][:6])
                  + (' ...' if len(pt['vSLO']) > 6 else ''),
-                 '%.4f-%.4f' % (min(rhos), max(rhos)) if len(set(rhos)) > 1
-                 else '%.4f' % rhos[0],
+                 '%s-%s' % (u(min(rhos)), u(max(rhos))) if len(set(rhos)) > 1
+                 else u(rhos[0]),
                  '%.1f' % mr if mr else 'n/a',
                  '%.3f' % (mr / pt['rl']) if mr else 'n/a'))
         w('')
@@ -280,9 +281,9 @@ def main():
         i = b['boundary']['rhoStarInterval']
         seq = [max(p['rhoAchieved']) for p in sorted(b['points'], key=lambda x: x['rl'])]
         mono = all(seq[j] <= seq[j + 1] for j in range(len(seq) - 1))
-        w('| %s | %s | %+.4f | %s |'
+        w('| %s | %s | %s | %s |'
           % (label, 'yes' if i[1] > i[0] else '**NO — interval is inverted**',
-             i[1] - i[0],
+             ud(i[1] - i[0]),
              'yes' if mono else 'no, and it does not need to be: the departures are '
              'at deep non-SAFE points that bound nothing'))
     w('')

@@ -1,0 +1,61 @@
+{
+  "published": {
+    "uncorrected": 0.0706,
+    "uncorrectedIs": "range of rho* midpoints over seven cells, A4",
+    "corrected": 0.0026,
+    "correctedIs": "difference of two bracket midpoints, drain-window"
+  },
+  "a4Feasible": {
+    "c10": {
+      "lastSafeRl": 1185,
+      "traces": 0
+    },
+    "c50": {
+      "lastSafeRl": 1210,
+      "traces": 2
+    }
+  },
+  "matched": {
+    "recipe": "last SAFE point, drain-window, median, C=2000, c10 vs c50, C0",
+    "uncorrected": {
+      "c10": {
+        "rl": 825,
+        "rho": 0.9062,
+        "rate": 1812.4,
+        "n": 3
+      },
+      "c50": {
+        "rl": 975,
+        "rho": 0.9732,
+        "rate": 1946.4,
+        "n": 3
+      }
+    },
+    "corrected": {
+      "c10": {
+        "rl": 1185,
+        "rho": 0.9883,
+        "rate": 1976.6543,
+        "n": 3
+      },
+      "c50": {
+        "rl": 1210,
+        "rho": 0.9915,
+        "rate": 1983.0507,
+        "n": 3
+      }
+    },
+    "gapRhoUncorrected": 0.067,
+    "gapRhoCorrected": 0.0032,
+    "gapRpsUncorrected": 134.0,
+    "gapRpsCorrected": 6.4,
+    "fractionRemovedRho": 95.2,
+    "fractionRemovedRps": 95.2
+  },
+  "a6CollapseNumerator": {
+    "publishedRange": 0.0706,
+    "safeSideRange": 0.0716,
+    "factorPublished": 10.4,
+    "factorSafeSide": 10.5
+  }
+}

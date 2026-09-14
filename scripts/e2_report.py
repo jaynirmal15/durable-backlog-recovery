@@ -415,12 +415,15 @@ def main():
         w('')
         errs = [r for r in bind['points'] if r['maxVSLOError'] > 0]
         if errs:
-            w('Violations are latency violations everywhere except one point: '
-              + ', '.join('%s rl=%d, vSLO_error %.4f against vSLO_latency %.4f'
+            n = len(errs)
+            w('Violations are latency violations everywhere except %s: '
+              % ('one point' if n == 1 else '%d points' % n)
+              + '; '.join('%s rl=%d, vSLO_error %.4f against vSLO_latency %.4f'
                           % (r['cell'], r['rl'], r['maxVSLOError'], r['maxVSLOLatency'])
                           for r in errs)
-              + '. That point is the deepest non-SAFE anchor of its cell, the only one '
-                'with drain-window timeouts, and it defines no interval.')
+              + '. %s the deepest non-SAFE anchor of its cell and %s no interval.'
+              % ('That point is' if n == 1 else 'Each is',
+                 'defines' if n == 1 else 'they define'))
             w('')
         w('**Cap binding.** Peak drain-window queue depth against the cap in force. '
           'Median and max across the runs at each point, because one run in fifteen '

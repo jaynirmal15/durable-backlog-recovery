@@ -20,6 +20,19 @@ def main():
     w('')
     w('**Analysis only, archived data. No instance.** Arithmetic as asked, no reframing.')
     w('')
+    # A6 supersedes two figures below. Emitted by the generator rather than
+    # hand-added, so the report regenerates from committed data unchanged.
+    w('> **CORRECTION, 2026-09-13 (PRE-REGISTRATION A6).** The collapse figures '
+      'below come from interval midpoints whose upper ends are UNSAFE points, '
+      'where the A4 estimator over-reads: 18 of 20 UNSAFE points across E1, E2 and '
+      'E2b report an achieved rate above their own cell\'s measured plateau, which '
+      'is impossible. Recomputed from SAFE points only, **the residual spread is '
+      '0.0068 rather than 0.0033 and the collapse factor is 10.3x rather than '
+      '21x.** The order-of-magnitude collapse stands; the factor of two does not. '
+      'The claim that five of seven intervals bracket 1.0 does **not** stand — it '
+      'depended on the inflated endpoint, and every cell in fact sits just below '
+      '1.0, at 0.9931 to 0.9999. See `results/A6-REPORT.md`.')
+    w('')
     w('## Answer')
     w('')
     w('Both tests support the hypothesis.')

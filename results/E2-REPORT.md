@@ -155,6 +155,10 @@ Cap is the cap **in force during the drain window**, `50 x ceil(C_d x S)` under 
 | E2 c50@Q500 | 1000 | 3 | 2000 | 500 | 401.16 | 80.232% | non-SAFE |
 | E2 c50@Q500 | 1025 | 3 | 2000 | 500 | 431.33 | 86.266% | non-SAFE |
 | E2 c50@Q500 | 1075 | 3 | 2000 | 500 | 450.92 | 90.185% | non-SAFE |
+| E2b C=400 | 180 | 3 | 400 | 500 | 0.66 | 0.132% | SAFE |
+| E2b C=400 | 190 | 12 | 400 | 500 | 2.63 | 0.526% | SAFE |
+| E2b C=400 | 195 | 3 | 400 | 500 | 180.21 | 36.043% | non-SAFE |
+| E2b C=400 | 200 | 3 | 400 | 500 | 364.99 | 72.998% | non-SAFE |
 
 The `4.1% of cap` agreement registered in addendum 1 does not survive either new cell. The two E1 C0 cells sat at 4.114% and 4.071%; the same arms at swapped caps sit at 0.923% and 21.686%. Absolute occupancy stayed with the arm while the cap moved fivefold, which is what breaks the ratio.
 
@@ -181,7 +185,7 @@ Not a registered reading. Two checks on whether the registered statistics are me
 
 **Failure mode.** `sloErrorAccounting` excludes client 429s, so a smaller cap could in principle turn latency violations into excluded rejections and make a run classify SAFE for the wrong reason. Rejections during the drain, summed over every point of both campaigns at every cap: **0**. The concern does not arise.
 
-Violations are latency violations everywhere except one point: E1 c10/C1 Q=350 rl=290, vSLO_error 0.3652 against vSLO_latency 0.8544. That point is the deepest non-SAFE anchor of its cell, the only one with drain-window timeouts, and it defines no interval.
+Violations are latency violations everywhere except 2 points: E1 c10/C1 Q=350 rl=290, vSLO_error 0.3652 against vSLO_latency 0.8544; E2b C=400 Q=500 rl=200, vSLO_error 0.1678 against vSLO_latency 0.8182. Each is the deepest non-SAFE anchor of its cell and they define no interval.
 
 **Cap binding.** Peak drain-window queue depth against the cap in force. Median and max across the runs at each point, because one run in fifteen at c10/C0 rl=825 peaked at 400 of 500 while the median peaked at 55.
 
@@ -223,6 +227,10 @@ Violations are latency violations everywhere except one point: E1 c10/C1 Q=350 r
 | E2 c50 Q=500 | 1000 | 3 | 500 | 500.0 | 100.0% | 500 | 100.0% **cap hit** | non-SAFE |
 | E2 c50 Q=500 | 1025 | 3 | 500 | 500.0 | 100.0% | 500 | 100.0% **cap hit** | non-SAFE |
 | E2 c50 Q=500 | 1075 | 3 | 500 | 500.0 | 100.0% | 500 | 100.0% **cap hit** | non-SAFE |
+| E2b C=400 Q=500 | 180 | 3 | 500 | 3.0 | 0.6% | 3 | 0.6% | SAFE |
+| E2b C=400 Q=500 | 190 | 12 | 500 | 9.0 | 1.8% | 15 | 3.0% | SAFE |
+| E2b C=400 Q=500 | 195 | 3 | 500 | 365.0 | 73.0% | 409 | 81.8% | non-SAFE |
+| E2b C=400 Q=500 | 200 | 3 | 500 | 500.0 | 100.0% | 500 | 100.0% **cap hit** | non-SAFE |
 
 At the last SAFE point of every cell in both campaigns:
 
@@ -234,6 +242,7 @@ At the last SAFE point of every cell in both campaigns:
 | E1 c50/C1 Q=1750 | 370 | 1.5% |
 | E2 c10 Q=2500 | 825 | 2.9% |
 | E2 c50 Q=500 | 975 | 44.8% |
+| E2b C=400 Q=500 | 190 | 1.8% |
 
 ## Campaign
 

@@ -1167,17 +1167,22 @@ Gate 2 fails here too.
 **But that second row is not reproducible from retained data, and the paper
 should not lean on it.** Three findings, all unflattering:
 
-1. **The A4 E2e brackets exist in no artefact.** They appear only as prose in
-   `results/E2E-PLAN.md:371-373` and as **hardcoded literal strings** in
-   `scripts/e2e_report.py:140` and `:142`. No script computes them; nothing
-   regenerates them.
-2. **A4 cannot be computed at the c10 arm's last SAFE point at all.**
+1. ~~**The A4 E2e brackets exist in no artefact.**~~ **WITHDRAWN — this was my
+   error; see item 23.** They are retained in `results/E2E-a4.json`, a committed
+   artefact holding the per-point delivery-span utilisation for both corrected
+   cells, from which the quoted brackets derive exactly. What is true is narrower:
+   nothing in the repository *wrote* that file and, until item 23, nothing read
+   it — `e2e_report.py` hardcoded the numbers instead of reading the artefact
+   beside them.
+2. **A4 cannot be RE-DERIVED at the c10 arm's last SAFE point.**
    `recompute_rho.delivery_rate()` needs per-arrival timestamps from the consumer
-   trace; the 1-second `timeline` cannot supply them. E2e retained **0** consumer
-   traces at c10 rl=1185, the last SAFE point. Consumer traces are gitignored
-   corpus-wide (`.gitignore`: `*.jsonl`, `*.jsonl.*`), so none was ever committed
-   for any campaign — the A4 values elsewhere survive only because they were
-   baked into the boundary files as `rhoAchieved`, and E2e has no boundary file.
+   trace; the 1-second `timeline` cannot supply them, and **0** traces survive at
+   c10 rl=1185. Consumer traces are gitignored corpus-wide (`.gitignore`:
+   `*.jsonl`, `*.jsonl.*`), so none was ever committed for any campaign. **This
+   is not specific to E2e**: no A4 value anywhere in the corpus is re-derivable.
+   E1, E2 and E2b preserve theirs inside their boundary files; E2e, which has no
+   boundary file, preserves its own in `results/E2E-a4.json`. Retained, not
+   re-derivable — the same status throughout.
 3. **Where it can be partially checked, it does not reproduce exactly.** c50 has
    traces at rl=1210 and rl=1275 for r1 and r2 but not r3. Recomputing A4 there
    gives ρ 1.0006 and 1.0011 at the last SAFE point and 1.0064 and 1.0076 at the
@@ -1187,14 +1192,16 @@ should not lean on it.** Three findings, all unflattering:
 ### The sentence to write
 
 > The registration designated the delivery-span estimator. The gate was
-> adjudicated under the as-measured estimator, and fails under it by 1.4 and 2.4
-> bisection steps. It also fails under the registered estimator so far as that
-> can be checked, but the registered-estimator brackets are not reproducible from
-> retained data: the consumer traces the delivery-span estimator requires were
-> never committed, and none survives at the short arm's last SAFE point.
+> adjudicated under the as-measured estimator and fails under it by 1.4 and 2.4
+> bisection steps; it fails under the registered estimator too, whose brackets
+> are [0.9956, 1.0016] and [0.9999, 1.0064]. Those values are retained rather
+> than re-derivable — the consumer traces the delivery-span estimator reads are
+> excluded from the repository, as they are for every campaign.
 
-**Gate 2 failed.** That is not in doubt under either estimator. What is defective
-is the audit trail for the registered one.
+**Gate 2 failed, under both estimators, and both are documented.** *(Revised at
+item 23. The first version of this item said the registered-estimator brackets
+were reproducible nowhere. They are in `results/E2E-a4.json`; I had not found
+it.)*
 
 ## 16. Was the saturation pair designated in advance?
 
@@ -1344,16 +1351,23 @@ aggregator.
 The estimator mismatch alone is worth **0.0080** in ρ by this campaign's own
 measurement — three times the corrected residual it is being differenced against.
 
-### A4 on both sides is not possible
+### Both estimators are available on both sides
 
-The matched recipe cannot use the registered estimator, for the reason in item
-15: E2e retained **zero** consumer traces at the c10 arm's last SAFE point, and
-A4 requires per-arrival timestamps. c50 has two of three. This is a constraint of
-the data, not a preference.
+*(Revised at item 23. This section originally said A4 on both sides was
+impossible. It is not.)*
 
-The drain-window estimator **is** available on both sides: `recompute_rho.py`
-retained the pre-A4 values as `rhoAchievedDrainWindow` in every seven-cell
-boundary file, and E2e is natively drain-window.
+- **Drain-window**: `recompute_rho.py` retained the pre-A4 values as
+  `rhoAchievedDrainWindow` in every seven-cell boundary file, and E2e is natively
+  drain-window.
+- **Delivery span (A4)**: retained as `rhoAchieved` in the seven boundary files
+  and in `results/E2E-a4.json` for the corrected cells.
+
+Neither can be re-derived from raw data, because consumer traces are excluded
+from the repository. Both routes are therefore reported, side by side, rather
+than one being chosen. One caveat applies to the A4 route only: `E2E-a4.json`
+stores a single value per point with no per-repetition list, so the **aggregator
+on its corrected side cannot be verified** to be the median used on the
+uncorrected side.
 
 ### The matched recipe
 
@@ -1371,8 +1385,9 @@ C = 2000, c10 arm against c50 arm under matched conditions (C0, λ_L = 1000).
 | accounting | before | after | removed |
 |---|---|---|---|
 | published (7-cell range vs 2-cell gap, mixed estimators) | 0.0706 | 0.0026 | 96.3% |
-| **matched, in ρ** | **0.0670** | **0.0032** | **95.2%** |
-| **matched, in throughput (rps)** | **134.0** | **6.4** | **95.2%** |
+| **matched, drain-window, in ρ** | **0.0670** | **0.0032** | **95.2%** |
+| **matched, drain-window, in throughput (rps)** | **134.0** | **6.4** | **95.2%** |
+| **matched, A4 on both sides, in ρ** | **0.0696** | **0.0043** | **93.8%** |
 
 ### The answer
 
@@ -1383,10 +1398,14 @@ same 95.2% either way, which is the consistency check worth having since only th
 throughput form is free of the utilisation denominator.
 
 So the "three false effects dissolved" narrative does not rest on an artefact of
-mismatched estimators. But **"94–96%" should be replaced by a single matched
-figure of 95%**, and the before/after pair restated as 0.0670 → 0.0032. The
-published pair should not be quoted again: its first term is a seven-cell range
-mislabelled as a two-arm gap, and its two terms are on different estimators.
+mismatched estimators. **The matched answer is estimator-dependent: 93.8% under
+A4, 95.2% under drain-window.** Quote it as **94–95%**, with the before/after
+pair given per estimator — 0.0696 → 0.0043, or 0.0670 → 0.0032. That range looks
+superficially like the report's original "94–96%", but it is arrived at
+differently: the original bracketed two *unmatched* computations, this one
+brackets two matched ones. The published pair should not be quoted again: its
+first term is a seven-cell range mislabelled as a two-arm gap, and its two terms
+are on different estimators.
 
 ### One more inconsistency found in passing
 
@@ -1404,11 +1423,11 @@ untouched — but the numerator should be made consistent with its own amendment
 
 | item | outcome |
 |---|---|
-| 15. Gate 2's estimator | **the registration named A4** — neither "it named as-measured" nor "it was silent". Gate 2 failed under the estimator used (1.4 and 2.4 steps) and under the registered one; but the A4 brackets are **hardcoded prose, reproducible nowhere**, and A4 is **uncomputable** at the c10 last SAFE point because no consumer trace survives |
+| 15. Gate 2's estimator | **the registration named A4** — neither "it named as-measured" nor "it was silent". Gate 2 failed under the estimator used (1.4 and 2.4 steps) and under the registered one, [0.9956, 1.0016] and [0.9999, 1.0064]. ~~The A4 brackets are reproducible nowhere~~ — **withdrawn at item 23**: they are retained in `results/E2E-a4.json`. They are not *re-derivable*, which is true of every A4 value in the corpus |
 | 16. saturation pair | **designated in advance**, `67c448b` 2026-09-13 13:31:47 −0400, before any corrected plateau was measured, against a tabulated 90%-load alternative and a pre-committed failure reading. Only two candidates existed; in-situ came later. **Not post-hoc.** Ordering rests on contemporaneous registration text, not on a timestamp inside the datum |
 | 17. plateau repeatability | **n = 1 per corrected cell.** No spread exists; none synthesised. Quote raw differences; "−0.00%" must not appear. The seven cells have 6–15 each — the more load-bearing measurement is the less replicated one |
 | 18. attribution figures | both from the **direct per-request timing probe at 90% of capacity**. 99.8% holds there in both arms; at saturation the long arm is 99.7%. 1.3 µs = pre+post+timer at **S = 5 ms**, 90% load (1.38 µs at S = 25). **The records' own `note` field mis-states its own `total`**, and F3's 99.8% title is hardcoded |
-| 19. matched audit | **not matched on four dimensions**, including the statistic itself — 0.0706 is a seven-cell **range**, mislabelled in E2E-REPORT as a two-arm gap. Recomputed under one recipe: **0.0670 → 0.0032, 95.2% removed**, identical in throughput space (134.0 → 6.4 rps). **The claim survives; replace "94–96%" with a matched 95%** |
+| 19. matched audit | **not matched on four dimensions**, including the statistic itself — 0.0706 is a seven-cell **range**, mislabelled in E2E-REPORT as a two-arm gap. Recomputed matched: **0.0670 → 0.0032, 95.2%** under drain-window (134.0 → 6.4 rps, same figure) and **0.0696 → 0.0043, 93.8%** under A4. **The claim survives; quote 94–95%**, per estimator. *(A4 route added at item 23.)* |
 
 ---
 ---
@@ -1535,5 +1554,127 @@ unchanged, so the JSON artefact still regenerates byte-identically.
 |---|---|
 | 20. `note` field | fixed at the Go source and in 43 records; **0 of 43** differ outside the `note` key; every consuming artefact reproduced byte-identically |
 | 20, incidental | **the figures were never byte-reproducible** — a wall-clock `/CreationDate` made every run differ. Fixed; drawn content verified unchanged in all six |
-| 21. A4 brackets | as-measured rows now computed and identical to the literals they replace; A4 rows retained, marked non-reproducible with the reason, and flagged as not quotable as measurements |
+| 21. A4 brackets | as-measured rows now computed and identical to the literals they replace; A4 rows ~~marked non-reproducible~~ — **superseded at item 23**, they are now computed from `results/E2E-a4.json` |
 | 22. A6 collapse factor | numerator recomputed SAFE-side, 0.0706 → 0.0716, factor 10.3× → **10.5×**; corrected in place. `conclusions()` was dead code and is now reachable and verified against the report |
+
+---
+---
+
+# Round 7 — the gap table, and a correction to rounds 5 and 6
+
+## 23. `results/E2E-a4.json` exists. Three earlier findings were wrong.
+
+While enumerating the generated data artefacts to verify reproduction, I found
+**`results/E2E-a4.json`** — committed 2026-09-13 17:56:37 −0400 in `fa8ca3b`,
+the E2e completion commit. It holds the per-point delivery-span utilisation for
+both corrected cells:
+
+| arm | rl | class | A4 ρ |
+|---|---|---|---|
+| c10 | 1185 | SAFE | 0.9956 |
+| c10 | 1240 | UNSAFE | 1.0016 |
+| c50 | 1210 | SAFE | 0.9999 |
+| c50 | 1275 | UNSAFE | 1.0064 |
+
+Taking each arm's last SAFE and first UNSAFE point reproduces the quoted
+brackets **exactly**: c10 [0.9956, 1.0016], c50 [0.9999, 1.0064].
+
+**So the central claim of item 15 was wrong.** I wrote that the A4 E2e brackets
+"exist in no artefact", "appear only as prose", and that "no script computes
+them; nothing regenerates them." The values were in a committed artefact the
+whole time. I searched for the *numbers* in `.py` and `.md` files and for scripts
+that *write* an A4 output; I did not enumerate the repository's own JSON
+artefacts until this turn, and the file is named for the campaign rather than for
+the estimator's role.
+
+### What survives, stated narrowly
+
+- **The values are retained; they are not re-derivable.** A4 needs per-arrival
+  timestamps from the consumer trace, traces are gitignored corpus-wide, and none
+  survives at c10 rl=1185.
+- **That is true of every A4 value in the corpus, not just E2e's.** E1, E2 and
+  E2b preserve theirs inside their boundary files; E2e, having no boundary file,
+  preserves its own in this file. Retained-not-re-derivable is the corpus-wide
+  status, and singling E2e out was wrong.
+- **The file is an orphan.** Nothing in the repository writes it, and until this
+  round nothing read it. `e2e_report.py` hardcoded numbers that were sitting in
+  an artefact beside it.
+- **One caveat is real and new.** `E2E-a4.json` stores a single value per point
+  with no per-repetition list, so on that side the **aggregator is not recorded**
+  and cannot be verified to be the median.
+
+### Items 15, 19 and 21 are corrected in place
+
+Item 15's first bullet is struck and replaced; its second is narrowed from
+"cannot be computed" to "cannot be re-derived", with the corpus-wide scope
+stated; its concluding sentence and summary row are rewritten. Item 19's "A4 on
+both sides is not possible" section is replaced. Item 21's summary row is marked
+superseded. None of the struck text is deleted.
+
+### The A4 route, now run
+
+Item 19 could not previously answer the blocking question under the registered
+estimator. It can now, and `scripts/effect_size_accounting.py` runs both routes:
+
+| accounting | before | after | removed |
+|---|---|---|---|
+| published (7-cell range vs 2-cell gap, mixed estimators) | 0.0706 | 0.0026 | 96.3% |
+| matched, drain-window, in ρ | 0.0670 | 0.0032 | **95.2%** |
+| matched, drain-window, in throughput | 134.0 rps | 6.4 rps | **95.2%** |
+| matched, **A4 on both sides**, in ρ | 0.0696 | 0.0043 | **93.8%** |
+
+**The matched answer is estimator-dependent: 94–95%.** The claim survives under
+either. That range resembles the report's original "94–96%" but is reached
+differently — the original bracketed two unmatched computations, this brackets
+two matched ones.
+
+## 24. The gap table in E2E-REPORT, corrected in place
+
+`scripts/e2e_report.py` now emits, in place of the old two-line pair:
+
+1. **A correction notice** stating that the table read *"uncorrected, E1
+   midpoints 0.9137 and 0.9826 | 0.0706"*, that **those midpoints differ by
+   0.0689, not 0.0706**, that 0.0706 is E2d's `rhoStarSpread` — the range across
+   all seven cells (`capacity_calibration.py:221`) — mislabelled here as a
+   two-arm difference, and that it was being differenced against a residual on a
+   different estimator, aggregator and observation interval. The 0.0689 is
+   computed from the constants already in the analysis, not typed in.
+2. **The withdrawn pair**, struck through and marked "retained so the correction
+   is legible, not for quotation".
+3. **The matched accounting**, read from `results/W8-effect-size-accounting.json`
+   so the report states no number of its own: both estimator routes, the
+   throughput row, and the 94–95% range.
+4. A note that the registered prediction was 0.0052 and 92.7% removed, so the
+   correction removed somewhat *more* of the gap than registered under either
+   estimator.
+
+**One precision decision, made explicitly.** The ρ rows are given to four
+decimals. `scripts/precision.py` scopes the resolution-matched rule to "a
+MEASURED utilisation" at its own cell's resolution; an inter-arm gap is a
+difference between two cells and is not that quantity, on the same reasoning that
+exempts vSLO in the module's own docstring. At three decimals 0.0032 renders as
+0.003 and stops being distinguishable from the withdrawn 0.0026, which is the
+comparison the table exists to make. The report states this in line.
+
+### Reproduction
+
+Every generator re-run and all 477 artefacts compared by SHA-256.
+
+| set | result |
+|---|---|
+| the twelve generated data artefacts | **all identical** — E2E-analysis, E2D-capacity-calibration, E2C-slo-sweep, A6-collapsed-estimator, A7-leading-indicator-corrected, W2-leave-one-out, W2-reviewer-analysis, W7-denominator-uncertainty, W7-e2e-per-repetition, E1-leading-indicator, E1-noise-scale-sensitivity, E2E-a4 |
+| W8-effect-size-accounting.json | **changed by design** — the A4 route was added to it this round |
+| the six figures | **all identical**, byte for byte |
+| E2, E2B, E2C, E2D reports | **all identical** |
+| E2E-REPORT.md | **changed — the intended edit** |
+
+---
+
+## Summary — round 7
+
+| item | outcome |
+|---|---|
+| 23. `E2E-a4.json` | **my error, corrected** — the A4 E2e brackets are in a committed artefact and reproduce the quoted values exactly. Items 15, 19 and 21 corrected in place, nothing deleted. What survives: retained but not re-derivable, which is the corpus-wide status of every A4 value, and the file is an orphan nothing wrote or read |
+| 23, consequence | the blocking matched audit now runs under **both** estimators: 95.2% (drain-window) and 93.8% (A4). **Quote 94–95%** |
+| 24. gap table | corrected in place with an annotated notice, the withdrawn pair struck through and retained, and the matched accounting read from W8 rather than restated |
+| 24, reproduction | twelve data artefacts and six figures all reproduce byte-identically; W8 changed by design; E2E-REPORT changed as intended |

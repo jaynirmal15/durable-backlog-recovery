@@ -8,11 +8,13 @@
   "a4Feasible": {
     "c10": {
       "lastSafeRl": 1185,
-      "traces": 0
+      "tracesOnDisk": 0,
+      "a4RhoRetained": 0.9956
     },
     "c50": {
       "lastSafeRl": 1210,
-      "traces": 2
+      "tracesOnDisk": 2,
+      "a4RhoRetained": 0.9999
     }
   },
   "matched": {
@@ -51,6 +53,13 @@
     "gapRpsCorrected": 6.4,
     "fractionRemovedRho": 95.2,
     "fractionRemovedRps": 95.2
+  },
+  "matchedA4": {
+    "recipe": "last SAFE point, A4 delivery span, C=2000, c10 vs c50, C0",
+    "caveat": "the corrected side stores one value per point, so its aggregator is not recorded and cannot be matched to the median used on the uncorrected side",
+    "gapRhoUncorrected": 0.0696,
+    "gapRhoCorrected": 0.0043,
+    "fractionRemovedRho": 93.8
   },
   "a6CollapseNumerator": {
     "publishedRange": 0.0706,

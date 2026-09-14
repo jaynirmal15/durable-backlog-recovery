@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from e2e_analysis import achieved, C_D                 # noqa: E402
 from locate_boundary import classify                   # noqa: E402
 
+A4E2E = json.load(open('results/E2E-a4.json'))
 CAL = json.load(open('results/E2D-capacity-calibration.json'))
 E2E = json.load(open('results/E2E-analysis.json'))
 SEVEN = [
@@ -132,21 +133,28 @@ def main():
     print('own measurement (E2E-REPORT), three times the corrected residual.')
 
     hr('3. CAN THE COMPARISON BE DONE UNDER A4 ON BOTH SIDES?')
-    need = {'c10': None, 'c50': None}
-    for arm in need:
+    print('Yes. results/E2E-a4.json retains the per-point delivery-span utilisation')
+    print('for the corrected cells, so both routes are available and both are run.')
+    print()
+    need = {}
+    for arm in ('c10', 'c50'):
         rl, _ = e2e_last_safe(arm)
         traces = glob.glob('results/e2e/e2e-%s-c0-rl%d-r*-consumer.jsonl*' % (arm, rl))
         need[arm] = (rl, len(traces))
-        print('  E2e %-4s last SAFE rl=%-5d consumer traces present: %d'
-              % (arm, rl, len(traces)))
+        print('  E2e %-4s last SAFE rl=%-5d  A4 retained: %.4f   consumer traces '
+              'still on disk: %d'
+              % (arm, rl, A4E2E['%s-%d' % (arm, rl)]['a4Rho'], len(traces)))
     print()
-    print('A4 measures the recovery rate over the DELIVERY SPAN, which is read from')
-    print('the consumer trace. E2e retained traces at only some points, and NOT at')
-    print('the c10 arm\'s last SAFE point. **A4 cannot be computed there at all.**')
-    print('So the matched comparison must be done under the drain-window estimator,')
-    print('which both corpora retain everywhere. That is a constraint of the data,')
-    print('not a preference.')
-    out['a4Feasible'] = {a: {'lastSafeRl': v[0], 'traces': v[1]} for a, v in need.items()}
+    print('The retained values cannot be RE-DERIVED: A4 needs per-arrival timestamps')
+    print('from the consumer trace, traces are gitignored corpus-wide, and none')
+    print('survives at the c10 arm\'s last SAFE point. That is true of every A4')
+    print('value in every campaign -- E1, E2 and E2b preserve theirs in their')
+    print('boundary files. One caveat specific to this side: E2E-a4.json stores a')
+    print('single value per point with no per-repetition list, so the AGGREGATOR on')
+    print('the corrected side of the A4 route cannot be verified to be the median.')
+    out['a4Feasible'] = {a: {'lastSafeRl': v[0], 'tracesOnDisk': v[1],
+                             'a4RhoRetained': A4E2E['%s-%d' % (a, v[0])]['a4Rho']}
+                         for a, v in need.items()}
 
     hr('4. THE MATCHED COMPARISON')
     print('Last SAFE point only, drain-window estimator, median, configured C=2000,')
@@ -193,6 +201,30 @@ def main():
         'fractionRemovedRps': round(100 * (1 - gc_rps / gu_rps), 1),
     }
 
+    hr('4b. THE SAME COMPARISON UNDER A4 ON BOTH SIDES')
+    ua, ca = {}, {}
+    for arm, path in (('c10', 'results/boundaries/c10-C0.json'),
+                      ('c50', 'results/boundaries/c50-C0.json')):
+        b, pt = last_safe(path)
+        ua[arm] = statistics.median(pt['rhoAchieved'])
+        rl, _ = e2e_last_safe(arm)
+        ca[arm] = A4E2E['%s-%d' % (arm, rl)]['a4Rho']
+        print('  %-4s uncorrected %.4f (median of %d reps)   corrected %.4f'
+              % (arm, ua[arm], len(pt['rhoAchieved']), ca[arm]))
+    gu_a4 = ua['c50'] - ua['c10']
+    gc_a4 = ca['c50'] - ca['c10']
+    print()
+    print('  gap %.4f -> %.4f, %.1f%% removed' % (gu_a4, gc_a4,
+                                                  100 * (1 - gc_a4 / gu_a4)))
+    out['matchedA4'] = {
+        'recipe': 'last SAFE point, A4 delivery span, C=2000, c10 vs c50, C0',
+        'caveat': 'the corrected side stores one value per point, so its '
+                  'aggregator is not recorded and cannot be matched to the median '
+                  'used on the uncorrected side',
+        'gapRhoUncorrected': round(gu_a4, 4), 'gapRhoCorrected': round(gc_a4, 4),
+        'fractionRemovedRho': round(100 * (1 - gc_a4 / gu_a4), 1),
+    }
+
     hr('5. THE MATCHED FIGURE AGAINST THE PUBLISHED ONE')
     print('%-46s %10s %10s %9s' % ('accounting', 'before', 'after', 'removed'))
     print('%-46s %10.4f %10.4f %8.1f%%'
@@ -202,6 +234,14 @@ def main():
           % ('matched, in rho', gu_rho, gc_rho, 100 * (1 - gc_rho / gu_rho)))
     print('%-46s %10.1f %10.1f %8.1f%%'
           % ('matched, in rps', gu_rps, gc_rps, 100 * (1 - gc_rps / gu_rps)))
+    print('%-46s %10.4f %10.4f %8.1f%%'
+          % ('matched, under A4 on both sides', gu_a4, gc_a4,
+             100 * (1 - gc_a4 / gu_a4)))
+    print()
+    print('The matched answer is estimator-dependent: %.1f%% under A4, %.1f%% under'
+          % (100 * (1 - gc_a4 / gu_a4), 100 * (1 - gc_rho / gu_rho)))
+    print('the drain-window estimator. Both are matched; neither is the published')
+    print('96.3%, which differenced a seven-cell range against a two-cell gap.')
     print()
     print('A6 note: the collapse factor in A6-REPORT is 0.0706 / 0.0068. Its')
     print('denominator was recomputed from SAFE points only, as A6 requires; its')

@@ -31,12 +31,16 @@ so the bar matches the figure used throughout the analysis.
 
 **Fig. 4. Predicting the plateau.** Maximum sustained throughput, predicted from
 the additive model and measured from the dependency's own served counter. In the
-uncorrected arms the configured capacity of 2000 overstates the truth by 171 and
-36 requests per second, and the model accounts for both to within 0.2%. Reducing
-the configured sleep by the measured overhead, with concurrency held fixed,
-brings the measured plateau to 1989.0 and 1997.7 against predictions of 1987.4
-and 1997.7 — differences of +1.6 and +0.0 requests per second at two service
-times a factor of five apart.
+uncorrected arms the configured capacity of 2000 overstates the measured plateau
+by 171 and 36 requests per second, and the model accounts for both to within
+0.2%. Reducing the configured sleep by the measured overhead, with concurrency
+held fixed, brings the measured plateau to 1989.0 and 1997.7 against predictions
+of 1987.4 and 1997.7 — differences of +1.6 and +0.0 requests per second at two
+service times a factor of five apart. **The +0.0 in the long arm is agreement, not
+evidence.** The two candidate corrections imply plateaus 1.60 rps apart there,
+and the observed range across the ten windows is 2.83 rps, so that arm cannot
+separate them however closely its median lands. Candidate selection is tested
+only by the short arm, where the separation is 8.6 rps. §V-D gives the argument.
 
 **Predictions are drawn as points on a short rule, measurements as bars**, so
 the two are not rendered in the same visual grammar.

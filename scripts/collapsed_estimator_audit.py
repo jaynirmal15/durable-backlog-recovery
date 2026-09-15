@@ -215,7 +215,8 @@ def conclusions():
         print('    %-14s effective at last SAFE = %.1f / %.1f = %.4f'
               % (label, last['a4Rate'], c['plateau'], e))
     sp = max(effs) - min(effs)
-    # CORRECTED 2026-09-15. This factor previously divided E2d's published
+    # CORRECTED 2026-09-14 (date first written as 2026-09-15, from a UTC-offset
+    # clock). This factor previously divided E2d's published
     # rhoStarSpread, 0.0706, by the spread above. That numerator is the range of
     # INTERVAL MIDPOINTS, each of which averages the last SAFE endpoint with a
     # collapsed non-SAFE one -- the values this very amendment rules invalid --
@@ -243,7 +244,7 @@ def conclusions():
 
 if __name__ == '__main__':
     # conclusions() re-derives the (a)-(e) block quoted in results/A6-REPORT.md.
-    # It was unreachable until 2026-09-15, which is why that block had to be
+    # It was unreachable until 2026-09-14, which is why that block had to be
     # pasted by hand. Default behaviour is unchanged so the JSON artefact
     # regenerates byte-identically.
     if '--conclusions' in sys.argv:

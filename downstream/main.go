@@ -352,7 +352,8 @@ func overheadReport() map[string]any {
 		"cycle":       ovCycle.report(),
 		// total is accumulated as pre+excess+post below; timer is a separate
 		// counter and is NOT one of its terms. The note said otherwise until
-		// 2026-09-15 and contradicted the arithmetic in every record it wrote.
+		// 2026-09-14 and contradicted the arithmetic in every record it wrote.
+		// (That date was first written as 2026-09-15, from a UTC-offset clock.)
 		"note": "total = preSleep + sleepExcess + postSleep, the worker-side " +
 			"cost per request beyond the sleep it was asked to perform. timer is " +
 			"measured and reported alongside but is NOT a term of total. HTTP " +

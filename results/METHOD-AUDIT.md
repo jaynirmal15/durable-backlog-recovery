@@ -1458,7 +1458,7 @@ while `timer` is a separate counter added at line 239. `total` has never include
 - `downstream/main.go`: the note string now reads *"total = preSleep +
   sleepExcess + postSleep … timer is measured and reported alongside but is NOT
   a term of total"*, with a source comment recording that it said otherwise until
-  2026-09-15. `gofmt` clean, `go build` passes.
+  2026-09-14. `gofmt` clean, `go build` passes.
 - The 43 committed records carrying the old string were rewritten to the new one.
 
 **Nothing but the note changed.** Each record was hashed before and after with the
@@ -2012,3 +2012,38 @@ line, and no label overlaps the line or another label.
 | item | outcome |
 |---|---|
 | 30. F4 label placement | labels now placed against the reference line as well as the bar; **one label moved**, down 5.4468 pt; five other figures byte-identical; F4's 25 text blocks byte-identical and **exactly one placement matrix** changed, with **zero** path or painting operators touched |
+
+---
+
+## 31. A date correction across six files
+
+Eight strings in the repository dated this evening's corrections **2026-09-15**.
+The repository clock, which is what a reader checks a commit against, reads
+**2026-09-14** — `ef730e8` is timestamped 2026-09-14 20:59:15 −0400. The dates
+came from a UTC-offset clock and were wrong by one day.
+
+Corrected in place, each carrying a note that the date was changed and that
+nothing else was:
+
+| file | what it dates |
+|---|---|
+| `downstream/main.go:355` | when the `note` string was corrected (item 20) |
+| `scripts/make_figures.py:59` | when the PDF `CreationDate` suppression was added (item 20) |
+| `scripts/collapsed_estimator_audit.py:218` | the collapse-factor numerator correction (item 22) |
+| `scripts/collapsed_estimator_audit.py:246` | when `conclusions()` became reachable (item 22) |
+| `scripts/e2e_report.py:126` | the gap-table correction notice (item 24) |
+| `results/A6-REPORT.md:157` | the same correction as rendered (item 22) |
+| `results/E2E-REPORT.md:77` | regenerated from the generator above (item 24) |
+| `results/METHOD-AUDIT.md` item 20 | the `note` fix |
+
+No numeric result, artefact or figure is affected: every changed string is a
+date inside a comment or a correction notice. `gofmt` clean, `go build` passes,
+and `E2E-REPORT.md` is regenerated from its corrected generator rather than
+hand-edited.
+
+Seven further occurrences remain in `paper/`, which is untracked and is the
+author's drafting area, not a repository artefact.
+
+| item | outcome |
+|---|---|
+| 31. dates | eight strings dated 2026-09-15 corrected to **2026-09-14** across six files, as dated corrections; no numeric result touched |

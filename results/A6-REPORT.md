@@ -154,7 +154,7 @@ from interval midpoints whose upper ends were inflated. The substance survives �
 recomputing against true capacity still collapses the cells by an order of
 magnitude — but the magnitude was overstated twofold.
 
-> **CORRECTED IN PLACE, 2026-09-15.** This figure was first published as
+> **CORRECTED IN PLACE, 2026-09-14.**(date corrected 2026-09-14: first written as 2026-09-15 from a UTC-offset clock; no other content changed — METHOD-AUDIT item 31) This figure was first published as
 > **10.3x**, dividing E2d's `rhoStarSpread` of 0.0706 by the corrected 0.0068.
 > That numerator is the range of **interval midpoints**, each averaging the last
 > SAFE endpoint with a collapsed non-SAFE one — the values this very amendment

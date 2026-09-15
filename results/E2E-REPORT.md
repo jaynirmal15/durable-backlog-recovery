@@ -74,7 +74,7 @@ Bracket rl [1210, 1275], 65 rps — coarser than the registered 5. In rho: **[0.
 
 ### The gap between the arms
 
-> **CORRECTED, 2026-09-15. The pair below is withdrawn; use the matched accounting that follows it.** The table as first published read *"uncorrected, E1 midpoints 0.9137 and 0.9826 | 0.0706"*. **Those two midpoints differ by 0.0689, not 0.0706.** The 0.0706 is E2d's `rhoStarSpread` — the RANGE of rho* interval midpoints across all **seven** cells (`capacity_calibration.py:221`) — and it was being labelled here as a two-arm difference. It was also being differenced against a corrected residual computed on a different estimator, a different aggregator and a different observation interval, so the before and after were not the same quantity. See `results/METHOD-AUDIT.md` item 19.
+> **CORRECTED, 2026-09-14. The pair below is withdrawn; use the matched accounting that follows it.** The table as first published read *"uncorrected, E1 midpoints 0.9137 and 0.9826 | 0.0706"*. **Those two midpoints differ by 0.0689, not 0.0706.** The 0.0706 is E2d's `rhoStarSpread` — the RANGE of rho* interval midpoints across all **seven** cells (`capacity_calibration.py:221`) — and it was being labelled here as a two-arm difference. It was also being differenced against a corrected residual computed on a different estimator, a different aggregator and a different observation interval, so the before and after were not the same quantity. See `results/METHOD-AUDIT.md` item 19. (This notice was first dated 2026-09-15, from a UTC-offset clock; the date is corrected and nothing else in it changed — METHOD-AUDIT item 31.)
 
 **Withdrawn pair** — retained so the correction is legible, not for quotation:
 

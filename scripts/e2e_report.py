@@ -123,7 +123,7 @@ def main():
     if 'residualGap' in D:
         e1diff = D['uncorrected']['c50'] - D['uncorrected']['c10']
         m = W8['matched']
-        w('> **CORRECTED, 2026-09-15. The pair below is withdrawn; use the matched '
+        w('> **CORRECTED, 2026-09-14. The pair below is withdrawn; use the matched '
           'accounting that follows it.** The table as first published read '
           '*"uncorrected, E1 midpoints %.4f and %.4f | 0.0706"*. **Those two '
           'midpoints differ by %.4f, not 0.0706.** The 0.0706 is E2d\'s '
@@ -133,7 +133,9 @@ def main():
           'against a corrected residual computed on a different estimator, a '
           'different aggregator and a different observation interval, so the '
           'before and after were not the same quantity. See '
-          '`results/METHOD-AUDIT.md` item 19.'
+          '`results/METHOD-AUDIT.md` item 19. (This notice was first dated '
+          '2026-09-15, from a UTC-offset clock; the date is corrected and nothing '
+          'else in it changed — METHOD-AUDIT item 31.)'
           % (D['uncorrected']['c10'], D['uncorrected']['c50'], e1diff))
         w('')
         w('**Withdrawn pair** — retained so the correction is legible, not for quotation:')

@@ -56,7 +56,8 @@ def save(fig, name, pad=True):
     # metadata={'CreationDate': None} suppresses the wall-clock timestamp the
     # PDF backend otherwise embeds, which made every figure differ byte-for-byte
     # between two runs of identical code on identical data and so falsified the
-    # "regenerates byte-identically" claim for figures/. Added 2026-09-15; the
+    # "regenerates byte-identically" claim for figures/. Added 2026-09-14 (first
+    # written as 2026-09-15, from a UTC-offset clock); the
     # rendered content is unchanged.
     fig.savefig(p, metadata={'CreationDate': None})
     plt.close(fig)

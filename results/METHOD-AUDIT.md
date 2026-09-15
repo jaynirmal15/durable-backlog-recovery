@@ -1943,12 +1943,72 @@ both versions and separating text blocks from drawing operators:
 
 Rendered and inspected: no clipping, no overlap between labels.
 
-**One pre-existing cosmetic issue, unchanged and not fixed.** The c50-uncorrected
-label sits on the dashed "configured C" line at 2000, because its y is
-`max(bar) + 26` and that bar tops out near 1964. The old `+0.02%` label sat in
-exactly the same place; the new string is 0.78 pt wider, so the collision is
-neither introduced nor materially worsened here. Left alone as out of scope.
+**One pre-existing cosmetic issue, fixed in item 30.** The c50-uncorrected label
+sat on the dashed "configured C" line at 2000, because its y was `max(bar) + 26`
+and that bar tops out near 1964. The old `+0.02%` label sat in exactly the same
+place, so the collision predates the rps change.
 
 | item | outcome |
 |---|---|
 | 29. F4 annotations | switched to rps; **five other figures byte-identical**; F4 differs in **zero** path/paint operators, four text blocks, four label-placement shifts of −0.7812 pt, and the font subset those labels require |
+
+---
+
+## 30. F4's labels are now placed against the reference line as well as the bar
+
+The old rule was `y = max(bar) + 26` and knew nothing about the dashed
+configured-C line at 2000. Where a bar topped out just below the line — the
+c50-uncorrected bar, at 1964.3 — the label landed on it.
+
+The rule now considers both, in data units (`TEXT_H` 18, a deliberately
+conservative height for 7 pt text on this axis at roughly 3.2 data units per
+point; `BAR_GAP` 10; `LINE_CLEAR` 6; `PREF` 26, the previous offset):
+
+```
+top + PREF + TEXT_H  <= ref - LINE_CLEAR   ->  y = top + PREF          # usual offset, already clear
+top + BAR_GAP + TEXT_H <= ref - LINE_CLEAR ->  y = ref - LINE_CLEAR - TEXT_H   # tuck under the line
+otherwise                                  ->  y = max(top + PREF, ref + LINE_CLEAR)  # sit above it
+```
+
+| bar | bar top | old y | new y | text top | branch |
+|---|---|---|---|---|---|
+| c10 uncorrected | 1831.5 | 1857.5 | 1857.5 | 1875.5 | below the line at the usual offset |
+| **c50 uncorrected** | 1964.3 | 1990.3 | **1976.0** | 1994.0 | **tucked under the line** |
+| c10 corrected | 1987.4 | 2013.4 | 2013.4 | 2031.4 | above the line |
+| c50 corrected | 1998.1 | 2024.1 | 2024.1 | 2042.1 | above the line |
+
+**Exactly one label moves.** The moved label now clears the bar beneath it by
+11.7 data units and the reference line above it by 6. The three already-clear
+labels keep their previous positions exactly — the third branch takes
+`max(top + PREF, …)` rather than snapping to the line, so a label with room is
+not pulled down towards it.
+
+### Verification
+
+**The other five figures are byte-identical**: F1 `733f9623…`, F2 `2c94c9c5…`,
+F3 `bb0554cb…`, F5 `1895cf4e…`, F6 `33ae10b8…`.
+
+**F4 differs only in label placement**, and this time the evidence is as tight as
+it can get. Decompressing every content stream in both versions:
+
+- **All 25 text blocks are byte-identical.** No string, glyph, font subset or
+  ToUnicode entry changed — the labels say exactly what they said, since only
+  their position moved.
+- **Exactly two graphics lines differ**, and they are the two halves of one
+  text-placement matrix:
+
+  ```
+  -1 0 -0 1 89.588540483 133.5145858625 cm
+  +1 0 -0 1 89.588540483 128.0677803498 cm
+  ```
+
+  Same x, y lowered by **5.4468 pt**. That is the c50-uncorrected label.
+- **Zero path or painting operators differ.** No bar, axis, tick, legend,
+  reference line or shaded span moved.
+
+Rendered and inspected: the label sits cleanly between its bar and the dashed
+line, and no label overlaps the line or another label.
+
+| item | outcome |
+|---|---|
+| 30. F4 label placement | labels now placed against the reference line as well as the bar; **one label moved**, down 5.4468 pt; five other figures byte-identical; F4's 25 text blocks byte-identical and **exactly one placement matrix** changed, with **zero** path or painting operators touched |

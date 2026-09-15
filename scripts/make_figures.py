@@ -232,8 +232,22 @@ def f4():
         # item 17), and a percentage renders the c10 one as "+0.00%", which
         # reads as agreement to two decimals and contradicts its own caption.
         # The raw difference claims only what was measured.
-        ax.text(i, max(r[2], r[3]) + 26, '%+.1f rps' % (r[3] - r[2]),
-                ha='center', fontsize=7)
+        #
+        # The label is placed against the configured-C reference line as well as
+        # against its bar. At the plain bar+26 offset the c50-uncorrected label
+        # landed on the dashed line, because that bar tops out near 1964 and the
+        # line sits at 2000. Constants are in data units; TEXT_H is a
+        # deliberately conservative height for 7 pt text on this axis (about
+        # 3.2 data units per point after tight_layout).
+        TEXT_H, BAR_GAP, LINE_CLEAR, PREF = 18.0, 10.0, 6.0, 26.0
+        top, ref = max(r[2], r[3]), r[1]
+        if top + PREF + TEXT_H <= ref - LINE_CLEAR:
+            y = top + PREF                      # room below the line at the usual offset
+        elif top + BAR_GAP + TEXT_H <= ref - LINE_CLEAR:
+            y = ref - LINE_CLEAR - TEXT_H       # tuck under the line, still clear of the bar
+        else:
+            y = max(top + PREF, ref + LINE_CLEAR)   # no room under it: sit above
+        ax.text(i, y, '%+.1f rps' % (r[3] - r[2]), ha='center', fontsize=7)
     ax.text(3.48, 2000, 'configured $C$', color=HI, fontsize=6.8, va='center')
     ax.set_xticks(list(x))
     ax.set_xticklabels([r[0] for r in rows])

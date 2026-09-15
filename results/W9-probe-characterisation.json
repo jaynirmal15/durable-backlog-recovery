@@ -1,0 +1,172 @@
+{
+  "probe": [
+    {
+      "arm": "c10",
+      "cond": "90% load",
+      "count": 115156,
+      "samples": 115156,
+      "windowSec": 60.0,
+      "meanMs": 0.516544,
+      "p50Ms": 0.513988,
+      "p90Ms": 0.959494,
+      "p99Ms": 1.067254,
+      "p999Ms": 1.110192,
+      "maxMs": 1.218675,
+      "src": "exp1-s5-load90.json"
+    },
+    {
+      "arm": "c10",
+      "cond": "saturation",
+      "count": 127380,
+      "samples": 127380,
+      "windowSec": 60.0,
+      "meanMs": 0.494698,
+      "p50Ms": 0.486794,
+      "p90Ms": 0.960874,
+      "p99Ms": 1.071223,
+      "p999Ms": 1.130481,
+      "maxMs": 1.640946,
+      "src": "exp1-s5-sat-on.json"
+    },
+    {
+      "arm": "c50",
+      "cond": "90% load",
+      "count": 123673,
+      "samples": 123673,
+      "windowSec": 60.0,
+      "meanMs": 0.511366,
+      "p50Ms": 0.505397,
+      "p90Ms": 0.96026,
+      "p99Ms": 1.068426,
+      "p999Ms": 1.11776,
+      "maxMs": 1.421637,
+      "src": "exp1-s25-load90.json"
+    },
+    {
+      "arm": "c50",
+      "cond": "saturation",
+      "count": 137257,
+      "samples": 137257,
+      "windowSec": 60.0,
+      "meanMs": 0.491436,
+      "p50Ms": 0.483025,
+      "p90Ms": 0.961045,
+      "p99Ms": 1.0732,
+      "p999Ms": 1.134232,
+      "maxMs": 1.917916,
+      "src": "exp1-s25-sat-on.json"
+    },
+    {
+      "arm": "c10",
+      "cond": "in situ",
+      "count": 4154563,
+      "nRuns": 18,
+      "windowSecRange": [
+        111.003775861,
+        120.004439244
+      ],
+      "publishedMs": 0.4775,
+      "runMeansMs": [
+        0.4744,
+        0.4746,
+        0.4749,
+        0.4752,
+        0.4754,
+        0.4756,
+        0.4769,
+        0.4769,
+        0.4771,
+        0.4771,
+        0.4772,
+        0.4773,
+        0.4778,
+        0.4778,
+        0.4779,
+        0.4781,
+        0.4788,
+        0.4797
+      ],
+      "medianOfRunP50Ms": 0.464671,
+      "medianOfRunP99Ms": 1.0582365,
+      "src": "overheadDrain across 18 runs"
+    },
+    {
+      "arm": "c50",
+      "cond": "in situ",
+      "count": 3451664,
+      "nRuns": 15,
+      "windowSecRange": [
+        114.003808695,
+        119.004278383
+      ],
+      "publishedMs": 0.4746,
+      "runMeansMs": [
+        0.4726,
+        0.473,
+        0.4731,
+        0.4732,
+        0.4733,
+        0.4734,
+        0.4736,
+        0.4738,
+        0.4746,
+        0.4748,
+        0.475,
+        0.4752,
+        0.4752,
+        0.4762,
+        0.4766
+      ],
+      "medianOfRunP50Ms": 0.459902,
+      "medianOfRunP99Ms": 1.059523,
+      "src": "overheadDrain across 15 runs"
+    }
+  ],
+  "intrusion": {
+    "5": {
+      "onRps": 1819.9147100641892,
+      "offRps": 1820.570842769039,
+      "shiftPct": -0.036,
+      "windowSecOn": 60.001163459,
+      "windowSecOff": 60.000960926,
+      "recordsPerState": 1
+    },
+    "25": {
+      "onRps": 1961.302622603101,
+      "offRps": 1963.066107460958,
+      "shiftPct": -0.0898,
+      "windowSecOn": 60.0009395,
+      "windowSecOff": 60.000526499,
+      "recordsPerState": 1
+    }
+  },
+  "inferredDelta": {
+    "values": {
+      "E1 c10/C0": 0.469,
+      "E1 c10/C1": 0.465,
+      "E1 c50/C0": 0.454,
+      "E1 c50/C1": 0.441,
+      "E2 c10@Q2500": 0.473,
+      "E2 c50@Q500": 0.447,
+      "E2b C=400": 0.463
+    },
+    "sorted": [
+      0.441,
+      0.447,
+      0.454,
+      0.463,
+      0.465,
+      0.469,
+      0.473
+    ],
+    "min": 0.441,
+    "max": 0.473,
+    "range": 0.032,
+    "median": 0.463,
+    "mean": 0.4589,
+    "lowerHinge": 0.4505,
+    "upperHinge": 0.46699999999999997,
+    "iqr": 0.0165,
+    "sd": 0.011
+  }
+}

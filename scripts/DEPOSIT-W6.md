@@ -1,5 +1,31 @@
 # W6 — Zenodo deposit checklist
 
+## The reserved deposit — cite this
+
+| | |
+|---|---|
+| **Reserved DOI** | **`10.5281/zenodo.22761131`** |
+| **Deposition ID** | **`22761131`** |
+| State | `unsubmitted` — a draft, not published |
+| Files uploaded | **0**, by design; the package goes up in W6 |
+| Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
+| Metadata from | git commit `349234c` |
+
+This is the DOI §4 cites. **It does not resolve until the record is published**,
+which happens in W6, from the web interface, by hand.
+
+An earlier draft, **22740491**, was created during the 2026-09-13 Zenodo outage
+(2026-09-14T02:17:53Z, i.e. 2026-09-13 22:17 −0400) and left broken: three
+leftover `_probe_*` test objects from a nesting probe, two partially-uploaded
+real files, and metadata predating the `related_identifiers` addition. It was
+deleted on 2026-09-14 and its reserved
+DOI `10.5281/zenodo.22740491` went with it; that DOI was never cited anywhere
+and never published. `scripts/zenodo_deposit.py --show <id>` will now inspect a
+deposition read-only, which is what should have been used instead of `--probe`,
+whose whole job is to upload test objects.
+
+---
+
 The DOI is reserved in W2 so the paper can cite it. **The files are uploaded and
 the record published in W6, after drafting freezes**, because what is deposited
 must match the commit the reproducibility statement cites.

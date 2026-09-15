@@ -25,6 +25,13 @@ REPO = os.path.expanduser('~/Jay_NIW/durable-backlog-recovery')
 RAW = os.path.expanduser('~/Jay_NIW/rhc-raw-data/results')
 STAGE = os.path.expanduser('~/Jay_NIW/paper2-zenodo')
 
+# The reserved DOI for this deposit, and the draft it belongs to. Recorded here
+# because this is where the deposit metadata lives; the paper cites the DOI in
+# section 4. Reserved 2026-09-14 on an empty draft: it does NOT resolve until
+# the record is published by hand in W6. See scripts/DEPOSIT-W6.md.
+RESERVED_DOI = '10.5281/zenodo.22761131'
+DEPOSITION_ID = 22761131
+
 META = {
     'title': 'Recovery Headroom Control: pre-registered boundary measurements, '
              'per-request traces and analysis code',

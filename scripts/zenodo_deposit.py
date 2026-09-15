@@ -175,6 +175,60 @@ def existing_files(base, token, dep_id):
     return out
 
 
+def metadata_only(base, token, dep_id, man):
+    """Create or resume a draft, set metadata, reserve the DOI, and stop.
+
+    Uploads nothing. This function never reaches put_file() or legacy_put(),
+    and there is no publish action anywhere in this module to reach either.
+    """
+    if dep_id:
+        st, dep = api(base, token, 'GET', '/deposit/depositions/%s' % dep_id,
+                      verbose=True)
+        if st != 200:
+            print('cannot resume %s: status %s' % (dep_id, st))
+            return 1
+        if dep.get('submitted'):
+            print('REFUSING: %s is already submitted.' % dep_id)
+            return 1
+        print('resuming draft %s' % dep_id)
+    else:
+        st, dep = api(base, token, 'POST', '/deposit/depositions', payload={},
+                      verbose=True)
+        if st not in (200, 201):
+            print('create failed: %s %s' % (st, dep))
+            return 1
+        dep_id = dep['id']
+        print('created draft %s' % dep_id)
+
+    meta = dict(man['metadata'])
+    meta['notes'] = ('Generated from git commit %s. Every file hashed in '
+                     'MANIFEST.json.' % man['gitCommit'])
+    # Ask Zenodo to mint the reserved DOI now, so the manuscript can cite it
+    # before the package is uploaded. Reserving does not publish anything.
+    meta['prereserve_doi'] = True
+    st, _ = api(base, token, 'PUT', '/deposit/depositions/%s' % dep_id,
+                payload={'metadata': meta}, verbose=True)
+    if st != 200:
+        print('metadata PUT failed: %s' % st)
+        return 1
+
+    st, dep = api(base, token, 'GET', '/deposit/depositions/%s' % dep_id)
+    md = dep.get('metadata') or {}
+    doi = (md.get('prereserve_doi') or {}).get('doi') or dep.get('doi')
+    st2, files = api(base, token, 'GET',
+                     '/deposit/depositions/%s/files' % dep_id)
+    nfiles = len(files) if st2 == 200 and isinstance(files, list) else '?'
+    print()
+    print('deposition id   %s' % dep_id)
+    print('reserved DOI    %s' % doi)
+    print('state           %s' % dep.get('state'))
+    print('files uploaded  %s' % nfiles)
+    print()
+    print('METADATA ONLY. Nothing was uploaded and nothing was published.')
+    print('The package is uploaded at W6, from the frozen commit.')
+    return 0 if doi else 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--stage-dir')
@@ -184,6 +238,15 @@ def main():
     ap.add_argument('--probe', action='store_true')
     ap.add_argument('--list-drafts', action='store_true')
     ap.add_argument('--delete-draft', type=int)
+    ap.add_argument('--show', type=int,
+                    help='READ-ONLY. GET one deposition and its file list and '
+                         'print what state it is actually in. Sends no write of '
+                         'any kind, unlike --probe, which uploads test objects.')
+    ap.add_argument('--metadata-only', action='store_true',
+                    help='create (or resume with --deposition-id) a draft, set '
+                         'metadata, reserve the DOI, and STOP. Uploads nothing. '
+                         'The package goes up separately at W6 from the frozen '
+                         'commit; uploading earlier only guarantees it goes stale.')
     ap.add_argument('--verbose', action='store_true', default=True)
     a = ap.parse_args()
 
@@ -208,6 +271,39 @@ def main():
         print()
         print('Unpublished drafts have state=unsubmitted. Published records are never')
         print('deletable and are listed here only so they can be recognised and left alone.')
+        return 0
+
+    if a.show:
+        st, dep = api(base, token, 'GET', '/deposit/depositions/%s' % a.show,
+                      verbose=True)
+        if st != 200:
+            print('cannot read deposition %s: status %s' % (a.show, st))
+            return 1
+        md = dep.get('metadata') or {}
+        pre = (md.get('prereserve_doi') or {})
+        print()
+        print('deposition   %s' % dep.get('id'))
+        print('state        %s' % dep.get('state'))
+        print('submitted    %s' % dep.get('submitted'))
+        print('title        %r' % (dep.get('title') or '(untitled)'))
+        print('created      %s' % dep.get('created'))
+        print('modified     %s' % dep.get('modified'))
+        print('doi          %s' % (dep.get('doi') or '(none)'))
+        print('prereserved  %s' % (pre.get('doi') or '(none)'))
+        print('metadata keys present: %s' % (sorted(md.keys()) or '(none)'))
+        for k in ('title', 'upload_type', 'license', 'version', 'description'):
+            v = md.get(k)
+            print('   %-14s %s' % (k, ('(unset)' if v is None
+                                       else str(v)[:70] + ('...' if len(str(v)) > 70 else ''))))
+        print('creators     %s' % (md.get('creators') or '(unset)'))
+        st2, files = api(base, token, 'GET',
+                         '/deposit/depositions/%s/files' % a.show)
+        if st2 == 200 and isinstance(files, list):
+            print('files        %d' % len(files))
+            for f in files:
+                print('   %-44s %s' % (f.get('filename'), f.get('checksum')))
+        else:
+            print('files        could not list (status %s)' % st2)
         return 0
 
     if a.delete_draft:
@@ -236,6 +332,8 @@ def main():
         print('--stage-dir is required to upload')
         return 2
     man = json.load(open(os.path.join(a.stage_dir, 'MANIFEST.json')))
+    if a.metadata_only:
+        return metadata_only(base, token, a.deposition_id, man)
 
     if a.deposition_id:
         dep_id = a.deposition_id

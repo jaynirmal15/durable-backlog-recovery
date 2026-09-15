@@ -1,0 +1,95 @@
+{
+  "registration": {
+    "addendum": "A8",
+    "commit": "590d1cc"
+  },
+  "buildCommit": "c7f5835b2b06e59bd29239ea352451e040cf12a5",
+  "arms": {
+    "c10": {
+      "n": 10,
+      "windows": [
+        1987.2731,
+        1987.7941,
+        1987.9792,
+        1988.7487,
+        1988.8817,
+        1989.0465,
+        1989.1312,
+        1989.687,
+        1990.2411,
+        1990.3835
+      ],
+      "min": 1987.2731,
+      "median": 1988.9641,
+      "max": 1990.3835,
+      "spread": 3.1104,
+      "lowerHinge": 1987.9792,
+      "upperHinge": 1989.687,
+      "iqr": 1.7078,
+      "sd": 0.9712
+    },
+    "c50": {
+      "n": 10,
+      "windows": [
+        1996.5246,
+        1996.8857,
+        1997.073,
+        1997.0968,
+        1997.4977,
+        1997.9084,
+        1997.9669,
+        1998.3636,
+        1998.5715,
+        1999.3534
+      ],
+      "min": 1996.5246,
+      "median": 1997.7031,
+      "max": 1999.3534,
+      "spread": 2.8288,
+      "lowerHinge": 1997.073,
+      "upperHinge": 1998.3636,
+      "iqr": 1.2905,
+      "sd": 0.8297
+    }
+  },
+  "shortArm": {
+    "spread": [
+      1987.2731,
+      1990.3835
+    ],
+    "registeredImplied": 1987.3999,
+    "rivalImplied": 1978.8266,
+    "registeredInside": true,
+    "rivalInside": false,
+    "outcome": "OUTCOME 1",
+    "verdict": "OUTCOME 1: the short-arm prediction DISCRIMINATED. The value implied by the registered constant lies within the observed spread and the rival lies outside it."
+  },
+  "longArm": {
+    "registeredImplied": 1997.7306,
+    "rivalImplied": 1996.1355,
+    "separation": 1.5951,
+    "spread": 2.8288,
+    "spreadExceedsSeparation": true,
+    "verdict": "The observed spread EXCEEDS the separation. The registered prediction for this arm is CONFIRMED: the long arm cannot discriminate the two constants, as the manuscript already states."
+  },
+  "original": {
+    "c10": {
+      "originalSingleWindow": 1987.3834,
+      "replicatedMedian": 1988.9641,
+      "difference": 1.5807,
+      "spread": 3.1104,
+      "differenceExceedsSpread": false,
+      "originalRankInTen": 1,
+      "withinReplicatedRange": true
+    },
+    "c50": {
+      "originalSingleWindow": 1998.146,
+      "replicatedMedian": 1997.7031,
+      "difference": -0.4429,
+      "spread": 2.8288,
+      "differenceExceedsSpread": false,
+      "originalRankInTen": 7,
+      "withinReplicatedRange": true
+    }
+  }
+}

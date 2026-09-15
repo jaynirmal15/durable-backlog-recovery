@@ -1872,10 +1872,10 @@ vary by 7% of their own median and do so systematically with S, not randomly.
 The caption's "errors of −0.00% and +0.02%" is replaced by "differences of 0.0
 and +0.4 requests per second", consistent with item 17.
 
-### One thing left for you, because it changes a figure rather than a caption
+### The figure's bar annotations — now switched to rps
 
-**The figure itself still prints percentages above each bar**
-(`make_figures.py:227`, `'%+.2f%%' % err`), and renders:
+**DONE, item 29.** The figure previously printed percentages above each bar
+(`make_figures.py:227`, `'%+.2f%%' % err`), rendering:
 
 | bar | label drawn | raw difference |
 |---|---|---|
@@ -1884,10 +1884,10 @@ and +0.4 requests per second", consistent with item 17.
 | **c10 corrected** | **+0.00%** | +0.0 rps |
 | c50 corrected | +0.02% | +0.4 rps |
 
-So a figure captioned "these are raw differences, not evidence of agreement at
-that scale" draws **+0.00%** on the bar the caption is about. Changing the
-annotation to rps is one line, but it alters the rendered figure rather than its
-caption, so I have not done it.
+A figure captioned "these are raw differences, not evidence of agreement at that
+scale" was drawing **+0.00%** on the bar the caption is about. The annotations
+now read **−2.9 rps, +0.4 rps, +0.0 rps, +0.4 rps**. See item 29 for the
+verification that nothing else in the figure moved.
 
 ---
 
@@ -1899,4 +1899,56 @@ caption, so I have not done it.
 | 25, caveat | percentile sampling is **first-N truncation, not a reservoir**; the in-situ blocks exceed the 200,000-slot buffer, so their percentiles describe the first part of each drain |
 | 26. intrusion test | **single-shot** — n = 1 against n = 1, four measurements. No dispersion attachable, and the plateau's own scatter is unmeasured too. Weaker than "control" reads |
 | 27. inferred δ | range **0.032 ms, 6.9% of the median**; IQR 0.016; SD 0.0110. **The two arms do not overlap** (S=5 ≥ 0.465, S=25 ≤ 0.463) — not one population, and the median of seven equals no cell's value but E2b's |
-| 28. F4 caption | corpus provenance, **n = 1 per corrected arm**, and "no error bars ≠ no uncertainty" added; "−0.00%" removed. **The figure still draws +0.00% on a bar** — left for you, it is a rendered-figure change |
+| 28. F4 caption | corpus provenance, **n = 1 per corrected arm**, and "no error bars ≠ no uncertainty" added; "−0.00%" removed. The figure's bar annotations are now rps as well — item 29 |
+
+---
+
+## 29. F4's bar annotations, and what changing them moved
+
+`make_figures.py` now draws the raw difference in requests per second above each
+bar instead of a percentage:
+
+| bar | was | now | predicted → measured |
+|---|---|---|---|
+| c10 uncorrected | −0.16% | **−2.9 rps** | 1831.5 → 1828.6 |
+| c50 uncorrected | +0.02% | **+0.4 rps** | 1963.9 → 1964.3 |
+| **c10 corrected** | **+0.00%** | **+0.0 rps** | 1987.4 → 1987.4 |
+| c50 corrected | +0.02% | **+0.4 rps** | 1997.7 → 1998.1 |
+
+The figure and its caption now make the same claim. "+0.0 rps" says a difference
+was measured and it was zero to the tenth of a request per second; "+0.00%" read
+as agreement to two decimal places on a quantity observed once.
+
+### Verification
+
+**The other five figures are byte-identical**, unchanged SHA-256 across the
+regeneration: F1 `733f9623…`, F2 `2c94c9c5…`, F3 `bb0554cb…`, F5 `1895cf4e…`,
+F6 `33ae10b8…`.
+
+**F4 differs only in those annotations.** Decompressing every content stream in
+both versions and separating text blocks from drawing operators:
+
+- **Zero path or painting operators differ.** Not one `re`, `m`, `l`, `c`, `f`,
+  `S`, `W`, colour or line-width operator changed. No bar, axis, tick, legend,
+  reference line or shaded span moved.
+- **4 of 25 text blocks differ** — the four annotations.
+- The only changed graphics lines are **8 `cm` text-placement matrices**, in four
+  pairs at identical y-coordinates, each shifted **−0.7812 pt** in x. That is the
+  recentring of the four labels, by the same amount for each because all four
+  strings changed width identically. Plus the `q`/`Q` pairs wrapping them.
+- The remaining differences are **embedded font-subset tables** (`OS/2`, `cmap`,
+  `glyf`, `hmtx`, `kern`, `loca`) and **ToUnicode CMap** entries. The glyph set
+  changed because `%` is no longer drawn and `r`, `p`, `s` and a space now are.
+  Inherent to changing the text, not a separate edit.
+
+Rendered and inspected: no clipping, no overlap between labels.
+
+**One pre-existing cosmetic issue, unchanged and not fixed.** The c50-uncorrected
+label sits on the dashed "configured C" line at 2000, because its y is
+`max(bar) + 26` and that bar tops out near 1964. The old `+0.02%` label sat in
+exactly the same place; the new string is 0.78 pt wider, so the collision is
+neither introduced nor materially worsened here. Left alone as out of scope.
+
+| item | outcome |
+|---|---|
+| 29. F4 annotations | switched to rps; **five other figures byte-identical**; F4 differs in **zero** path/paint operators, four text blocks, four label-placement shifts of −0.7812 pt, and the font subset those labels require |

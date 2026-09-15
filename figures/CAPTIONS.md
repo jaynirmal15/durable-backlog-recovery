@@ -34,17 +34,27 @@ the additive model and measured from the dependency's own served counter. In the
 uncorrected arms the configured capacity of 2000 overstates the truth by 171 and
 36 requests per second, and the model accounts for both to within 0.2%. Reducing
 the configured sleep by the measured overhead, with concurrency held fixed,
-brings the measured plateau to 1987.4 and 1998.1 against predictions of 1987.4
-and 1997.7 — differences of 0.0 and +0.4 requests per second at two service
-times a factor of five apart. **The two pairs of bars come from different
-corpora.** The uncorrected pair is E1 c10/C0 and E1 c50/C0, two of the
-seven-cell boundary campaign, whose plateaus are each the median of six per-run
-maximum-30 s-sustained measurements, repeatable to 0.11% and 0.13%. The
-corrected pair is the E2e campaign, and **each of its plateaus is a single
-60-second closed-loop observation, n = 1 per arm.** No repeatability estimate
-exists for them, the bars carry no error bars, and their absence does not imply
-zero uncertainty: the 0.0 and +0.4 rps differences are raw differences, not
-evidence of agreement at that scale.
+brings the measured plateau to 1989.0 and 1997.7 against predictions of 1987.4
+and 1997.7 — differences of +1.6 and +0.0 requests per second at two service
+times a factor of five apart.
+
+**Predictions are drawn as points on a short rule, measurements as bars**, so
+the two are not rendered in the same visual grammar.
+
+**The two pairs come from different corpora.** The uncorrected pair is E1 c10/C0
+and E1 c50/C0, two of the seven-cell boundary campaign, whose plateaus are each
+the median of six per-run maximum-30 s-sustained measurements, repeatable to
+0.11% and 0.13%. The corrected pair is the E2e campaign, replicated under
+pre-registration addendum A8: **each corrected plateau is the median of n = 10
+60-second closed-loop windows**, the same median convention used for the
+seven cells.
+
+**The whiskers on the two corrected bars are the observed interquartile range**
+of those ten windows — 1.71 and 1.29 requests per second. They are
+**window-to-window scatter, not an inferential interval**, and no confidence
+statement is attached to them. The uncorrected bars carry no whiskers because
+those plateaus were not replicated in this form; the absence is a statement
+about what was measured, not a claim of zero uncertainty.
 
 **Fig. 5. The same seven boundaries, measured against the wrong capacity and the
 right one.** Each line is one cell's last safe point, plotted first as a fraction

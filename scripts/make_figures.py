@@ -39,6 +39,11 @@ plt.rcParams.update({
 A6 = json.load(open('results/A6-collapsed-estimator.json'))['cells']
 CAL = json.load(open('results/E2D-capacity-calibration.json'))['cells']
 E2E = json.load(open('results/E2E-analysis.json'))['cells']
+# A8 (PRE-REGISTRATION addendum A8, registered 590d1cc; records committed
+# f6a7383): the corrected plateaus replicated, n = 10 windows per arm. The
+# figure takes the median of the ten, the convention already used for
+# C_measured in the seven cells, and shows the observed interquartile range.
+A8 = json.load(open('results/A8-plateau-repeatability.json'))['arms']
 ORDER = ['E1 c10/C0', 'E1 c10/C1', 'E2 c10@Q2500',
          'E1 c50/C0', 'E1 c50/C1', 'E2 c50@Q500', 'E2b C=400']
 SHORT = {'E1 c10/C0': 'c10/C0', 'E1 c10/C1': 'c10/C1', 'E2 c10@Q2500': 'c10 Q=2500',
@@ -212,22 +217,38 @@ def f3():
 
 # ---------------------------------------------------------------- F4
 def f4():
+    # (label, configured C, predicted, measured, hinges or None)
+    # Only the corrected arms are replicated, so only they carry hinges. A bar
+    # with no replication gets no whisker: whiskers here are window-to-window
+    # scatter, and drawing one where none was measured would invent it.
     rows = [('c10\nuncorrected', 2000, CAL['E1 c10/C0']['predictedAt046'],
-             CAL['E1 c10/C0']['trueCapacity']),
+             CAL['E1 c10/C0']['trueCapacity'], None),
             ('c50\nuncorrected', 2000, CAL['E1 c50/C0']['predictedAt046'],
-             CAL['E1 c50/C0']['trueCapacity']),
+             CAL['E1 c50/C0']['trueCapacity'], None),
             ('c10\ncorrected', 2000, E2E['c10']['registered']['predPlateau'],
-             E2E['c10']['plateau']),
+             A8['c10']['median'], (A8['c10']['lowerHinge'], A8['c10']['upperHinge'])),
             ('c50\ncorrected', 2000, E2E['c50']['registered']['predPlateau'],
-             E2E['c50']['plateau'])]
+             A8['c50']['median'], (A8['c50']['lowerHinge'], A8['c50']['upperHinge']))]
     fig, ax = plt.subplots(figsize=(COL, 2.5))
     x = range(len(rows))
-    ax.bar([i - 0.19 for i in x], [r[2] for r in rows], 0.36,
-           label='predicted', color=MUTE, lw=0)
     ax.bar([i + 0.19 for i in x], [r[3] for r in rows], 0.36,
            label='measured', color=LO, lw=0)
+    # A prediction is not a measurement and is not drawn in the same grammar:
+    # a short reference line with a point, over the footprint the predicted bar
+    # used to occupy, rather than a second bar of the same kind.
+    for i, r in enumerate(rows):
+        ax.plot([i - 0.37, i - 0.01], [r[2], r[2]], color=MUTE, lw=1.4,
+                solid_capstyle='butt', zorder=4)
+        ax.plot([i - 0.19], [r[2]], marker='o', ms=3.2, color=MUTE, lw=0, zorder=5)
+    ax.plot([], [], color=MUTE, lw=1.4, marker='o', ms=3.2, label='predicted')
     for i, r in enumerate(rows):
         ax.plot([i - 0.42, i + 0.42], [r[1], r[1]], color=HI, lw=1.0, ls='--')
+        if r[4] is not None:
+            lo_h, hi_h = r[4]
+            ax.plot([i + 0.19, i + 0.19], [lo_h, hi_h], color=INK, lw=1.0, zorder=6)
+            for yy in (lo_h, hi_h):
+                ax.plot([i + 0.19 - 0.07, i + 0.19 + 0.07], [yy, yy],
+                        color=INK, lw=1.0, zorder=6)
         # Requests per second, not a percentage. The corrected plateaus are
         # single 60 s observations with no repeatability estimate (METHOD-AUDIT
         # item 17), and a percentage renders the c10 one as "+0.00%", which
@@ -241,7 +262,8 @@ def f4():
         # deliberately conservative height for 7 pt text on this axis (about
         # 3.2 data units per point after tight_layout).
         TEXT_H, BAR_GAP, LINE_CLEAR, PREF = 18.0, 10.0, 6.0, 26.0
-        top, ref = max(r[2], r[3]), r[1]
+        # The whisker is part of what the label must clear, where one exists.
+        top, ref = max(r[2], r[3], *(r[4] or ())), r[1]
         if top + PREF + TEXT_H <= ref - LINE_CLEAR:
             y = top + PREF                      # room below the line at the usual offset
         elif top + BAR_GAP + TEXT_H <= ref - LINE_CLEAR:

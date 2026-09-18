@@ -128,18 +128,37 @@ def main():
     print('i.e. the 5 rps search step divided by the MEDIAN plateau. It is the')
     print('search step alone. Denominator variability is not in it.')
     print()
-    print('%-14s %11s %13s %12s %s' % ('cell', 'quoted res', 'denom. span',
-                                       'combined', 'quoted understates by'))
+    print('%-14s %11s %13s %13s %12s' % ('cell', 'quoted res', 'denom. span',
+                                         'span/res', 'linearBound'))
     for label, globs, bpath, S in CELLS:
         c = out['cells'][label]
         res, span = c['resolutionInEff'], c['rhoEffSpan']
         comb = (res ** 2 + span ** 2) ** 0.5
-        print('%-14s %11.4f %13.4f %12.4f %20.2fx'
-              % (label, res, span, comb, comb / res))
-        c['combinedQuadrature'] = round(comb, 4)
+        # SUPERSEDED. Kept under a new name rather than deleted: it is in a
+        # committed artefact and earlier analysis may have read it. Quadrature
+        # treats its two terms as independent variances; neither is one. The
+        # search-grid width is deterministic and the plateau range is an
+        # observed extreme-to-extreme span, so nothing in the design licenses
+        # combining them that way.
+        c['supersededCombinedQuadrature'] = round(comb, 4)
+        c['supersededCombinedQuadratureNote'] = (
+            'Superseded by linearBound. Quadrature treats the search-grid width '
+            'and the observed plateau range as independent variances; the first '
+            'is a deterministic grid step and the second an observed range, '
+            'neither is a variance, and nothing in the design licenses adding '
+            'them in quadrature. linearBound adds them directly, in units of the '
+            'search resolution. Retained, not deleted, because it appeared in a '
+            'committed artefact.')
+        # The bound the manuscript uses: search step plus the observed
+        # denominator span, added linearly, in units of the search resolution.
+        c['linearBound'] = round(1 + c['spanOverResolution'], 3)
+        print('%-14s %11.4f %13.4f %12.3fx %11.3fx'
+              % (label, res, span, c['spanOverResolution'], c['linearBound']))
     print()
-    print('"combined" adds the two in quadrature, treating them as independent.')
-    print('It is shown to size the omission, not proposed as the paper\'s number.')
+    print('linearBound = 1 + span/resolution: the search step and the observed')
+    print('denominator span added directly, as a multiple of the quoted resolution.')
+    print('It replaces the quadrature combination, which treated a deterministic')
+    print('grid width and an observed range as though they were variances.')
 
     json.dump(out, open('results/W7-denominator-uncertainty.json', 'w'), indent=2)
     print()

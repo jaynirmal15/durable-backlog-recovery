@@ -48,7 +48,9 @@
       "rhoEffSpan": 0.001,
       "resolutionInEff": 0.0027,
       "spanOverResolution": 0.383,
-      "combinedQuadrature": 0.0029
+      "supersededCombinedQuadrature": 0.0029,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.383
     },
     "E1 c10/C1": {
       "n": 6,
@@ -97,7 +99,9 @@
       "rhoEffSpan": 0.0023,
       "resolutionInEff": 0.0039,
       "spanOverResolution": 0.58,
-      "combinedQuadrature": 0.0045
+      "supersededCombinedQuadrature": 0.0045,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.58
     },
     "E1 c50/C0": {
       "n": 6,
@@ -146,7 +150,9 @@
       "rhoEffSpan": 0.0013,
       "resolutionInEff": 0.0025,
       "spanOverResolution": 0.517,
-      "combinedQuadrature": 0.0028
+      "supersededCombinedQuadrature": 0.0028,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.517
     },
     "E1 c50/C1": {
       "n": 6,
@@ -195,7 +201,9 @@
       "rhoEffSpan": 0.0024,
       "resolutionInEff": 0.0036,
       "spanOverResolution": 0.648,
-      "combinedQuadrature": 0.0043
+      "supersededCombinedQuadrature": 0.0043,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.648
     },
     "E2 c10@Q2500": {
       "n": 15,
@@ -289,7 +297,9 @@
       "rhoEffSpan": 0.0022,
       "resolutionInEff": 0.0027,
       "spanOverResolution": 0.798,
-      "combinedQuadrature": 0.0035
+      "supersededCombinedQuadrature": 0.0035,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.798
     },
     "E2 c50@Q500": {
       "n": 15,
@@ -383,7 +393,9 @@
       "rhoEffSpan": 0.001,
       "resolutionInEff": 0.0025,
       "spanOverResolution": 0.399,
-      "combinedQuadrature": 0.0027
+      "supersededCombinedQuadrature": 0.0027,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.399
     },
     "E2b C=400": {
       "n": 6,
@@ -432,7 +444,9 @@
       "rhoEffSpan": 0.0012,
       "resolutionInEff": 0.0127,
       "spanOverResolution": 0.094,
-      "combinedQuadrature": 0.0128
+      "supersededCombinedQuadrature": 0.0128,
+      "supersededCombinedQuadratureNote": "Superseded by linearBound. Quadrature treats the search-grid width and the observed plateau range as independent variances; the first is a deterministic grid step and the second an observed range, neither is a variance, and nothing in the design licenses adding them in quadrature. linearBound adds them directly, in units of the search resolution. Retained, not deleted, because it appeared in a committed artefact.",
+      "linearBound": 1.094
     }
   }
 }

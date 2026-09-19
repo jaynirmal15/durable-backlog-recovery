@@ -63,12 +63,14 @@ about what was measured, not a claim of zero uncertainty.
 **Fig. 5. The same seven boundaries, measured against the wrong capacity and the
 right one.** Each line is one cell's last safe point, plotted first as a fraction
 of configured capacity and then as a fraction of the capacity that cell was
-measured to have. Both are the median across that point's repetitions. Against
-the configured value the boundaries span 0.0716 and appear to separate by
-concurrency arm; against measured capacity they close to 0.0068, a factor of
-ten, and every cell sits within 0.7% of saturation. The
-apparent variation in safe utilisation is an artefact of a capacity figure that
-is wrong by a different amount in each cell.
+measured to have. Both use the maximum achieved rate across that point's
+repetitions, the per-cell value §IV defines for this figure. Against the
+configured value the boundaries span 0.0719 and appear to separate by
+concurrency arm; against measured capacity they close to 0.0071, and every cell
+sits within 0.7% of saturation — two of them fractionally above it, by about a
+fifth of a bisection step, which §IV explains. The apparent variation in safe
+utilisation is an artefact of a capacity figure that is wrong by a different
+amount in each cell.
 
 **Fig. 6. Both candidate signals are flat until they are useless.** Drain queue
 peak and live tail latency across the corrected c10 cell as utilisation
@@ -85,11 +87,12 @@ against capacity rather than inferring it from load.
 The brief specified a collapse from 0.0706 to 0.0033. Those are the pre-A6
 figures from the E2d report, computed from interval midpoints whose upper ends
 are collapsed points where the utilisation estimator over-reads. Under A6 the
-boundary is reported at the last safe point, giving 0.0716 collapsing to 0.0068,
-a factor of 10.5 rather than 21. The figure uses the post-A6 values, as the brief
+boundary is reported at the last safe point, giving 0.0719 collapsing to 0.0071
+under the maximum numerator §IV names. The figure uses the post-A6 values, as the brief
 requires post-A6 values throughout. The visual claim is unchanged and the
 arithmetic is now defensible.
 
+**Superseded the same day by the note below; kept as the record.**
 **Corrected 2026-09-19.** This note and the caption above said 0.0719. That was
 the left axis taken as the **maximum** across the last safe point's repetitions,
 set against a right axis that was the **median** — so a figure arguing that the
@@ -98,3 +101,15 @@ it draws. Both axes are now the median: 0.0716 collapsing to 0.0068, a factor of
 10.49, displayed as 10.5 as before. The max-based figure was 10.54. The corrected
 numerator now agrees with A6's collapse factor (`METHOD-AUDIT.md` item 22, and
 `PRE-REGISTRATION.md` A10).
+
+**Corrected again 2026-09-19 — the note above fixed the wrong half.** §IV names
+the aggregator for the per-cell value plotted here: the maximum achieved ρ across
+the last SAFE point's repetitions. The left axis already used it. The right axis
+did not: it divided a4Rate, a **median** numerator, by C_measured. The note above
+moved the left axis to the median to match, which corrected the half that was
+right. Both axes now use the maximum — 0.0719 against configured capacity,
+0.0071 against measured capacity. The denominator, C_measured, is a different
+median, across a cell's saturation runs of each run's maximum 30-second
+sustained rate, and is unchanged. The figure, its title and this caption give
+the two spreads and no ratio between them; the title previously carried "a
+factor of 10.5" and the caption "a factor of ten", and both are removed.

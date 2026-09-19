@@ -74,12 +74,19 @@ def cells():
     for k in ORDER:
         c = A6[k]
         last = max(c['safePoints'], key=lambda p: p['rl'])
-        # Both axes on the MEDIAN across the last SAFE point's repetitions. The
-        # left axis used to be rhoAtLastSafe[1], the MAXIMUM, while the right is
-        # a4Rate / plateau, a MEDIAN; a figure arguing that the spread collapses
-        # left to right should not compare a max against a median. a4Rho is the
-        # same median A6's collapse factor uses (METHOD-AUDIT item 22, A10).
-        yield k, last['a4Rho'], last['a4Rate'] / c['plateau']
+        # Both axes on the MAXIMUM achieved rho across the last SAFE point's
+        # repetitions, the aggregator section 4 names for the per-cell value in
+        # Fig. 5. The left axis is rhoAtLastSafe[1]; the right is that same
+        # maximum over C_measured (rho x C_config / plateau). The denominator is
+        # a different median -- across saturation runs of each run's maximum
+        # 30 s sustained rate -- and does not change here.
+        #
+        # History, 2026-09-19: the right axis was a4Rate / plateau, a MEDIAN
+        # numerator, against a MAX on the left. 3c00a6e moved the LEFT axis to
+        # the median to match; that fixed the wrong half. This restores the left
+        # axis and moves the right one to the maximum instead.
+        hi = c['reported']['rhoAtLastSafe'][1]
+        yield k, hi, hi * c['C_d'] / c['plateau']
 
 
 # ---------------------------------------------------------------- F1
@@ -335,8 +342,10 @@ def f5():
     ax.set_xticklabels(['against configured $C$', 'against measured capacity'])
     ax.set_ylabel('utilisation at the last SAFE point')
     ax.axhline(1.0, color=MUTE, lw=0.5, ls=':', zorder=0)
+    # No ratio of the two spreads is drawn: the figure gives the spreads and
+    # nothing derived from them. (It carried 'a factor of %.1f' until 2026-09-19.)
     ax.set_title('the same seven boundaries, divided by the wrong capacity and by the right one:\n'
-                 'spread %.4f collapses to %.4f, a factor of %.1f' % (sc, se, sc / se),
+                 'spread %.4f collapses to %.4f' % (sc, se),
                  fontsize=8)
     save(fig, 'F5-collapse')
     return sc, se
@@ -383,7 +392,7 @@ def main():
     sc, se = f5()
     f6()
     print()
-    print('F5 collapse: %.4f -> %.4f (%.1fx), post-A6' % (sc, se, sc / se))
+    print('F5 spreads: %.4f -> %.4f, post-A6, maximum numerator' % (sc, se))
     return 0
 
 

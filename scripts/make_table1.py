@@ -45,8 +45,9 @@ ROWS = [
                   'above what their own cell can serve, which is impossible. Not '
                   'found by the estimator\'s own validation.',
         'when': 'E2e then A6, 2026-09-13',
-        'cost': 'E2d\'s collapse factor halves, 21.4x to 10.3x, and its claim that '
-                'five of seven intervals bracket 1.0 falls entirely. Four other '
+        'cost': 'E2d\'s collapse factor halves, 21.4x to 10.5x — A6 first reported '
+                '10.3x, superseded by A10 under matched estimators — and its claim '
+                'that five of seven intervals bracket 1.0 falls entirely. Four other '
                 'conclusions were rechecked and survive.',
     },
 ]

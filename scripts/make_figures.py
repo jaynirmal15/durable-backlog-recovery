@@ -74,7 +74,12 @@ def cells():
     for k in ORDER:
         c = A6[k]
         last = max(c['safePoints'], key=lambda p: p['rl'])
-        yield k, c['reported']['rhoAtLastSafe'][1], last['a4Rate'] / c['plateau']
+        # Both axes on the MEDIAN across the last SAFE point's repetitions. The
+        # left axis used to be rhoAtLastSafe[1], the MAXIMUM, while the right is
+        # a4Rate / plateau, a MEDIAN; a figure arguing that the spread collapses
+        # left to right should not compare a max against a median. a4Rho is the
+        # same median A6's collapse factor uses (METHOD-AUDIT item 22, A10).
+        yield k, last['a4Rho'], last['a4Rate'] / c['plateau']
 
 
 # ---------------------------------------------------------------- F1
@@ -163,7 +168,7 @@ def f2():
 
     ax.text(x + 0.18, 0.80, 'ov $= 0.463$ ms,\nunaccounted for in $C$',
             va='center', fontsize=7.5, color=HI)
-    ax.text(0.0, 0.02, 'true capacity $=$ concurrency$/(S+\\mathrm{ov}) = C\\cdot S/(S+'
+    ax.text(0.0, 0.02, '$C_\\mathrm{model}$ $=$ concurrency$/(S+\\mathrm{ov}) = C\\cdot S/(S+'
                        '\\mathrm{ov})$ — the same ov costs proportionally more '
                        'when $S$ is short', fontsize=7.5, color=MUTE)
     save(fig, 'F2-capacity-model', pad=False)
@@ -327,7 +332,7 @@ def f5():
     ax.set_xlim(-0.62, 1.46)
     ax.set_ylim(0.900, 1.012)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(['against configured $C$', 'against measured true capacity'])
+    ax.set_xticklabels(['against configured $C$', 'against measured capacity'])
     ax.set_ylabel('utilisation at the last SAFE point')
     ax.axhline(1.0, color=MUTE, lw=0.5, ls=':', zorder=0)
     ax.set_title('the same seven boundaries, divided by the wrong capacity and by the right one:\n'

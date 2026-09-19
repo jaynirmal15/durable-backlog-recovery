@@ -15,12 +15,12 @@ time origin for every measurement reported here.
 as ⌈C·S⌉ workers on the assumption that each turns a request round in exactly S,
 which makes capacity equal to C by construction. A worker in fact pays a fixed
 additional 0.463 ms per request, almost all of it the operating system sleeping
-longer than asked. True capacity is therefore C·S/(S+ov), and because the cost is
+longer than asked. C_model is therefore C·S/(S+ov), and because the cost is
 additive rather than proportional it consumes a larger share of a short service
 time than a long one.
 
 **Fig. 3. The cost is constant, not proportional.** Mean per-request excess over
-the requested sleep, measured on the worker path at 90% of true capacity over
+the requested sleep, measured on the worker path at 90% of C_measured over
 roughly 120,000 requests per arm. Sleep overshoot accounts for 99.8% of it; the
 runtime timer work, queue bookkeeping and channel send together contribute 1.3
 microseconds. Right: the discriminating test. A constant cost predicts a
@@ -63,9 +63,10 @@ about what was measured, not a claim of zero uncertainty.
 **Fig. 5. The same seven boundaries, measured against the wrong capacity and the
 right one.** Each line is one cell's last safe point, plotted first as a fraction
 of configured capacity and then as a fraction of the capacity that cell was
-measured to have. Against the configured value the boundaries span 0.0719 and
-appear to separate by concurrency arm; against measured capacity they close to
-0.0068, a factor of ten, and every cell sits within 0.7% of saturation. The
+measured to have. Both are the median across that point's repetitions. Against
+the configured value the boundaries span 0.0716 and appear to separate by
+concurrency arm; against measured capacity they close to 0.0068, a factor of
+ten, and every cell sits within 0.7% of saturation. The
 apparent variation in safe utilisation is an artefact of a capacity figure that
 is wrong by a different amount in each cell.
 
@@ -84,7 +85,16 @@ against capacity rather than inferring it from load.
 The brief specified a collapse from 0.0706 to 0.0033. Those are the pre-A6
 figures from the E2d report, computed from interval midpoints whose upper ends
 are collapsed points where the utilisation estimator over-reads. Under A6 the
-boundary is reported at the last safe point, giving 0.0719 collapsing to 0.0068,
+boundary is reported at the last safe point, giving 0.0716 collapsing to 0.0068,
 a factor of 10.5 rather than 21. The figure uses the post-A6 values, as the brief
 requires post-A6 values throughout. The visual claim is unchanged and the
 arithmetic is now defensible.
+
+**Corrected 2026-09-19.** This note and the caption above said 0.0719. That was
+the left axis taken as the **maximum** across the last safe point's repetitions,
+set against a right axis that was the **median** — so a figure arguing that the
+spread collapses was comparing a max with a median, which inflates the collapse
+it draws. Both axes are now the median: 0.0716 collapsing to 0.0068, a factor of
+10.49, displayed as 10.5 as before. The max-based figure was 10.54. The corrected
+numerator now agrees with A6's collapse factor (`METHOD-AUDIT.md` item 22, and
+`PRE-REGISTRATION.md` A10).

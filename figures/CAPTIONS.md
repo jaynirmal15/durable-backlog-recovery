@@ -72,15 +72,21 @@ fifth of a bisection step, which §IV explains. The apparent variation in safe
 utilisation is an artefact of a capacity figure that is wrong by a different
 amount in each cell.
 
-**Fig. 6. Both candidate signals are flat until they are useless.** Drain queue
-peak and live tail latency across the corrected c10 cell as utilisation
-approaches its boundary. Neither moves appreciably while the system is safe, and
-both saturate together at the transition. Across the 55 rps interval between
-the last safe and the first unsafe probe, 1185 to 1240 rps, the queue peak goes
-from 111 requests to its cap of 500 and live p99 from 58 ms to 508 ms, each the
-largest of that point's three repetitions. A controller reading either signal
-has no advance warning, which is what motivates measuring headroom against
-capacity rather than inferring it from load.
+**Fig. 6. Both candidate signals rise together, then jump at the transition.**
+Drain queue peak and live tail latency across the corrected c10 cell as
+utilisation approaches its boundary, each point the largest of its three
+repetitions. Both rise across the sampled safe range — queue peak 7, 18 and 111
+requests and live p99 8, 14 and 58 ms at 975, 1075 and 1185 rps — and then change
+sharply across the 55 rps interval to the first unsafe probe at 1240 rps, where
+the queue reaches its cap of 500 and live p99 reaches 508 ms. Read as leading
+indicators, the two do not separate. In the registered analysis (A7), which uses
+per-point means, mean queue depth and live p99 both first cross three standard
+deviations at 1075 rps, one probe point before the last safe one, together with
+live p90 and mean in-flight; live p50 crosses only at the last safe point, and
+timeout rate never crosses. The queue plotted here is its **peak**. That
+analysis's DEEP criterion concerns **mean** queue depth, which reaches 23.1
+requests inside the safe range against a threshold of 50 and so does not cross
+it there; a peak of 111 at the same point does not contradict that.
 
 ---
 

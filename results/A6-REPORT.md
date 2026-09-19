@@ -108,7 +108,9 @@ changes materially.
 | concurrency gap | 0.0689 | 0.0688–0.0698 | **survives** |
 | E2 cap swap | identical, f = 0.001 | identical rate intervals, f = 0.000 | **survives, stronger** |
 | E2b, S governs | h = 0.980 | h = 0.895–0.945 | **survives** |
-| **E2d collapse to effective ~1.0** | **0.0033 spread, 21.4x** | **0.0068 spread, 10.3x** | **CHANGES** |
+| **E2d collapse to effective ~1.0** | **0.0033 spread, 21.4x** | **0.0068 spread, ~~10.3x~~ 10.5x** | **CHANGES** |
+
+> **Corrected 2026-09-19.** 10.3x is superseded by **10.5x**. The 10.3x divided a numerator that was a spread over interval **midpoints** (0.0706) by a denominator computed from **SAFE points only** (0.0068), so its two halves followed different rules. Recomputing the numerator on the SAFE side gives 0.0716 and a factor of 10.5x; the denominator, the direction and the verdict stand. `PRE-REGISTRATION.md` A10 (`51026cc`) records the correction, and `results/METHOD-AUDIT.md` item 22 gives the arithmetic.
 
 ```
 (a) capacity invariance: does C0 overlap C1 within an arm?

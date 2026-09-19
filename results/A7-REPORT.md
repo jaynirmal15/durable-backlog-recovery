@@ -117,12 +117,36 @@ SLO (250 ms) as reference lines and the SAFE/non-SAFE edge as a shaded span.
 statistic enters F6's pipeline at any stage.
 
 **Therefore F6 is unaffected by A5 and by this re-run.** Its claim is the raw
-shape of the two series — both flat until the last safe point, then a cliff — and
+shape of the two series — ~~both flat until the last safe point, then a cliff~~ — and
 that claim is visible in the plotted values without any inferential step. This
 should be stated in §VII: F6 survives the C3 downgrade intact, because it never
-depended on the statistic being downgraded. Its own title, "both signals are flat
+depended on the statistic being downgraded. ~~Its own title, "both signals are flat
 until the last safe point, then cliff", is in fact the *corrected* corpus's
-behaviour rather than E1's lead, so the figure and the A7 result agree.
+behaviour rather than E1's lead, so the figure and the A7 result agree.~~
+
+> **Corrected 2026-09-19.** Two claims in the paragraph above were wrong and are
+> struck through; the independence finding is not, and stands.
+>
+> **The shape.** The two series are not flat until the last safe point. Across
+> the three SAFE points the values F6 plots — each point's largest repetition —
+> rise from 7 to 18 to 111 requests of queue peak and from 8 to 14 to 58 ms of
+> live p99, and then change sharply across the 55 rps interval to the first
+> unsafe probe at 1240 rps, where the queue reaches its cap of 500 and p99 reaches
+> 508 ms.
+>
+> **The agreement.** The figure and this analysis were said to agree on that flat
+> shape. They cannot, because this report's own table (lines 21-22) shows mean
+> queue depth and live p99 both first crossing three standard deviations at
+> rl 1075, one probe point before the last safe point at 1185. What A7 and the
+> figure do agree on is the narrower statement the table supports: the two
+> signals do not separate — they cross together — and timeout rate never crosses.
+>
+> **What stands.** F6's pipeline reads `queuePeak`, `liveP99Ms`, `rho` and
+> `class` and no noise statistic, so A5's change of noise scale and the C3
+> downgrade do not touch it. That was right and is unchanged.
+>
+> F6's drawn title and its caption were corrected on the same day to describe the
+> rise and the transition (`scripts/make_figures.py`, `figures/CAPTIONS.md`).
 
 ## Files
 

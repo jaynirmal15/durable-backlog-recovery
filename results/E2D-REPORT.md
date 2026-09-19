@@ -4,6 +4,8 @@
 
 > **CORRECTION, 2026-09-13 (PRE-REGISTRATION A6).** The collapse figures below come from interval midpoints whose upper ends are UNSAFE points, where the A4 estimator over-reads: 18 of 20 UNSAFE points across E1, E2 and E2b report an achieved rate above their own cell's measured plateau, which is impossible. Recomputed from SAFE points only, **the residual spread is 0.0068 rather than 0.0033 and the collapse factor is 10.3x rather than 21x.** The order-of-magnitude collapse stands; the factor of two does not. The claim that five of seven intervals bracket 1.0 does **not** stand — it depended on the inflated endpoint, and every cell in fact sits just below 1.0, at 0.993 to 1.000. See `results/A6-REPORT.md`.
 
+> **Terminology corrected in place, 2026-09-19.** This report (and its generator, `scripts/e2d_report.py`) used "true capacity" for two different quantities: the model c/(S+δ) = C·S/(S+δ), which the paper names **C_model**, and the measured saturation plateau, **C_measured**. Each occurrence now carries the term its context requires. No number changed. The configured parameter is **C_config** and is never "true capacity". Field names in committed data are unchanged; `results/METHOD-AUDIT.md` item 33 maps them.
+
 ## Answer
 
 Both tests support the hypothesis.
@@ -13,7 +15,7 @@ Both tests support the hypothesis.
 | implied per-request overhead | **0.441 - 0.473 ms**, median **0.463**, CV **2.4%** |
 | every measured plateau vs the value predicted at 0.46 ms | within **0.24%** |
 | spread of the boundary against configured C | 0.071 |
-| spread against measured true capacity | **0.003** |
+| spread against C_measured | **0.003** |
 | collapse factor | **21x** |
 | median effective utilisation at the boundary | **1.000** |
 
@@ -21,11 +23,11 @@ Both tests support the hypothesis.
 
 ## One correction to the stated prediction
 
-The brief predicts "~1827 at c10 and c50's C=2000 arms". The hypothesis does not predict a shared plateau there. True capacity is `C x S/(S+ov)`, which depends on S, so at C=2000 it is **1831 at S=5 ms** but **1964 at S=25 ms**. A shared 1827 would mean equal rho* in both arms, which is the very thing being explained. The measured values are 1829 and 1964, matching the per-arm predictions.
+The brief predicts "~1827 at c10 and c50's C=2000 arms". The hypothesis does not predict a shared plateau there. C_model is `C x S/(S+ov)`, which depends on S, so at C=2000 it is **1831 at S=5 ms** but **1964 at S=25 ms**. A shared 1827 would mean equal rho* in both arms, which is the very thing being explained. The measured values are 1829 and 1964, matching the per-arm predictions.
 
-## Test 1 — true capacity from the plateau at UNSAFE points
+## Test 1 — C_measured from the plateau at UNSAFE points
 
-| cell | S | C_d | runs | true capacity | predicted at 0.46 | error | implied overhead |
+| cell | S | C_d | runs | C_measured | predicted at 0.46 | error | implied overhead |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | E1 c10/C0 | 5 | 2000 | 6 | **1828.6** | 1831.5 | -0.16% | **0.469 ms** |
 | E1 c10/C1 | 5 | 1400 | 6 | **1280.9** | 1282.1 | -0.09% | **0.465 ms** |
@@ -37,9 +39,9 @@ The brief predicts "~1827 at c10 and c50's C=2000 arms". The hypothesis does not
 
 The overhead is recovered as `ov = S x (C/plateau - 1)`. It comes out constant at **0.463 ms** across S = 5 and 25 ms and C = 400, 1400 and 2000, with a standard deviation of 0.0110 ms.
 
-## Test 2 — the boundary against true capacity
+## Test 2 — the boundary against C_measured
 
-| cell | rho* vs configured C | effective vs true capacity | brackets 1.0 | miss, in 5 rps steps |
+| cell | rho* vs configured C | effective vs C_measured | brackets 1.0 | miss, in 5 rps steps |
 |---|---|---|---|---:|
 | E1 c10/C0 | [0.912, 0.915] | **[0.998, 1.001]** | yes | 0.00 |
 | E1 c10/C1 | [0.911, 0.914] | **[0.995, 0.999]** | no | 0.18 |
@@ -55,7 +57,7 @@ Five of seven intervals bracket 1.0 outright. The two that do not are both the r
 
 ## Method note — the window decided this, not the statistic
 
-True capacity is the maximum throughput sustained when the server always has work, measured here as the highest 30-second sustained served rate in each UNSAFE run, from the downstream's own cumulative counter.
+C_measured is the maximum throughput sustained when the server always has work, measured here as the highest 30-second sustained served rate in each UNSAFE run, from the downstream's own cumulative counter.
 
 Three narrower windows were tried first and all biased the answer the same way, because the backlog runs out at the end of a drain, the queue empties and the server idles between requests. Those ticks are not measurements of capacity:
 

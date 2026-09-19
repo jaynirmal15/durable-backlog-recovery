@@ -3,6 +3,8 @@
 **Analysis only, archived data, no instance.** Registered as `PRE-REGISTRATION.md`
 amendment A6.
 
+> **Terminology corrected in place, 2026-09-19.** This report used "true capacity" for two different quantities: the model c/(S+δ) = C·S/(S+δ), which the paper names **C_model**, and the measured saturation plateau, **C_measured**. Each occurrence now carries the term its context requires. No number changed. The configured parameter is **C_config** and is never "true capacity". Field names in committed data are unchanged; `results/METHOD-AUDIT.md` item 33 maps them.
+
 ## The defect
 
 A4 measures the recovery rate over the span the traffic occupied. On a healthy
@@ -151,7 +153,7 @@ changes materially.
 
 **E2d's collapse factor halves, from 21.4x to 10.5x.** The old spread was computed
 from interval midpoints whose upper ends were inflated. The substance survives —
-recomputing against true capacity still collapses the cells by an order of
+recomputing against C_measured still collapses the cells by an order of
 magnitude — but the magnitude was overstated twofold.
 
 > **CORRECTED IN PLACE, 2026-09-14.**(date corrected 2026-09-14: first written as 2026-09-15 from a UTC-offset clock; no other content changed — METHOD-AUDIT item 31) This figure was first published as

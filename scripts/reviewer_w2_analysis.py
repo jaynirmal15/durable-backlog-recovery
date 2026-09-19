@@ -40,9 +40,9 @@ def hr(t):
 
 def task2_table():
     hr('TASK 2 — resolution table')
-    print('%-14s %6s %9s %6s %10s %-14s %11s %4s %11s' % (
-        'cell', 'C_cfg', 'C_true', 'step', 'step/C_true', 'interval (rl)',
-        'width/C_true', 'n', 'repl spread'))
+    print('%-14s %6s %10s %6s %15s %-14s %16s %4s %11s' % (
+        'cell', 'C_cfg', 'C_measured', 'step', 'step/C_measured', 'interval (rl)',
+        'width/C_measured', 'n', 'repl spread'))
     rows = []
     for label, path, S, cd in CELLS:
         b = json.load(open(path))
@@ -59,7 +59,7 @@ def task2_table():
                'effAtLastSafe': A6[label]['safePoints'] and
                max(A6[label]['safePoints'], key=lambda p: p['rl'])['a4Rate'] / true}
         rows.append(row)
-        print('%-14s %6d %9.1f %6.0f %10.5f  [%4d, %4d]  %11.5f %4d %11.5f' % (
+        print('%-14s %6d %10.1f %6.0f %15.5f  [%4d, %4d]  %16.5f %4d %11.5f' % (
             label, cd, true, STEP_RPS, row['stepFrac'], lo, hi,
             row['widthFrac'], row['n'], spread))
     return rows

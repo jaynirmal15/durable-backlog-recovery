@@ -105,6 +105,8 @@ read it. This separation matters later — the controller will have to infer
 capacity from symptoms, and if the code ever lets it peek, the whole result is
 invalid.
 
+> **Note, 2026-09-19 — this text is retained as written.** The "true capacity" this specification describes, and the `trueCapacity` field `/admin/capacity` and `/admin/stats` return, is the **configured parameter, C_config**, not the capacity the server delivers. The delivered capacity measured by the saturation plateau, **C_measured**, sits 7 to 173 rps below it across the seven boundary cells (`results/E2D-capacity-calibration.json`; 36 and 171 rps in the two E1 cells at C = 2000 that Fig. 4 shows), and every one of those gaps exceeds the 5 rps resolution at which the project went on to measure its boundaries. The specification is left unedited because it is a primary source: the project wrote the belief that the configured parameter was the true capacity into its own specification, and that is evidence for the paper's thesis, not a stale string. Field-name mapping: `results/METHOD-AUDIT.md` item 33.
+
 Do not set HTTP read/write timeouts on the server. The queue must be the only
 limiter, or you'll measure the timeout instead of the saturation behaviour.
 

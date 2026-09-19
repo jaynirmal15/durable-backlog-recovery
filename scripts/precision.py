@@ -1,7 +1,7 @@
 """Formatting helpers that report a value at its own cell's resolution.
 
 W2 rule, applied 2026-09-13. The bisection resolves the boundary to 5 rps, so a
-utilisation figure is only meaningful to 5/C_true:
+utilisation figure is only meaningful to 5/C_measured:
 
     cells at C >= 1400   resolution 0.0025 to 0.0039   -> three decimals
     E2b, C = 400         resolution 0.0127             -> two decimals

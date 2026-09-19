@@ -251,7 +251,7 @@ func (s *Server) worker() {
 //
 // E2e experiment 1. OFF unless OVERHEAD_PROBE=1, in which case it records where
 // a worker's per-request time goes beyond the sleep it was asked to perform.
-// That excess is what makes true capacity fall short of `concurrency / S`, so it
+// That excess is what makes C_measured fall short of `concurrency / S`, so it
 // is measured on the worker path only: HTTP handling runs on the request
 // goroutine, consumes no worker time, and cannot reduce capacity.
 var overheadProbe = false

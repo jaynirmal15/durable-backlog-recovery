@@ -2047,3 +2047,66 @@ author's drafting area, not a repository artefact.
 | item | outcome |
 |---|---|
 | 31. dates | eight strings dated 2026-09-15 corrected to **2026-09-14** across six files, as dated corrections; no numeric result touched |
+
+---
+
+## 33. What the field names `trueCapacity` and `C_true` actually mean
+
+**This is the single place the mapping is recorded.** The manuscript's capacity
+terms are rigid — C_config, C_staffed, C_model, C_measured — and the configured
+parameter is never "true capacity". The repository's field names predate that
+terminology and are **not** renamed: they are keys in committed data, about
+12,500 occurrences, and rewriting them would invalidate every manifest hash.
+Read them through this table instead.
+
+| field | where | means |
+|---|---|---|
+| `trueCapacity` | harness records: `runner/main.go`, `downstream/main.go` (`/admin/capacity`, `/admin/stats`), every raw run record and timeline | **C_config** — the configured parameter. `scripts/overhead_run` records the same value as `configuredCapacity`. |
+| `trueCapacity` | `results/E2D-capacity-calibration.json`, and every script that reads it | **C_measured** — the median per-run maximum 30 s sustained served rate at a cell's UNSAFE points. |
+| `C_true` | `results/W2-reviewer-analysis.json` | **C_measured**, the same quantity as the row above. |
+
+**The same identifier means opposite things in the two places it appears.** In
+harness records it is the value the operator set; in the calibration artefact it
+is what the server was measured to deliver, 7 to 173 rps lower across the seven
+cells. That collision is itself an artefact of the defect the paper reports: the
+harness named its configured parameter "true capacity" because the project
+believed that is what it was, and `SPEC.md` wrote the same belief into the
+specification. When the calibration measured the real value, it reused the only
+name available for "the capacity", and so the name that had described the
+belief came to describe the measurement that falsified it.
+
+### Prose corrected on 2026-09-19
+
+Every **prose** use of "true capacity" / "C_true" in analysis reports and code
+now carries the term its context requires. Two different replacements, because
+the phrase had been covering two different quantities:
+
+| site | was | now | why |
+|---|---|---|---|
+| `make_figures.py` F2 annotation; `CAPTIONS.md` F2 caption | true capacity = c/(S+ov) | **C_model** | it is the model, c/(S+δ) |
+| `make_figures.py` F5 axis | against measured true capacity | **against measured capacity** | divides by the plateau |
+| `CAPTIONS.md` F3 caption | 90% of true capacity | **90% of C_measured** | offered 1646.0 / 1768.0 = 90.01% of E1's C_measured |
+| `e2d_report.py` → `E2D-REPORT.md` | 7 phrases | C_measured ×6, C_model ×1 | |
+| `A6-REPORT.md` | 1 | C_measured | |
+| `REVIEWER-RESPONSE-W2.md` | table header, 2 prose, 1 table column | C_measured ×3, **C_model** ×1 | the addendum-1 table is model predictions |
+| `capacity_calibration.py` | docstring and stdout | C_measured ×7, C_model ×1 | |
+| `reviewer_w2_analysis.py` | printed column labels | C_measured | the `C_true` data key is left, per the table above |
+| `precision.py`, `downstream/main.go` comment, `make_deposit.py` description | 1 each | C_measured / C_measured / C_measured vs C_config | |
+
+Each hand-written report carries a dated note saying so; `E2D-REPORT.md` carries
+it through its generator. `REVIEWER-RESPONSE-W2.md`'s pasted resolution table was
+re-pasted from the script's new output, and every number in it is identical.
+
+**Left as written, deliberately:**
+- `results/E2E-PLAN.md` — registration-grade, and cited by A9.
+- `SPEC.md` — its text is kept and a dated note is added beneath it. It is a
+  primary source for the paper's thesis and is not erased.
+- `make_deposit.py`'s corrected description is **not** re-sent to Zenodo. The
+  deposit is rebuilt from the frozen commit at W6 and the metadata goes up then.
+- Item 2's row naming `E2D-REPORT.md`'s "effective vs true capacity" column
+  quotes that column as it was then; the column is now "effective vs C_measured".
+
+| item | outcome |
+|---|---|
+| 33. field names | `trueCapacity` = **C_config** in harness records and **C_measured** in the E2D calibration; `C_true` = **C_measured**. Recorded here once; identifiers unchanged |
+| 33. prose | every prose "true capacity" corrected to C_model or C_measured as context requires; dated notes; SPEC.md and E2E-PLAN.md preserved |

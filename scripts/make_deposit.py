@@ -50,7 +50,7 @@ META = {
         'E1B replicates two of them at n=12 and completes the 2x2; E2 swaps the '
         'queue caps between concurrency arms; E2b separates service time from '
         'concurrency at a reduced capacity; E2c sweeps the latency objective '
-        'offline; E2d calibrates true capacity against configured capacity; E2e '
+        'offline; E2d calibrates C_measured against C_config; E2e '
         'observes the per-request overhead directly and then eliminates it; '
         'amendment A6 establishes where the utilisation estimator is and is not '
         'valid.</p>'

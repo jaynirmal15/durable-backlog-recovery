@@ -5,7 +5,7 @@ HYPOTHESIS. The downstream sizes itself as `ceil(C x S)` servers on the
 assumption each turns a request round in exactly S. Given a fixed per-request
 overhead `ov`, a server actually takes S+ov, so
 
-    true capacity = C * S / (S + ov)
+    C_model = C * S / (S + ov)
     rho*          = true / C = 1 / (1 + ov / S)
 
 Short service times pay proportionally more for the same overhead, so the same
@@ -13,10 +13,10 @@ Short service times pay proportionally more for the same overhead, so the same
 is that the boundary is always saturation and rho* differs only because C is a
 differently-wrong estimate of truth in each cell.
 
-TEST 1 estimates true capacity from archived data. TEST 2 recomputes every
+TEST 1 estimates C_measured from archived data. TEST 2 recomputes every
 boundary against it.
 
-ESTIMATOR. True capacity is the maximum throughput the downstream sustains when
+ESTIMATOR. C_measured is the maximum throughput the downstream sustains when
 it always has work. Measured as the highest 30-second sustained served rate in
 the drain window of each UNSAFE run, from the downstream's own cumulative
 `served` counter.
@@ -134,10 +134,10 @@ def per_tick_cv(rec):
 def main():
     out = {'windowSec': WINDOW_SEC, 'claimedOverheadMs': CLAIMED_OVERHEAD_MS, 'cells': {}}
 
-    print('TEST 1 — true capacity from the sustained plateau at UNSAFE points')
+    print('TEST 1 — C_measured from the sustained plateau at UNSAFE points')
     print()
     print('%-14s %3s %6s %5s %10s %10s %9s %8s %7s' % (
-        'cell', 'S', 'C_d', 'runs', 'true cap', 'naive', 'pred@0.46', 'ov (ms)', 'CV'))
+        'cell', 'S', 'C_d', 'runs', 'C_measured', 'naive', 'pred@0.46', 'ov (ms)', 'CV'))
     for label, globs, bpath, S in CELLS:
         b = json.load(open(bpath))
         unsafe = {p['rl'] for p in b['points'] if p['class'] != 'SAFE'}
@@ -192,10 +192,10 @@ def main():
           % max(errs))
 
     print()
-    print('TEST 2 — the boundary against true capacity instead of configured C')
+    print('TEST 2 — the boundary against C_measured instead of C_config')
     print()
     print('%-14s %-20s %-22s %8s' % ('cell', 'rho* vs configured C',
-                                     'rho_eff vs true cap', 'brackets 1.0'))
+                                     'rho_eff vs C_measured', 'brackets 1.0'))
     for label, globs, bpath, S in CELLS:
         if label not in out['cells']:
             continue
@@ -232,7 +232,7 @@ def main():
     print('interval midpoints, spread across cells:')
     print('  against configured C : %.4f   (SD %.4f)' % (max(mids_c) - min(mids_c),
                                                          statistics.pstdev(mids_c)))
-    print('  against true capacity: %.4f   (SD %.4f)   median %.4f' % (
+    print('  against C_measured: %.4f   (SD %.4f)   median %.4f' % (
         max(mids_e) - min(mids_e), statistics.pstdev(mids_e), statistics.median(mids_e)))
     print('  collapse factor: %.1fx' % ((max(mids_c) - min(mids_c)) / (max(mids_e) - min(mids_e))))
     print('  cells whose interval brackets 1.0: %d of %d%s' % (

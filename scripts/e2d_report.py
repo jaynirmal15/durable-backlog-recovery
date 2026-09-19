@@ -37,6 +37,8 @@ def main():
       'depended on the inflated endpoint, and every cell in fact sits just below '
       '1.0, at 0.993 to 1.000. See `results/A6-REPORT.md`.')
     w('')
+    w('> **Terminology corrected in place, 2026-09-19.** This report (and its generator, `scripts/e2d_report.py`) used "true capacity" for two different quantities: the model c/(S+δ) = C·S/(S+δ), which the paper names **C_model**, and the measured saturation plateau, **C_measured**. Each occurrence now carries the term its context requires. No number changed. The configured parameter is **C_config** and is never "true capacity". Field names in committed data are unchanged; `results/METHOD-AUDIT.md` item 33 maps them.')
+    w('')
     w('## Answer')
     w('')
     w('Both tests support the hypothesis.')
@@ -48,7 +50,7 @@ def main():
     w('| every measured plateau vs the value predicted at 0.46 ms | within **%.2f%%** |'
       % max(abs(c['predErrPct']) for c in C.values()))
     w('| spread of the boundary against configured C | %s |' % u(COL['rhoStarSpread']))
-    w('| spread against measured true capacity | **%s** |' % u(COL['rhoEffSpread']))
+    w('| spread against C_measured | **%s** |' % u(COL['rhoEffSpread']))
     w('| collapse factor | **%.0fx** |' % (COL['rhoStarSpread'] / COL['rhoEffSpread']))
     w('| median effective utilisation at the boundary | **%s** |' % u(COL['rhoEffMedian']))
     w('')
@@ -61,16 +63,16 @@ def main():
     w('## One correction to the stated prediction')
     w('')
     w('The brief predicts "~1827 at c10 and c50\'s C=2000 arms". The hypothesis does '
-      'not predict a shared plateau there. True capacity is `C x S/(S+ov)`, which '
+      'not predict a shared plateau there. C_model is `C x S/(S+ov)`, which '
       'depends on S, so at C=2000 it is **1831 at S=5 ms** but **1964 at S=25 ms**. '
       'A shared 1827 would mean equal rho* in both arms, which is the very thing '
       'being explained. The measured values are 1829 and 1964, matching the '
       'per-arm predictions.')
     w('')
 
-    w('## Test 1 — true capacity from the plateau at UNSAFE points')
+    w('## Test 1 — C_measured from the plateau at UNSAFE points')
     w('')
-    w('| cell | S | C_d | runs | true capacity | predicted at 0.46 | error | implied overhead |')
+    w('| cell | S | C_d | runs | C_measured | predicted at 0.46 | error | implied overhead |')
     w('|---|---:|---:|---:|---:|---:|---:|---:|')
     for l, c in C.items():
         w('| %s | %d | %d | %d | **%.1f** | %.1f | %+.2f%% | **%.3f ms** |'
@@ -82,9 +84,9 @@ def main():
       'standard deviation of %.4f ms.' % (OV['median'], OV['sd']))
     w('')
 
-    w('## Test 2 — the boundary against true capacity')
+    w('## Test 2 — the boundary against C_measured')
     w('')
-    w('| cell | rho* vs configured C | effective vs true capacity | brackets 1.0 | miss, in 5 rps steps |')
+    w('| cell | rho* vs configured C | effective vs C_measured | brackets 1.0 | miss, in 5 rps steps |')
     w('|---|---|---|---|---:|')
     for l, c in C.items():
         m = miss(c)
@@ -110,7 +112,7 @@ def main():
 
     w('## Method note — the window decided this, not the statistic')
     w('')
-    w('True capacity is the maximum throughput sustained when the server always has '
+    w('C_measured is the maximum throughput sustained when the server always has '
       'work, measured here as the highest 30-second sustained served rate in each '
       'UNSAFE run, from the downstream\'s own cumulative counter.')
     w('')

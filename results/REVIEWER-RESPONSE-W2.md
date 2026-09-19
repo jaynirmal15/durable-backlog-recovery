@@ -4,6 +4,8 @@
 below names the artefact or commit it comes from. Where committed data cannot
 answer a question, that is stated rather than inferred.
 
+> **Terminology corrected in place, 2026-09-19.** This report used "true capacity" for two different quantities: the model c/(S+δ) = C·S/(S+δ), which the paper names **C_model**, and the measured saturation plateau, **C_measured**. Each occurrence now carries the term its context requires. No number changed. The configured parameter is **C_config** and is never "true capacity". Field names in committed data are unchanged; `results/METHOD-AUDIT.md` item 33 maps them.
+
 Regenerate with `python3 scripts/reviewer_w2_analysis.py`; full output in
 `results/W2-reviewer-analysis.json`.
 
@@ -149,20 +151,20 @@ Not run, per the brief.
 ```
 TASK 2 — resolution table
 ==============================================================================
-cell            C_cfg    C_true   step step/C_true interval (rl)  width/C_true    n repl spread
-E1 c10/C0        2000    1828.6      5    0.00273  [ 825,  830]      0.00273   15     0.00010
-E1 c10/C1        1400    1280.9      5    0.00390  [ 275,  280]      0.00390    3     0.00000
-E1 c50/C0        2000    1964.3      5    0.00255  [ 975,  980]      0.00255   15     0.00060
-E1 c50/C1        1400    1375.7      5    0.00363  [ 370,  375]      0.00363    3     0.00000
-E2 c10@Q2500     2000    1827.1      5    0.00274  [ 825,  830]      0.00274   12     0.00010
-E2 c50@Q500      2000    1964.8      5    0.00254  [ 975,  980]      0.00254   12     0.00060
-E2b C=400         400     392.7      5    0.01273  [ 190,  195]      0.01273   12     0.00000
+cell            C_cfg C_measured   step step/C_measured interval (rl)  width/C_measured    n repl spread
+E1 c10/C0        2000     1828.6      5         0.00273  [ 825,  830]           0.00273   15     0.00010
+E1 c10/C1        1400     1280.9      5         0.00390  [ 275,  280]           0.00390    3     0.00000
+E1 c50/C0        2000     1964.3      5         0.00255  [ 975,  980]           0.00255   15     0.00060
+E1 c50/C1        1400     1375.7      5         0.00363  [ 370,  375]           0.00363    3     0.00000
+E2 c10@Q2500     2000     1827.1      5         0.00274  [ 825,  830]           0.00274   12     0.00010
+E2 c50@Q500      2000     1964.8      5         0.00254  [ 975,  980]           0.00254   12     0.00060
+E2b C=400         400      392.7      5         0.01273  [ 190,  195]           0.01273   12     0.00000
 
 ==============================================================================
 ```
 
-`step as fraction of C_true` is one 5 rps bisection step divided by that cell's
-measured true capacity, from `results/E2D-capacity-calibration.json`. Replicate
+`step as fraction of C_measured` is one 5 rps bisection step divided by that cell's
+C_measured, from `results/E2D-capacity-calibration.json`. Replicate
 spread is the range of A4 achieved utilisation across replicates at the last SAFE
 point.
 
@@ -366,7 +368,7 @@ The derivation in the brief is **the one that was registered**, and it reproduce
 both values exactly. Source: `results/E2E-PLAN.md`, addendum 1, commit `67c448b`,
 2026-09-13 17:31:47 UTC. The committed table reads:
 
-| arm | sleep | + overhead | cycle | true capacity | rho* | boundary rl |
+| arm | sleep | + overhead | cycle | C_model | rho* | boundary rl |
 |---|---:|---:|---:|---:|---:|---:|
 | c10 | 4.537 | 0.4947 | 5.0317 ms | 1987.4 | 0.9937 | 987.4 |
 | c50 | 24.537 | 0.4914 | 25.0284 ms | 1997.7 | 0.9989 | 997.7 |

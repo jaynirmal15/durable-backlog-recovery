@@ -75,10 +75,12 @@ amount in each cell.
 **Fig. 6. Both candidate signals are flat until they are useless.** Drain queue
 peak and live tail latency across the corrected c10 cell as utilisation
 approaches its boundary. Neither moves appreciably while the system is safe, and
-both saturate together at the transition: the queue reaches its cap and tail
-latency crosses the objective within a single 5 rps step. A controller reading
-either signal has no advance warning, which is what motivates measuring headroom
-against capacity rather than inferring it from load.
+both saturate together at the transition. Across the 55 rps interval between
+the last safe and the first unsafe probe, 1185 to 1240 rps, the queue peak goes
+from 111 requests to its cap of 500 and live p99 from 58 ms to 508 ms, each the
+largest of that point's three repetitions. A controller reading either signal
+has no advance warning, which is what motivates measuring headroom against
+capacity rather than inferring it from load.
 
 ---
 

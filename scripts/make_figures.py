@@ -380,7 +380,11 @@ def f6():
     ax.tick_params(axis='y', colors=LO)
     bx.tick_params(axis='y', colors=HI)
     ax.set_xlim(min(rho) - 0.001, max(rho) + 0.001)
-    ax.set_title('both signals are flat until the last safe point, then cliff',
+    # Until 2026-09-19 this read 'both signals are flat until the last safe
+    # point, then cliff', which the plotted values contradict: both rise across
+    # the safe range (queue peak 7, 18, 111; p99 8, 14, 58 ms) and A7 finds
+    # both crossing 3 sigma one probe point before the last safe one.
+    ax.set_title('both signals rise across the safe range, then jump at the transition',
                  fontsize=7.5, color=MUTE)
     save(fig, 'F6-signal-selection')
 

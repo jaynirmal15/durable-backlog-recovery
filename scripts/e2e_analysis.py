@@ -183,12 +183,47 @@ def main():
     if len(mids) == 2:
         gap = abs(mids['c50'] - mids['c10'])
         out['residualGap'] = round(gap, 4)
-        out['fractionRemoved'] = round(100 * (1 - gap / UNCORRECTED_GAP), 1)
+        # SUPERSEDED, kept at its original position under a new name rather than
+        # deleted: it is in a committed artefact. It divides a two-cell gap on
+        # the drain-window estimator by UNCORRECTED_GAP, a seven-cell range on
+        # A4, so its before and after are not the same quantity.
+        out['supersededFractionRemoved'] = round(100 * (1 - gap / UNCORRECTED_GAP), 1)
+        out['supersededFractionRemovedNote'] = (
+            'Superseded by the matched 94-95% accounting in '
+            'results/W8-effect-size-accounting.json. This value divides a '
+            'two-cell gap on the drain-window estimator by 0.0706, which is '
+            'the range of A4 interval midpoints across all seven cells, so its '
+            'before and after were computed on unmatched estimators, '
+            'aggregators, observation intervals and statistics. Retained, not '
+            'deleted, because it appeared in a committed artefact.')
+        out['residualGapNote'] = (
+            'The difference between the c50 and c10 bracket midpoints of the '
+            'corrected cells, on the drain-window estimator. Correctly computed '
+            'as that. It is NOT the matched corrected residual: that uses the '
+            'last SAFE point on both sides and is 0.0032 (drain-window) or '
+            '0.0043 (A4), in results/W8-effect-size-accounting.json.')
+        # A pointer, not a copy: W8 is computed by effect_size_accounting.py,
+        # which reads this file, so recomputing its figures here would create a
+        # second source of truth and a regeneration cycle.
+        out['matchedAccounting'] = {
+            'file': 'results/W8-effect-size-accounting.json',
+            'writtenBy': 'scripts/effect_size_accounting.py',
+            'drainWindow': ['matched.gapRhoUncorrected', 'matched.gapRhoCorrected',
+                            'matched.gapRpsUncorrected', 'matched.gapRpsCorrected',
+                            'matched.fractionRemovedRho', 'matched.fractionRemovedRps'],
+            'deliverySpanA4': ['matchedA4.gapRhoUncorrected',
+                               'matchedA4.gapRhoCorrected',
+                               'matchedA4.fractionRemovedRho', 'matchedA4.caveat'],
+            'note': 'The matched before/after accounting of the inter-arm gap. '
+                    'Named here, not copied, so there is one source of truth '
+                    'and no regeneration cycle.',
+        }
         print('  uncorrected        %.4f  (c10 %.4f, c50 %.4f)'
               % (UNCORRECTED_GAP, UNCORRECTED['c10'], UNCORRECTED['c50']))
         print('  predicted residual 0.0052  (registered)')
-        print('  measured residual  %.4f  -> %.1f%% of the gap removed'
-              % (gap, out['fractionRemoved']))
+        print('  measured residual  %.4f  -> %.1f%% of the gap removed '
+              '(SUPERSEDED: unmatched; see results/W8-effect-size-accounting.json)'
+              % (gap, out['supersededFractionRemoved']))
     else:
         print('  pending: %s' % ', '.join(a for a in REG if a not in mids))
 

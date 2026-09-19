@@ -272,5 +272,26 @@
     }
   },
   "residualGap": 0.0026,
-  "fractionRemoved": 96.3
+  "supersededFractionRemoved": 96.3,
+  "supersededFractionRemovedNote": "Superseded by the matched 94-95% accounting in results/W8-effect-size-accounting.json. This value divides a two-cell gap on the drain-window estimator by 0.0706, which is the range of A4 interval midpoints across all seven cells, so its before and after were computed on unmatched estimators, aggregators, observation intervals and statistics. Retained, not deleted, because it appeared in a committed artefact.",
+  "residualGapNote": "The difference between the c50 and c10 bracket midpoints of the corrected cells, on the drain-window estimator. Correctly computed as that. It is NOT the matched corrected residual: that uses the last SAFE point on both sides and is 0.0032 (drain-window) or 0.0043 (A4), in results/W8-effect-size-accounting.json.",
+  "matchedAccounting": {
+    "file": "results/W8-effect-size-accounting.json",
+    "writtenBy": "scripts/effect_size_accounting.py",
+    "drainWindow": [
+      "matched.gapRhoUncorrected",
+      "matched.gapRhoCorrected",
+      "matched.gapRpsUncorrected",
+      "matched.gapRpsCorrected",
+      "matched.fractionRemovedRho",
+      "matched.fractionRemovedRps"
+    ],
+    "deliverySpanA4": [
+      "matchedA4.gapRhoUncorrected",
+      "matchedA4.gapRhoCorrected",
+      "matchedA4.fractionRemovedRho",
+      "matchedA4.caveat"
+    ],
+    "note": "The matched before/after accounting of the inter-arm gap. Named here, not copied, so there is one source of truth and no regeneration cycle."
+  }
 }

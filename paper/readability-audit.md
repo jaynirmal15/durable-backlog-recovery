@@ -1,5 +1,26 @@
 # Readability pass — candidate list, measured not impressionistic
 
+*Draft 2. 2026-09-20. **OUTCOME RECORDED — the pass is complete.** Two edits
+made, **two net words removed** (18,308 → 18,306). The ruling approved exactly
+the two candidates below and the W3 rule that governs them: *a repetition is
+removable only when its second occurrence performs no local interpretive
+function*. Applying that rule disqualified eight of the ten repeated caveats.
+**This audit's own estimate of "low hundreds of words" was wrong** — it counted
+repeated caveats before testing them against the rule. Recorded so nobody
+reopens the pass hunting for a saving that does not exist.*
+
+*INDEPENDENTLY REPRODUCED, 2026-09-20, with a second tokeniser. The headline
+finding holds: the three largest pairs are the claim-register statements. **The
+absolute figures do not transfer between tokenisers and should not be quoted as
+if they did** — the same three pairs came out 106/61/55 against this document's
+123/70/56, and one adjacent pair swapped rank (§4↔§6 vs §5↔§9), which moves no
+conclusion because both were already classified. The 0.92 similarity is exact
+under this document's normalisation (strip markdown, lowercase, sentence-split)
+and 0.91 under the other; neither is wrong. §4's 4,755 prose words and both
+quoted sentences matched exactly.
+**The lesson for anyone re-running this: the ranking is robust, the numbers are
+an artefact of tokenisation.** Re-measure rather than cite these figures.*
+
 *Draft 1. 2026-09-20. **No edits made.** This is evidence for the reviewer to
 rule on, because every section it touches is science-frozen and the pass's
 mandate forbids deleting an owed forward-reference item to hit a number.*

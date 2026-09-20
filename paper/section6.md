@@ -1,5 +1,13 @@
 # §6 — The corrected boundary
 
+*Draft 8 — W3 readability, 2026-09-20. One edit, and it is a compression rather
+than a deletion. The `[ρ_safe, 1]` sentence is 0.92-similar to §IV's, but its
+second occurrence does local interpretive work: it sits exactly where a reader
+who has just met 1.0002 would otherwise construct the interval §IV forbids. It
+is now a subordinate clause of the sentence that reports 1.0002, which keeps the
+guard at the point of temptation while removing the standalone restatement.
+Approved under the W3 rule: a repetition is removable only when its second
+occurrence performs no local interpretive function. Science unchanged.*
 *Draft 7 — one-clause resync, 2026-09-20. Draft 6 promised that §IX gives "why a
 finer search alone would not" resolve the residual. That reasoning was withdrawn
 at §9 draft 3 as unsupported — a narrower search step shrinks the search
@@ -64,8 +72,8 @@ reported as a rate bracket rather than as a utilisation interval.
 denominator are measurements, so a ratio may read slightly above 1.0 without
 implying service beyond a physical bound, and two cells do: they reach 1.0002,
 about a fifth of a bisection step above unity and below what the experiment can
-resolve. No `[ρ_safe, 1]` interval is constructed and no cell is called
-degenerate or pinned at saturation.
+resolve — which is why no `[ρ_safe, 1]` interval is constructed and no cell is
+called degenerate or pinned at saturation.
 
 ### B. The boundary across seven cells
 

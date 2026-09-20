@@ -1,6 +1,39 @@
-# Paper 2 — section-by-section outline, v10.0
+# Paper 2 — section-by-section outline, v10.1
 
-*2026-09-20. **v10.0 closes the checker work. Three rounds of review found
+*2026-09-20. **v10.1 closes W3. The readability pass is DONE and it removed two
+net words.**
+
+**THE W3 RULE, ruled and now formal — it governs any future pass:**
+> **A repetition is removable only when its second occurrence performs no local
+> interpretive function.**
+Lexical overlap is not itself a defect. Six of the ten repeated caveats sit on
+the §4↔§6 axis, which is method-then-application by design, and treating overlap
+as the target would be the wrong optimisation.
+
+**Two edits, both approved against that rule:**
+- §6 draft 8 — the `[ρ_safe, 1]` sentence **compressed, not deleted**, into a
+  clause of the sentence reporting 1.0002. It is 0.92-similar to §IV's, but it
+  sits exactly where a reader who has just met a value above unity would invent
+  the interval §IV forbids. The guard stays at the point of temptation.
+- §9 draft 5 — §IX-C no longer re-lists the four provenance fields §IV-G
+  teaches; it cites §IV-G. The contrast survives the cross-reference, and the
+  four fields the standalone tool *does* record stay, because they are the
+  evidence for the absence.
+
+**Everything else was measured and kept.** The three largest cross-section
+overlaps are the claim register's required-verbatim statements. The setup
+enumeration in §1, §3, §6 and §10 each does local work — §III's states the span
+across which one pooled constant holds, which is the point of that sentence.
+§VI-B's cell enumeration is not duplicated by Table 2, which carries neither
+service time nor concurrency.
+
+**And a miss of my own worth recording: the audit estimated "low hundreds of
+words". The actual saving is two.** The estimate was made from the count of
+repeated caveats without first testing each against the rule that was about to
+govern them; applying the rule disqualified eight of ten. **Do not re-open this
+pass looking for the missing hundreds. They are not there, because the sections
+were written under a rule that already forbade padding.**
+**v10.0 closed the checker work. Three rounds of review found
 eleven defects in it; seven were in versions I wrote, and three of those seven
 were the check committing the defect it exists to catch.**
 The one worth remembering: the outline's citation-inventory scope was resolved
@@ -1039,7 +1072,7 @@ caught in review and must not reappear.
 
 ## §6 The corrected boundary — 1,550 words, F5 + T2
 
-<!-- plan-synced-to: section6 draft 7 -->
+<!-- plan-synced-to: section6 draft 8 -->
 
 **Name the quantity the first time a per-cell ρ_eff appears**, before the
 figure: it is the achieved utilisation of the last SAFE point against measured
@@ -1058,7 +1091,11 @@ numerator would give 0.9999, and **the paper does not use it**; v6.0 of this
 outline wrongly said it did. §IV also records that the choice is immaterial after
 resolution-matched rounding, the largest within-point spread being 0.0010. So no
 `[ρ_safe, 1]` interval is constructed and no cell is called degenerate or pinned
-at saturation. §I is frozen and calls it "the safe drain
+at saturation — **and since §6 draft 8 that guard is a CLAUSE of the sentence
+reporting 1.0002, not a standalone sentence.** It belongs there because that is
+where a reader meeting a value above unity would invent the interval. **Do not
+restore it as its own sentence**: the W3 pass compressed it deliberately, and
+§IV states the rule in full. §I is frozen and calls it "the safe drain
 boundary"; §VI is where that phrase is cashed out, and §I stays frozen only if
 §VI does this cleanly.
 
@@ -1376,7 +1413,7 @@ anywhere.) That is the implication paragraph, and it leads into §9.
 
 ## §9 Threats to validity — 1,650 words
 
-<!-- plan-synced-to: section9 draft 4 -->
+<!-- plan-synced-to: section9 draft 5 -->
 
 **SIX VALIDITY CATEGORIES PLUS A CLOSING FUTURE-WORK SUBSECTION — seven
 labelled, A to G. Ruled at the §9 review and settled.** (v8.5 and v8.6 both said

@@ -1,5 +1,12 @@
 # §9 — Threats to validity
 
+*Draft 5 — W3 readability, 2026-09-20. §IX-C re-listed the four provenance
+fields §IV-G already teaches. The contrast is what this subsection needs — the
+standalone tool has none of them — and the contrast survives a cross-reference;
+the schema does not need teaching twice. The four fields the standalone tool DOES
+record stay, because they are the evidence for the absence. Approved under the
+W3 rule: the second occurrence performed no local interpretive function. Science
+unchanged.*
 *Draft 4 — SCIENCE FROZEN. 2026-09-20. Table 4. Written against outline v8.7.
 Draft 4 is three sentence-level precision edits and nothing else.
 (i) "which is impossible" is struck from the A4 count. §VI states that
@@ -146,11 +153,11 @@ accounting in §V supersedes it.
 
 ### C. Provenance, and corrections to the record
 
-The runner stamps a commit, a branch, a dirty flag and a start time on every
-boundary run. The standalone tool that measures saturation plateaus stamps none
-of them — only a label, an offered rate, a connection count and the measurement
-— and both corrected plateau measurements and all twenty replication windows
-registered under A8 come from it. So the committed record cannot establish that
+§IV-G sets out the provenance the runner stamps on every boundary run. The
+standalone tool that measures saturation plateaus stamps none of it — only a
+label, an offered rate, a connection count and the measurement — and both
+corrected plateau measurements and all twenty replication windows registered
+under A8 come from it. So the committed record cannot establish that
 the prediction was registered before the measurements that tested it. What it
 bounds is a window, 16:31:55 to 18:50:07 UTC, containing the 17:31:47
 registration; the rest of the support is the registration's forward-looking

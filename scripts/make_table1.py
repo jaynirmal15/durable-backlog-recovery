@@ -42,7 +42,9 @@ ROWS = [
                  'used everywhere without the question being asked again.',
         'killed': 'A cross-check against an independently measured quantity: each '
                   'cell\'s saturation plateau. 18 of 20 UNSAFE points report a rate '
-                  'above what their own cell can serve, which is impossible. Not '
+                  'above their own cell\'s independently measured saturation '
+                  'plateau — a pattern incompatible with treating the estimator as '
+                  'physically interpretable at collapsed points. Not '
                   'found by the estimator\'s own validation.',
         'when': 'E2e then A6, 2026-09-13',
         'cost': 'E2d\'s collapse factor halves, 21.4x to 10.5x — A6 first reported '

@@ -32,6 +32,10 @@ QUOTES = {
     'a6_conc':  ('c3aee75', 'PRE-REGISTRATION.md',  '| concurrency gap | 0.0689 | 0.0688–0.0698 | **survives** |'),
     'a6_cap':   ('c3aee75', 'PRE-REGISTRATION.md',  '| E2 cap swap | identical intervals, f = 0.001 | identical rate intervals, f = 0.000 | **survives, and is stronger** — rate is estimator-independent |'),
     'a6_h':     ('c3aee75', 'PRE-REGISTRATION.md',  '| E2b, S governs | h = 0.980 | h = 0.895–0.945 | **survives** |'),
+    # The pre-E2 status of the cap hypothesis, in the tree as it stood when E2
+    # was registered. Held open, never asserted as a result.
+    'cap_open': ('c823393', 'STATUS.md',
+                 'That is a competing\nexplanation for the concurrency effect and is not yet ruled out.'),
 }
 
 
@@ -77,7 +81,7 @@ def main():
           '`figures/T1-false-findings.md`.')
     print()
     print('| Apparent finding | Registered falsification / challenge | '
-          'Pre-calibration outcome | What the calibration correction showed |')
+          'Pre-calibration outcome | Post-calibration evidence and status |')
     print('|---|---|---|---|')
 
     print('| **The boundary depended on concurrency.** The two E1 arms separated '
@@ -88,10 +92,12 @@ def main():
           '`f ≤ 0.25` (E2 plan, `c823393`). '
           '| Confirmed. `f = +0.000` and `-0.006`: neither cell moved toward the '
           'other arm, so the gap did not follow the cap (E2 report). '
-          '| Dissolved. Under one recipe applied to both corpora the same '
-          'inter-arm gap falls from **%.4f to %.4f** (%.0f%% removed) on the '
-          'drain-window estimator, and from %.4f to %.4f (%.0f%% removed) on the '
-          'delivery-span one — %.1f rps to %.1f rps in throughput terms. |'
+          '| **Dissolved.** Measured after the correction, on the same two arms. '
+          'Under one recipe applied to both corpora the inter-arm gap falls from '
+          '**%.4f to %.4f** (%.0f%% removed) on the drain-window estimator and '
+          'from %.4f to %.4f (%.0f%% removed) on the delivery-span one — %.1f rps '
+          'to %.1f rps in throughput terms. **94–95%% of the separation is '
+          'removed.** |'
           % (m['gapRhoUncorrected'], m['gapRhoCorrected'], m['fractionRemovedRho'],
              a4['gapRhoUncorrected'], a4['gapRhoCorrected'], a4['fractionRemovedRho'],
              m['gapRpsUncorrected'], m['gapRpsCorrected']))
@@ -105,10 +111,12 @@ def main():
           '`f = +0.000` and `-0.006`; `CAP-DRIVEN` was unreachable once the first '
           'cell returned +0.000, and neither cell moved materially in either '
           'direction (E2 report). '
-          '| **No corrected-harness artefact addresses this row.** The corrected '
-          'corpus ran only the original diagonal — c10 at cap 500, c50 at cap '
-          '2500 — so the swapped-cap cells were never re-measured after the '
-          'correction, and no post-calibration value of `f` exists. |')
+          '| **Refuted pre-calibration by its own registered criterion. No '
+          'post-calibration evidence, and none possible.** The correction has '
+          'nothing to dissolve here: the campaign had already eliminated the cap '
+          'as an explanation before the bias was known. The corrected corpus also '
+          'ran only the original diagonal — c10 at cap 500, c50 at cap 2500 — so '
+          'no post-calibration value of `f` exists either. |')
 
     print('| **Service time governed the boundary.** With concurrency and service '
           'time separated at `C = 400`, ρ* landed c50-like rather than c10-like. '
@@ -117,10 +125,12 @@ def main():
           'governs (E2b plan, `a741d68`, with a dead band registered in advance). '
           '| Confirmed. `h = (0.98 − 0.9137) / 0.0689 = +0.980` (E2b report), at '
           'the S-governs end of the scale. '
-          '| **No corrected-harness artefact recomputes `h`.** No corrected cell '
-          'was run at `C = 400`: the corrected corpus is two cells at `C = 2000`. '
-          'The arm gap that `h` is scored against does collapse (row 1), but that '
-          'is a different statistic measured in different cells. |')
+          '| **Affirmed pre-calibration; interpretation superseded; the '
+          'registered statistic not recomputed.** `h` scores ρ* against the two E1 '
+          'midpoints, and row 1 shows that the separation between those midpoints '
+          'is itself largely an artefact, so what `h` measured a position on no '
+          'longer carries the meaning it was given. **The exact registered `h` was '
+          'never recomputed: no `C = 400` cell exists on the corrected harness.** |')
 
     print()
     print('## Sources, cell by cell')
@@ -159,24 +169,39 @@ def main():
           'by the measured per-request overhead and re-ran the two boundaries.')
 
     print()
+    print('## Was the admission limit ever a finding?')
+    print()
+    print('**No.** Searching the plans, reports, notes and commit messages in the '
+          'tree as it stood when E2 was registered (`c823393`, 2026-09-12 '
+          '10:46 -0400, three hours before the first E2 run at 15:01:44Z) finds no '
+          'written result asserting that the admission limit governs the boundary. '
+          'The only assertions are the arithmetic identity that a full graceful '
+          'queue equals the SLO at `S = 5 ms`, and the statement that this is a '
+          'candidate explanation. `STATUS.md` at that commit:')
+    print()
+    print('> %s' % ' '.join(QUOTES['cap_open'][2].split()))
+    print()
+    print('So row 2 is not a retracted finding. It is a registered falsification '
+          'that succeeded, and it is the contrast case: the one hypothesis of the '
+          'three that the campaign eliminated by itself, before the bias was '
+          'known.')
+    print()
     print('## Gaps, named rather than filled')
     print()
-    print('**Rows 2 and 3 have no post-calibration artefact.** The corrected '
+    print('**Neither `f` nor `h` has a post-calibration value.** The corrected '
           'corpus is two cells: c10 at `S = 5 ms`, concurrency 10, queue cap 500, '
           'and c50 at `S = 25 ms`, concurrency 50, queue cap 2500, both at '
           '`C = 2000`. Across its 33 boundary runs there is no cell with swapped '
-          'caps and none at `C = 400`. So neither `f` nor `h` has a '
-          'post-calibration value, and the last column of those two rows states '
-          'that rather than reasoning to one.')
+          'caps and none at `C = 400`. Row 1 is the only row whose registered '
+          'quantity was re-measured after the correction; rows 2 and 3 say so '
+          'rather than reasoning to a value.')
     print()
-    print('**Row 2\'s apparent finding was never affirmed by the campaign.** The '
-          'cap hypothesis was refuted by its own registered test, before '
-          'calibration. The finding that survived E2 is its negation: the '
-          'admission limit does not govern the boundary. Row 1 and row 3 are '
-          'findings the campaign affirmed and the calibration correction '
-          'dissolved; row 2 is a hypothesis the campaign eliminated on its own. '
-          'They do not have the same standing, and §8 should not present them as '
-          'though they do.')
+    print('**The three rows do not have the same standing, and the statuses '
+          'differ accordingly.** Row 1 was affirmed and then dissolved by '
+          'measurement. Row 3 was affirmed, and its interpretation is superseded '
+          'by row 1 without its own statistic being recomputed. Row 2 was refuted '
+          'by its own registered criterion before the bias was known, and was '
+          'never asserted as a finding in the first place.')
     return 0
 
 

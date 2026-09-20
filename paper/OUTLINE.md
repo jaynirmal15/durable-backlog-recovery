@@ -1,6 +1,8 @@
-# Paper 2 — section-by-section outline, v10.1
+# Paper 2 — section-by-section outline, v10.2
 
-*2026-09-20. **v10.1 closes W3. The readability pass is DONE and it removed two
+*2026-09-20. **v10.2 records the two F4 figure decisions (y-axis (1700, 2105) not compressed; measured bars not re-centred) as FINAL — see the F4 row — and marks the W5 artefact renames DONE at `f44d2f1`.**
+
+**v10.1 closes W3. The readability pass is DONE and it removed two
 net words.**
 
 **THE W3 RULE, ruled and now formal — it governs any future pass:**
@@ -1132,7 +1134,7 @@ the quoted residual are the *least* distinguishable of all; the highest
 max-based cells, at 1.0002, are not distinguishable from unity at their own
 resolution. **Do not write 0.9999** — that is the superseded median route.
 
-**Table 2 — resolution table** (the artefact is still named `figures/T3-resolution.md`; it is renamed in W5), per cell: C_config, C_measured, bisection step in
+**Table 2 — resolution table** (artefact `figures/T2-resolution.md`, generator `scripts/make_table2.py`; renamed from `T3-resolution.md` at `f44d2f1`), per cell: C_config, C_measured, bisection step in
 rps, step as a fraction of C_measured, reported interval, interval width, n,
 replicate spread, **the cell's ρ_eff at that cell's own precision**, and
 **`C_measured`'s own range** (6–15 saturation measurements per cell, median).
@@ -1646,12 +1648,12 @@ likely to value.
 | F1 architecture | 3 | Vector PDF, redrawn after collision fix |
 | F2 capacity model / where δ enters | 3 | Vector PDF |
 | F3 constant-vs-proportional excess | 5.1 | Vector PDF, stacked total corrected 0.0004 ms |
-| F4 predicted vs measured plateau | 5.2 | Vector PDF. **BUILT at `b59f83a` against A8.** Corrected measured plateaus are the median of ten 60-s windows per arm, whiskers drawn hinge-to-hinge so their width is the observed IQR and their position shows where the middle half sat; predictions are drawn as a point on a short rule, never as a bar. The v4.6 instruction to caption them as n = 1 with no error bars is obsolete and must not be reinstated. Caption states n = 10, the median convention, the IQRs numerically (1.71 / 1.29 rps) and that they are window-to-window scatter, not an inferential interval. **Caption must also carry the long-arm non-discrimination** — the annotation reads `+0.0 rps` and the figure alone would assert an exactness §V-D denies. **Y-axis stays at (1700, 2105): not compressed.** The whiskers are 0.42% and 0.32% of the span and read as hairlines; that is the honest scale, and the magnitudes are given in the caption instead. **Measured bars stay at their existing x-offset**, not re-centred after the predicted bars were removed — re-centring would move every placement matrix and destroy the structural PDF diff that has caught two figure defects in this campaign. Both are revisitable in the W5 figure pass and are recorded here so neither is re-decided by accident. And must state that bars 1–2 are the seven-cell corpus and bars 3–4 the corrected-harness corpus, on different ρ estimators** — legitimate, since predicted vs measured plateau is direct throughput with no ρ estimator involved, but a reviewer who spots the mixture unaided will assume the worse reading |
+| F4 predicted vs measured plateau | 5.2 | Vector PDF. **BUILT at `b59f83a` against A8.** Corrected measured plateaus are the median of ten 60-s windows per arm, whiskers drawn hinge-to-hinge so their width is the observed IQR and their position shows where the middle half sat; predictions are drawn as a point on a short rule, never as a bar. The v4.6 instruction to caption them as n = 1 with no error bars is obsolete and must not be reinstated. Caption states n = 10, the median convention, the IQRs numerically (1.71 / 1.29 rps) and that they are window-to-window scatter, not an inferential interval. **Caption must also carry the long-arm non-discrimination** — the annotation reads `+0.0 rps` and the figure alone would assert an exactness §V-D denies. **Y-axis stays at (1700, 2105): not compressed.** The whiskers are 0.42% and 0.32% of the span and read as hairlines; that is the honest scale, and the magnitudes are given in the caption instead. **Measured bars stay at their existing x-offset**, not re-centred after the predicted bars were removed — re-centring would move every placement matrix and destroy the structural PDF diff, which is how the one figure defect of this campaign was caught — METHOD-AUDIT item 20: the figures were never byte-reproducible, a wall-clock `/CreationDate` making every run differ. (The other candidate, the `tight_layout` reflow surfaced at `e04cbc9` when a shortened title moved 36 placement matrices, was explained as benign and is not recorded as a defect; the record supports one, not two or three.) **Both decisions are FINAL (ruled 2026-09-20, v10.2) and are no longer W5 choices: neither is to be reconsidered in cosmetic cleanup.** The y-axis is the honest scale and the caption carries the IQRs; the offsets are kept because the structural PDF diff depends on them, and are overridden only if an actual visual ambiguity is identified, not for tidiness. And must state that bars 1–2 are the seven-cell corpus and bars 3–4 the corrected-harness corpus, on different ρ estimators** — legitimate, since predicted vs measured plateau is direct throughput with no ρ estimator involved, but a reviewer who spots the mixture unaided will assume the worse reading |
 | F5 the collapse | 6 | Vector PDF, post-A6 values, **caption rewritten to detectability wording** |
 | F6 queue depth vs p99 | 7 | Vector PDF, redrawn after collision fix |
 | T1 pre-registration amendments | 4 | **Ten rows at `9caf476`/`51026cc`. NO GENERATED ARTEFACT — T1 lives only in `paper/section4.md`.** |
 | Table 4, claims overturned by independent checks | **9** (moved from §8 in v7.0) | **Generated, but the file is called `figures/T1-false-findings.md` by `scripts/make_table1.py`.** |
-| Table 3, candidate explanations and what calibration changed | **8** | **BUILT at `c0a4eb2`** as `figures/calibration-artefact-findings.md`, generator `scripts/make_calibration_findings.py`, which asserts every quotation against its source artefact and aborts on a missing fragment. **Regenerate under the v8.2 schema:** column 1 is *Candidate explanation*, and the caption is the asymmetric one above. The file name still says "findings"; it is the manuscript's **Table 3** and its rows are candidate explanations. Rename with the others in W5. |
+| Table 3, candidate explanations and what calibration changed | **8** | **BUILT at `c0a4eb2`** as `figures/calibration-artefact-findings.md`, generator `scripts/make_calibration_findings.py`, which asserts every quotation against its source artefact and aborts on a missing fragment. **Regenerate under the v8.2 schema:** column 1 is *Candidate explanation*, and the caption is the asymmetric one above. It is the manuscript's **Table 3** and its rows are candidate explanations. **RENAMED at `f44d2f1`** to `figures/T3-candidate-explanations.md`, generator `scripts/make_table3.py`; the names above are correct at `c0a4eb2` and stay. |
 
 > **MANUSCRIPT TABLE NUMBERS — FIXED IN v7.1, IN CITATION ORDER:**
 > **T1** amendments (§4) · **T2** per-cell resolution (§6) · **T3** candidate
@@ -1660,11 +1662,11 @@ likely to value.
 > numbers. **The "Set A" / "Set B" labels are retired** and must not be used in
 > active mapping — they carry the symmetric story v8.0 removed.
 >
-> **FILENAMES STILL LAG, and that is deliberate** — a filename does not determine
-> citation order. `figures/T3-resolution.md` is the manuscript's **Table 2**, and
-> `figures/T1-false-findings.md` is the manuscript's **Table 4**. Both renames go
-> in the W5 pass with the collision already recorded in METHOD-AUDIT item 33.
-> Until then, cite by manuscript number and map to the filename here.
+> **FILENAMES NOW MATCH (W5, `f44d2f1`).** `figures/T2-resolution.md` is the
+> manuscript's **Table 2**, `figures/T3-candidate-explanations.md` **Table 3**, and
+> `figures/T4-false-findings.md` **Table 4**, each generated by `make_tableN.py`.
+> Commit-pinned references to the old names stay as written; METHOD-AUDIT item 33
+> is resolved.
 
 > **ARTEFACT NAME COLLISION — read before touching either table.** The
 > repository's `T1-false-findings.md` is the **manuscript's Table 4** (v7.1
@@ -1677,7 +1679,7 @@ likely to value.
 > W5 figure pass — not before, because §6 is drafting against it — and mirror
 > this note into METHOD-AUDIT item 33, the mapping that already records the
 > `trueCapacity` collision.
-| Table 2, per-cell resolution | 6 | Built as `figures/T3-resolution.md`. The filename says T3; it is the manuscript's **Table 2**. Rename in W5. |
+| Table 2, per-cell resolution | 6 | Built as `figures/T3-resolution.md`; **renamed at `f44d2f1`** to `figures/T2-resolution.md` (generator `make_table2.py`), matching the manuscript's **Table 2**. |
 
 ---
 
@@ -1688,7 +1690,7 @@ likely to value.
 | W2 Sept 22–28 | §3, §4, §8 drafted. T1, T2, T3 built. Leave-one-out folded into §5. Precision steps 2–4 applied. **Zenodo: DOI reserved on an empty draft, nothing uploaded.** |
 | W3 Sept 29–Oct 5 | §5, §6, §7 drafted. |
 | W4 Oct 6–12 | §1, §2, §9, §10. Abstract, index terms, biography. Full draft. |
-| W5 Oct 13–19 | Revision. External review against this outline. Artifact package final. **Artefact renames, to the v7.1 manuscript numbering — the v8.1 instruction pointed the false-findings table at Table 2, which v7.1 had already made Table 4. Correct set: `figures/T1-false-findings.md` -> `T4-false-findings.md` and `scripts/make_table1.py` -> `make_table4.py`; `figures/T3-resolution.md` -> `T2-resolution.md`; `figures/calibration-artefact-findings.md` -> `T3-candidate-explanations.md` with its generator. Resolves the collision noted in the deliverables table and in METHOD-AUDIT item 33.** |
+| W5 Oct 13–19 | Revision. External review against this outline. Artifact package final. **Artefact renames — DONE at `f44d2f1` (pushed); generators `make_table2/3/4.py`, historical reports annotated not rewritten. Original instruction retained below:** **Artefact renames, to the v7.1 manuscript numbering — the v8.1 instruction pointed the false-findings table at Table 2, which v7.1 had already made Table 4. Correct set: `figures/T1-false-findings.md` -> `T4-false-findings.md` and `scripts/make_table1.py` -> `make_table4.py`; `figures/T3-resolution.md` -> `T2-resolution.md`; `figures/calibration-artefact-findings.md` -> `T3-candidate-explanations.md` with its generator. Resolves the collision noted in the deliverables table and in METHOD-AUDIT item 33.** |
 | W6 Oct 20–26 | Final pass, AI disclosure resolved. **Re-stage the Zenodo package from the frozen commit, upload, verify, publish** — the reserved DOI must resolve before submission. Metadata to complete first: `description`, `related_identifiers` (repo URL, Paper 1's `10.5281/zenodo.22061184`), licence note covering `scripts/`, title naming the paper. Then submit. |
 
 Note the W2/W3 swap against plan v4: §8 is now short and drafts easily from

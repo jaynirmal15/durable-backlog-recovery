@@ -4,6 +4,19 @@
 below names the artefact or commit it comes from. Where committed data cannot
 answer a question, that is stated rather than inferred.
 
+> **Filenames as of this report, 2026-09-20.** Three artefacts were renamed at
+> the W5 pass, after this report was written. The names below are the names
+> that existed when the census was taken and are left as they were, because
+> the census is a record of what was audited at that time and re-running it
+> against this report should reproduce it. Current names:
+> `figures/T1-false-findings.md` → `figures/T4-false-findings.md`,
+> `scripts/make_table1.py` → `scripts/make_table4.py`,
+> `figures/T3-resolution.md` → `figures/T2-resolution.md`,
+> `scripts/make_table3.py` → `scripts/make_table2.py`,
+> `figures/calibration-artefact-findings.md` →
+> `figures/T3-candidate-explanations.md`,
+> `scripts/make_calibration_findings.py` → `scripts/make_table3.py`.
+
 > **Terminology corrected in place, 2026-09-19.** This report used "true capacity" for two different quantities: the model c/(S+δ) = C·S/(S+δ), which the paper names **C_model**, and the measured saturation plateau, **C_measured**. Each occurrence now carries the term its context requires. No number changed. The configured parameter is **C_config** and is never "true capacity". Field names in committed data are unchanged; `results/METHOD-AUDIT.md` item 33 maps them.
 
 Regenerate with `python3 scripts/reviewer_w2_analysis.py`; full output in

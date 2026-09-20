@@ -68,7 +68,7 @@ META = {
         'estimator is valid at safe points only and over-reads on collapsed runs, '
         'so boundary intervals are reported in rate. Three findings entered the '
         'record and were later refuted by further measurement; they are listed '
-        'with what killed them in figures/T1-false-findings.md.</p>'),
+        'with what killed them in figures/T4-false-findings.md.</p>'),
     'related_identifiers': [
         {'relation': 'isSupplementedBy',
          'identifier': 'https://github.com/jaynirmal15/durable-backlog-recovery',
@@ -137,7 +137,7 @@ are under `traces/`, so pass it explicitly:
   instrumentation that did not exist earlier. Comparisons across that line are
   flagged where they are made.
 - Three findings entered the record and were later refuted. They are listed with
-  what killed them in figures/T1-false-findings.md.
+  what killed them in figures/T4-false-findings.md.
 """
 
 

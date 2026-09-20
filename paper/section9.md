@@ -16,7 +16,7 @@ above the plateau impossible silently converts the reference back into true
 capacity, the terminology error this paper exists to avoid. The evidence never
 needed it: the count is a pattern incompatible with treating the estimator as
 physically interpretable at collapsed points. **NOTE: the same phrase sits in
-the generated Table 4 and its generator (`scripts/make_table1.py:45`), which the
+the generated Table 4 and its generator (`scripts/make_table4.py:45`), which the
 manuscript prints; §IX and the table must not disagree. Executor task raised.**
 (ii) §IX-G no longer promises an experiment that "would answer" each question —
 for the residual there is no specified design and no claim that a finer

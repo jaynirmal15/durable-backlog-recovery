@@ -1,102 +1,229 @@
 #!/usr/bin/env python3
-"""T3: per-cell resolution, under the maximum numerator section 4 names.
+"""Candidate explanations of the boundary: the explanation, its registered
+falsification, the pre-calibration outcome, and what calibration changed.
 
-Every value is read from committed artefacts; nothing is typed in.
+Manuscript Table 3, written against outline v8.7. The three rows have three
+DIFFERENT standings and the asymmetry is the point: one was rejected by its own
+criterion before calibration, one was affirmed and then no longer resolved once
+the boundary was expressed against measured capacity, and one was affirmed with
+its registered statistic never recomputed. Column 1 is "Candidate explanation",
+never "Apparent finding" -- the admission limit was explicitly not a finding.
+<!-- withdrawn-quote-ok: prohibition in the docstring -->
 
-  boundary files        rhoAchieved per repetition, runs, the rate bracket
-  E2D calibration       C_measured (the median across a cell's saturation runs
-                        of each run's maximum 30 s sustained served rate)
-  W7 denominator        C_measured's own range -- the plateau min and max ONLY
+Distinct from figures/T4-false-findings.md, which is manuscript Table 4.
 
-W7 also carries rhoEffAtCmin / rhoEffAtCmedian / rhoEffAtCmax. Those use a4Rate,
-a MEDIAN numerator, and are the wrong statistic for this table. They are not
-read here.
+Every quotation is verified against the committed file at the commit named in
+the row before anything is printed, so no cell is written from memory. Numbers
+come from the artefacts named beside them. No table number is assigned.
 
-Usage: python3 scripts/make_table3.py > figures/T3-resolution.md
+Usage: python3 scripts/make_table3.py > figures/T3-candidate-explanations.md
 """
 import json
-import os
+import subprocess
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from precision import u, is_coarse          # noqa: E402
+E2E = json.load(open('results/E2E-analysis.json'))
+W8 = json.load(open('results/W8-effect-size-accounting.json'))
 
-STEP_RPS = 5
-CAL = json.load(open('results/E2D-capacity-calibration.json'))['cells']
-W7 = json.load(open('results/W7-denominator-uncertainty.json'))['cells']
-CELLS = [
-    ('E1 c10/C0', 'results/boundaries/c10-C0.json'),
-    ('E1 c10/C1', 'results/boundaries/c10-C1.json'),
-    ('E1 c50/C0', 'results/boundaries/c50-C0.json'),
-    ('E1 c50/C1', 'results/boundaries/c50-C1.json'),
-    ('E2 c10@Q2500', 'results/e2/c10-Q2500/boundaries/c10-C0.json'),
-    ('E2 c50@Q500', 'results/e2/c50-Q500/boundaries/c50-C0.json'),
-    ('E2b C=400', 'results/e2b/boundaries/c50-C0.json'),
-]
+# (commit, path, fragment). commit=None means check the working copy: the
+# reports are regenerated artefacts and their wording tracks their generators,
+# whereas the plans are registration-grade and are pinned to the commit that
+# registered them.
+QUOTES = {
+    'D':        ('c823393', 'results/E2-PLAN.md',   'D   = m50 - m10 = 0.0689'),
+    'conc_crit':('c823393', 'results/E2-PLAN.md',   '**CONCURRENCY-DRIVEN** | both `f ≤ 0.25`'),
+    'cap_crit': ('c823393', 'results/E2-PLAN.md',   '**CAP-DRIVEN** | both `f ≥ 0.75`'),
+    'f_verdict':(None,      'results/E2-REPORT.md', 'Registered verdict: **OFF-SCALE** (f = +0.000 and -0.006).'),
+    'f_nomove': (None,      'results/E2-REPORT.md', 'neither cell moved materially in either direction'),
+    'h_crit':   ('a741d68', 'results/E2B-PLAN.md',  '**h >= 0.75** | **S GOVERNS.**'),
+    'h_value':  (None,      'results/E2B-REPORT.md','h = (rho* - rho10) / D = (0.98 - 0.9137) / 0.0689 = +0.980'),
+    'a6_conc':  ('c3aee75', 'PRE-REGISTRATION.md',  '| concurrency gap | 0.0689 | 0.0688–0.0698 | **survives** |'),
+    'a6_cap':   ('c3aee75', 'PRE-REGISTRATION.md',  '| E2 cap swap | identical intervals, f = 0.001 | identical rate intervals, f = 0.000 | **survives, and is stronger** — rate is estimator-independent |'),
+    'a6_h':     ('c3aee75', 'PRE-REGISTRATION.md',  '| E2b, S governs | h = 0.980 | h = 0.895–0.945 | **survives** |'),
+    # The pre-E2 status of the cap hypothesis, in the tree as it stood when E2
+    # was registered. Held open, never asserted as a result.
+    'cap_open': ('c823393', 'STATUS.md',
+                 'That is a competing\nexplanation for the concurrency effect and is not yet ruled out.'),
+}
 
 
-def row(label, path):
-    b = json.load(open(path))
-    bd = b['boundary']
-    lo, hi = bd['lastSafeRl'], bd['firstNonSafeRl']
-    pt = next(p for p in b['points'] if p['rl'] == lo)
-    rhos = pt['rhoAchieved']
-    c_config = pt['runs'][0]['faultCapacity']
-    c_meas = CAL[label]['trueCapacity']          # field name: see METHOD-AUDIT item 33
-    w7 = W7[label]
-    # W7's median must be the same C_measured, or the range belongs to something else
-    assert abs(w7['median'] - c_meas) < 0.06, label
-    return {
-        'cell': label,
-        'C_config': c_config,
-        'C_measured': c_meas,
-        'step': STEP_RPS,
-        'stepFrac': STEP_RPS / c_meas,
-        'bracket': (lo, hi),
-        'width': hi - lo,
-        'n': len(rhos),
-        'spreadRps': (max(rhos) - min(rhos)) * c_config,
-        'rhoEff': max(rhos) * c_config / c_meas,    # MAXIMUM numerator
-        'cmRange': (w7['min'], w7['max'], w7['n']),
-    }
+def verify():
+    """Every fragment must be present at its commit, or nothing is printed."""
+    bad = []
+    for key, (commit, path, frag) in QUOTES.items():
+        if commit is None:
+            body = open(path, encoding='utf-8').read()
+            where = path
+        else:
+            try:
+                body = subprocess.run(['git', 'show', '%s:%s' % (commit, path)],
+                                      capture_output=True, text=True,
+                                      check=True).stdout
+            except subprocess.CalledProcessError:
+                bad.append('%s: cannot read %s at %s' % (key, path, commit))
+                continue
+            where = '%s at %s' % (path, commit)
+        if frag not in body:
+            bad.append('%s: fragment absent from %s' % (key, where))
+    if bad:
+        for b in bad:
+            print('QUOTE CHECK FAILED — %s' % b, file=sys.stderr)
+        raise SystemExit(1)
 
 
 def main():
-    rows = [row(*c) for c in CELLS]
-    print('# T3 — per-cell resolution of the boundary estimate')
+    verify()
+    c10, c50 = E2E['cells']['c10'], E2E['cells']['c50']
+    m, a4 = W8['matched'], W8['matchedA4']
+
+    print('# Candidate explanations of the boundary, and what calibration '
+          'changed about each')
     print()
-    print('Generated by `scripts/make_table3.py` from committed artefacts. The '
-          'numerator of ρ_eff,safe is the **maximum** achieved rate across the last '
-          'SAFE point\'s repetitions, the per-cell value §IV defines.')
+    print('Three candidate explanations of the boundary, each registered with '
+          'its falsification criterion before the data that tested it were '
+          'collected. One was rejected by its own criterion before calibration; '
+          'of the two that survived, one was almost entirely removed when the '
+          'boundary was expressed against measured service capacity, and the '
+          'other\'s registered statistic was never recomputed. Generated by '
+          '`scripts/make_table3.py`. Every quotation is verified '
+          'before the table is written: quotations from the plans and from A6 '
+          'against the committed file at the commit named, quotations from the '
+          'reports against the working copy, because the reports are regenerated '
+          'artefacts whose wording tracks their generators. Numbers come from the '
+          'artefacts named in the sources below. This is a different set from '
+          '`figures/T4-false-findings.md`, which is manuscript Table 4.')
     print()
-    print('| cell | C_config | C_measured | step (rps) | step / C_measured '
-          '| rate bracket (rps) | width (rps) | n | replicate spread (rps) '
-          '| ρ_eff,safe | C_measured range (rps) |')
-    print('|---|---:|---:|---:|---:|---|---:|---:|---:|---:|---|')
+    print('| Candidate explanation | Registered falsification / challenge | '
+          'Pre-calibration outcome | Post-calibration evidence and status |')
+    print('|---|---|---|---|')
+
+    print('| **The boundary depended on concurrency.** The two E1 arms separated '
+          'by `D = m50 - m10 = 0.0689` in safe utilisation, 0.9137 at concurrency '
+          '10 against 0.9826 at concurrency 50. '
+          '| Swap the admission limits across the arms and score the fraction of '
+          '`D` that moves with the cap: **CONCURRENCY-DRIVEN** requires both '
+          '`f ≤ 0.25` (E2 plan, `c823393`). '
+          '| Confirmed. `f = +0.000` and `-0.006`: neither cell moved toward the '
+          'other arm, so the gap did not follow the cap (E2 report). '
+          '| **No longer resolved after calibration.** Measured after the '
+          'correction, on the same two arms. '
+          'Under one recipe applied to both corpora the inter-arm gap falls from '
+          '**%.4f to %.4f** (%.0f%% removed) on the drain-window estimator and '
+          'from %.4f to %.4f (%.0f%% removed) on the delivery-span one — %.1f rps '
+          'to %.1f rps in throughput terms. **94–95%% of the separation is '
+          'removed.** |'
+          % (m['gapRhoUncorrected'], m['gapRhoCorrected'], m['fractionRemovedRho'],
+             a4['gapRhoUncorrected'], a4['gapRhoCorrected'], a4['fractionRemovedRho'],
+             m['gapRpsUncorrected'], m['gapRpsCorrected']))
+
+    print('| **The boundary depended on the admission limit.** The E1 arms had '
+          'been run at different queue caps — 500 at concurrency 10, 2500 at '
+          'concurrency 50 — so the cap was a live explanation of `D`. '
+          '| The same swap, scored the other way: **CAP-DRIVEN** requires both '
+          '`f ≥ 0.75` (E2 plan, `c823393`). '
+          '| **Refuted before calibration.** Registered verdict OFF-SCALE, '
+          '`f = +0.000` and `-0.006`; `CAP-DRIVEN` was unreachable once the first '
+          'cell returned +0.000, and neither cell moved materially in either '
+          'direction (E2 report). '
+          '| **Refuted pre-calibration by its own registered criterion. No '
+          'post-calibration evidence, and none possible.** The correction has '
+          'nothing to dissolve here: the campaign had already eliminated the cap '
+          'as an explanation before the bias was known. The corrected corpus also '
+          'ran only the original diagonal — c10 at cap 500, c50 at cap 2500 — so '
+          'no post-calibration value of `f` exists either. |')
+
+    print('| **Service time governed the boundary.** With concurrency and service '
+          'time separated at `C = 400`, ρ* landed c50-like rather than c10-like. '
+          '| Score ρ* against the two E1 midpoints: `h = (ρ*_E2b − ρ10) / D`, '
+          'where **`h ≥ 0.75` reads S GOVERNS** and `h ≤ 0.25` reads concurrency '
+          'governs (E2b plan, `a741d68`, with a dead band registered in advance). '
+          '| Confirmed. `h = (0.98 − 0.9137) / 0.0689 = +0.980` (E2b report), at '
+          'the S-governs end of the scale. '
+          '| **Affirmed pre-calibration; interpretation superseded; the '
+          'registered statistic not recomputed.** `h` is defined relative to the '
+          'E1 arm separation, which was measured against the configured capacity '
+          'parameter. Two later results undermine the S-governs reading without '
+          'recomputing `h`: physically correcting the harness removes most of the '
+          'separation between those same two arms (W8 matched accounting), and '
+          'expressing seven cells against measured capacity resolves no '
+          'service-time difference at all. **The exact registered `h` was '
+          'never recomputed: no `C = 400` cell exists on the corrected harness.** |')
+
+    print()
+    print('## Sources, cell by cell')
+    print()
+    print('| row | cell | artefact |')
+    print('|---|---|---|')
+    rows = [
+        ('1', 'candidate explanation', '`results/E2-PLAN.md` at `c823393`, the attribution statistic fixed before the runs; midpoints from E1'),
+        ('1', 'registered challenge', '`results/E2-PLAN.md` at `c823393`'),
+        ('1', 'pre-calibration outcome', '`results/E2-REPORT.md`'),
+        ('1', 'post-calibration', '`results/W8-effect-size-accounting.json`, `matched` and `matchedA4`, from `results/E2E-analysis.json`'),
+        ('2', 'candidate explanation', '`results/E2-PLAN.md` at `c823393`, the 2x2 showing E1\'s two caps'),
+        ('2', 'registered challenge', '`results/E2-PLAN.md` at `c823393`'),
+        ('2', 'pre-calibration outcome', '`results/E2-REPORT.md`'),
+        ('2', 'post-calibration', '**none — see the gaps below**'),
+        ('3', 'candidate explanation', '`results/E2B-PLAN.md` at `a741d68`'),
+        ('3', 'registered challenge', '`results/E2B-PLAN.md` at `a741d68`'),
+        ('3', 'pre-calibration outcome', '`results/E2B-REPORT.md`'),
+        ('3', 'post-calibration', '**none — see the gaps below**'),
+    ]
     for r in rows:
-        lo, hi = r['bracket']
-        mn, mx, k = r['cmRange']
-        print('| %s | %d | %.1f | %d | %.4f | [%d, %d] | %d | %d | %.1f | %s | %.1f – %.1f (n = %d) |'
-              % (r['cell'], r['C_config'], r['C_measured'], r['step'], r['stepFrac'],
-                 lo, hi, r['width'], r['n'], r['spreadRps'],
-                 u(r['rhoEff'], is_coarse(r['cell'])), mn, mx, k))
+        print('| %s | %s | %s |' % r)
+
     print()
-    print('**Columns.** *C_measured* is the median across a cell\'s saturation runs '
-          'of each run\'s maximum 30-second sustained served rate. *Rate bracket* is '
-          'the bisection bracket in probed recovery rate, [last SAFE, first '
-          'non-SAFE], and *width* its difference. *n* and *replicate spread* are for '
-          'the last SAFE point: the number of repetitions, and the range of their '
-          'achieved total rate. *ρ_eff,safe* is that point\'s maximum achieved rate '
-          'over C_measured, given at the cell\'s own precision — three decimals, two '
-          'for E2b at C = 400, never four. *C_measured range* is the lowest and '
-          'highest per-run plateau behind the median, with their count.')
+    print('## A6 is a different correction')
     print()
-    print('*Step / C_measured* is the search resolution itself, so it is given to '
-          'four decimals: at three, six of the seven cells would read 0.003 or '
-          '0.004 and the column would stop distinguishing them.')
+    print('A6 is the **estimator** correction and is not the calibration '
+          'correction; the two are days apart and easy to conflate. A6 changed '
+          'no candidate explanation\'s standing, as its own conclusions table '
+          'records. A6\'s registered rows, at `c3aee75`:')
     print()
-    print('Two cells read 1.000 at this precision while exceeding 1.0 unrounded, '
-          'which §IV explains: C_measured is an estimate, not a ceiling.')
+    for k in ('a6_conc', 'a6_cap', 'a6_h'):
+        print('> %s' % QUOTES[k][2])
+    print()
+    print('What A6 established is that the A4 estimator **over-reads at '
+          'collapsed points**, and the response was to stop reporting '
+          'utilisation at those points rather than to re-estimate them: A6 '
+          'recomputed utilisation at SAFE points only. The calibration '
+          'correction is a different operation — it reduced the configured sleep '
+          'by the measured per-request overhead and re-ran the two boundaries — '
+          'and it is what changed the interpretation of the two affirmed rows.')
+
+    print()
+    print('## Was the admission limit ever a finding?')
+    print()
+    print('**No.** Searching the plans, reports, notes and commit messages in the '
+          'tree as it stood when E2 was registered (`c823393`, 2026-09-12 '
+          '10:46 -0400, three hours before the first E2 run at 15:01:44Z) finds no '
+          'written result asserting that the admission limit governs the boundary. '
+          'The only assertions are the arithmetic identity that a full graceful '
+          'queue equals the SLO at `S = 5 ms`, and the statement that this is a '
+          'candidate explanation. `STATUS.md` at that commit:')
+    print()
+    print('> %s' % ' '.join(QUOTES['cap_open'][2].split()))
+    print()
+    print('So row 2 is not a retracted finding. It is a registered falsification '
+          'that succeeded, and it is the contrast case: the one hypothesis of the '
+          'three that the campaign eliminated by itself, before the bias was '
+          'known.')
+    print()
+    print('## Gaps, named rather than filled')
+    print()
+    print('**Neither `f` nor `h` has a post-calibration value.** The corrected '
+          'corpus is two cells: c10 at `S = 5 ms`, concurrency 10, queue cap 500, '
+          'and c50 at `S = 25 ms`, concurrency 50, queue cap 2500, both at '
+          '`C = 2000`. Across its 33 boundary runs there is no cell with swapped '
+          'caps and none at `C = 400`. Row 1 is the only row whose registered '
+          'quantity was re-measured after the correction; rows 2 and 3 say so '
+          'rather than reasoning to a value.')
+    print()
+    print('**The three rows do not have the same standing, and the statuses '
+          'differ accordingly.** Row 1 was affirmed and then dissolved by '
+          'measurement. Row 3 was affirmed, and its interpretation is superseded '
+          'by row 1 without its own statistic being recomputed. Row 2 was refuted '
+          'by its own registered criterion before the bias was known, and was '
+          'never asserted as a finding in the first place.')
     return 0
 
 

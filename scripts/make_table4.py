@@ -4,7 +4,7 @@
 Distinguished from process errors, which were mistakes in how the work was done
 rather than claims about the system. Sourced from the committed reports.
 
-Usage: python3 scripts/make_table1.py > figures/T1-false-findings.md
+Usage: python3 scripts/make_table4.py > figures/T4-false-findings.md
 """
 ROWS = [
     {

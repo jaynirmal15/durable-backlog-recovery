@@ -2292,3 +2292,55 @@ outline's own claim register for the second. Restoring them costs four
 primary-source argument) and `paper/OUTLINE.md:509,511` (the prohibition
 itself). All four are legitimate uses. Recorded here rather than changed,
 because where a marker sits in the manuscript is a drafting decision.
+
+---
+
+## 37. A fifth defect, same shape as the first two
+
+Item 36 recorded three defects found by control. Restoring two dropped phrases
+to the list produced a fourth, and it is the same shape as `delimited()`
+matching its tag named in prose:
+
+**The exemption marker was matched as a bare substring**, so prose that merely
+*named* the marker granted the exemption. `paper/OUTLINE.md`'s own changelog
+sentence — "four `withdrawn-quote-ok` markers at the legitimate sites" — exempted
+any withdrawn phrase landing within one line of it. Demonstrated rather than
+reasoned: a live "true capacity" assertion placed beside a prose mention of the
+marker reported clean.
+
+The marker now counts only inside a real HTML comment, which accepts both
+own-line and end-of-line placement and excludes backticked prose.
+
+**Three defects in this checker have now had the same form:** a scope or an
+exemption resolved by substring search, defeated by the text that describes the
+mechanism — the sentence announcing the delimiter fix, the sentence naming the
+marker convention. The rule that falls out: **a marker that controls behaviour
+must be matched as the syntactic thing it is, never as a string that happens to
+appear.** Prose about a mechanism will always eventually contain the mechanism's
+own name.
+
+### Every exemption marker checked for whether it does work
+
+Removing each marker in turn and re-running: all are load-bearing except two,
+both benign. `OUTLINE.md:32` sits above the body cut and is never scanned.
+`OUTLINE.md:764` and `:766` are a pair placed above and below one match, where
+the full-span window of item 36 now makes either sufficient on its own.
+
+A marker that guards nothing is worth knowing about — it is a standing exemption
+waiting for text to drift into its range — so this check is worth repeating when
+markers are added.
+
+### Twenty-two controls
+
+Both sides of every mechanism: wrapped and single-line violations caught;
+wrapped quotes exempt with the marker above or below; a violation beside the
+word "corrected" caught; a violation beside a prose mention of the marker
+caught; paragraph-break coincidences not fired; deleted, duplicated and bogus
+plan markers caught; a reference added without a cite key caught; a work deleted
+from either inventory caught; `true capacity` caught on one line and across a
+break while the `trueCapacity` identifier stays silent.
+
+| item | outcome |
+|---|---|
+| 37. marker matching | **bare substring — prose naming the marker granted the exemption.** Fixed: the marker must be an HTML comment. Third defect of this shape in one checker |
+| 37. marker audit | every marker load-bearing except `OUTLINE.md:32` (above the body cut) and one of the `:764`/`:766` pair |

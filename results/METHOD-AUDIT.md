@@ -2216,3 +2216,79 @@ values exists.** Removing the claim was correct.
 | 34. E2 run-ID collision | **unsourced** — every reference is to a prevented risk, stated conditionally |
 | 34. E1B median | **sourced**, `E1B-REPORT.md:81` — but it is an n = 15 median attached to an n = 12 claim, not a mis-taken median |
 | 34. one-error-in-70 | **no source** — W2 counts 401 over-precise occurrences, 160 hand-written, and counts occurrences rather than errors |
+
+---
+
+## 35. Why "which is impossible" stays in two reports — the registered-text rule
+
+`figures/T1-false-findings.md` dropped "which is impossible" on 2026-09-20.
+`results/A6-REPORT.md:23` and `results/E2D-REPORT.md:5` keep it. The reason is
+not that they are the historical record. It is narrower and it is checkable:
+
+**The same wording is in A6's registered text.** `PRE-REGISTRATION.md:773`, in
+addendum A6 at `c3aee75`:
+
+> suspicious, it is impossible.
+
+A registration is immutable once its commit is cited; it is corrected by
+addendum, never by edit. And `E2D-REPORT.md:5` is not independent prose either —
+its notice is headed **"CORRECTION, 2026-09-13 (PRE-REGISTRATION A6)"** and
+restates that addendum. `A6-REPORT.md:23` restates the amendment it reports.
+
+So editing either report would **desynchronise it from a registration that it
+cites and that cannot be edited to match.** The report would then paraphrase A6
+in words A6 does not use, which is worse than the wording being superseded: a
+reader checking the report against the registration would find a discrepancy and
+no way to tell which text was authoritative.
+
+**Table 4 is different and that is why it changed.** It makes the claim in the
+manuscript's own present-tense voice, citing no registration. Nothing depends on
+its wording matching immutable text.
+
+The general rule, for the next occurrence: **text that restates a registration
+inherits that registration's immutability.** Withdraw a phrase from prose that
+speaks for itself; leave it where it quotes or paraphrases something that cannot
+be changed, and record why beside it.
+
+---
+
+## 36. The manuscript checker, and what its own controls caught
+
+`scripts/check_manuscript.py` replaces `check_withdrawn_phrases.py`. Its history
+is worth keeping, because the checks kept committing the defect they exist to
+catch.
+
+**Four bugs found in external code review**, all fixed in the rewrite: phrase
+matching that did not cross line breaks; lexical exemptions that excused any
+phrase sitting near words like "corrected"; `plan_sync()` iterating only over
+markers that exist, so deleting one passed silently; and a citation inventory
+that read §2's change log as if it were the live inventory.
+
+**The narrower-exemption-window fix of `1328166` was a good fix to the wrong
+mechanism** and is superseded by the explicit `<!-- withdrawn-quote-ok -->`
+marker. Explicit exemptions are auditable; contextual guesses are not.
+
+**Three further defects were found by running controls against the rewrite**,
+and are fixed:
+
+| control | defect |
+|---|---|
+| work deleted from the outline's live inventory still passed | `delimited()` used `text.find()`, which matched the tag **named in prose** in OUTLINE.md's version header. The block began at line 22 and ran 752 lines instead of 66 — bug 4 reintroduced by the sentence announcing its fix. Tags must now be alone on their line. |
+| a phrase spanning a paragraph break was reported | normalisation joined the tail of one paragraph to the head of the next. Matching is now per paragraph; a hard-wrapped phrase never spans a blank line, so nothing real is lost. |
+| an exemption marker placed after a wrapped quote was not seen | the window keyed on the match's **start** line only. It now spans start to end, plus one line either side. |
+
+**Fourteen controls now pass**, covering both sides of every mechanism: wrapped
+and single-line violations detected; wrapped quotes with a marker above or below
+exempt; a deleted marker, a bogus draft, and duplicate markers all failing; a
+reference added without a cite key failing; a work deleted from either inventory
+failing; and a paragraph-break coincidence not firing.
+
+**One open item, for the author rather than the checker.** The rewrite's phrase
+list dropped two entries the old one carried, with no note: **"true capacity"**
+and **"statistically"**. Both prohibitions are live — item 33 for the first, the
+outline's own claim register for the second. Restoring them costs four
+`withdrawn-quote-ok` markers, at `paper/section3.md:153` and
+`paper/OUTLINE.md:606` (which describe the specification's wrong term, the §3
+primary-source argument) and `paper/OUTLINE.md:509,511` (the prohibition
+itself). All four are legitimate uses. Recorded here rather than changed,
+because where a marker sits in the manuscript is a drafting decision.

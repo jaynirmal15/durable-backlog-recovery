@@ -57,22 +57,26 @@ performance evaluation, reproducibility, service level agreements**
 
 ## Author biography — Jay Nirmal
 
-*~95 words. **Rewritten at draft 2 from the CV's actual contents.** Draft 1 was
-composed from the CV's FILENAME and contained two claims the document does not
-support — see the blocker below. Every fact here is transcribed from
-`Jay_Nirmal_IEEE_Associate_Editor_CV_Final.pdf`; nothing is inferred.*
+*Draft 3, 2026-09-20. **Wording supplied by the author**, checked line by
+line against `Jay_Nirmal_IEEE_Associate_Editor_CV_Final.pdf`. Four edits, all
+conventions or corrections, none adding a claim: "the Mumbai University" -> "the
+University of Mumbai" (the CV's and the institution's name); degree years 2017 and
+2019 restored (IEEE Access biographies carry them; both are on the CV); "(Member,
+IEEE)" added after the name (IEEE Access convention; CV: Member #101719233);
+"backend" -> "back-end" (IEEE style). Employer deliberately not named. Still no
+editorial role and no publications. **Jay to confirm.***
 
-**JAY NIRMAL** received the B.E. degree in computer engineering from the
-University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in information
-systems from Northeastern University, Boston, MA, USA, in 2019.
-
-He is currently a Senior Software Engineer with Meazure Learning, Boston, MA,
-USA. His work and research concern real-time communications, distributed
-back-end systems, and software reliability, with an emphasis on reproducible
-experimental method — pre-registered protocols, public artifacts, and
-falsification criteria fixed before the data that test them are collected.
-
-Mr. Nirmal is a Member of IEEE.
+**JAY NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
+from the University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in
+information systems from Northeastern University, Boston, MA, USA, in 2019. He is
+currently a Senior Software Engineer in Boston, MA, USA, with experience in
+distributed systems, real-time communication, back-end engineering, and production
+reliability. His engineering work includes real-time communication systems, cloud
+infrastructure, failure recovery, observability, and reliability improvement for
+large-scale online assessment platforms. He also conducts independent systems
+research. His research interests include distributed systems, failure recovery and
+fault tolerance, systems measurement, observability, and reproducible experimental
+methods.
 
 ---
 

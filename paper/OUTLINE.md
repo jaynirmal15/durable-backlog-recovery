@@ -1668,17 +1668,17 @@ likely to value.
 > Commit-pinned references to the old names stay as written; METHOD-AUDIT item 33
 > is resolved.
 
-> **ARTEFACT NAME COLLISION — read before touching either table.** The
-> repository's `T1-false-findings.md` is the **manuscript's Table 4** (v7.1
+> **ARTEFACT NAME COLLISION — RESOLVED at `f44d2f1`; kept as a record of why the
+> rename was needed.** The repository's `T1-false-findings.md` (now
+> `T4-false-findings.md`) was the **manuscript's Table 4** (v7.1
 > renumbering; it said Table 2 before that and the stale reading survived here
 > until v8.2). The
 > manuscript's **Table 1** (amendments, the A7 re-analysis, the A8 replication
 > and the A9/A10 record corrections) has no generated artefact and is written by
 > hand in `paper/section4.md`. Anyone told to "fix T1" has even odds of opening
-> the wrong file, and both were edited on 2026-09-19. Rename the artefact at the
-> W5 figure pass — not before, because §6 is drafting against it — and mirror
-> this note into METHOD-AUDIT item 33, the mapping that already records the
-> `trueCapacity` collision.
+> the wrong file, and both were edited on 2026-09-19. **DONE:** the artefact was
+> renamed at `f44d2f1`, in the W5 pass as planned, and METHOD-AUDIT item 33 was
+> rewritten as resolved in the same commit.
 | Table 2, per-cell resolution | 6 | Built as `figures/T3-resolution.md`; **renamed at `f44d2f1`** to `figures/T2-resolution.md` (generator `make_table2.py`), matching the manuscript's **Table 2**. |
 
 ---

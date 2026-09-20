@@ -8,6 +8,7 @@ criterion before calibration, one was affirmed and then no longer resolved once
 the boundary was expressed against measured capacity, and one was affirmed with
 its registered statistic never recomputed. Column 1 is "Candidate explanation",
 never "Apparent finding" -- the admission limit was explicitly not a finding.
+<!-- withdrawn-quote-ok: prohibition in the docstring -->
 
 Distinct from figures/T1-false-findings.md, which is manuscript Table 4.
 

@@ -86,6 +86,7 @@ Still under budget, and thread one stays short deliberately: the literature to c
 against is thin, and padding it would mean asserting more than the search
 supports. No figure. Written against outline v9.1.*
 
+<!-- citation-inventory:start -->
 *CITATIONS ARE NAMED IN PROSE AND NOT YET FORMATTED. The works are identified by
 author and system so the argument can be reviewed now; the IEEE reference list
 is a W4 task with the bibliography. Verified to venue and year:
@@ -123,6 +124,7 @@ Thread one's two non-academic sources are the AWS Builders' Library article on
 avoiding insurmountable queue backlogs, and GitLab's public Sidekiq queueing SLO
 incident records. **Both are cited as evidence that the problem recurs
 operationally, never as technical authority.***
+<!-- citation-inventory:end -->
 
 *SOURCING NOTE, and one finding the search produced. Threads two, three and four
 have substantial peer-reviewed literature and the citations below are verified

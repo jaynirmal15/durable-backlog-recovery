@@ -54,16 +54,19 @@ verified that I did not open.*
 ## The list
 
 **[1]** T. Mytkowicz, A. Diwan, M. Hauswirth, and P. F. Sweeney, "Producing
+<!-- cite-key: mytkowicz -->
 wrong data without doing anything obviously wrong!" in *Proc. 14th Int. Conf.
 Architectural Support for Programming Languages and Operating Systems (ASPLOS)*,
 2009, pp. 265–276, doi: 10.1145/1508244.1508275.
 <!-- authors/title/venue/DOI [V] · pp. [R], DBLP -->
 
 **[2]** J. Ousterhout, "Always measure one level deeper," *Commun. ACM*, vol. 61,
+<!-- cite-key: ousterhout -->
 no. 7, pp. 74–83, Jul. 2018, doi: 10.1145/3213770.
 <!-- authors/title/venue/DOI [V] · vol/no/pp [R], author's own publication list -->
 
 **[3]** G. Heiser, "Systems benchmarking crimes," UNSW Sydney. [Online].
+<!-- cite-key: heiser -->
 Available: https://gernot-heiser.org/benchmarking-crimes.html. Accessed:
 Sep. 20, 2026.
 <!-- [V] · A maintained web catalogue, NOT peer-reviewed. Must never be given a
@@ -72,18 +75,21 @@ Sep. 20, 2026.
      Change it only if someone genuinely revisits the page. Same for [11]-[13]. -->
 
 **[4]** H. Zhou, M. Chen, Q. Lin, Y. Wang, X. She, S. Liu, R. Gu, B. C. Ooi, and
+<!-- cite-key: dagor|zhou -->
 J. Yang, "Overload control for scaling WeChat microservices," in *Proc. ACM
 Symp. Cloud Computing (SoCC)*, 2018, pp. 149–161, doi: 10.1145/3267809.3267823.
 <!-- title/venue/DOI [V] · full author list and pp. [R], authors' own page.
      Preprint arXiv:1806.04075. The DAGOR system. -->
 
 **[5]** I. Cho, A. Saeed, J. Fried, S. J. Park, M. Alizadeh, and A. Belay,
+<!-- cite-key: breakwater|cho, -->
 "Overload control for µs-scale RPCs with Breakwater," in *Proc. 14th USENIX
 Symp. Operating Systems Design and Implementation (OSDI)*, 2020, pp. 299–314.
 <!-- [V] authors/title/venue via USENIX · pp. [R], cross-checked in review.
      USENIX assigns no DOI here — do NOT invent one. -->
 
 **[6]** H. Xu and J. A. Colmenares, "Bouncer: Admission control with response
+<!-- cite-key: bouncer|colmenares -->
 time objectives for low-latency online data systems," in *Companion Proc. Int.
 Conf. Management of Data (SIGMOD)*, 2024, pp. 400–413,
 doi: 10.1145/3626246.3653384.
@@ -94,6 +100,7 @@ doi: 10.1145/3626246.3653384.
      above. · pp. [R] -->
 
 **[7]** K. Rzadca, P. Findeisen, J. Swiderski, P. Zych, P. Broniek,
+<!-- cite-key: autopilot|rzadca -->
 J. Kusmierek, P. Nowak, B. Strack, P. Witusowski, S. Hand, and J. Wilkes,
 "Autopilot: Workload autoscaling at Google," in *Proc. 15th European Conf.
 Computer Systems (EuroSys)*, 2020, Art. no. 16, pp. 1–16,
@@ -104,17 +111,20 @@ doi: 10.1145/3342195.3387524.
      not IEEE style. -->
 
 **[8]** L. Barroso, M. Marty, D. Patterson, and P. Ranganathan, "Attack of the
+<!-- cite-key: killer microsecond -->
 killer microseconds," *Commun. ACM*, vol. 60, no. 4, pp. 48–54, Apr. 2017,
 doi: 10.1145/3015146.
 <!-- authors/title/venue/DOI [V] · pp. [R], Google Research page -->
 
 **[9]** J. Dean and L. A. Barroso, "The tail at scale," *Commun. ACM*, vol. 56,
+<!-- cite-key: tail at scale -->
 no. 2, pp. 74–80, Feb. 2013, doi: 10.1145/2408776.2408794.
 <!-- authors/title/venue [V] · pp. and DOI [R], DBLP. Draft 1 flagged the page
      range as unverified because it came from a course reading list; the review
      confirmed it against DBLP. -->
 
 **[10]** J. D. C. Little, "A proof for the queuing formula: L = λW," *Operations
+<!-- cite-key: little's law|j. d. c. little|scope=outline -->
 Research*, vol. 9, no. 3, pp. 383–387, 1961, doi: 10.1287/opre.9.3.383.
 <!-- [V] — I confirmed volume, issue, pages and DOI against INFORMS and the ACM
      DL listing. NEW at draft 2: the review ruled that Little's law is used to
@@ -122,12 +132,14 @@ Research*, vol. 9, no. 3, pp. 383–387, 1961, doi: 10.1287/opre.9.3.383.
      earns a citation. -->
 
 **[11]** D. Yanacek, "Avoiding insurmountable queue backlogs," *Amazon Builders'
+<!-- cite-key: builders|yanacek -->
 Library*. [Online]. Available:
 https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/.
 Accessed: Sep. 20, 2026.
 <!-- [R] author attribution. NEW at draft 2 — see the ruling below. -->
 
 **[12]** GitLab, "2025-10-30: Sidekiq queueing SLO violation on multiple
+<!-- cite-key: gitlab -->
 shards," GitLab Infrastructure Production issue tracker, issue 20797. [Online].
 Available: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20797.
 Accessed: Sep. 20, 2026.
@@ -135,6 +147,7 @@ Accessed: Sep. 20, 2026.
      capacity temporarily raised to clear it. -->
 
 **[13]** GitLab, "2026-01-06: Sidekiq queueing SLO violation on urgent-cpu-bound
+<!-- cite-key: gitlab -->
 shard (apdex 73.88%)," GitLab Infrastructure Production issue tracker, issue
 21046. [Online]. Available:
 https://gitlab.com/gitlab-com/gl-infra/production/-/issues/21046. Accessed:
@@ -150,6 +163,7 @@ Sep. 20, 2026.
      needed. Both are the same failure the note was describing. -->
 
 **[14]** A. V. Papadopoulos, L. Versluis, A. Bauer, N. Herbst,
+<!-- cite-key: papadopoulos -->
 J. von Kistowski, A. Ali-Eldin, C. L. Abad, J. N. Amaral, P. Tůma, and
 A. Iosup, "Methodological principles for reproducible performance evaluation in
 cloud computing," *IEEE Trans. Softw. Eng.*, vol. 47, no. 8, pp. 1528–1543,

@@ -1,6 +1,37 @@
-# Paper 2 — section-by-section outline, v9.8
+# Paper 2 — section-by-section outline, v9.9
 
-*2026-09-20. **v9.8 adds Papadopoulos to this plan's live Thread-4 anchor list,
+*2026-09-20. **v9.9 records a code review of the checker that found four bugs,
+three of which were the checks committing the defect they exist to catch.**
+The script is now `scripts/check_manuscript.py` (renamed — it does three things,
+not one). What the review found:
+1. **Phrase matching never crossed line breaks.** The old version built a
+   three-line window to evaluate EXEMPTIONS but matched the phrase itself on a
+   single line. These files wrap at ~78 columns, so a forbidden phrase split
+   across two lines was invisible. It now matches a whitespace-normalised
+   multi-line window and reports the starting line.
+2. **Exemptions were lexical guesses** — "said", "never", "corrected" — so a
+   live assertion one line from any of those became exempt. Replaced by an
+   explicit `<!-- withdrawn-quote-ok -->` marker. Explicit exemptions are
+   auditable; contextual guesses are not.
+3. **Plan-sync never required a marker to EXIST.** Deleting one escaped
+   silently while the script printed "all 10 marked current". Now every section
+   needs exactly one marker, under its own plan heading, **equal** to the
+   section's draft — draft 99 fails too.
+4. **The citation check still read §2's version history**, which names the same
+   works as the live inventory. Both inventories are now delimited with
+   `<!-- citation-inventory:start/end -->`. Exact scopes beat inferred scopes
+   for a check whose purpose is stopping stale text passing as live text.
+Also: the bibliography is now the single source of truth — each entry carries
+`<!-- cite-key: ... -->`, so adding a reference without registering it fails.
+**Five negative controls pass**, including the wrapped-phrase case the old
+version missed entirely.
+**STILL MISSING, and recorded rather than pretended:** nothing scans the
+assembled manuscript. `results/` stays excluded on principle — registrations are
+immutable and the reports are the record — but the boundary that matters is
+**promotion**: nothing quoted from a report into manuscript-facing text may
+carry an unqualified withdrawn claim. **That check is a W6 task and does not
+exist yet.**
+**v9.8 added Papadopoulos to this plan's live Thread-4 anchor list,
 which it was missing, and records the check that now prevents that.**
 `references.md` had it at [14] with a note saying it attaches to §II-D. Neither
 this plan nor §2's own citation inventory knew it existed — a work can enter the
@@ -673,6 +704,7 @@ there a seven-cell campaign in a methods paper."*
 
 <!-- plan-synced-to: section2 draft 6 -->
 
+<!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work
 to this section without checking it the same way.**
 - Thread 4 (the paper's home): Mytkowicz, Diwan, Hauswirth, Sweeney, *Producing
@@ -706,8 +738,10 @@ to this section without checking it the same way.**
   for Low-latency Online Data Systems*, SIGMOD Companion 2024,
   `10.1145/3626246.3653384` (arXiv 2312.15123) — **response-time percentiles**,
   and the reason §II-B does not rest a response-time claim on queueing-delay
-  systems alone. **Say "an established construction", never "the conventional
-  construction" or "the default answer".**
+  systems alone.
+  <!-- withdrawn-quote-ok: prohibition -->
+  **Say "an established construction", never "the conventional construction" or "the default answer".**
+  <!-- withdrawn-quote-ok: prohibition -->
 - Thread 3: Rzadca et al., *Autopilot: workload autoscaling at Google*, EuroSys
   2020, `10.1145/3342195.3387524` — cite for **slack in manually set CPU/memory
   limits**, not for "engineer-supplied limits are routinely wrong" and not for
@@ -729,11 +763,20 @@ to this section without checking it the same way.**
   production message processing" — **not** "in production message-processing
   **systems**", which generalises across distinct systems the records do not
   cover. Corrected at §2 draft 5.
+- **Cited outside §II — the inventory covers the whole manuscript, not just
+  §II's threads.** J. D. C. Little, *A proof for the queuing formula: L = λW*,
+  Operations Research, vol. 9, no. 3, pp. 383-387, 1961,
+  `10.1287/opre.9.3.383` — **§III** uses Little's law for the staffing relation
+  and **§X** repeats it; §II never cites it. It is the only reference in the
+  bibliography that does not flow through §II, which is why the citation check
+  scopes it to this inventory alone.
+<!-- citation-inventory:end -->
 
 **§II-B's last paragraph discharges C3's debt** — it establishes **live latency
 as a literature-grounded comparator** for §VII, so §VII's result reads as a
 finding about a signal the literature already uses rather than a strawman. Do
-not cut it, and **do not restore "the conventional construction" or "the default
+not cut it, and <!-- withdrawn-quote-ok: prohibition -->
+**do not restore "the conventional construction" or "the default
 answer"**: DAGOR and Breakwater key on queueing delay, Bouncer on response-time
 percentiles, and none of them establishes an industry default. §VII examines
 live latency **alongside** timeout rate and queue depth, which are this
@@ -1150,6 +1193,7 @@ describes the corrected corpus's behaviour, or that the figure and A7 agree** �
 an earlier version of this plan said to say so, and it was wrong.
 
 §II establishes **live latency as a literature-grounded comparator**, not as
+<!-- withdrawn-quote-ok: prohibition -->
 "the conventional construction" — that stronger form was removed at v9.0 and
 must not return. The section does not assert that latency "warns last".
 
@@ -1249,6 +1293,7 @@ section:
 
 | Candidate explanation | Registered falsification / challenge | Pre-calibration outcome | **Post-calibration evidence and status** |
 
+<!-- withdrawn-quote-ok: prohibition -->
 **Column 1 is "Candidate explanation", never "Apparent finding".** The admission
 limit was explicitly not a finding, and a column heading that calls it one
 reinstates the symmetry this section exists to retire.

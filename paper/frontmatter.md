@@ -57,8 +57,15 @@ performance evaluation, reproducibility, service level agreements**
 
 ## Author biography — Jay Nirmal
 
-*Draft 3, 2026-09-20. **Wording supplied by the author**, checked line by
-line against `Jay_Nirmal_IEEE_Associate_Editor_CV_Final.pdf`. Four edits, all
+*Draft 3.1, 2026-09-20. **Wording supplied by the author**, checked line by
+line against `Jay_Nirmal_IEEE_Associate_Editor_CV_Final.pdf` — **the copy held in
+the Claude project, not on the author's disk**. The executor checked a second CV,
+`Jay_Nirmal_CV.pdf` (3 Sep 2026, iCloud), which differs: it gives the first degree
+as **B.S.**, not B.E., the location as Maharashtra, no member number, and no
+"fault-tolerance" term (the project CV has "Network Failure & Fault-Tolerance
+Testing"). Both CVs name one employer, so "platforms" was made singular at
+draft 3.1. **Open: B.E. or B.S. — Jay to confirm from the degree certificate;
+the two CVs must then be made to agree.** Four edits, all
 conventions or corrections, none adding a claim: "the Mumbai University" -> "the
 University of Mumbai" (the CV's and the institution's name); degree years 2017 and
 2019 restored (IEEE Access biographies carry them; both are on the CV); "(Member,
@@ -73,7 +80,7 @@ currently a Senior Software Engineer in Boston, MA, USA, with experience in
 distributed systems, real-time communication, back-end engineering, and production
 reliability. His engineering work includes real-time communication systems, cloud
 infrastructure, failure recovery, observability, and reliability improvement for
-large-scale online assessment platforms. He also conducts independent systems
+a large-scale online assessment platform. He also conducts independent systems
 research. His research interests include distributed systems, failure recovery and
 fault tolerance, systems measurement, observability, and reproducible experimental
 methods.

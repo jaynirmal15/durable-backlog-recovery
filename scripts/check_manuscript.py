@@ -63,6 +63,13 @@ FIGURES = 'figures'
 SCRIPTS = 'scripts'
 
 WITHDRAWN_OK = 'withdrawn-quote-ok'
+# The marker only counts inside a real HTML comment. A bare substring search
+# meant PROSE THAT NAMES THE MARKER granted the exemption: OUTLINE.md's own
+# changelog says "four `withdrawn-quote-ok` markers at the legitimate sites",
+# and any withdrawn phrase landing within one line of that sentence became
+# exempt. Same defect as delimited() matching its tag named in prose -- a
+# mechanism defeated by the text describing it. (Control, 2026-09-20.)
+WITHDRAWN_OK_RE = re.compile(r'<!--[^>]*' + re.escape(WITHDRAWN_OK) + r'[^>]*-->')
 INV_START = 'citation-inventory:start'
 INV_END = 'citation-inventory:end'
 
@@ -85,6 +92,21 @@ WITHDRAWN = [
     ('apparent finding',
      'Table 3 column 1 is "Candidate explanation": the admission limit was '
      'explicitly not a finding.'),
+    # RESTORED after review. The rewrite dropped these two silently while
+    # fixing four other bugs -- a coverage regression introduced by a repair,
+    # with no note, which is the same failure class this list exists for. Both
+    # prohibitions are live: METHOD-AUDIT item 33 for the first, the claim
+    # register for the second.
+    ('true capacity',
+     'The configured parameter is NEVER called true capacity. The four rigid '
+     'terms are C_config, C_staffed, C_model, C_measured. The harness field '
+     'trueCapacity is an identifier and is exempt; SS-III quoting the '
+     'specification as a primary source is exempt by marker.'),
+    ('statistically',
+     'Struck from the claim register: the indistinguishability argument rests '
+     'on resolution -- bisection step, interval width, replicate spread -- not '
+     'on an equivalence test. It invites "which test, which null, which '
+     'margin", a fight SS-IV does not equip the paper for.'),
 ]
 
 
@@ -174,7 +196,7 @@ def phrase_hits(path, skip_header):
                 last = mapped[j] if j >= 0 else first
                 window = ' '.join(l for n, l in numbered
                                   if first - 1 <= n <= last + 1)
-                if WITHDRAWN_OK in window:
+                if WITHDRAWN_OK_RE.search(window):
                     continue
                 hits.append((path, first, phrase, why))
     return hits

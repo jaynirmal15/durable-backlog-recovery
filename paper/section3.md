@@ -150,6 +150,7 @@ decision was taken before any measurement, for a reason narrower than the one
 that ultimately justified it.
 
 It is worth recording that the endpoint's response field is named `trueCapacity`,
+<!-- withdrawn-quote-ok: quoting the harness specification as a primary source, to contradict it -->
 and the specification describes it as exposing true capacity. It does not: it
 returns `C_config`. The name is itself a residue of the assumption this paper
 falsifies, and it is preserved unaltered in the archived artefact.

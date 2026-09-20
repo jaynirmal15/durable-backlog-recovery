@@ -1,6 +1,24 @@
-# Paper 2 — section-by-section outline, v9.9
+# Paper 2 — section-by-section outline, v10.0
 
-*2026-09-20. **v9.9 records a code review of the checker that found four bugs,
+*2026-09-20. **v10.0 closes the checker work. Three rounds of review found
+eleven defects in it; seven were in versions I wrote, and three of those seven
+were the check committing the defect it exists to catch.**
+The one worth remembering: the outline's citation-inventory scope was resolved
+with `text.find()`, which matched the tag **named in prose in the version header
+announcing the fix** — so the "delimited" block ran 752 lines instead of 66 and
+the hole it was meant to close stayed open. A fix defeated by its own changelog
+entry. Tags must now sit alone on their line.
+**And the item that was mine to decide:** my rewrite silently dropped
+`"true capacity"` and `"statistically"` from the phrase list while fixing four
+other bugs. Both prohibitions are live — item 33 for the first, this outline's
+own claim register for the second — so a repair quietly removed coverage, with
+no note, which is the failure class the list exists for. **Both restored**, with
+four `withdrawn-quote-ok` markers at the legitimate sites: §III quoting the
+harness specification as a primary source in order to contradict it, and the
+three places where the prohibition itself must name the word it forbids.
+Verified by control: a live "true capacity" assertion and a hard-wrapped
+"statistically" both fail; the `trueCapacity` identifier correctly does not.
+**v9.9 recorded a code review of the checker that found four bugs,
 three of which were the checks committing the defect they exist to catch.**
 The script is now `scripts/check_manuscript.py` (renamed — it does three things,
 not one). What the review found:
@@ -506,9 +524,12 @@ them. Every one is constrained by the resolution analysis.
 > service capacity, and was indistinguishable from capacity itself at the
 > experiment's resolution.
 
+<!-- withdrawn-quote-ok: the prohibition itself, and its rationale quotes the word -->
 **"Statistically" is struck.** The indistinguishability argument rests on
 bisection resolution, interval width and replicate spread — an
-experimental-resolution claim, not an equivalence test. Saying "statistically"
+experimental-resolution claim, not an equivalence test.
+<!-- withdrawn-quote-ok: the rationale names the struck word -->
+Saying "statistically"
 invites "which test, which null, which equivalence margin, which confidence
 level," a fight the paper does not need and §4 does not equip it for.
 
@@ -603,6 +624,7 @@ statement uses the non-strict form.
 resulting worker count implies under the intended service time), and
 `C_model` (`c / (S + δ)`, the error model's prediction — a modelled quantity,
 never called "actual"), and `C_measured` (the observed saturation plateau). The paper never calls the
+<!-- withdrawn-quote-ok: the prohibition itself, quoting the term it forbids -->
 configured parameter "true capacity" — the harness's own admin field is named
 `trueCapacity` and returns `C_config`, which §3 records as a residue of the
 assumption the paper falsifies. All algebra is written in terms of the worker

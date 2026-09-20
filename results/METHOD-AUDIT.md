@@ -2131,3 +2131,88 @@ figure-pass changes.
 | 33. field names | `trueCapacity` = **C_config** in harness records and **C_measured** in the E2D calibration; `C_true` = **C_measured**. Recorded here once; identifiers unchanged |
 | 33. prose | every prose "true capacity" corrected to C_model or C_measured as context requires; dated notes; SPEC.md and E2E-PLAN.md preserved |
 | 33. T1 vs Table 1 | `figures/T1-false-findings.md` (`make_table1.py`) is the manuscript's ~~**Table 2**~~ → **Table 4** — **corrected 2026-09-20**: outline v7.1 renumbered the manuscript tables into citation order (T1 amendments §4 · T2 per-cell resolution §6 · T3 candidate explanations §8 · T4 claims overturned by independent checks §9) and this entry was not updated with it. Manuscript **Table 1** still has no generated artefact and lives in `paper/section4.md`; `figures/T3-resolution.md` is manuscript **Table 2**; `figures/calibration-artefact-findings.md` is manuscript **Table 3**. **Rename all three at the W5 figure pass** — `T1-false-findings.md` → `T4-false-findings.md` with `make_table1.py` → `make_table4.py`, `T3-resolution.md` → `T2-resolution.md`, `calibration-artefact-findings.md` → `T3-candidate-explanations.md` with its generator |
+
+---
+
+## 34. Four claims searched for a source; one has one
+
+Four claims were carried in the §9 plan without a citation. Searched 2026-09-20
+across tracked files and the full commit history. **Restore only the one that
+survived.**
+
+### Stale trace shadowing — NO PRIMARY ARTEFACT
+
+Two references exist, and both point at an incident rather than record one:
+
+> `scripts/recompute_rho.py:28` — "It shadowed a complete trace once and produced
+> a silently skipped run; preferring plain would eventually produce silently
+> WRONG numbers instead."
+
+> `results/e2b-interrupted/README.md:26` — "a plain trace beside a complete gzip
+> has silently shadowed a good one in this project **before**."
+
+Neither names the run, the campaign or the date, and no run record, log or
+commit message documents the occurrence. Searching the history for the commit
+that introduced the gzip preference returns nothing, so the fix was not
+committed with an account of what prompted it. **The defence is real and is in
+the code; the incident is undocumented.**
+
+### E2 run-ID collision — NO PRIMARY ARTEFACT, AND THE SOURCES SAY IT DID NOT HAPPEN
+
+Every reference describes a collision that was **prevented**, in the conditional:
+
+- `scripts/locate_boundary.py:528` — ids derived from arm and regime alone mean
+  "two campaigns on the same arm collide by name", which is why `--run-prefix`
+  exists.
+- `results/E2B-PLAN.md:144` — E2b ids "cannot collide with" E1's.
+- `scripts/test_locate_boundary.py:257` — ids without the prefix "**would**
+  collide with the c50 records".
+- A commit message states that E2b's "run ids are prefixed and **would not have
+  collided**, but keeping campaigns separate on disk" was preferred anyway.
+
+There is no record of an actual collision in E2 or anywhere else.
+
+### E1B median — **SOURCED, and narrower than the claim**
+
+`results/E1B-REPORT.md:81` states:
+
+> median queue depth 20.6 at c10 against 101.8 at c50, with the DEEP threshold
+> crossed 0 times out of 12 versus 9
+
+The sentence is about the **twelve fresh runs**. Computed from those twelve run
+records, the medians are **20.88** and **102.25** — which is what the generated
+`results/E2-REPORT.md:102-103` independently reports for the same two cells.
+
+| cell | sorted n=12 | 6th element | true n=12 median | n=15 median |
+|---|---|---|---|---|
+| c10/C0 rl=825 | 10.44 … 38.46 | **20.57** | **20.88** | 20.57 |
+| c50/C0 rl=975 | 23.36 … 158.65 | **101.79** | **102.25** | 101.79 |
+
+The quoted values are not arbitrary: 20.57 and 101.79 are the **n = 15**
+medians, and `E1B-REPORT.md:97-98` quotes them correctly as such. They also
+coincide exactly with the sixth of the twelve sorted values. So the defect is
+not a botched median — it is a **correct statistic of the wrong set**, attached
+at line 81 to the n = 12 claim beside it.
+
+That is the form in which it can be restored to §9. "Quoted the sixth of twelve
+elements as a median" describes the arithmetic coincidence, not what happened.
+
+### "One error in 70 hand-written values and zero in 241 generated" — NO SOURCE
+
+`results/REVIEWER-RESPONSE-W2.md:501` is the only census of its kind:
+
+> | **total** | **401** | **374** | 241 generated, 160 hand-written |
+
+Those are **over-precise occurrences**, not errors, and the hand-written count is
+**160**, not 70. The string "70" appears nowhere in that context anywhere in the
+repository; the nearest hit is `NOTES.md:1123`, "§4b ~70% error rate", which is
+the HTTP error share of an early-phase run and has nothing to do with precision
+or with hand-written values. **No error audit of hand-written against generated
+values exists.** Removing the claim was correct.
+
+| item | outcome |
+|---|---|
+| 34. stale trace shadowing | **unsourced** — two references to a prior incident, no record of it |
+| 34. E2 run-ID collision | **unsourced** — every reference is to a prevented risk, stated conditionally |
+| 34. E1B median | **sourced**, `E1B-REPORT.md:81` — but it is an n = 15 median attached to an n = 12 claim, not a mis-taken median |
+| 34. one-error-in-70 | **no source** — W2 counts 401 over-precise occurrences, 160 hand-written, and counts occurrences rather than errors |

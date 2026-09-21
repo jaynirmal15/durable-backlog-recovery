@@ -1,5 +1,6 @@
 # §2 — Background and related work
 
+*Draft 7 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at twelve citing sentences of §II-A to §II-D, carrying thirteen of the fourteen references (Little is keyed in §I and §III) (the GitLab pair on "recurring"; Papadopoulos on the general measurement-bias clause before the colon of §II-D's opening sentence, Mytkowicz on the concrete compiler example after it — reviewer ruling 2026-09-21, moved off the Heiser sentence, where the catalogue was the grammatical subject). The move puts Papadopoulos ahead of Mytkowicz in first-appearance order. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 6 — SCIENCE FROZEN, citation-inventory sync only. 2026-09-20. The
 reference list added Papadopoulos et al. at [14] and recorded that it attaches
 to §II-D — and this section's own citation inventory did not know it existed.
@@ -170,10 +171,10 @@ deployed: consumer-side rate limits, bounded in-flight windows, batch sizing,
 client quotas, prioritisation, and isolation of recovery work from live work.
 The operational sources reviewed here do not provide a quantitative rule for
 setting those controls. They treat backlog drain as a capacity-planning and
-prioritisation problem: Amazon's Builders' Library describes separate and
+prioritisation problem: Amazon's Builders' Library [@yanacek] describes separate and
 spillover queues, throttling, and processing fresh work ahead of old backlog,
 rather than metering a shared path. Separately, public incident records show backlogs and
-queueing-objective violations recurring in production message processing.
+queueing-objective violations recurring in production message processing [@gitlab-20797], [@gitlab-21046].
 
 The operational sources reviewed here do not quantify the safe drain boundary or
 report it with experimental resolution: they establish that the competition
@@ -188,11 +189,11 @@ baseline for anything.
 
 Where a shared downstream must protect an objective, the established answer is
 to shed or delay work. Production and research overload controllers make that
-decision from an observed signal and a target: DAGOR, deployed across WeChat's
+decision from an observed signal and a target: DAGOR [@dagor], deployed across WeChat's
 microservice fleet, detects overload from average request queueing time and
 applies admission control with per-service priority thresholds; Breakwater
-adjusts server-issued credits from measured queueing delay against a target, to
-hold tail latency under heavy load; and Bouncer admits or rejects queries using
+[@breakwater] adjusts server-issued credits from measured queueing delay against a target, to
+hold tail latency under heavy load; and Bouncer [@bouncer] admits or rejects queries using
 estimated percentile *response* times against response-time objectives. The
 design pattern these share is a feedback loop closed on a latency-derived
 signal — queueing delay in the first two, response-time percentiles in the
@@ -220,7 +221,7 @@ baseline for §VII, which examines it alongside timeout rate and queue depth.
 ### C. Capacity estimation and self-tuning
 
 The third thread is where this paper's conclusion joins. Systems that size
-themselves must estimate how much work they can do. Google's Autopilot sets
+themselves must estimate how much work they can do. Google's Autopilot [@autopilot] sets
 resource limits and replica counts for production workloads from observed usage
 history rather than from declared configuration, and reports that manually
 managed jobs carried substantially more slack relative to observed need than
@@ -230,12 +231,12 @@ than downstream service capacity, and the analogy is to the practice, not to the
 quantity.
 
 A second observation is closer to this paper's mechanism. Barroso and colleagues
-show that small software overheads become large *relative* to service times as
+[@killer-microseconds] show that small software overheads become large *relative* to service times as
 those times shrink toward the microsecond range, sharply reducing achievable
 throughput efficiency — the same arithmetic that makes an approximately
 constant per-request cost a 9.26% capacity error at a 5 ms service time and
 1.85% at 25 ms. The tail-latency literature supplies the surrounding context: rising
-utilisation and scale make latency increasingly sensitive at the margin.
+utilisation and scale make latency increasingly sensitive at the margin [@tail-at-scale].
 
 This paper's contribution to that thread is a measurement of what the error
 cost in one instrument, not a new estimator and not a general bound. The finding
@@ -256,13 +257,13 @@ The fourth thread is the paper's home.
 
 The canonical result is Mytkowicz and colleagues' demonstration that measurement
 bias in systems experiments is commonplace and large enough to invert
-conclusions: changing the size of an environment variable or the link order of
+conclusions [@papadopoulos]: changing the size of an environment variable or the link order of
 object files was sufficient to reverse the apparent effect of a compiler
-optimisation, in experiments that looked methodologically sound. Ousterhout's
+optimisation, in experiments that looked methodologically sound [@mytkowicz]. Ousterhout's
 argument that one should always measure one level deeper is the constructive
 form of the same point — that a top-level number should be checked against the
 mechanism that produces it, because an aggregate can be right for the wrong
-reason. Heiser's catalogue of benchmarking crimes makes the failure modes
+reason [@ousterhout]. Heiser's catalogue of benchmarking crimes [@heiser] makes the failure modes
 enumerable, and much of the catalogue concerns exactly this: quantities reported
 without the conditions under which they were obtained.
 

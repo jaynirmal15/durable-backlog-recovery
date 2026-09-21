@@ -730,7 +730,7 @@ named in a section's header.
 
 ## §1 Introduction — 1,600 words
 
-<!-- plan-synced-to: section1 draft 17 -->
+<!-- plan-synced-to: section1 draft 18 -->
 
 Four moves:
 
@@ -759,7 +759,7 @@ there a seven-cell campaign in a methods paper."*
 
 ## §2 Background and related work — 1,400 words
 
-<!-- plan-synced-to: section2 draft 6 -->
+<!-- plan-synced-to: section2 draft 7 -->
 
 <!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work
@@ -862,7 +862,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 10 -->
+<!-- plan-synced-to: section3 draft 11 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after

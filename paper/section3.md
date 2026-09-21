@@ -1,5 +1,6 @@
 # §3 — The harness, the capacity model, and its error model
 
+*Draft 11 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at Little's law in the staffing relation (1), where §III uses it. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 10 — FROZEN.
 Draft 10: "rate-limited but not rate-controlled" replaced with "open-loop
 rate-limited" — open-loop fixed-rate control is still rate control, so the earlier
@@ -94,7 +95,7 @@ built so that the quantity the experiment varies is the quantity under study.
 Capacity is realised as a bounded worker pool in front of an admission-limited
 queue. Under an idealised worker model, in which a worker is occupied for exactly
 the emulated service time `S` and is otherwise immediately available, Little's
-law gives a mean in-service concurrency of `C_config · S`. The pool is therefore
+law [@little] gives a mean in-service concurrency of `C_config · S`. The pool is therefore
 staffed with
 
     c = ceil(C_config · S)                                                  (1)

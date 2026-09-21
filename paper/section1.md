@@ -1,5 +1,6 @@
 # §1 — Introduction
 
+*Draft 18 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at the first mention of Little's law. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 17 — one-clause sync, 2026-09-20. C4 said "three findings retracted
 before publication rather than after" without saying which three. The draft note
 knew they were §IX's independent-check set and not the three candidate
@@ -97,7 +98,7 @@ arm.
 
 That result is only useful if capacity is known, and the substance of this paper
 is that it was not. The downstream is a purpose-built instrument with an explicit
-capacity parameter, staffed from that parameter by Little's law, built for this
+capacity parameter, staffed from that parameter by Little's law [@little], built for this
 study and measured by its author. It overstated its own capacity by a
 per-request timing bias of `δ` = 0.463 ms — the pooled
 saturation-plateau-inferred value — which corresponds to a capacity

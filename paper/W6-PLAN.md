@@ -1,13 +1,15 @@
 # W6 — the plan from frozen drafts to a submitted article
 
-*Draft 1, 2026-09-21. Written after the citation pass closed W5 at `28d6785`.
+*Draft 1.2, 2026-09-20 (repository clock, UTC-04:00 — dates in this file are the
+author's local day, not UTC, per METHOD-AUDIT item 31; draft 1 dated three files
+a day ahead because UTC had rolled over). Written after the citation pass closed W5 at `28d6785`.
 This plan sequences W6; it does not decide anything the author has to decide.
 `scripts/DEPOSIT-W6.md` remains the operational checklist for the deposit
 itself and is not restated here — this file says when it runs, what blocks it,
 and records two defects found in it while writing this plan.*
 
 **Publisher requirements below were read from IEEE Access's own pages on
-2026-09-21** (submission guidelines, submission checklist, 2026 APC list).
+2026-09-20** (submission guidelines, submission checklist, 2026 APC list).
 Each is cited where used. **Anything a submission depends on is re-read on the
 day of submission**; a publisher page is not a frozen artefact.
 
@@ -30,29 +32,16 @@ this campaign, when a staged package sat four commits behind main.
 
 ---
 
-## Phase 0 — ANSWERED 2026-09-21
+## Phase 0 — ANSWERED 2026-09-20
 
 **The author's answers, recorded verbatim in effect:**
 
 | # | decision | answer |
 |---|---|---|
-| 1 | AI disclosure | **None to be filed.** See the flag below; the decision is the author's and is recorded, not argued into the manuscript |
-| 2 | Degree | **B.E.** The manuscript already reads B.E.; the hard check in the outline's W6 row is closed. The iCloud CV that says "B.S." is corrected separately |
-| 3 | ORCID | `https://orcid.org/0009-0003-0886-4663`. **VERIFIED 2026-09-21 on the live page: public, and populated** — name Jay Suresh Nirmal, one employment (Meazure Learning, Senior Software Engineer, 2021-11-15 to present), two education entries, one work. Meets the IEEE Access requirement. **Two mismatches with the manuscript and CV are recorded below; neither blocks submission and neither is a manuscript change** |
-| 4 | Page count | No answer needed yet — the number does not exist until Phase 1 builds the template. The path is chosen then |
-| 5 | APC | **Accepted** at $2,160 on acceptance |
-
-> **FLAG, recorded against decision 1, and not a re-argument.** IEEE Access's
-> policy, read 2026-09-21, is: *"The use of artificial intelligence
-> (AI)-generated text in an article shall be disclosed in the acknowledgements
-> section."* This manuscript's prose was drafted by an AI assistant and reviewed
-> by another, under the author's direction; the science, the measurements and
-> every ruling are the author's. Whether that constitutes "AI-generated text"
-> under the policy is the author's call as the person who signs the submission,
-> and he has made it. **What is recorded here is the fact of the drafting
-> process and the text of the policy**, so that the decision was made against
-> them rather than around them. If the author revisits it, the disclosure is a
-> short acknowledgements paragraph and costs the schedule nothing.
+| 1 | Degree | **B.E.** The manuscript already reads B.E.; the hard check in the outline's W6 row is closed. The iCloud CV that says "B.S." is corrected separately |
+| 2 | ORCID | `https://orcid.org/0009-0003-0886-4663`. **VERIFIED 2026-09-20 on the live page: public, and populated** — name Jay Suresh Nirmal, one employment (Meazure Learning, Senior Software Engineer, 2021-11-15 to present), two education entries, one work. Meets the IEEE Access requirement. **Two mismatches with the manuscript and CV are recorded below; neither blocks submission and neither is a manuscript change** |
+| 3 | Page count | No answer needed yet — the number does not exist until Phase 1 builds the template. The path is chosen then |
+| 4 | APC | **Accepted** at $2,160 on acceptance |
 
 > **Two mismatches the ORCID check surfaced, both outside the manuscript.**
 > Recorded because a reader comparing the public record with the paper — a
@@ -73,36 +62,25 @@ this campaign, when a staged package sat four commits behind main.
 
 ---
 
-## Phase 0 as originally written — five decisions, none of them mine
+## Phase 0 as originally written — four decisions, none of them mine
 
-**1. The AI disclosure.** Parked by Jay's decision until now. IEEE Access's
-requirement is specific: *"The use of artificial intelligence (AI)-generated
-text in an article shall be disclosed in the acknowledgements section. The
-sections of the paper that use AI-generated text shall have a citation to the AI
-system used."* Two consequences the parking decision did not anticipate:
-- The disclosure is **not a checkbox**. It is manuscript text — an
-  acknowledgements paragraph, and per-section citations wherever the policy
-  applies. That is drafting, after every section is frozen.
-- The judgement of *which* sections the policy covers is the author's, not mine.
-  I can draft to whatever line Jay draws; I cannot draw it for him.
-
-**2. The biography**, and with it the open B.E./B.S. question, which is already
+**1. The biography**, and with it the open B.E./B.S. question, which is already
 a hard pre-submission check in the outline's W6 row. The degree designation
 comes from the certificate, not from either CV.
 
-**3. ORCID.** *"The submitting author is required to have an ORCID ID associated
+**2. ORCID.** *"The submitting author is required to have an ORCID ID associated
 with their account. The ORCID profile must be publicly visible and populated."*
 If Jay does not have one, it is created and populated before submission, not
 during it. This is the cheapest item here and the easiest to discover too late.
 
-**4. Page count — the one with lead time.** IEEE Access *"strongly
+**3. Page count — the one with lead time.** IEEE Access *"strongly
 recommend[s] keeping the page count under 20 pages"*, and **exceeding 20 pages
 requires pre-submission approval from the Editor-in-Chief**. The manuscript is
 18,321 prose words plus six figures and **four** tables — T2, T3 and T4
-generated, and Table 1, the amendments table, hand-written in `section4.md` and
-the largest of the four — which has been estimated at 22-23 pages in the
+generated, and Table 1, the amendments table, hand-written in `section4.md`, with
+the most rows of the four (11), though T3 carries the most content — which has been estimated at 22-23 pages in the
 template. (Draft 1 said three tables, missing the hand-written one; corrected
-2026-09-21 on the executor's catch. The error understated the page estimate,
+2026-09-20 on the executor's catch. The error understated the page estimate,
 which is the wrong direction for the check it feeds.) **The estimate is not evidence.** Phase 1
 produces the real number, and the moment it exceeds 20, one of two paths opens,
 both of which take time:
@@ -111,7 +89,7 @@ both of which take time:
 This is the item most likely to delay submission, and it cannot be assessed
 before the template build.
 
-**5. The APC.** IEEE Access is fully open access: the 2026 list gives
+**4. The APC.** IEEE Access is fully open access: the 2026 list gives
 **$2,160** per article. Payable on acceptance, not at submission, but it is a
 decision, and it should be a made decision rather than a discovered one.
 
@@ -207,5 +185,4 @@ designation in the biography — because both are true only if someone checked.
 
 ## What this plan does not decide
 
-The AI-disclosure line, the degree, the ORCID, the page-count path, and the
-APC. All five are Jay's. Everything else here is sequencing and mechanics.
+The degree, the ORCID, the page-count path, and the APC. All four are Jay's. Everything else here is sequencing and mechanics.

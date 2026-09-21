@@ -4,6 +4,8 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{alltt}
+\usepackage{array}
+\usepackage{tabularx}
 \begin{document}
 \history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
 \doi{10.1109/ACCESS.2026.0429000}
@@ -109,12 +111,7 @@ The harness is four services in Go, orchestrated by Docker Compose, plus a runne
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F1-architecture.pdf}
-\caption{The harness. Live traffic reaches the dependency by direct HTTP and
-never enters the message broker; recovery traffic is produced into JetStream
-during the outage and drained from it by a rate-limited consumer. The two paths
-share nothing until the downstream, which is the only contended resource. The
-fault withdraws the dependency's capacity for 120 s, and its restoration is the
-time origin for every measurement reported here.}
+\caption[The harness.]{The harness. Live traffic reaches the dependency by direct HTTP and never enters the message broker; recovery traffic is produced into JetStream during the outage and drained from it by a rate-limited consumer. The two paths share nothing until the downstream, which is the only contended resource. The fault withdraws the dependency's capacity for 120 s, and its restoration is the time origin for every measurement reported here.}
 \label{fig:harness}
 \end{figure*}
 
@@ -189,13 +186,7 @@ The worker's cycle, however, is longer than the service time it emulates (Fig.~\
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F2-capacity-model.pdf}
-\caption{Where the unaccounted cost enters. The harness sizes the dependency
-as c = $\lceil$C\_config$\cdot$S$\rceil$ workers on the assumption that each turns a request round in
-exactly S, which makes capacity equal to C\_config by construction. A worker in fact pays a fixed
-additional 0.463 ms per request, almost all of it the operating system sleeping
-longer than asked. C\_model is therefore c/(S + $\delta$), as in (5), and because the cost is
-additive rather than proportional it consumes a larger share of a short service
-time than a long one.}
+\caption[Where the unaccounted cost enters.]{Where the unaccounted cost enters. The harness sizes the dependency as c = $\lceil$C\_config$\cdot$S$\rceil$ workers on the assumption that each turns a request round in exactly S, which makes capacity equal to C\_config by construction. A worker in fact pays a fixed additional 0.463 ms per request, almost all of it the operating system sleeping longer than asked. C\_model is therefore c/(S + $\delta$), as in (5), and because the cost is additive rather than proportional it consumes a larger share of a short service time than a long one.}
 \label{fig:capacity-model}
 \end{figure*}
 
@@ -239,30 +230,25 @@ The estimator below was registered because an earlier phase of this project had 
 The document is referenced by commit hash and is immutable: no rule in it may be changed once that hash is cited. Corrections take the form of dated amendments appended to it, with the original text left intact and the reason stated, and an amendment made after results were opened is marked as such. Six amendments, one registered re-analysis, one registered replication and two record corrections were made. All ten are listed in Table~\ref{tab:amendments}; four are discussed below.
 
 \begin{table*}[!t]
-\caption{Amendments to the pre-registration, the A7 registered
-re-analysis, the A8 registered replication and the two record corrections. The
-two right-hand columns separate registration \textit{before the data existed} from
-registration \textit{before the analysis was run}; they are different claims and only
-the first is prospective registration. They do not apply to a record correction,
-which governs neither, and those rows read N/A rather than being forced into a
-category they do not belong to.}
+\caption[Amendments to the pre-registration, the A7 registered re-analysis, the A8 registered replication and the two record corrections.]{Amendments to the pre-registration, the A7 registered re-analysis, the A8 registered replication and the two record corrections. The two right-hand columns separate registration \textit{before the data existed} from registration \textit{before the analysis was run}; they are different claims and only the first is prospective registration. They do not apply to a record correction, which governs neither, and those rows read N/A rather than being forced into a category they do not belong to.}
 \label{tab:amendments}
 \centering
-\begin{tabular}{llllll}
+\footnotesize
+\begin{tabularx}{\textwidth}{lll>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
 \hline
-\textbf{\#} & \textbf{Date} & \textbf{Commit} & \textbf{Change} & \textbf{Predates governed data} & \textbf{Predates governed analysis} \\ \hline
+{\bfseries \#} & {\bfseries Date} & {\bfseries Commit} & {\bfseries Change} & {\bfseries Predates governed data} & {\bfseries Predates governed analysis} \\ \hline
 A1 & 2026-09-11 & \texttt{e5bf303} & Interval's upper end is the first NON-SAFE point, which may be MARGINAL, not the first UNSAFE point & Yes & Yes \\
 A2 & 2026-09-11 & \texttt{1fe9de3} & A non-SAFE anchor extends the search downward instead of aborting for a hand-chosen anchor & Yes & Yes \\
 A3 & 2026-09-11 & \texttt{699e105}, \texttt{25583c7} & Live injector moves from a tick-dropping timer to lanes & Yes & Yes \\
-A4 & 2026-09-11 & \texttt{d5ea89d}, \texttt{ddd428d} & Achieved recovery rate measured over the delivery span, not the drain window & \textbf{Partly} --- the first boundary's traces (c10/C0) already existed and were recomputed; registered before the remaining E1 cells & Yes \\
-A5 & 2026-09-12 & \texttt{fe36734} & Leading-indicator noise scale changed from mean to median & \textbf{No} & \textbf{No} --- chosen with the numbers in view \\
-A6 & 2026-09-13 & \texttt{c3aee75} & A4 is not valid at collapsed points; utilisation is not reported there & \textbf{No} & \textbf{No} \\
-A7 & 2026-09-14 & \texttt{939902d} & \textit{Registered re-analysis, not an amendment.} The frozen leading-indicator criterion and statistic, re-run over the corrected-harness corpus & \textbf{No} --- that corpus already existed & \textbf{Yes} --- criterion, statistic and prediction all frozen before the re-analysis \\
-A8 & 2026-09-14 & \texttt{590d1cc} & \textit{Registered replication, not an amendment.} Repeatability of the two corrected saturation plateaus: ten 60-second windows per arm, median convention, with both arms' readings fixed in advance. No registered constant, no plateau estimator and no analysis path is changed by it & \textbf{Yes} --- the twenty windows were collected afterwards & \textbf{Yes} \\
-A9 & 2026-09-19 & \texttt{9caf476} & \textit{Record correction, not an amendment.} A8's short-arm reading states that neither plateau figure was itself registered as a plateau; \texttt{67c448b} tabulates both and gates the boundary read on them, so that statement is wrong. No A8 criterion, datum or result depends on it & \textbf{N/A} --- governs no data & \textbf{N/A} --- governs no analysis \\
-A10 & 2026-09-19 & \texttt{51026cc} & \textit{Record correction, not an amendment.} A6 reports the E2d collapse factor as 10.3$\times$, computed from a midpoint numerator against a SAFE-only denominator; matched on the SAFE side it is 10.5$\times$. The denominator, the direction and A6's verdict are unchanged & \textbf{N/A} --- governs no data & \textbf{N/A} --- governs no analysis \\
+A4 & 2026-09-11 & \texttt{d5ea89d}, \texttt{ddd428d} & Achieved recovery rate measured over the delivery span, not the drain window & {\bfseries Partly} --- the first boundary's traces (c10/C0) already existed and were recomputed; registered before the remaining E1 cells & Yes \\
+A5 & 2026-09-12 & \texttt{fe36734} & Leading-indicator noise scale changed from mean to median & {\bfseries No} & {\bfseries No} --- chosen with the numbers in view \\
+A6 & 2026-09-13 & \texttt{c3aee75} & A4 is not valid at collapsed points; utilisation is not reported there & {\bfseries No} & {\bfseries No} \\
+A7 & 2026-09-14 & \texttt{939902d} & \textit{Registered re-analysis, not an amendment.} The frozen leading-indicator criterion and statistic, re-run over the corrected-harness corpus & {\bfseries No} --- that corpus already existed & {\bfseries Yes} --- criterion, statistic and prediction all frozen before the re-analysis \\
+A8 & 2026-09-14 & \texttt{590d1cc} & \textit{Registered replication, not an amendment.} Repeatability of the two corrected saturation plateaus: ten 60-second windows per arm, median convention, with both arms' readings fixed in advance. No registered constant, no plateau estimator and no analysis path is changed by it & {\bfseries Yes} --- the twenty windows were collected afterwards & {\bfseries Yes} \\
+A9 & 2026-09-19 & \texttt{9caf476} & \textit{Record correction, not an amendment.} A8's short-arm reading states that neither plateau figure was itself registered as a plateau; \texttt{67c448b} tabulates both and gates the boundary read on them, so that statement is wrong. No A8 criterion, datum or result depends on it & {\bfseries N/A} --- governs no data & {\bfseries N/A} --- governs no analysis \\
+A10 & 2026-09-19 & \texttt{51026cc} & \textit{Record correction, not an amendment.} A6 reports the E2d collapse factor as 10.3$\times$, computed from a midpoint numerator against a SAFE-only denominator; matched on the SAFE side it is 10.5$\times$. The denominator, the direction and A6's verdict are unchanged & {\bfseries N/A} --- governs no data & {\bfseries N/A} --- governs no analysis \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 \subsection{The service level objective}
@@ -296,17 +282,7 @@ Two qualifications, both of which narrow that statement. First, where a single f
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F5-collapse.pdf}
-\caption{The same seven boundaries, measured against the wrong capacity and the
-right one. Each line is one cell's last safe point, plotted first as a fraction
-of configured capacity and then as a fraction of the capacity that cell was
-measured to have. Both use the maximum achieved rate across that point's
-repetitions, the per-cell value \S{}IV defines for this figure. Against the
-configured value the boundaries span 0.0719 and appear to separate by
-concurrency arm; against measured capacity they close to 0.0071, and every cell
-sits within 0.7\% of saturation --- two of them fractionally above it, by about a
-fifth of a bisection step, which \S{}IV explains. The apparent variation in safe
-utilisation is an artefact of a capacity figure that is wrong by a different
-amount in each cell.}
+\caption[The same seven boundaries, measured against the wrong capacity and the right one.]{The same seven boundaries, measured against the wrong capacity and the right one. Each line is one cell's last safe point, plotted first as a fraction of configured capacity and then as a fraction of the capacity that cell was measured to have. Both use the maximum achieved rate across that point's repetitions, the per-cell value \S{}IV defines for this figure. Against the configured value the boundaries span 0.0719 and appear to separate by concurrency arm; against measured capacity they close to 0.0071, and every cell sits within 0.7\% of saturation --- two of them fractionally above it, by about a fifth of a bisection step, which \S{}IV explains. The apparent variation in safe utilisation is an artefact of a capacity figure that is wrong by a different amount in each cell.}
 \label{fig:collapse}
 \end{figure*}
 
@@ -321,36 +297,7 @@ The two corrected-harness cells were not produced by this search. They were asse
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F4-plateau-predicted-measured.pdf}
-\caption{Predicting the plateau. Maximum sustained throughput, predicted from
-the additive model and measured from the dependency's own served counter. In the
-uncorrected arms the configured capacity of 2000 overstates the measured plateau
-by 171 and 36 requests per second, and the model accounts for both to within
-0.2\%. Reducing the configured sleep by the measured overhead, with concurrency
-held fixed, brings the measured plateau to 1989.0 and 1997.7 against predictions
-of 1987.4 and 1997.7 --- differences of +1.6 and +0.0 requests per second at two
-service times a factor of five apart. The +0.0 in the long arm is agreement, not
-evidence. The two candidate corrections imply plateaus 1.60 rps apart there,
-and the observed range across the ten windows is 2.83 rps, so that arm cannot
-separate them however closely its median lands. Candidate selection is tested
-only by the short arm, where the separation is 8.6 rps. \S{}V-D gives the argument.
-
-Predictions are drawn as points on a short rule, measurements as bars, so
-the two are not rendered in the same visual grammar.
-
-The two pairs come from different corpora. The uncorrected pair is E1 c10/C0
-and E1 c50/C0, two of the seven-cell boundary campaign, whose plateaus are each
-the median of six per-run maximum-30 s-sustained measurements, repeatable to
-0.11\% and 0.13\%. The corrected pair is the E2e campaign, replicated under
-pre-registration addendum A8: each corrected plateau is the median of n = 10
-60-second closed-loop windows, the same median convention used for the
-seven cells.
-
-The whiskers on the two corrected bars are the observed interquartile range
-of those ten windows --- 1.71 and 1.29 requests per second. They are
-window-to-window scatter, not an inferential interval, and no confidence
-statement is attached to them. The uncorrected bars carry no whiskers because
-those plateaus were not replicated in this form; the absence is a statement
-about what was measured, not a claim of zero uncertainty.}
+\caption[Predicting the plateau.]{Predicting the plateau. Maximum sustained throughput, predicted from the additive model and measured from the dependency's own served counter. In the uncorrected arms the configured capacity of 2000 overstates the measured plateau by 171 and 36 requests per second, and the model accounts for both to within 0.2\%. Reducing the configured sleep by the measured overhead, with concurrency held fixed, brings the measured plateau to 1989.0 and 1997.7 against predictions of 1987.4 and 1997.7 --- differences of +1.6 and +0.0 requests per second at two service times a factor of five apart. The +0.0 in the long arm is agreement, not evidence. The two candidate corrections imply plateaus 1.60 rps apart there, and the observed range across the ten windows is 2.83 rps, so that arm cannot separate them however closely its median lands. Candidate selection is tested only by the short arm, where the separation is 8.6 rps. \S{}V-D gives the argument. \par Predictions are drawn as points on a short rule, measurements as bars, so the two are not rendered in the same visual grammar. \par The two pairs come from different corpora. The uncorrected pair is E1 c10/C0 and E1 c50/C0, two of the seven-cell boundary campaign, whose plateaus are each the median of six per-run maximum-30 s-sustained measurements, repeatable to 0.11\% and 0.13\%. The corrected pair is the E2e campaign, replicated under pre-registration addendum A8: each corrected plateau is the median of n = 10 60-second closed-loop windows, the same median convention used for the seven cells. \par The whiskers on the two corrected bars are the observed interquartile range of those ten windows --- 1.71 and 1.29 requests per second. They are window-to-window scatter, not an inferential interval, and no confidence statement is attached to them. The uncorrected bars carry no whiskers because those plateaus were not replicated in this form; the absence is a statement about what was measured, not a claim of zero uncertainty.}
 \label{fig:plateau}
 \end{figure*}
 
@@ -415,12 +362,13 @@ Two denominators are in use, they are never mixed within a table, and they are g
 Boundary files report $\rho_{\mathrm{config}}$, following the registered definition of achieved $\rho$. The collapse figures of \S{}VI are $\rho_{\mathrm{eff}}$, which is what makes them a statement about measured service capacity rather than about the configured parameter. They are reported per cell at each cell's own resolution in Table~\ref{tab:resolution}; no range spanning the cells is quoted, because the cells do not share a precision. Predicted plateaus are $C_{\mathrm{model}}$. $C_{\mathrm{staffed}}$ is not a distinct quantity in this campaign: $\lceil C_{\mathrm{config}} \cdot S \rceil$ is exact in all seven cells, so $C_{\mathrm{staffed}}$ equals $C_{\mathrm{config}}$ identically. Each cell's measured-capacity reference ratio is $C_{\mathrm{measured}} \,/\, C_{\mathrm{config}}$. Every figure and table names its denominator at the point of use, and Fig.~\ref{fig:collapse} names one per axis.
 
 \begin{table*}[!t]
-\caption{Per-cell resolution of the boundary estimate.}
+\caption[Per-cell resolution of the boundary estimate.]{Per-cell resolution of the boundary estimate.}
 \label{tab:resolution}
 \centering
-\begin{tabular}{lrrrrlrrrrl}
+\footnotesize
+\begin{tabularx}{\textwidth}{lrrrrlrr>{\raggedright\arraybackslash}Xr>{\raggedright\arraybackslash}X}
 \hline
-\textbf{cell} & \textbf{C\_config} & \textbf{C\_measured} & \textbf{step (rps)} & \textbf{step / C\_measured} & \textbf{rate bracket (rps)} & \textbf{width (rps)} & \textbf{n} & \textbf{replicate spread (rps)} & \textbf{$\rho$\_eff,safe} & \textbf{C\_measured range (rps)} \\ \hline
+{\bfseries cell} & {\bfseries C\_config} & {\bfseries C\_measured} & {\bfseries step (rps)} & {\bfseries step / C\_measured} & {\bfseries rate bracket (rps)} & {\bfseries width (rps)} & {\bfseries n} & {\bfseries replicate spread (rps)} & {\bfseries $\rho$\_eff,safe} & {\bfseries C\_measured range (rps)} \\ \hline
 E1 c10/C0 & 2000 & 1828.6 & 5 & 0.0027 & [825, 830] & 5 & 15 & 0.2 & 0.998 & 1828.0 -- 1829.9 (n = 6) \\
 E1 c10/C1 & 1400 & 1280.9 & 5 & 0.0039 & [275, 280] & 5 & 3 & 0.0 & 0.995 & 1279.1 -- 1282.0 (n = 6) \\
 E1 c50/C0 & 2000 & 1964.3 & 5 & 0.0025 & [975, 980] & 5 & 15 & 1.2 & 1.000 & 1962.7 -- 1965.3 (n = 6) \\
@@ -429,7 +377,7 @@ E2 c10@Q2500 & 2000 & 1827.1 & 5 & 0.0027 & [825, 830] & 5 & 12 & 0.2 & 0.999 & 
 E2 c50@Q500 & 2000 & 1964.8 & 5 & 0.0025 & [975, 980] & 5 & 12 & 1.2 & 1.000 & 1963.7 -- 1965.7 (n = 15) \\
 E2b C=400 & 400 & 392.7 & 5 & 0.0127 & [190, 195] & 5 & 12 & 0.0 & 0.99 & 392.5 -- 393.0 (n = 6) \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 \subsection{Achieved rates, never nominal}
@@ -499,15 +447,7 @@ Fig.~\ref{fig:overhead} carries the decomposition and the constant-versus-propor
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F3-overhead-measured.pdf}
-\caption{The cost is constant, not proportional. Mean per-request excess over
-the requested sleep, measured on the worker path at 90\% of C\_measured over
-roughly 120,000 requests per arm. Sleep overshoot accounts for 99.8\% of it; the
-runtime timer work, queue bookkeeping and channel send together contribute 1.3
-microseconds. Right: the discriminating test. A constant cost predicts a
-difference of zero between the arms and a proportional one predicts a ratio of
-five; the measured difference is $-$0.0052 ms and the measured ratio 0.990. The
-worker additionally pays about 0.0003 ms of timer work per request, excluded here
-so the bar matches the figure used throughout the analysis.}
+\caption[The cost is constant, not proportional.]{The cost is constant, not proportional. Mean per-request excess over the requested sleep, measured on the worker path at 90\% of C\_measured over roughly 120,000 requests per arm. Sleep overshoot accounts for 99.8\% of it; the runtime timer work, queue bookkeeping and channel send together contribute 1.3 microseconds. Right: the discriminating test. A constant cost predicts a difference of zero between the arms and a proportional one predicts a ratio of five; the measured difference is $-$0.0052 ms and the measured ratio 0.990. The worker additionally pays about 0.0003 ms of timer work per request, excluded here so the bar matches the figure used throughout the analysis.}
 \label{fig:overhead}
 \end{figure*}
 
@@ -516,17 +456,18 @@ so the bar matches the figure used throughout the analysis.}
 $\delta$ is not a single number and is never reported as one. The direct timing probe measured it under three conditions, and the reported estimate decreases across them (Table~\ref{tab:delta-conditions}):
 
 \begin{table*}[!t]
-\caption{The per-request timing bias $\delta$ measured by the direct timing probe under three conditions.}
+\caption[The per-request timing bias $\delta$ measured by the direct timing probe under three conditions.]{The per-request timing bias $\delta$ measured by the direct timing probe under three conditions.}
 \label{tab:delta-conditions}
 \centering
-\begin{tabular}{lrrl}
+\footnotesize
+\begin{tabularx}{\textwidth}{lrr>{\raggedright\arraybackslash}X}
 \hline
-\textbf{condition} & \textbf{$S$ = 5 ms} & \textbf{$S$ = 25 ms} & \textbf{estimator} \\ \hline
+{\bfseries condition} & {\bfseries $S$ = 5 ms} & {\bfseries $S$ = 25 ms} & {\bfseries estimator} \\ \hline
 at 90\% of capacity & 0.5165 ms & 0.5114 ms & mean over one 60 s window \\
 at saturation & 0.4947 ms & 0.4914 ms & mean over one 60 s window \\
 in situ, during a drain & 0.4775 ms & 0.4746 ms & median across runs of per-run medians of means \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 The estimator column is not decoration: the first two rows are single-window means, the third aggregates three deep across 15 to 18 runs, so the in-situ figure's stability is partly estimator rather than condition.
@@ -546,8 +487,8 @@ The correction applied to the emulated service time was the pooled saturation-pl
 The prediction did not use that constant. It used the direct timing probe's saturation values, 0.4947 and 0.4914 ms, measured on separate uncorrected runs by a different instrument from the one that produced the correction:
 
 {\footnotesize\begin{alltt}
-S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms   $\rightarrow$  10 / 0.0050317 = 1987.4 rps
-S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms $\rightarrow$  50 / 0.0250284 = 1997.7 rps
+S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms   \ensuremath{\rightarrow}  10 / 0.0050317 = 1987.4 rps
+S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms \ensuremath{\rightarrow}  50 / 0.0250284 = 1997.7 rps
 \end{alltt}}
 
 Both plateau figures were registered as plateaus, not derived afterwards. Addendum 1 of the E2e plan, commit \texttt{67c448b}, tabulates 1987.4 and 1997.7 rps and states the check they govern: \textit{each corrected cell's saturation plateau must match 1987.4 and 1997.7 before its boundary is read.} No parameter was estimated from the corrected runs. The same registration designated the saturation pair over its rival, stated the mechanism for preferring it, tabulated the rival's 90\%-load prediction, and pre-committed the reading if the rival won: \textit{if the boundaries land nearer the 90\%-load predictions instead, that is reported as the finding.} Registered at 17:31:47 UTC on 2026-09-13, it precedes the first corrected \textit{boundary} run by 39 minutes against that record's committed \texttt{startedAt} of 18:10:27. The in-situ figure was not a candidate --- it did not exist in the code until three hours later.
@@ -557,14 +498,15 @@ The plateau measurements themselves are not timestamped, and the paper does not 
 Measured: 1987.4 and 1998.1 rps. That was the original prospective test and, for the remainder of the campaign, the whole of the evidence: one 60-second window per arm. Every other cell carries 6 to 15 saturation measurements; these two carried one apiece, so the agreement could not be set against the scatter of the quantity it agreed with. Both plateaus were therefore replicated under addendum A8, registered in commit \texttt{590d1cc} before the harness was rebuilt and before any window was run --- ten 60-second windows per arm, median convention, with the reading fixed in advance for every outcome, including the one that would have withdrawn the claim made here (Table~\ref{tab:a8-replication}):
 
 \begin{table*}[!t]
-\caption{Plateau replication under addendum A8: ten 60-s windows per arm, in requests per second.}
+\caption[Plateau replication under addendum A8: ten 60-s windows per arm, in requests per second.]{Plateau replication under addendum A8: ten 60-s windows per arm, in requests per second.}
 \label{tab:a8-replication}
 \centering
+\footnotesize
 \begin{tabular}{lrrrrrr}
 \hline
-\textbf{arm} & \textbf{n} & \textbf{min} & \textbf{median} & \textbf{max} & \textbf{range} & \textbf{IQR} \\ \hline
-$S$ = 5 & 10 & 1987.27 & \textbf{1988.96} & 1990.38 & 3.11 & 1.71 \\
-$S$ = 25 & 10 & 1996.52 & \textbf{1997.70} & 1999.35 & 2.83 & 1.29 \\
+{\bfseries arm} & {\bfseries n} & {\bfseries min} & {\bfseries median} & {\bfseries max} & {\bfseries range} & {\bfseries IQR} \\ \hline
+$S$ = 5 & 10 & 1987.27 & {\bfseries 1988.96} & 1990.38 & 3.11 & 1.71 \\
+$S$ = 25 & 10 & 1996.52 & {\bfseries 1997.70} & 1999.35 & 2.83 & 1.29 \\
 \hline
 \end{tabular}
 \end{table*}
@@ -578,20 +520,21 @@ Two qualifications the replication supplies and the single windows could not. Th
 Both original observations fall within the corresponding A8 ranges, and the spreads --- 0.16\% and 0.14\% of capacity --- fall inside the seven-cell corpus's 0.10--0.24\% repeatability. These plateaus were never noisier than the rest of the campaign. Table~\ref{tab:delta-predictions} sets the registered and comparison predictions beside the replicated measured plateau.
 
 \begin{table*}[!t]
-\caption{Plateau predictions from registered and comparison $\delta$ estimates, with the replicated measured plateau, in requests per second.}
+\caption[Plateau predictions from registered and comparison $\delta$ estimates, with the replicated measured plateau, in requests per second.]{Plateau predictions from registered and comparison $\delta$ estimates, with the replicated measured plateau, in requests per second.}
 \label{tab:delta-predictions}
 \centering
-\begin{tabular}{lrr}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrr}
 \hline
-\textbf{$\delta$ source} & \textbf{predicted at $S$ = 5} & \textbf{predicted at $S$ = 25} \\ \hline
+{\bfseries $\delta$ source} & {\bfseries predicted at $S$ = 5} & {\bfseries predicted at $S$ = 25} \\ \hline
 pooled saturation-plateau-inferred correction, 0.463 ms & 2000.0 & 2000.0 \\
-\textbf{saturation probe --- registered choice} & \textbf{1987.4} & \textbf{1997.7} \\
+{\bfseries saturation probe --- registered choice} & {\bfseries 1987.4} & {\bfseries 1997.7} \\
 90\% load --- the rival registered alongside it & 1978.8 & 1996.1 \\
 in situ --- measured later, not a candidate & 1994.2 & 1999.1 \\
-\textbf{measured --- replicated median of ten windows} & \textbf{1988.96} & \textbf{1997.70} \\
+{\bfseries measured --- replicated median of ten windows} & {\bfseries 1988.96} & {\bfseries 1997.70} \\
 observed range across those ten windows & [1987.27, 1990.38] & [1996.52, 1999.35] \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 A correction fitted to produce the expected answer predicts exactly $C_{\mathrm{config}}$, 2000.0, in both arms --- the circularity objection rendered in numbers. The registered prediction instead placed the plateau \textit{below} that, at a value set by a constant the corrected runs never used. The table reports the replicated median and observed range; A8's adjudication uses the arm-specific registered rules above, not the original single-window observations, because one observation cannot be compared with a spread.
@@ -617,12 +560,13 @@ Established. A per-request component of worker occupancy: 0.47 to 0.52 ms by the
 Established, under matched accounting. The correction largely removes the inter-arm difference, reported under each estimator separately in Table~\ref{tab:accounting}. The four-decimal quantities are derived inter-arm differences, not measured per-cell utilisations; the extra digit keeps the subtraction from erasing the effect, and the underlying measured utilisations remain resolution-matched.
 
 \begin{table*}[!t]
-\caption{The apparent concurrency effect before and after calibration, under each accounting.}
+\caption[The apparent concurrency effect before and after calibration, under each accounting.]{The apparent concurrency effect before and after calibration, under each accounting.}
 \label{tab:accounting}
 \centering
+\footnotesize
 \begin{tabular}{lrrr}
 \hline
-\textbf{accounting} & \textbf{before} & \textbf{after} & \textbf{removed} \\ \hline
+{\bfseries accounting} & {\bfseries before} & {\bfseries after} & {\bfseries removed} \\ \hline
 drain-window, utilisation & 0.0670 & 0.0032 & 95\% \\
 drain-window, throughput & 134.0 rps & 6.4 rps & 95\% \\
 delivery-span, utilisation & 0.0696 & 0.0043 & 94\% \\
@@ -745,21 +689,7 @@ One further observation belongs here, with its quantity named. In the short-serv
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{F6-signal-selection.pdf}
-\caption{Both candidate signals rise together, then jump at the transition.
-Drain queue peak and live tail latency across the corrected c10 cell as
-utilisation approaches its boundary, each point the largest of its three
-repetitions. Both rise across the sampled safe range --- queue peak 7, 18 and 111
-requests and live p99 8, 14 and 58 ms at 975, 1075 and 1185 rps --- and then change
-sharply across the 55 rps interval to the first unsafe probe at 1240 rps, where
-the queue reaches its cap of 500 and live p99 reaches 508 ms. Read as leading
-indicators, the two do not separate. In the registered analysis (A7), which uses
-per-point means, mean queue depth and live p99 both first cross three standard
-deviations at 1075 rps, one probe point before the last safe one, together with
-live p90 and mean in-flight; live p50 crosses only at the last safe point, and
-timeout rate never crosses. The queue plotted here is its peak. That
-analysis's DEEP criterion concerns mean queue depth, which reaches 23.1
-requests inside the safe range against a threshold of 50 and so does not cross
-it there; a peak of 111 at the same point does not contradict that.}
+\caption[Both candidate signals rise together, then jump at the transition.]{Both candidate signals rise together, then jump at the transition. Drain queue peak and live tail latency across the corrected c10 cell as utilisation approaches its boundary, each point the largest of its three repetitions. Both rise across the sampled safe range --- queue peak 7, 18 and 111 requests and live p99 8, 14 and 58 ms at 975, 1075 and 1185 rps --- and then change sharply across the 55 rps interval to the first unsafe probe at 1240 rps, where the queue reaches its cap of 500 and live p99 reaches 508 ms. Read as leading indicators, the two do not separate. In the registered analysis (A7), which uses per-point means, mean queue depth and live p99 both first cross three standard deviations at 1075 rps, one probe point before the last safe one, together with live p90 and mean in-flight; live p50 crosses only at the last safe point, and timeout rate never crosses. The queue plotted here is its peak. That analysis's DEEP criterion concerns mean queue depth, which reaches 23.1 requests inside the safe range against a threshold of 50 and so does not cross it there; a peak of 111 at the same point does not contradict that.}
 \label{fig:signals}
 \end{figure*}
 
@@ -782,17 +712,18 @@ Three candidate explanations of the boundary's position were put to registered f
 One point has to be established first, because two corrections happened days apart and are easy to conflate. Amendment A6 concerns the treatment of collapsed points: it established that the A4 utilisation estimator over-reads there, and the response was to stop reporting utilisation at those points rather than to re-estimate them. A6 changed no candidate explanation's standing --- concurrency and service time remained affirmed, the admission limit remained rejected. What changed the interpretation of the two affirmed results was a separate and later operation: replacing the configured capacity parameter with an empirically calibrated capacity reference. Table~\ref{tab:candidates} keeps the two apart throughout.
 
 \begin{table*}[!t]
-\caption{Candidate explanations of the boundary, and what calibration changed about each.}
+\caption[Candidate explanations of the boundary, and what calibration changed about each.]{Candidate explanations of the boundary, and what calibration changed about each.}
 \label{tab:candidates}
 \centering
-\begin{tabular}{llll}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
 \hline
-\textbf{Candidate explanation} & \textbf{Registered falsification / challenge} & \textbf{Pre-calibration outcome} & \textbf{Post-calibration evidence and status} \\ \hline
-\textbf{The boundary depended on concurrency.} The two E1 arms separated by $D = m_{50} - m_{10} = 0.0689$ in safe utilisation, 0.9137 at concurrency 10 against 0.9826 at concurrency 50. & Swap the admission limits across the arms and score the fraction of $D$ that moves with the cap: \textbf{CONCURRENCY-DRIVEN} requires both $f \leq 0.25$ (E2 plan, \texttt{c823393}). & Confirmed. $f = +0.000$ and $-0.006$: neither cell moved toward the other arm, so the gap did not follow the cap (E2 report). & \textbf{No longer resolved after calibration.} Measured after the correction, on the same two arms. Under one recipe applied to both corpora the inter-arm gap falls from \textbf{0.0670 to 0.0032} (95\% removed) on the drain-window estimator and from 0.0696 to 0.0043 (94\% removed) on the delivery-span one --- 134.0 rps to 6.4 rps in throughput terms. \textbf{94--95\% of the separation is removed.} \\
-\textbf{The boundary depended on the admission limit.} The E1 arms had been run at different queue caps --- 500 at concurrency 10, 2500 at concurrency 50 --- so the cap was a live explanation of $D$. & The same swap, scored the other way: \textbf{CAP-DRIVEN} requires both $f \geq 0.75$ (E2 plan, \texttt{c823393}). & \textbf{Refuted before calibration.} Registered verdict OFF-SCALE, $f = +0.000$ and $-0.006$; \texttt{CAP-DRIVEN} was unreachable once the first cell returned +0.000, and neither cell moved materially in either direction (E2 report). & \textbf{Refuted pre-calibration by its own registered criterion. No post-calibration evidence, and none possible.} The correction has nothing to dissolve here: the campaign had already eliminated the cap as an explanation before the bias was known. The corrected corpus also ran only the original diagonal --- c10 at cap 500, c50 at cap 2500 --- so no post-calibration value of $f$ exists either. \\
-\textbf{Service time governed the boundary.} With concurrency and service time separated at $C = 400$, $\rho$* landed c50-like rather than c10-like. & Score $\rho$* against the two E1 midpoints: $h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \,/\, D$, where \textbf{ 1  reads S GOVERNS} and $h \leq 0.25$ reads concurrency governs (E2b plan, \texttt{a741d68}, with a dead band registered in advance). & Confirmed. $h = (0.98 - 0.9137) \,/\, 0.0689 = +0.980$ (E2b report), at the S-governs end of the scale. & \textbf{Affirmed pre-calibration; interpretation superseded; the registered statistic not recomputed.} $h$ is defined relative to the E1 arm separation, which was measured against the configured capacity parameter. Two later results undermine the S-governs reading without recomputing $h$: physically correcting the harness removes most of the separation between those same two arms (W8 matched accounting), and expressing seven cells against measured capacity resolves no service-time difference at all. \textbf{The exact registered  2  was never recomputed: no  3  cell exists on the corrected harness.} \\
+{\bfseries Candidate explanation} & {\bfseries Registered falsification / challenge} & {\bfseries Pre-calibration outcome} & {\bfseries Post-calibration evidence and status} \\ \hline
+{\bfseries The boundary depended on concurrency.} The two E1 arms separated by $D = m_{50} - m_{10} = 0.0689$ in safe utilisation, 0.9137 at concurrency 10 against 0.9826 at concurrency 50. & Swap the admission limits across the arms and score the fraction of $D$ that moves with the cap: {\bfseries CONCURRENCY-DRIVEN} requires both $f \leq 0.25$ (E2 plan, \texttt{c823393}). & Confirmed. $f = +0.000$ and $-0.006$: neither cell moved toward the other arm, so the gap did not follow the cap (E2 report). & {\bfseries No longer resolved after calibration.} Measured after the correction, on the same two arms. Under one recipe applied to both corpora the inter-arm gap falls from {\bfseries 0.0670 to 0.0032} (95\% removed) on the drain-window estimator and from 0.0696 to 0.0043 (94\% removed) on the delivery-span one --- 134.0 rps to 6.4 rps in throughput terms. {\bfseries 94--95\% of the separation is removed.} \\
+{\bfseries The boundary depended on the admission limit.} The E1 arms had been run at different queue caps --- 500 at concurrency 10, 2500 at concurrency 50 --- so the cap was a live explanation of $D$. & The same swap, scored the other way: {\bfseries CAP-DRIVEN} requires both $f \geq 0.75$ (E2 plan, \texttt{c823393}). & {\bfseries Refuted before calibration.} Registered verdict OFF-SCALE, $f = +0.000$ and $-0.006$; \texttt{CAP-DRIVEN} was unreachable once the first cell returned +0.000, and neither cell moved materially in either direction (E2 report). & {\bfseries Refuted pre-calibration by its own registered criterion. No post-calibration evidence, and none possible.} The correction has nothing to dissolve here: the campaign had already eliminated the cap as an explanation before the bias was known. The corrected corpus also ran only the original diagonal --- c10 at cap 500, c50 at cap 2500 --- so no post-calibration value of $f$ exists either. \\
+{\bfseries Service time governed the boundary.} With concurrency and service time separated at $C = 400$, $\rho$* landed c50-like rather than c10-like. & Score $\rho$* against the two E1 midpoints: $h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \,/\, D$, where {\bfseries $h \geq 0.75$ reads S GOVERNS} and $h \leq 0.25$ reads concurrency governs (E2b plan, \texttt{a741d68}, with a dead band registered in advance). & Confirmed. $h = (0.98 - 0.9137) \,/\, 0.0689 = +0.980$ (E2b report), at the S-governs end of the scale. & {\bfseries Affirmed pre-calibration; interpretation superseded; the registered statistic not recomputed.} $h$ is defined relative to the E1 arm separation, which was measured against the configured capacity parameter. Two later results undermine the S-governs reading without recomputing $h$: physically correcting the harness removes most of the separation between those same two arms (W8 matched accounting), and expressing seven cells against measured capacity resolves no service-time difference at all. {\bfseries The exact registered $h$ was never recomputed: no $C = 400$ cell exists on the corrected harness.} \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 \subsection{Concurrency: affirmed, then no longer resolved after calibration}
@@ -868,17 +799,18 @@ Two documentation failures belong here, recorded for what caught them. An incorr
 Three claims reached the written record and were later refuted by further measurement. Table~\ref{tab:false-findings} gives each with what it predicted, what killed it and when. They are a different set from \S{}VIII's candidate explanations, with a different cause: none is a calibration artefact.
 
 \begin{table*}[!t]
-\caption{Findings that entered the written record and were later overturned by independent checks.}
+\caption[Findings that entered the written record and were later overturned by independent checks.]{Findings that entered the written record and were later overturned by independent checks.}
 \label{tab:false-findings}
 \centering
-\begin{tabular}{llllll}
+\footnotesize
+\begin{tabularx}{\textwidth}{l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}Xl>{\raggedright\arraybackslash}X}
 \hline
-\textbf{\#} & \textbf{Finding} & \textbf{What it predicted} & \textbf{What killed it} & \textbf{When} & \textbf{Consequence} \\ \hline
-1 & \textbf{Recovery is bimodal in both arms} & Two stable regimes at the last SAFE point in c10 as well as c50: some runs drain shallow, some deep, at the same rate. & E1B replication at n=12 with the DEEP threshold fixed before running. c10 returned 0/12 DEEP and is unimodal; only c50 is gapped, at 9/12. & E1B, 2026-09-12 & Bimodality became a single-arm property, and the E2 design had to ask whether it followed the cap or the arm. \\
-2 & \textbf{Occupancy at the boundary is a fixed 4.1\% of the queue cap} & Median queue depth at the last SAFE point scales with the cap, so swapping caps moves occupancy with it. & The first cell that tested it. c10 at Q=2500 sat at 0.923\% of cap and c50 at Q=500 at 21.686\%; absolute occupancy stayed with the arm while the cap moved fivefold. & E2, 2026-09-12 & None to any other result. The prediction was registered before the cells ran and scored against them. \\
-3 & \textbf{A4 achieved utilisation is valid at every probed point} & The delivery-span estimator, adopted to strip the drain detector tail, applies to SAFE and collapsed points alike, so a boundary interval may be reported in utilisation. & A cross-check against an independently measured quantity: each cell's saturation plateau. 18 of 20 UNSAFE points report a rate above their own cell's independently measured saturation plateau --- a pattern incompatible with treating the estimator as physically interpretable at collapsed points. Not found by the estimator's own validation. & E2e then A6, 2026-09-13 & E2d's collapse factor halves, 21.4x to 10.5x --- A6 first reported 10.3x, superseded by A10 under matched estimators --- and its claim that five of seven intervals bracket 1.0 falls entirely. Four other conclusions were rechecked and survive. \\
+{\bfseries \#} & {\bfseries Finding} & {\bfseries What it predicted} & {\bfseries What killed it} & {\bfseries When} & {\bfseries Consequence} \\ \hline
+1 & {\bfseries Recovery is bimodal in both arms} & Two stable regimes at the last SAFE point in c10 as well as c50: some runs drain shallow, some deep, at the same rate. & E1B replication at n=12 with the DEEP threshold fixed before running. c10 returned 0/12 DEEP and is unimodal; only c50 is gapped, at 9/12. & E1B, 2026-09-12 & Bimodality became a single-arm property, and the E2 design had to ask whether it followed the cap or the arm. \\
+2 & {\bfseries Occupancy at the boundary is a fixed 4.1\% of the queue cap} & Median queue depth at the last SAFE point scales with the cap, so swapping caps moves occupancy with it. & The first cell that tested it. c10 at Q=2500 sat at 0.923\% of cap and c50 at Q=500 at 21.686\%; absolute occupancy stayed with the arm while the cap moved fivefold. & E2, 2026-09-12 & None to any other result. The prediction was registered before the cells ran and scored against them. \\
+3 & {\bfseries A4 achieved utilisation is valid at every probed point} & The delivery-span estimator, adopted to strip the drain detector tail, applies to SAFE and collapsed points alike, so a boundary interval may be reported in utilisation. & A cross-check against an independently measured quantity: each cell's saturation plateau. 18 of 20 UNSAFE points report a rate above their own cell's independently measured saturation plateau --- a pattern incompatible with treating the estimator as physically interpretable at collapsed points. Not found by the estimator's own validation. & E2e then A6, 2026-09-13 & E2d's collapse factor halves, 21.4x to 10.5x --- A6 first reported 10.3x, superseded by A10 under matched estimators --- and its claim that five of seven intervals bracket 1.0 falls entirely. Four other conclusions were rechecked and survive. \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
 One point the table cannot carry in a cell. The third claim --- that the achieved-utilisation estimator is valid at every probed point --- was refuted by a count: 18 of 20 unsafe points reported rates above their own cell's independently measured saturation plateau, a pattern incompatible with treating that estimator as physically interpretable at collapsed points. The count is the evidence, and it is resolution-independent. The per-cell inversion magnitudes are not cited, because they sit below the resolution that would make them mean anything. That row carries the narrower lesson of the three: an estimator cannot expose a blind spot built into its own accounting.

@@ -38,6 +38,7 @@ MAX_BYTES = 40 * 1024 * 1024        # IEEE Access: source and PDF each under 40 
 EXPECT_FIGURES = 6                  # ASSEMBLY-SPEC.md Draft 2, review ruling A
 EXPECT_TABLES = 8
 EXPECT_EQUATIONS = 8
+MAX_NESTING = 12                    # bold in a cell, code in bold, italic in code
 
 # Template files the generated article actually needs. The class is used AS
 # SHIPPED -- never edited, because a reviewer's build must match ours.
@@ -289,6 +290,36 @@ def escape(text):
 EQ_REFERENCED = set()
 
 
+# NOT \textbf. ieeeaccess.cls:199 defines \textbf#1{{\bf #1}} and line 1092
+# redefines \bf to TAKE AN ARGUMENT:
+#   \long\def\bf#1{\ifmmode\mathbf{#1}...\else...\selectfont{#1}\fi}
+# so \bf grabs one token, not the rest of the group. \textbf{$\rho$\_eff,safe}
+# hands \bf the bare "$", which opens math that never closes -- "Extra }, or
+# forgotten $". The quieter half is worse: \textbf{predicted at $S$ = 5} bolds
+# only "predicted" and compiles CLEANLY, so the defect ships. \bfseries is a
+# declaration, is not redefined by either class, and takes no argument.
+BOLD_OPEN = '{\\bfseries '
+BOLD_CLOSE = '}'
+
+
+def alltt_char(ch):
+    """A Unicode character inside alltt.
+
+    alltt leaves $ with catcode "other", so it does NOT start math: the $ was
+    typeset as a literal dollar and \rightarrow was then a math-only command
+    in text mode -- "Missing $ inserted", four times. \ensuremath supplies the
+    math mode itself and is correct in both modes.
+    """
+    if ord(ch) < 128:
+        return ch
+    if ch not in UNICODE:
+        fail('character %r (U+%04X) in a fenced block is not in the Unicode '
+             'map' % (ch, ord(ch)))
+    latex = UNICODE[ch]
+    m = re.fullmatch(r'\$(.+)\$', latex)
+    return r'\ensuremath{%s}' % m.group(1) if m else latex
+
+
 def eq_ref(n):
     EQ_REFERENCED.add(int(n))
     return r'\eqref{eq:%s}' % n
@@ -349,9 +380,9 @@ def inline(text, keep_bold=False, eqs=None, _shelf=None):
     # nesting (bold inside a cell, code inside bold) correct.
     if keep_bold:
         text = re.sub(r'\*\*(.+?)\*\*',
-                      lambda m: park(r'\textbf{'
+                      lambda m: park(BOLD_OPEN
                                      + inline(m.group(1), True, eqs, shelf)
-                                     + '}'),
+                                     + BOLD_CLOSE),
                       text, flags=re.S)
     else:
         text = re.sub(r'\*\*(.+?)\*\*', r'\1', text, flags=re.S)
@@ -365,12 +396,67 @@ def inline(text, keep_bold=False, eqs=None, _shelf=None):
     if not top:
         return text          # the outermost call owns resolution
     # Placeholders survive escaping because \x00 is not a TeX special.
-    return re.sub('\x00(\\d+)\x00', lambda m: shelf[int(m.group(1))], text)
+    #
+    # RESOLVE UNTIL STABLE. A single re.sub() pass does not rescan what it
+    # substitutes, so a placeholder INSIDE a parked fragment survived into the
+    # .tex: "**`h >= 0.75` reads S GOVERNS**" parked the code span, then parked
+    # the whole \textbf{...} around it, and only the outer one was replaced.
+    # pdflatex then saw a literal NUL and the span's text was simply gone from
+    # the article. Nested parking is normal here -- bold around code, italic
+    # around bold -- so one pass was never enough.
+    for _ in range(MAX_NESTING):
+        after = re.sub('\x00(\\d+)\x00',
+                       lambda m: shelf[int(m.group(1))], text)
+        if after == text:
+            return text
+        text = after
+    fail('placeholder resolution did not settle after %d passes; a parked '
+         'fragment probably refers to itself' % MAX_NESTING)
 
 
 # --------------------------------------------------------------------------
 # Block conversion
 # --------------------------------------------------------------------------
+
+PROSE_WIDTH = 40        # a column whose widest cell exceeds this is prose
+# Width estimation, so a table that cannot fit is caught here rather than as
+# an overfull box a person has to read a log to find. These are estimates:
+# \textwidth in this class is about 516pt, and a character of the class's 7pt
+# table font averages near 3.1pt. The compile is the authority; this only
+# decides how many columns to let wrap.
+TEXTWIDTH_PT = 516.0
+CHAR_PT = 3.1
+COLSEP_PT = 12.0        # \tabcolsep is 6pt, applied on both sides
+X_MIN_CHARS = 10        # an X column can wrap down to roughly this
+
+
+def short_caption(raw):
+    """The entry for the list of figures: a moving argument, so it must be one
+    short line with no \\par in it.
+
+    Fig. 4's caption is four paragraphs. LaTeX writes \\caption's argument into
+    the .lof, where a \\par ends the paragraph mid-\\addcontentsline --
+    "Paragraph ended before \\addcontentsline was complete". Giving \\caption an
+    OPTIONAL argument makes that short text the moving one and leaves the long
+    text free to hold \\par.
+    """
+    first = raw.strip().split('\n\n')[0].strip()
+    m = re.match(r'\*\*(.+?)\*\*', first, re.S)
+    text = m.group(1) if m else first
+    text = ' '.join(text.split())
+    if not m:
+        cut = re.match(r'(.+?[.!?])(\s|$)', text)
+        if cut:
+            text = cut.group(1)
+    return text
+
+
+def caption_tex(raw):
+    """\\caption[short]{long}, paragraphs joined with \\par."""
+    paras = [p.strip() for p in raw.strip().split('\n\n') if p.strip()]
+    long_text = r' \par '.join(inline(' '.join(p.split())) for p in paras)
+    return r'\caption[%s]{%s}' % (inline(short_caption(raw)), long_text)
+
 
 def table(lines, key, caption, wide=True):
     """A markdown pipe table -> table* with its caption ABOVE, per IEEE style."""
@@ -382,31 +468,67 @@ def table(lines, key, caption, wide=True):
         return [c.strip() for c in row.strip().strip('|').split('|')]
 
     header, sep, data = cells(rows[0]), cells(rows[1]), [cells(r) for r in rows[2:]]
-    align = ''
     for s in sep:
         if not re.fullmatch(r':?-{2,}:?', s):
             raise BuildError('table %s separator cell %r is not an alignment'
                              % (key, s))
-        align += 'r' if s.endswith(':') and not s.startswith(':') else 'l'
+    right = [s.endswith(':') and not s.startswith(':') for s in sep]
+
+    # WHY tabularx. An l column is as wide as its widest cell, so a table
+    # whose cells are sentences becomes a single unbreakable line: T7's
+    # candidate-explanation cells overran the page by 3,416pt. Any column
+    # whose widest cell is prose becomes an X column, which wraps and shares
+    # the remaining width; short numeric columns keep l/r so the numbers stay
+    # aligned and do not get stretched.
+    widest = [max(len(r[i]) for r in [header] + data) for i in range(len(sep))]
+    prose = [w > PROSE_WIDTH for w in widest]
+
+    # A table of short numeric columns can still overrun the page simply by
+    # having many of them: the eleven-column resolution table was 141pt too
+    # wide with no cell over 24 characters, so the prose test alone missed it.
+    # Widen-to-wrap the broadest remaining column until the estimate fits.
+    def estimate():
+        total = COLSEP_PT * len(sep)
+        for i, w in enumerate(widest):
+            total += CHAR_PT * (X_MIN_CHARS if prose[i] else w)
+        return total
+
+    while estimate() > TEXTWIDTH_PT:
+        candidates = [i for i in range(len(sep)) if not prose[i]]
+        if not candidates:
+            break
+        prose[max(candidates, key=lambda i: widest[i])] = True
+    if any(prose):
+        align = ''.join(
+            r'>{\raggedright\arraybackslash}X' if prose[i]
+            else ('r' if right[i] else 'l')
+            for i in range(len(sep)))
+        open_tab = r'\begin{tabularx}{\textwidth}{%s}' % align
+        close_tab = r'\end{tabularx}'
+    else:
+        align = ''.join('r' if right[i] else 'l' for i in range(len(sep)))
+        open_tab = r'\begin{tabular}{%s}' % align
+        close_tab = r'\end{tabular}'
+
     env = 'table*' if wide else 'table'
-    out = [r'\begin{%s}[!t]' % env, r'\caption{%s}' % inline(caption),
-           r'\label{%s}' % key, r'\centering',
-           r'\begin{tabular}{%s}' % align, r'\hline']
-    out.append(' & '.join(r'\textbf{%s}' % inline(h, True) for h in header)
-               + r' \\ \hline')
+    out = [r'\begin{%s}[!t]' % env, caption_tex(caption),
+           r'\label{%s}' % key, r'\centering', r'\footnotesize',
+           open_tab, r'\hline']
+    out.append(' & '.join(BOLD_OPEN + inline(h, True) + BOLD_CLOSE
+                          for h in header) + r' \\ \hline')
     for row in data:
         if len(row) != len(header):
             raise BuildError('table %s: a row has %d cells, the header has %d'
                              % (key, len(row), len(header)))
         out.append(' & '.join(inline(c, keep_bold=True) for c in row) + r' \\')
-    out += [r'\hline', r'\end{tabular}', r'\end{%s}' % env]
+    out += [r'\hline', close_tab, r'\end{%s}' % env]
     return out
 
 
 def figure(key, filename, caption):
     return [r'\begin{figure*}[!t]', r'\centering',
             r'\includegraphics[width=\textwidth]{%s}' % filename,
-            r'\caption{%s}' % inline(caption), r'\label{%s}' % key,
+            caption_tex(caption), r'\label{%s}' % key,
             r'\end{figure*}']
 
 
@@ -508,6 +630,8 @@ class Build(object):
               r'\usepackage{graphicx}',
               r'\usepackage{textcomp}',
               r'\usepackage{alltt}',
+              r'\usepackage{array}',
+              r'\usepackage{tabularx}',
               # algorithmic.sty is NOT loaded: the sample preamble loads it,
               # this TeX installation may not have it, and the article has no
               # algorithm environment. Recorded in ASSEMBLY-SPEC.md 0.
@@ -583,8 +707,8 @@ class Build(object):
                             fail('fenced block contains %r, which alltt reads '
                                  'as markup: %r' % (ch, ln))
                 self.tex += [r'{\footnotesize\begin{alltt}'] + \
-                            [''.join(UNICODE.get(ch, ch) if ord(ch) > 127
-                                     else ch for ch in ln) for ln in block] + \
+                            [''.join(alltt_char(ch) for ch in ln)
+                             for ln in block] + \
                             [r'\end{alltt}}', '']
                 i += 1
                 continue
@@ -765,6 +889,13 @@ class Build(object):
         def want(ok, msg):
             out.append(('PASS' if ok else 'FAIL', msg))
 
+        ctrl = sorted({c for c in tex if ord(c) < 32 and c != '\n'})
+        want(not ctrl,
+             'no control character in the .tex'
+             + ('' if not ctrl else
+                ' -- found %s' % ', '.join('U+%04X' % ord(c) for c in ctrl)))
+        want(all(ord(c) < 128 for c in tex),
+             'the .tex is pure ASCII')
         want('<!--' not in tex, 'no HTML comment survives into the .tex')
         want('[@' not in tex, 'no [@ marker survives into the .tex')
         want(nfig == EXPECT_FIGURES,
@@ -781,13 +912,13 @@ class Build(object):
                  'float %s is referenced in the prose' % key)
             want(tex.count(r'\label{%s}' % key) == 1,
                  'float %s has exactly one label' % key)
+        # REPORT, not a check: the author ruled 2026-09-20 that a numbered
+        # equation need not be referenced. The list is still printed, because
+        # an equation that loses its last reference is worth seeing once.
         unref = sorted(n for n in self.equations if n not in EQ_REFERENCED)
-        want(not unref,
-             'every numbered equation is referenced in the prose'
-             + ('' if not unref else
-                ' -- (%s) %s not'
-                % (', '.join(str(n) for n in unref),
-                   'is' if len(unref) == 1 else 'are')))
+        out.append(('note', 'equations not referenced in the prose: %s'
+                    % (', '.join('(%d)' % n for n in unref) if unref
+                       else 'none')))
 
         # The % parity check the spec asks for by name: an unescaped percent
         # silently deletes the rest of its line, with no error anywhere.

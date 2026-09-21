@@ -180,7 +180,7 @@ downloaded it by hand.** **DONE 2026-09-20:** unpacked to
 in the build needs the network. **The class file is used as shipped** — no local
 edits to `.cls`, ever, because a reviewer's build must match ours.
 
-**Toolchain proven on this machine.** `pdflatex`, `latexmk`, `pandoc` and
+**Toolchain proven in the Linux workspace — NOT on the author's Mac.** *(Corrected 2026-09-20: the original sentence said "this machine", which the executor, working on the Mac, rightly found false — the Mac has no TeX. The compile did happen, in the Linux workspace that mounts the same repository: pdfTeX 1.40.22 / TeX Live 2021, `Output written on access.pdf (8 pages, 589162 bytes)` at 2026-09-21 01:18 UTC. Both statements were true of different machines; the sentence failed to say which.)* `pdflatex`, `latexmk`, `pandoc` and
 `pdfinfo` are all present, and the template's own `access.tex` compiles to an
 8-page PDF. **One finding:** the sample preamble loads `algorithmic.sty`, which
 this TeX installation does not have. The article needs no algorithm environment,

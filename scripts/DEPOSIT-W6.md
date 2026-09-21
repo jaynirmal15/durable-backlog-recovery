@@ -80,15 +80,31 @@ its own hash is wrong. Investigate before uploading.
 
 ## 3. Confirm the upload path still works
 
-Cheap, before moving 407 MB:
+Cheap, before moving 407 MB, and **read-only**:
 
 ```
-python3 scripts/zenodo_deposit.py --probe --deposition-id <id>
+python3 scripts/zenodo_deposit.py --show <id>
 ```
 
-Two five-byte objects, one flat key and one nested, on both the bucket and legacy
-APIs, with full status, headers and body. Delete the probe objects afterwards
-from the web interface or with the files API.
+Read four things from its output: `state unsubmitted` and `submitted False`, so
+the deposition can still take files; `files 0`, so nothing is left over from an
+earlier attempt; and a **`bucket` line carrying a URL** — that link is the upload
+path, and if it is absent uploads will fail.
+
+> **Corrected 2026-09-20. This step recommended `--probe`, which was wrong and is
+> the reason this checklist had to be rewritten around a deleted deposition.**
+> `--probe` UPLOADS four test objects. Three leftover `_probe_*` files are what
+> made deposition 22740491 unusable and forced its deletion — a step meant to
+> check the path cheaply is what dirtied the record. `--show` answers the same
+> question by reading, and `--show` reports the bucket link for exactly this
+> purpose.
+>
+> `--probe` remains in the tool as a last resort, for the case where `--show`
+> reports a bucket link and an upload nevertheless fails and the nested-key
+> question from the note below has to be settled empirically. If it is ever run,
+> **delete every `_probe_*` object before verification**, because
+> `zenodo_verify.py` compares the record against the manifest and will report
+> them as extra files.
 
 **Do not flatten keys to make an upload succeed.** The README documents
 `traces/`, `results/`, `scripts/` and gives commands such as `--raw-dir traces`.
@@ -124,15 +140,37 @@ manifest is still what a reader verifies against.
 Expect zero missing, zero extra, zero mismatched. Probe objects count as extra
 and must be deleted.
 
-## 6. Add the article DOI, then publish
+## 6. Publish — without the article DOI, which does not exist yet
 
-Once the article is accepted and has a DOI, add it to the deposition metadata:
+**Publish the record with the metadata as staged.** Do not wait for the article
+DOI, and do not add `isSupplementTo` now.
+
+> **Corrected 2026-09-20: this step was unrunnable as written.** It said to add
+> `{'relation': 'isSupplementTo', 'identifier': '<article DOI>', 'scheme':
+> 'doi'}` "once the article is accepted and has a DOI", and then publish — while
+> the paragraph below it requires publication **before submission**. There is no
+> article DOI until acceptance, and acceptance comes months after submission, so
+> the two instructions could not both be obeyed. Following the step as written
+> would have delayed publication until the trap was discovered at submission
+> time, with the reproducibility statement citing a DOI that does not resolve.
+
+**The relation is added afterwards, as a metadata edit on the published record.**
+Zenodo's own documentation is explicit that this is permitted: *"You can edit the
+metadata (title, creators, etc) of a published record at any time"*, and *"This
+does not affect your DOI."* Files are the exception — they *"can only be edited
+(added, modified or deleted) after publication by contacting support"* — which is
+why the file set must be right before step 6 and the metadata need not be.
+(`https://help.zenodo.org/docs/deposit/manage-records/`, read 2026-09-20;
+re-read it on the day, as with any publisher page.)
+
+So, after acceptance, edit the published record from the web interface and add:
 
 ```
 {'relation': 'isSupplementTo', 'identifier': '<article DOI>', 'scheme': 'doi'}
 ```
 
-Do not invent or guess it.
+Do not invent or guess it. No new version is created and the DOI in the
+reproducibility statement keeps resolving to the same record.
 
 **Publish from the web interface.** `zenodo_deposit.py` has no publish path, by
 design: a published record cannot be deleted and its files cannot be changed.
@@ -147,6 +185,10 @@ design: a published record cannot be deleted and its files cannot be changed.
 - Check `https://doi.org/<DOI>` resolves to the record.
 - Check the record's file count matches the manifest.
 - Record the published DOI and date in the paper and in the repository.
+- **Carry one item forward to acceptance:** add the `isSupplementTo` relation
+  with the article DOI, per step 6. It is the only part of this checklist that
+  runs after submission, and nothing else will prompt for it — the deposit is
+  finished and the paper is away. Put it wherever acceptance is tracked.
 
 ## Standing constraints
 

@@ -290,6 +290,11 @@ def main():
         print('modified     %s' % dep.get('modified'))
         print('doi          %s' % (dep.get('doi') or '(none)'))
         print('prereserved  %s' % (pre.get('doi') or '(none)'))
+        # The bucket link is the upload path itself. Printing it is what lets
+        # --show answer the question DEPOSIT-W6 step 3 asks -- "does the upload
+        # path still work" -- without --probe uploading anything to find out.
+        bucket = (dep.get('links') or {}).get('bucket')
+        print('bucket       %s' % (bucket or '(none -- uploads would fail)'))
         print('metadata keys present: %s' % (sorted(md.keys()) or '(none)'))
         for k in ('title', 'upload_type', 'license', 'version', 'description'):
             v = md.get(k)

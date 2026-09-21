@@ -14,3 +14,10 @@ __pycache__/
 *.tfvars
 crash.log
 overhead_run
+
+# build/access/ is generated. article.tex is tracked because it is the
+# submission source and has to travel to the machine that compiles it; every
+# other file there is a byte copy of something already tracked under
+# build/template/ or figures/, and the PDF is a build product.
+build/access/*
+!build/access/article.tex

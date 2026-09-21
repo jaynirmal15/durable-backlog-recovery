@@ -1,5 +1,6 @@
 # §8 — How calibration changed the interpretation
 
+*Draft 4 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 3 — SCIENCE FROZEN, package included. 2026-09-20. The freeze condition
 was seeing the regenerated Table 3 under the asymmetric schema; that table is
 regenerated, quote-asserted with zero changes to its assertion set, idempotent
@@ -48,7 +49,7 @@ re-estimate them. A6 changed no candidate explanation's standing — concurrency
 and service time remained affirmed, the admission limit remained rejected. What
 changed the interpretation of the two affirmed results was a separate and later
 operation: replacing the configured capacity parameter with an empirically
-calibrated capacity reference. Table 3 keeps the two apart throughout.
+calibrated capacity reference. [@tab:candidates] keeps the two apart throughout.
 
 ### A. Concurrency: affirmed, then no longer resolved after calibration
 

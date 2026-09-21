@@ -2,7 +2,9 @@
 """Candidate explanations of the boundary: the explanation, its registered
 falsification, the pre-calibration outcome, and what calibration changed.
 
-Manuscript Table 3, written against outline v8.7. The three rows have three
+Article float tab:candidates, written against outline v8.7. The printed
+number is assigned by the build from order of first appearance and is not
+recorded here -- the key is the identity. The three rows have three
 DIFFERENT standings and the asymmetry is the point: one was rejected by its own
 criterion before calibration, one was affirmed and then no longer resolved once
 the boundary was expressed against measured capacity, and one was affirmed with
@@ -10,7 +12,7 @@ its registered statistic never recomputed. Column 1 is "Candidate explanation",
 never "Apparent finding" -- the admission limit was explicitly not a finding.
 <!-- withdrawn-quote-ok: prohibition in the docstring -->
 
-Distinct from figures/T4-false-findings.md, which is manuscript Table 4.
+Distinct from figures/T4-false-findings.md, whose key is tab:false-findings.
 
 Every quotation is verified against the committed file at the commit named in
 the row before anything is printed, so no cell is written from memory. Numbers
@@ -91,8 +93,12 @@ def main():
           'reports against the working copy, because the reports are regenerated '
           'artefacts whose wording tracks their generators. Numbers come from the '
           'artefacts named in the sources below. This is a different set from '
-          '`figures/T4-false-findings.md`, which is manuscript Table 4.')
+          '`figures/T4-false-findings.md`, whose key is `tab:false-findings`.')
     print()
+    # The build sets ONLY the pipe table that follows this marker. The
+    # "Sources, cell by cell" table below is artefact documentation and carries
+    # no marker, so it cannot reach the article.
+    print('<!-- table:tab:candidates -->')
     print('| Candidate explanation | Registered falsification / challenge | '
           'Pre-calibration outcome | Post-calibration evidence and status |')
     print('|---|---|---|---|')

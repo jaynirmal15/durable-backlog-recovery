@@ -1,5 +1,6 @@
 # §3 — The harness, the capacity model, and its error model
 
+*Draft 12 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 11 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at Little's law in the staffing relation (1), where §III uses it. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 10 — FROZEN.
 Draft 10: "rate-limited but not rate-controlled" replaced with "open-loop
@@ -38,7 +39,7 @@ post-hoc rationalisation" claim removed. Source comments strip in W6.*
 ### A. Architecture
 
 The harness is four services in Go, orchestrated by Docker Compose, plus a
-runner that drives each run and also generates the live traffic (Fig. 1). A *producer* publishes events to a subject on a NATS JetStream stream
+runner that drives each run and also generates the live traffic ([@fig:harness]). A *producer* publishes events to a subject on a NATS JetStream stream
 at a constant configured rate, and continues publishing throughout the
 experiment, including while the consumer is stopped — that is what accumulates
 the backlog. Every message carries a header recording its publish time in
@@ -167,7 +168,7 @@ mean, and contributes nothing to the discrepancy below.
 <!-- downstream/main.go jitteredServiceTime(), serviceTimeJitterSigma -->
 
 The worker's cycle, however, is longer than the service time it emulates
-(Fig. 2). Each request occupies its worker for the intended interval plus three
+([@fig:capacity-model]). Each request occupies its worker for the intended interval plus three
 further components: bookkeeping before the wait begins, the amount by which the
 runtime's timed wait overruns its requested duration, and bookkeeping after it
 ends. Writing the sum of those three as `δ`, the interval a worker is actually

@@ -1,5 +1,6 @@
 # §7 — What warns, and what does not
 
+*Draft 7 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 6 — one-clause resync, 2026-09-20. §VII's close said "§II sets out why
 latency feedback is the conventional construction". That phrasing was withdrawn
 at §2 draft 2 — DAGOR and Breakwater key on queueing delay, Bouncer on
@@ -138,7 +139,7 @@ different claims and this section keeps them apart.
 One further observation belongs here, with its quantity named. In the
 short-service cell the *mean* drain queue depth never reaches its DEEP threshold
 anywhere inside the safe range, peaking at 23.1 requests against 50. That is a
-statement about the mean; Figure 6 plots the queue *peak*, which behaves
+statement about the mean; [@fig:signals] plots the queue *peak*, which behaves
 differently and is discussed below.
 
 A possible explanation suggests itself, and is offered as a hypothesis rather
@@ -158,7 +159,7 @@ runs at n = 3, which would resolve a lead of E1's size in either direction.
 
 ### D. What the figure shows, and why it is unaffected
 
-Figure 6 plots drain queue peak and live tail latency across the corrected
+[@fig:signals] plots drain queue peak and live tail latency across the corrected
 short-service cell as utilisation approaches its boundary. Both rise across the
 sampled safe range — the queue peak from 7 requests to 111, live p99 from 8 ms to
 58 — and both then change sharply at the transition between the final SAFE point

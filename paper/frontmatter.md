@@ -13,10 +13,41 @@ configured parameter is never called true capacity. Source comments strip in W6.
 
 ---
 
+## Title and author block
+
+*Chosen by the author 2026-09-20. The author block follows Paper 1's
+submission exactly, so the two papers present the same affiliation, contact
+and ORCID. Everything between the `article:` delimiters below is article text;
+everything outside them, including this note, is drafting apparatus the build
+never emits.*
+
+<!-- article:title:start -->
+Measuring the Safe Drain Boundary for Durable Backlog Recovery Under a Live Latency Objective
+<!-- article:title:end -->
+
+<!-- article:short-title:start -->
+Nirmal: Measuring the Safe Drain Boundary for Durable Backlog Recovery
+<!-- article:short-title:end -->
+
+<!-- article:author:start -->
+Jay Suresh Nirmal
+<!-- article:author:end -->
+
+<!-- article:address:start -->
+Independent Researcher, Boston, MA, USA (e-mail: jaynirmal15@gmail.com; ORCID: 0009-0003-0886-4663)
+<!-- article:address:end -->
+
+<!-- article:corresp:start -->
+Corresponding author: Jay Suresh Nirmal (e-mail: jaynirmal15@gmail.com).
+<!-- article:corresp:end -->
+
+---
+
 ## Abstract
 
 *249 words, against a 150-250 limit — **measured, not asserted**. This header has now been wrong twice: draft 1 claimed 247 without counting (it was 259), and the first fix claimed "inside the limit" at 251. Recount after every edit to this section; it sits at the ceiling and three of the review edits added words.*
 
+<!-- article:abstract:start -->
 When a consumer recovers from an outage, its accumulated backlog and the live
 traffic it still serves compete for the same downstream capacity. Draining too
 fast turns the recovery into a second incident; draining too slowly leaves the
@@ -43,6 +74,7 @@ calibration then removed almost entirely.
 We report the measurement, the trap, and three further written claims that later
 measurement overturned during the pre-registered campaign. The harness, the pre-registration with its dated amendments, the
 analysis scripts and the figure generators are publicly archived.
+<!-- article:abstract:end -->
 
 ---
 
@@ -50,8 +82,10 @@ analysis scripts and the figure generators are publicly archived.
 
 Alphabetical, IEEE taxonomy:
 
-**admission control, capacity planning, measurement, message queueing,
-performance evaluation, reproducibility, service level agreements**
+<!-- article:index-terms:start -->
+admission control, capacity planning, measurement, message queueing,
+performance evaluation, reproducibility, service level agreements
+<!-- article:index-terms:end -->
 
 ---
 
@@ -76,9 +110,13 @@ IEEE)" added after the name (IEEE Access convention; CV: Member #101719233);
 editorial role and no publications. **APPROVED AS WRITTEN by the author,
 2026-09-20.** ORCID for the submission record:
 `https://orcid.org/0009-0003-0886-4663` — not printed in the biography; IEEE
-Access takes it from the submitting author's account.*
+Access takes it from the submitting author's account. **Draft 3.2:** the
+name now reads JAY SURESH NIRMAL, matching the byline, the ORCID record and
+Paper 1's author block — an IEEE biography opens with the author's name as it
+appears in the byline. No other word changed.*
 
-**JAY NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
+<!-- article:biography:start -->
+**JAY SURESH NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
 from the University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in
 information systems from Northeastern University, Boston, MA, USA, in 2019. He is
 currently a Senior Software Engineer in Boston, MA, USA, with experience in
@@ -89,6 +127,7 @@ a large-scale online assessment platform. He also conducts independent systems
 research. His research interests include distributed systems, failure recovery and
 fault tolerance, systems measurement, observability, and reproducible experimental
 methods.
+<!-- article:biography:end -->
 
 ---
 

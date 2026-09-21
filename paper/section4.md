@@ -1,5 +1,6 @@
 # §4 — Method
 
+*Draft 24 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. Table 1's caption paragraph is now delimited as `caption:tab:amendments` and its literal "**TABLE 1** —" prefix removed, since the build numbers tables. No other wording changed.*
 *Draft 23 — FROZEN.
 Draft 23: manuscript tables renumbered into citation order (§4, §6, §8, §9), so
 the resolution table is Table 2, not Table 3. Mechanical; the generated
@@ -81,7 +82,7 @@ The document is referenced by commit hash and is immutable: no rule in it may be
 changed once that hash is cited. Corrections take the form of dated amendments
 appended to it, with the original text left intact and the reason stated, and an
 amendment made after results were opened is marked as such. Six amendments, one registered re-analysis, one registered replication and two
-record corrections were made. All ten are listed in Table 1; four are discussed
+record corrections were made. All ten are listed in [@tab:amendments]; four are discussed
 below.
 
 ### B. The service level objective
@@ -156,7 +157,7 @@ grounds that bisection would then be resolving finer than its own instrument.
 endpoints included; the worst point sits at 40% of its own resolution.
 
 **Two qualifications, both of which narrow that statement.** First, where a
-single figure is nonetheless required — the per-cell value plotted in Fig. 5 —
+single figure is nonetheless required — the per-cell value plotted in [@fig:collapse] —
 it is the maximum achieved ρ across the last SAFE point's repetitions. The
 choice is semantic before it is statistical: a point is classified SAFE only if
 **all three** repetitions satisfy the SAFE criterion, so the maximum is the
@@ -179,7 +180,7 @@ points, 171 runs — are the boundary result, and they are self-contained. Each
 cell's denominator comes from that cell's own saturation runs. Every one of the
 171 repetitions retains its own achieved rate, so the no-aggregation rule, the
 spread diagnostic and the aggregator sensitivity all apply to them, and to
-Fig. 5, which plots these cells and only these cells.
+[@fig:collapse], which plots these cells and only these cells.
 
 **The two corrected-harness cells** were not produced by this search. They were
 assembled directly from run records by a separate analysis path that stored one
@@ -187,13 +188,13 @@ median ρ per point. The per-repetition rates have since been recovered from the
 33 retained run records — every record carries the quantities the estimator
 needs, and the reconstruction reproduces all eleven committed medians exactly —
 so this is no longer a limitation of the corpus. They support the predict-and-eliminate result of §V, two of the
-four bars in Fig. 4, the signal series of §VII, and the re-analysis registered
+four bars in [@fig:plateau], the signal series of §VII, and the re-analysis registered
 as A7. **They are not members of the seven and contribute to no seven-cell
 number.**
 
 The limitation therefore falls on the corrected cells and not on the boundary
 result: the repetition-level sensitivity reported above covers §VI's central
-comparison, and does not cover §V's brackets, Fig. 4's corrected bars, §VII or
+comparison, and does not cover §V's brackets, [@fig:plateau]'s corrected bars, §VII or
 A7. The recovered per-repetition rates change nothing: the
 predict-and-eliminate verdict is identical under all four aggregators, and the
 A7 ordering is unchanged. Their per-point spread of 2.1 to 7.1 rps would flag
@@ -202,7 +203,7 @@ rps rather than 5, so against the resolution actually achieved the spread is
 eight to ten times smaller than the step — more headroom than anywhere in the
 seven-cell corpus. The one difference that remains is estimator: the seven
 measure over the delivery span under A4, the corrected cells over the drain
-window as measured. Figure 4 places both side by side, which is legitimate
+window as measured. [@fig:plateau] places both side by side, which is legitimate
 because predicted against measured plateau is a direct throughput comparison
 with no ρ estimator involved, but its caption must say so.
 
@@ -375,13 +376,13 @@ Boundary files report `ρ_config`, following the registered definition of
 achieved ρ. **The collapse figures of §VI are `ρ_eff`**, which is what makes
 them a statement about measured service capacity rather than about the
 configured parameter. They are reported per cell at each cell's own resolution
-in Table 2; no range spanning the cells is quoted, because the cells do not
+in [@tab:resolution]; no range spanning the cells is quoted, because the cells do not
 share a precision. Predicted plateaus are `C_model`. `C_staffed` is
 not a distinct quantity in this campaign: `ceil(C_config · S)` is exact in all
 seven cells, so `C_staffed` equals `C_config` identically. Each cell's
 measured-capacity reference ratio is
 `C_measured / C_config`. Every figure and table names its denominator at the
-point of use, and Fig. 5 names one per axis.
+point of use, and [@fig:collapse] names one per axis.
 
 ### F. Achieved rates, never nominal
 
@@ -446,14 +447,17 @@ to avoid.
 
 ### H. Amendments
 
-**TABLE 1** — Amendments to the pre-registration, the A7 registered
+<!-- caption:tab:amendments:start -->
+Amendments to the pre-registration, the A7 registered
 re-analysis, the A8 registered replication and the two record corrections. The
 two right-hand columns separate registration *before the data existed* from
 registration *before the analysis was run*; they are different claims and only
 the first is prospective registration. They do not apply to a record correction,
 which governs neither, and those rows read N/A rather than being forced into a
 category they do not belong to.
+<!-- caption:tab:amendments:end -->
 
+<!-- table:tab:amendments -->
 | # | Date | Commit | Change | Predates governed data | Predates governed analysis |
 |---|---|---|---|---|---|
 | A1 | 2026-09-11 | `e5bf303` | Interval's upper end is the first NON-SAFE point, which may be MARGINAL, not the first UNSAFE point | Yes | Yes |

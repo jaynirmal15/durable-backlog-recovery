@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""T1: the three findings that entered the record and were later killed.
+"""T4: the three findings that entered the record and were later killed.
 
 Distinguished from process errors, which were mistakes in how the work was done
 rather than claims about the system. Sourced from the committed reports.
@@ -55,7 +55,7 @@ ROWS = [
 ]
 
 def main():
-    print('# T1 — findings that entered the record and were later killed')
+    print('# T4 — findings that entered the record and were later killed')
     print()
     print('Three claims reached the written record and were subsequently refuted by '
           'further measurement. Each is listed with what it predicted, what killed '
@@ -63,6 +63,9 @@ def main():
           'rather than claims about the system — are not included here; they are '
           'recorded in the plan addenda.')
     print()
+    # The build sets ONLY the pipe table that follows this marker. The
+    # "Basis of each, as originally held" prose below is artefact documentation.
+    print('<!-- table:tab:false-findings -->')
     print('| # | Finding | What it predicted | What killed it | When | Consequence |')
     print('|---|---|---|---|---|---|')
     for i, r in enumerate(ROWS, 1):

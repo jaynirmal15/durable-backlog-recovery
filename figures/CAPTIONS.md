@@ -1,25 +1,47 @@
-# Figure captions
+# Figure and table captions
 
 Drafted alongside each figure. Each states what the figure shows, not where it sits.
 
+*2026-09-20 — CAPTION BOUNDARIES. Only text between a `caption:KEY` start and end
+delimiter pair is set as a caption; everything else in this file is apparatus. The literal
+"Fig. N." prefixes are removed because the build numbers floats from order of first
+appearance. **All four of Fig. 4's paragraphs are caption**: the outline requires
+the caption to carry n = 10, the median convention, the IQRs 1.71 / 1.29 rps as
+window-to-window scatter rather than an inferential interval, the long-arm
+non-discrimination and the two-corpus statement, and those are spread across all
+four; the first trailing paragraph explains the marks, which a reader needs. The
+post-A6 note below is not caption. **Fig. 2 notation corrected** from C·S/(S+ov) to
+c/(S + δ), matching (1) and (5): the caption was the only place in the paper that
+still wrote the overhead as "ov". Table captions are titles, per IEEE style;
+explanation lives in the text. Table 1's caption stays in §IV where it was written,
+delimited there. **Each figure caption is preceded by a `figure:KEY:FILE` marker** binding the key to the artefact it sets, the figure counterpart of the `table:KEY` marker that sits before a table. The binding lives here rather than in a file name because the key is the identity and the file names do not change.*
+
 ---
 
-**Fig. 1. The harness.** Live traffic reaches the dependency by direct HTTP and
+<!-- figure:fig:harness:F1-architecture.pdf -->
+<!-- caption:fig:harness:start -->
+**The harness.** Live traffic reaches the dependency by direct HTTP and
 never enters the message broker; recovery traffic is produced into JetStream
 during the outage and drained from it by a rate-limited consumer. The two paths
 share nothing until the downstream, which is the only contended resource. The
 fault withdraws the dependency's capacity for 120 s, and its restoration is the
 time origin for every measurement reported here.
+<!-- caption:fig:harness:end -->
 
-**Fig. 2. Where the unaccounted cost enters.** The harness sizes the dependency
-as ⌈C·S⌉ workers on the assumption that each turns a request round in exactly S,
-which makes capacity equal to C by construction. A worker in fact pays a fixed
+<!-- figure:fig:capacity-model:F2-capacity-model.pdf -->
+<!-- caption:fig:capacity-model:start -->
+**Where the unaccounted cost enters.** The harness sizes the dependency
+as c = ⌈C_config·S⌉ workers on the assumption that each turns a request round in
+exactly S, which makes capacity equal to C_config by construction. A worker in fact pays a fixed
 additional 0.463 ms per request, almost all of it the operating system sleeping
-longer than asked. C_model is therefore C·S/(S+ov), and because the cost is
+longer than asked. C_model is therefore c/(S + δ), as in (5), and because the cost is
 additive rather than proportional it consumes a larger share of a short service
 time than a long one.
+<!-- caption:fig:capacity-model:end -->
 
-**Fig. 3. The cost is constant, not proportional.** Mean per-request excess over
+<!-- figure:fig:overhead:F3-overhead-measured.pdf -->
+<!-- caption:fig:overhead:start -->
+**The cost is constant, not proportional.** Mean per-request excess over
 the requested sleep, measured on the worker path at 90% of C_measured over
 roughly 120,000 requests per arm. Sleep overshoot accounts for 99.8% of it; the
 runtime timer work, queue bookkeeping and channel send together contribute 1.3
@@ -28,8 +50,11 @@ difference of zero between the arms and a proportional one predicts a ratio of
 five; the measured difference is −0.0052 ms and the measured ratio 0.990. The
 worker additionally pays about 0.0003 ms of timer work per request, excluded here
 so the bar matches the figure used throughout the analysis.
+<!-- caption:fig:overhead:end -->
 
-**Fig. 4. Predicting the plateau.** Maximum sustained throughput, predicted from
+<!-- figure:fig:plateau:F4-plateau-predicted-measured.pdf -->
+<!-- caption:fig:plateau:start -->
+**Predicting the plateau.** Maximum sustained throughput, predicted from
 the additive model and measured from the dependency's own served counter. In the
 uncorrected arms the configured capacity of 2000 overstates the measured plateau
 by 171 and 36 requests per second, and the model accounts for both to within
@@ -59,8 +84,11 @@ of those ten windows — 1.71 and 1.29 requests per second. They are
 statement is attached to them. The uncorrected bars carry no whiskers because
 those plateaus were not replicated in this form; the absence is a statement
 about what was measured, not a claim of zero uncertainty.
+<!-- caption:fig:plateau:end -->
 
-**Fig. 5. The same seven boundaries, measured against the wrong capacity and the
+<!-- figure:fig:collapse:F5-collapse.pdf -->
+<!-- caption:fig:collapse:start -->
+**The same seven boundaries, measured against the wrong capacity and the
 right one.** Each line is one cell's last safe point, plotted first as a fraction
 of configured capacity and then as a fraction of the capacity that cell was
 measured to have. Both use the maximum achieved rate across that point's
@@ -71,8 +99,11 @@ sits within 0.7% of saturation — two of them fractionally above it, by about a
 fifth of a bisection step, which §IV explains. The apparent variation in safe
 utilisation is an artefact of a capacity figure that is wrong by a different
 amount in each cell.
+<!-- caption:fig:collapse:end -->
 
-**Fig. 6. Both candidate signals rise together, then jump at the transition.**
+<!-- figure:fig:signals:F6-signal-selection.pdf -->
+<!-- caption:fig:signals:start -->
+**Both candidate signals rise together, then jump at the transition.**
 Drain queue peak and live tail latency across the corrected c10 cell as
 utilisation approaches its boundary, each point the largest of its three
 repetitions. Both rise across the sampled safe range — queue peak 7, 18 and 111
@@ -87,6 +118,39 @@ timeout rate never crosses. The queue plotted here is its **peak**. That
 analysis's DEEP criterion concerns **mean** queue depth, which reaches 23.1
 requests inside the safe range against a threshold of 50 and so does not cross
 it there; a peak of 111 at the same point does not contradict that.
+<!-- caption:fig:signals:end -->
+
+---
+
+## Table captions
+
+<!-- caption:tab:resolution:start -->
+Per-cell resolution of the boundary estimate.
+<!-- caption:tab:resolution:end -->
+
+<!-- caption:tab:delta-conditions:start -->
+The per-request timing bias δ measured by the direct timing probe under three conditions.
+<!-- caption:tab:delta-conditions:end -->
+
+<!-- caption:tab:a8-replication:start -->
+Plateau replication under addendum A8: ten 60-s windows per arm, in requests per second.
+<!-- caption:tab:a8-replication:end -->
+
+<!-- caption:tab:delta-predictions:start -->
+Plateau predictions from registered and comparison δ estimates, with the replicated measured plateau, in requests per second.
+<!-- caption:tab:delta-predictions:end -->
+
+<!-- caption:tab:accounting:start -->
+The apparent concurrency effect before and after calibration, under each accounting.
+<!-- caption:tab:accounting:end -->
+
+<!-- caption:tab:candidates:start -->
+Candidate explanations of the boundary, and what calibration changed about each.
+<!-- caption:tab:candidates:end -->
+
+<!-- caption:tab:false-findings:start -->
+Findings that entered the written record and were later overturned by independent checks.
+<!-- caption:tab:false-findings:end -->
 
 ---
 

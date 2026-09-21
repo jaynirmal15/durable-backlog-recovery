@@ -1,7 +1,8 @@
-# T1 — findings that entered the record and were later killed
+# T4 — findings that entered the record and were later killed
 
 Three claims reached the written record and were subsequently refuted by further measurement. Each is listed with what it predicted, what killed it, and when. Process errors — mistakes in how the work was carried out rather than claims about the system — are not included here; they are recorded in the plan addenda.
 
+<!-- table:tab:false-findings -->
 | # | Finding | What it predicted | What killed it | When | Consequence |
 |---|---|---|---|---|---|
 | 1 | **Recovery is bimodal in both arms** | Two stable regimes at the last SAFE point in c10 as well as c50: some runs drain shallow, some deep, at the same rate. | E1B replication at n=12 with the DEEP threshold fixed before running. c10 returned 0/12 DEEP and is unimodal; only c50 is gapped, at 9/12. | E1B, 2026-09-12 | Bimodality became a single-arm property, and the E2 design had to ask whether it followed the cap or the arm. |

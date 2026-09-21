@@ -1,5 +1,6 @@
 # §9 — Threats to validity
 
+*Draft 6 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 5 — W3 readability, 2026-09-20. §IX-C re-listed the four provenance
 fields §IV-G already teaches. The contrast is what this subsection needs — the
 standalone tool has none of them — and the contrast survives a cross-reference;
@@ -136,7 +137,7 @@ runs are 111 to 120 seconds under bursty arrivals, not 60-second windows under
 the calibration driver, so they cannot establish that the effect is not window
 scatter. The measurement that would settle it was not made.
 
-**Resolution.** Table 2's per-cell figures reflect the search step alone.
+**Resolution.** [@tab:resolution]'s per-cell figures reflect the search step alone.
 `C_measured` is a median over 6 to 15 saturation measurements whose range
 propagates to between 0.09 and 0.80 of a bisection step. The two terms are
 reported separately and never combined in quadrature — a deterministic grid
@@ -198,7 +199,7 @@ are checked against their sources, not the prose in between.
 ### D. Claims overturned by independent checks
 
 Three claims reached the written record and were later refuted by further
-measurement. Table 4 gives each with what it predicted, what killed it and when.
+measurement. [@tab:false-findings] gives each with what it predicted, what killed it and when.
 They are a different set from §VIII's candidate explanations, with a different
 cause: none is a calibration artefact.
 
@@ -261,6 +262,6 @@ public pre-registration, with an explicit falsification protocol, could not
 detect a sub-millisecond bookkeeping error from the effects it produced. This
 section concludes something narrower and more actionable: independent
 replication, additional test cells, orthogonal measurement and cross-estimator
-checks were what overturned the claims in Table 4, and they were necessary
+checks were what overturned the claims in [@tab:false-findings], and they were necessary
 precisely because an analysis chain can validate the assumptions it shares with
 its instrument.

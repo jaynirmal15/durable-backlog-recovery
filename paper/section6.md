@@ -1,5 +1,6 @@
 # §6 — The corrected boundary
 
+*Draft 9 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 8 — W3 readability, 2026-09-20. One edit, and it is a compression rather
 than a deletion. The `[ρ_safe, 1]` sentence is 0.92-similar to §IV's, but its
 second occurrence does local interpretive work: it sits exactly where a reader
@@ -79,12 +80,12 @@ called degenerate or pinned at saturation.
 
 The seven cells span two service times (5 and 25 ms), three configured
 capacities (400, 1400, 2000), two admission limits and four concurrency levels
-(7, 10, 35 and 50 workers). Table 2 gives each cell at its own resolution.
+(7, 10, 35 and 50 workers). [@tab:resolution] gives each cell at its own resolution.
 
 **The safe drain boundary lies at or near measured service capacity,
 indistinguishable from it at the experiment's resolution, in every cell.** No
 range spanning the seven is quoted: they do not share a precision, and a range
-would assert one they do not have. Per-cell values are in Table 2.
+would assert one they do not have. Per-cell values are in [@tab:resolution].
 
 The unrounded analysis puts the difference between the two extreme cells at
 0.0071. That is a derived difference, not a per-cell reported utilisation, and
@@ -111,7 +112,7 @@ at or near measured capacity, and does not say it lies strictly below.
 
 ### C. What the correction changed, and what it did not
 
-Figure 5 plots each cell's last SAFE point twice: against the configured
+[@fig:collapse] plots each cell's last SAFE point twice: against the configured
 parameter, and against the capacity that cell was measured to have. Against the
 configured value the seven span **0.0719**. Against measured capacity they span
 **0.0071**.
@@ -126,11 +127,11 @@ Both axes use the maximum, as §IV requires. An earlier build took a maximum on
 one axis and a median on the other, which mixed statistics inside a comparison;
 that is corrected here and in the figure.
 
-**Figure 5 and the effect-size accounting in §V-F are not the same result.**
-Figure 5 re-divides *the same measured boundaries* by a different denominator —
+**[@fig:collapse] and the effect-size accounting in §V-F are not the same result.**
+[@fig:collapse] re-divides *the same measured boundaries* by a different denominator —
 an accounting change, across seven cells. §V-F compares an uncorrected harness
 against a *physically corrected* one, in two cells, on the drain-window
-estimator. Taking Figure 5's two C0 cells alone makes the difference concrete:
+estimator. Taking [@fig:collapse]'s two C0 cells alone makes the difference concrete:
 the derived gap between them is 0.0696 against the configured parameter and
 0.0019 against measured capacity, while correcting the harness itself leaves
 0.0043 under the matched estimator. All four are derived differences from the

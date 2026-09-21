@@ -861,7 +861,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 11 -->
+<!-- plan-synced-to: section3 draft 12 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after
@@ -913,7 +913,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 23 -->
+<!-- plan-synced-to: section4 draft 24 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval
@@ -954,7 +954,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §5 The calibration defect — 2,750 words, F3 + F4
 
-<!-- plan-synced-to: section5 draft 22 -->
+<!-- plan-synced-to: section5 draft 23 -->
 
 **Open with motivation, ~250 words.** Three candidate explanations appeared in
 sequence; each was pre-registered and each had a falsification test designed
@@ -1073,7 +1073,7 @@ caught in review and must not reappear.
 
 ## §6 The corrected boundary — 1,550 words, F5 + T2
 
-<!-- plan-synced-to: section6 draft 8 -->
+<!-- plan-synced-to: section6 draft 9 -->
 
 **Name the quantity the first time a per-cell ρ_eff appears**, before the
 figure: it is the achieved utilisation of the last SAFE point against measured
@@ -1189,7 +1189,7 @@ retractions are a different set with a different cause.
 
 ## §7 What warns, and what does not — 1,350 words, F6
 
-<!-- plan-synced-to: section7 draft 6 -->
+<!-- plan-synced-to: section7 draft 7 -->
 
 **F6** on a corrected cell. The DEEP threshold
 (`drainQueueDepthMean ≥ 50`, `results/E1B-PLAN.md`, `09e41e5`, fixed before
@@ -1261,7 +1261,7 @@ must not return. The section does not assert that latency "warns last".
 
 ## §8 How calibration changed the interpretation — 1,070 words, T3
 
-<!-- plan-synced-to: section8 draft 3 -->
+<!-- plan-synced-to: section8 draft 4 -->
 
 > ## BLOCKER RESOLVED 2026-09-20 — ruling below; §8 may be drafted once §1, §5,
 > ## the claim register and this plan are all synchronised (they now are).
@@ -1414,7 +1414,7 @@ anywhere.) That is the implication paragraph, and it leads into §9.
 
 ## §9 Threats to validity — 1,650 words
 
-<!-- plan-synced-to: section9 draft 5 -->
+<!-- plan-synced-to: section9 draft 6 -->
 
 **SIX VALIDITY CATEGORIES PLUS A CLOSING FUTURE-WORK SUBSECTION — seven
 labelled, A to G. Ruled at the §9 review and settled.** (v8.5 and v8.6 both said

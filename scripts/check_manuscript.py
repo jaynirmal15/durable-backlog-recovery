@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Three invariants over the manuscript's live text. Renamed from
+"""Five invariants over the manuscript's live text. Renamed from
 check_withdrawn_phrases.py, which understated what it does.
 
 WHY THIS EXISTS. Five times in this project a phrase was withdrawn from the
@@ -382,6 +382,168 @@ def citation_markers():
     return problems, entries, cited
 
 
+FLOAT_FIGURES = 6
+FLOAT_TABLES = 8
+# The census is a RULING, not a measurement: ASSEMBLY-SPEC.md Draft 2, review
+# ruling A, fixes it at six figures and eight tables. Hard-coding it means
+# losing a float fails here instead of silently shortening the article. Adding
+# one is a deliberate edit to this line, which is the point.
+
+
+def own_line_tags(text, pattern):
+    """Every own-line HTML-comment marker matching `pattern`, with its line.
+
+    Own-line only, for the reason delimited() is: a marker named in prose is
+    prose. OUTLINE.md and the spec both describe these markers in sentences
+    (item 37), and a bare substring search would count those descriptions as
+    the markers they describe.
+    """
+    out = []
+    for m in re.finditer(r'^[ \t]*<!--[ \t]*(' + pattern + r')[ \t]*-->[ \t]*$',
+                         text, re.M):
+        # group(1) is the whole marker; group(2) is the key. Every pattern
+        # passed here supplies that inner group. re.lastindex is NOT usable to
+        # detect it -- with the outer group wrapping the pattern it reports 1
+        # even when groups 2 and 3 matched, which silently made every key None.
+        out.append((m.group(2), m.start(),
+                    text.count('\n', 0, m.start()) + 1, m))
+    return out
+
+
+def float_keys(root='.'):
+    """Check 5: keyed figure and table references resolve, both ways.
+
+    WHY THIS EXISTS. citation_markers() matches [@key] as
+    [A-Za-z0-9][A-Za-z0-9._-]* , which excludes the colon, so every
+    [@fig:harness] and [@tab:resolution] in the sources fell through it
+    WITHOUT A WORD -- not reported as unresolved, not reported at all. The
+    keyed float pass was therefore unvalidated from the moment it was written:
+    a typo'd key, a caption with no float, or a figure nobody cites would all
+    have reached the build. A check that silently ignores what it was not told
+    about is worse than no check, because the clean line implies coverage.
+
+    Four relations, each failing separately:
+      key -> caption   exactly one delimited caption block per key
+      key -> float     exactly one artefact: a figure FILE that exists, or a
+                       table marker followed by a pipe table
+      float -> prose   every float referenced at least once
+      census           six figures and eight tables, per the ruling
+    """
+    problems = []
+    paper = os.path.join(root, PAPER)
+    figures = os.path.join(root, FIGURES)
+    sections = [os.path.join(paper, 'section%d.md' % n) for n in range(1, 11)]
+    others = []
+    if os.path.isdir(figures):
+        others = [os.path.join(figures, n) for n in sorted(os.listdir(figures))
+                  if n.endswith('.md')]
+
+    # --- references in prose, in order of first appearance -------------------
+    refs = {}
+    order = []
+    for sp in sections:
+        if not os.path.isfile(sp):
+            continue
+        with open(sp, encoding='utf-8') as fh:
+            lines = fh.readlines()
+        for n, line in body_of(lines, True):
+            for m in re.finditer(r'\[@((?:fig|tab):[A-Za-z0-9][A-Za-z0-9._-]*)\]',
+                                 line):
+                k = m.group(1)
+                if k not in refs:
+                    order.append(k)
+                refs.setdefault(k, []).append((sp, n))
+
+    # --- caption blocks ------------------------------------------------------
+    captions = {}
+    for path in sections + others:
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding='utf-8') as fh:
+            text = fh.read()
+        for key, _pos, line, _m in own_line_tags(
+                text, r'caption:((?:fig|tab):[A-Za-z0-9][A-Za-z0-9._-]*):start'):
+            captions.setdefault(key, []).append((path, line))
+            if delimited(text, 'caption:%s:start' % key,
+                         'caption:%s:end' % key) is None:
+                problems.append(('caption:%s' % key,
+                                 '%s:%d opens a caption that never properly '
+                                 'closes (no own-line :end after it)'
+                                 % (path, line)))
+
+    # --- floats: figure files, and tables that really are tables -------------
+    floats = {}
+    for path in sections + others:
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding='utf-8') as fh:
+            text = fh.read()
+        lines = text.split('\n')
+        for key, _pos, line, m in own_line_tags(
+                text, r'figure:(fig:[A-Za-z0-9][A-Za-z0-9._-]*):([^ \t>]+)'):
+            fn = m.group(3)
+            floats.setdefault(key, []).append((path, line))
+            if not os.path.isfile(os.path.join(figures, fn)):
+                problems.append(('figure:%s' % key,
+                                 '%s:%d binds it to %s, which is not in %s/'
+                                 % (path, line, fn, FIGURES)))
+        for key, _pos, line, _m in own_line_tags(
+                text, r'table:(tab:[A-Za-z0-9][A-Za-z0-9._-]*)'):
+            floats.setdefault(key, []).append((path, line))
+            nxt = ''
+            for cand in lines[line:]:
+                if cand.strip():
+                    nxt = cand
+                    break
+            if not nxt.startswith('|'):
+                problems.append(('table:%s' % key,
+                                 '%s:%d is not followed by a pipe table; the '
+                                 'build would set the wrong block' % (path, line)))
+
+    # --- the four relations --------------------------------------------------
+    for key in order:
+        where = refs[key][0]
+        if key not in captions:
+            problems.append(('[@%s]' % key,
+                             'referenced at %s:%d but no caption block carries '
+                             'that key' % (where[0], where[1])))
+        elif len(captions[key]) > 1:
+            problems.append(('[@%s]' % key, 'has %d caption blocks: %s'
+                             % (len(captions[key]),
+                                ', '.join('%s:%d' % w for w in captions[key]))))
+        if key not in floats:
+            problems.append(('[@%s]' % key,
+                             'referenced at %s:%d but no float carries that key '
+                             '(a figure: binding or a table: marker)'
+                             % (where[0], where[1])))
+        elif len(floats[key]) > 1:
+            problems.append(('[@%s]' % key, 'has %d floats: %s'
+                             % (len(floats[key]),
+                                ', '.join('%s:%d' % w for w in floats[key]))))
+
+    for key, where in sorted(captions.items()):
+        if key not in refs:
+            problems.append(('caption:%s' % key,
+                             'written at %s:%d but no section references '
+                             '[@%s]' % (where[0][0], where[0][1], key)))
+    for key, where in sorted(floats.items()):
+        if key not in refs:
+            problems.append(('float:%s' % key,
+                             'set at %s:%d but no section references [@%s] -- '
+                             'an unreferenced float has no number to print'
+                             % (where[0][0], where[0][1], key)))
+
+    nfig = sum(1 for k in floats if k.startswith('fig:'))
+    ntab = sum(1 for k in floats if k.startswith('tab:'))
+    if nfig != FLOAT_FIGURES:
+        problems.append(('census', 'found %d figures, the ruling says %d'
+                         % (nfig, FLOAT_FIGURES)))
+    if ntab != FLOAT_TABLES:
+        problems.append(('census', 'found %d tables, the ruling says %d'
+                         % (ntab, FLOAT_TABLES)))
+    return problems, order, floats
+
+
 def main():
     hits = []
     for path, skip in targets():
@@ -396,8 +558,10 @@ def main():
     cite_problems, cite_entries, cited = citation_markers()
     entries, bib_problems = bibliography()
     uncited = citation_inventory(entries) if entries else []
+    float_problems, float_order, floats = float_keys()
 
-    ok = not (hits or stale or bib_problems or uncited or cite_problems)
+    ok = not (hits or stale or bib_problems or uncited or cite_problems
+              or float_problems)
     if ok:
         print('clean.')
         print('  withdrawn phrases : none in live manuscript-facing text '
@@ -408,6 +572,19 @@ def main():
               'their delimited inventories' % len(entries))
         print('  citation markers  : %d keys cited, each resolving to exactly one '
               'entry; every entry cited' % len(cited))
+        nfig = sum(1 for k in floats if k.startswith('fig:'))
+        ntab = sum(1 for k in floats if k.startswith('tab:'))
+        print('  float keys        : %d figures + %d tables, each with one '
+              'caption, one float and at least one reference' % (nfig, ntab))
+        print('                      printed numbers, by first appearance:')
+        fign = tabn = 0
+        for key in float_order:
+            if key.startswith('fig:'):
+                fign += 1
+                print('                        Fig. %d  %s' % (fign, key))
+            else:
+                tabn += 1
+                print('                        Table %d %s' % (tabn, key))
         return 0
 
     if hits:
@@ -433,6 +610,12 @@ def main():
             print('  %-18s %s' % (label, msg))
         print('\nEvery [@key] must resolve to exactly one entry, and every entry '
               'must be cited at least once.\n')
+    if float_problems:
+        print('FIGURE AND TABLE KEYS\n')
+        for label, msg in float_problems:
+            print('  %-24s %s' % (label, msg))
+        print('\nEvery [@fig:...] / [@tab:...] must have exactly one caption '
+              'block and one float, and every float must be referenced.\n')
     if uncited:
         print('BIBLIOGRAPHY ENTRIES MISSING FROM AN INVENTORY\n')
         for label, where in uncited:

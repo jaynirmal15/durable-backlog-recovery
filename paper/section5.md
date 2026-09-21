@@ -1,5 +1,6 @@
 # §5 — The calibration defect
 
+*Draft 23 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. §V's four tables gain labels and in-text references, as the reviewer's ruling to number every article table requires: three references are parenthetical insertions into existing sentences; **one is a new sentence** introducing the δ-predictions table, which had no introducing sentence to attach to — worded, on review, as "the registered and comparison predictions" rather than "each candidate correction's prediction", because the table also carries the pooled correction and the in-situ estimate, which was explicitly not a candidate. It is the only new prose in this pass. No other wording changed.*
 *Draft 22 — SCIENCE FROZEN. 2026-09-20.
 Draft 22: §V-A said three effects each survived their falsification test. One of
 the three — the admission-limit explanation — was refuted by its own registered
@@ -95,14 +96,15 @@ completion signal together contribute 1.29 µs and 1.38 µs. The attribution is 
 condition-free: at saturation the long arm falls to **99.75%**. Every figure is
 quoted with its load condition, as every `δ` in this paper is.
 
-Figure 3 carries the decomposition and the constant-versus-proportional test.
+[@fig:overhead] carries the decomposition and the constant-versus-proportional test.
 
 ### C. One cost, three values, two instruments
 
 `δ` is not a single number and is never reported as one. The **direct timing
 probe** measured it under three conditions, and the reported estimate decreases
-across them:
+across them ([@tab:delta-conditions]):
 
+<!-- table:tab:delta-conditions -->
 | condition | `S` = 5 ms | `S` = 25 ms | estimator |
 |---|---:|---:|---|
 | at 90% of capacity | 0.5165 ms | 0.5114 ms | mean over one 60 s window |
@@ -210,8 +212,9 @@ the quantity it agreed with. Both plateaus were therefore replicated under
 addendum A8, registered in commit `590d1cc` before the harness was rebuilt and
 before any window was run — ten 60-second windows per arm, median convention,
 with the reading fixed in advance for every outcome, including the one that would
-have withdrawn the claim made here:
+have withdrawn the claim made here ([@tab:a8-replication]):
 
+<!-- table:tab:a8-replication -->
 | arm | n | min | median | max | range | IQR |
 |---|---:|---:|---:|---:|---:|---:|
 | `S` = 5 | 10 | 1987.27 | **1988.96** | 1990.38 | 3.11 | 1.71 |
@@ -248,8 +251,10 @@ agreement cannot discriminate at all.**
 Both original observations fall within the corresponding A8 ranges, and the
 spreads — 0.16% and 0.14% of capacity — fall inside the seven-cell corpus's
 0.10–0.24% repeatability. These plateaus were never noisier than the rest of the
-campaign.
+campaign. [@tab:delta-predictions] sets the registered and comparison predictions
+beside the replicated measured plateau.
 
+<!-- table:tab:delta-predictions -->
 | `δ` source | predicted at `S` = 5 | predicted at `S` = 25 |
 |---|---:|---:|
 | pooled saturation-plateau-inferred correction, 0.463 ms | 2000.0 | 2000.0 |
@@ -267,7 +272,7 @@ and observed range; A8's adjudication uses the arm-specific registered rules
 above, not the original single-window observations, because one observation
 cannot be compared with a spread.
 
-Figure 4 shows predicted against measured plateau, uncorrected and corrected, for
+[@fig:plateau] shows predicted against measured plateau, uncorrected and corrected, for
 both arms.
 
 **Internal stability.** Taking the median saturation-plateau-inferred `δ` over
@@ -330,11 +335,13 @@ constant's implied value inside the observed range and its rival outside; the
 long arm cannot separate them.
 
 **Established, under matched accounting.** The correction largely removes the
-inter-arm difference, reported under each estimator separately. The four-decimal
+inter-arm difference, reported under each estimator separately in
+[@tab:accounting]. The four-decimal
 quantities are derived inter-arm differences, not measured per-cell utilisations;
 the extra digit keeps the subtraction from erasing the effect, and the underlying
 measured utilisations remain resolution-matched.
 
+<!-- table:tab:accounting -->
 | accounting | before | after | removed |
 |---|---:|---:|---:|
 | drain-window, utilisation | 0.0670 | 0.0032 | 95% |

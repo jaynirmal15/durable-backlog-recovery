@@ -326,6 +326,62 @@ def citation_inventory(entries):
     return missing
 
 
+def citation_markers():
+    """Every [@key] resolves to exactly one entry; every entry is cited once.
+
+    Added 2026-09-20 with the citation pass. The bibliography is the single
+    source of truth: each entry carries a marker-key comment, and the sections
+    carry [@key]. A key with no entry is a citation to nothing; a key matching
+    two entries is an ambiguous number; an entry nobody cites is a reference the
+    manuscript does not use, which IEEE numbering by first appearance cannot
+    assign a number to at all.
+
+    Keys are read from an HTML comment, never as a bare substring -- item 37.
+    """
+    problems = []
+    path = os.path.join(PAPER, 'references.md')
+    if not os.path.isfile(path):
+        return [('references.md', 'missing')]
+    text = open(path, encoding='utf-8').read()
+    entries = {}
+    for m in re.finditer(r'^\*\*\[(\d+)\]\*\*', text, re.M):
+        num = int(m.group(1))
+        end = text.find('\n**[', m.end())
+        block = text[m.start():end if end > 0 else len(text)]
+        k = re.search(r'<!--\s*marker-key:\s*([A-Za-z0-9][A-Za-z0-9._-]*)\s*-->', block)
+        if not k:
+            problems.append(('[%d]' % num, 'no <!-- marker-key: ... --> comment'))
+            continue
+        entries.setdefault(k.group(1), []).append(num)
+
+    cited = {}
+    for sec in range(1, 11):
+        sp = os.path.join(PAPER, 'section%d.md' % sec)
+        if not os.path.isfile(sp):
+            continue
+        with open(sp, encoding='utf-8') as fh:
+            lines = fh.readlines()
+        for n, line in body_of(lines, True):
+            for m in re.finditer(r'\[@([A-Za-z0-9][A-Za-z0-9._-]*)\]', line):
+                cited.setdefault(m.group(1), []).append((sp, n))
+
+    for key, where in sorted(cited.items()):
+        hits = entries.get(key, [])
+        if not hits:
+            problems.append(('[@%s]' % key,
+                             'cited at %s:%d but no entry carries that marker-key'
+                             % (where[0][0], where[0][1])))
+        elif len(hits) > 1:
+            problems.append(('[@%s]' % key,
+                             'ambiguous: entries %s both carry it'
+                             % ', '.join('[%d]' % h for h in hits)))
+    for key, nums in sorted(entries.items()):
+        if key not in cited:
+            problems.append(('[%d]' % nums[0],
+                             'marker-key %r is never cited by any section' % key))
+    return problems, entries, cited
+
+
 def main():
     hits = []
     for path, skip in targets():
@@ -337,10 +393,11 @@ def main():
             continue
 
     stale = plan_sync()
+    cite_problems, cite_entries, cited = citation_markers()
     entries, bib_problems = bibliography()
     uncited = citation_inventory(entries) if entries else []
 
-    ok = not (hits or stale or bib_problems or uncited)
+    ok = not (hits or stale or bib_problems or uncited or cite_problems)
     if ok:
         print('clean.')
         print('  withdrawn phrases : none in live manuscript-facing text '
@@ -349,6 +406,8 @@ def main():
               'correctly placed, equal to the section draft')
         print('  citations         : %d bibliography entries, all present in '
               'their delimited inventories' % len(entries))
+        print('  citation markers  : %d keys cited, each resolving to exactly one '
+              'entry; every entry cited' % len(cited))
         return 0
 
     if hits:
@@ -368,6 +427,12 @@ def main():
         for label, msg in bib_problems:
             print('  %-6s %s' % (label, msg))
         print()
+    if cite_problems:
+        print('CITATION MARKERS\n')
+        for label, msg in cite_problems:
+            print('  %-18s %s' % (label, msg))
+        print('\nEvery [@key] must resolve to exactly one entry, and every entry '
+              'must be cited at least once.\n')
     if uncited:
         print('BIBLIOGRAPHY ENTRIES MISSING FROM AN INVENTORY\n')
         for label, where in uncited:

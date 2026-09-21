@@ -64,14 +64,19 @@ the Claude project, not on the author's disk**. The executor checked a second CV
 as **B.S.**, not B.E., the location as Maharashtra, no member number, and no
 "fault-tolerance" term (the project CV has "Network Failure & Fault-Tolerance
 Testing"). Both CVs name one employer, so "platforms" was made singular at
-draft 3.1. **Open: B.E. or B.S. — Jay to confirm from the degree certificate;
-the two CVs must then be made to agree.** Four edits, all
+draft 3.1. **CLOSED 2026-09-21: the degree is the B.E.**, confirmed by
+the author; the body already reads "B.E." and is unchanged. The iCloud CV
+`Jay_Nirmal_CV.pdf`, which says "B.S.", is the one to correct — that is a CV
+task, not a manuscript one. Four edits, all
 conventions or corrections, none adding a claim: "the Mumbai University" -> "the
 University of Mumbai" (the CV's and the institution's name); degree years 2017 and
 2019 restored (IEEE Access biographies carry them; both are on the CV); "(Member,
 IEEE)" added after the name (IEEE Access convention; CV: Member #101719233);
 "backend" -> "back-end" (IEEE style). Employer deliberately not named. Still no
-editorial role and no publications. **Jay to confirm.***
+editorial role and no publications. **APPROVED AS WRITTEN by the author,
+2026-09-21.** ORCID for the submission record:
+`https://orcid.org/0009-0003-0886-4663` — not printed in the biography; IEEE
+Access takes it from the submitting author's account.*
 
 **JAY NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
 from the University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in
@@ -121,8 +126,8 @@ publications at all.
 
 I have left all of it out. An IEEE biography is conventionally degrees, current
 position, research interests and membership grade, and the shortest defensible
-version is the one that cannot be challenged. **Jay should confirm the paragraph
-above and decide what, if anything, to add.**
+version is the one that cannot be challenged. **The author approved the paragraph above as written
+on 2026-09-21 and added none of it.**
 
 ---
 

@@ -2,7 +2,9 @@
 
 *Draft 7 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at twelve citing sentences of §II-A to §II-D, carrying thirteen of the fourteen references (Little is keyed in §I and §III) (the GitLab pair on "recurring"; Papadopoulos on the general measurement-bias clause before the colon of §II-D's opening sentence, Mytkowicz on the concrete compiler example after it — reviewer ruling 2026-09-21, moved off the Heiser sentence, where the catalogue was the grammatical subject). The move puts Papadopoulos ahead of Mytkowicz in first-appearance order. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 6 — SCIENCE FROZEN, citation-inventory sync only. 2026-09-20. The
-reference list added Papadopoulos et al. at [14] and recorded that it attaches
+reference list added Papadopoulos et al. at [14] — **the draft-5 numbering;
+Papadopoulos is [11] after the citation pass renumbered by first appearance, and
+the old->new map is in `references.md`** — and recorded that it attaches
 to §II-D — and this section's own citation inventory did not know it existed.
 Added here; no body prose changed, because it attaches to a claim §II-D already
 makes. Caught in review, and now enforced by

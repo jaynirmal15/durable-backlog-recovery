@@ -146,15 +146,23 @@ def f1():
 
 # ---------------------------------------------------------------- F2
 def f2():
-    fig, ax = plt.subplots(figsize=(WIDE, 2.35))
+    # Canvas and data range widened together by 2%, which leaves points-per-
+    # data-unit unchanged: every box, bar and arrow keeps its physical size and
+    # its position relative to the others, and only the sheet is wider. It is
+    # needed because "unaccounted for in C_config" is longer than the
+    # "unaccounted for in C" it replaces and overran the old canvas by 1.6 pt,
+    # clipping the "ig". The alternative -- shrinking the bar to make room --
+    # would have changed a drawn element, which the notation fix forbids.
+    fig, ax = plt.subplots(figsize=(WIDE * 1.02, 2.35))
     ax.axis('off')
-    ax.set_xlim(0, 10)
+    ax.set_xlim(0, 10.2)
     ax.set_ylim(0, 3.4)
 
     ax.text(0.0, 3.05, 'What the harness assumes', fontsize=8, weight='bold')
-    ax.text(0.0, 2.55, 'concurrency $=\\lceil C\\cdot S\\rceil$ workers, each turning a '
-                       'request round in exactly $S$', fontsize=8)
-    ax.text(0.0, 2.10, 'so capacity $=$ concurrency $/\\,S = C$', fontsize=8, color=MUTE)
+    ax.text(0.0, 2.55, '$c = \\lceil C_\\mathrm{config}\\cdot S\\rceil$ workers, each '
+                       'turning a request round in exactly $S$', fontsize=8)
+    ax.text(0.0, 2.10, 'so capacity $= c/\\,S = C_\\mathrm{config}$', fontsize=8,
+            color=MUTE)
 
     ax.plot([0, 10], [1.82, 1.82], color=MUTE, lw=0.5)
 
@@ -171,13 +179,14 @@ def f2():
         x += ww
     ax.annotate('', xy=(x, 0.50), xytext=(0, 0.50),
                 arrowprops=dict(arrowstyle='<->', lw=0.7, color=INK))
-    ax.text(x / 2, 0.30, 'realised cycle $=S+\\mathrm{ov}$', ha='center', fontsize=7.5)
+    ax.text(x / 2, 0.30, 'realised cycle $=S+\\delta$', ha='center', fontsize=7.5)
 
-    ax.text(x + 0.18, 0.80, 'ov $= 0.463$ ms,\nunaccounted for in $C$',
+    ax.text(x + 0.18, 0.80, '$\\delta = 0.463$ ms,\nunaccounted for in '
+                            '$C_\\mathrm{config}$',
             va='center', fontsize=7.5, color=HI)
-    ax.text(0.0, 0.02, '$C_\\mathrm{model}$ $=$ concurrency$/(S+\\mathrm{ov}) = C\\cdot S/(S+'
-                       '\\mathrm{ov})$ — the same ov costs proportionally more '
-                       'when $S$ is short', fontsize=7.5, color=MUTE)
+    ax.text(0.0, 0.02, '$C_\\mathrm{model}$ $= c/(S+\\delta) = C_\\mathrm{config}\\cdot S/'
+                       '(S+\\delta)$ — the same $\\delta$ costs proportionally '
+                       'more when $S$ is short', fontsize=7.5, color=MUTE)
     save(fig, 'F2-capacity-model', pad=False)
 
 

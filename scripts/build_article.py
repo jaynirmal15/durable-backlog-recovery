@@ -162,22 +162,22 @@ MATH = {
     'S = 5': r'S = 5',
     'S = 25': r'S = 25',
     '2 · c': r'2 \cdot c',
-    'c / S': r'c \,/\, S',
+    'c / S': r'c \mathbin{/} S',
     '50 · S': r'50 \cdot S',
     'c/(S+δ)': r'c/(S + \delta)',
-    'c / (S + δ)': r'c \,/\, (S + \delta)',
+    'c / (S + δ)': r'c \mathbin{/} (S + \delta)',
     '50 · (S + δ)': r'50 \cdot (S + \delta)',
     'C_config · S': r'C_{\mathrm{config}} \cdot S',
     'δ = 0.463': r'\delta = 0.463',
     '[ρ_safe, 1]': r'[\rho_{\mathrm{safe}},\, 1]',
     'C_staffed = C_config': r'C_{\mathrm{staffed}} = C_{\mathrm{config}}',
-    'C_measured / C_config': r'C_{\mathrm{measured}} \,/\, C_{\mathrm{config}}',
+    'C_measured / C_config': r'C_{\mathrm{measured}} \mathbin{/} C_{\mathrm{config}}',
     'ceil(C_config · S)': r'\lceil C_{\mathrm{config}} \cdot S \rceil',
     'c = ceil(C·S)': r'c = \lceil C \cdot S \rceil',
     '[R_lastSAFE, R_firstNonSAFE]':
         r'[R_{\mathrm{lastSAFE}},\, R_{\mathrm{firstNonSAFE}}]',
     'ρ_eff,safe = R_ach,lastSAFE / C_measured':
-        r'\rho_{\mathrm{eff,safe}} = R_{\mathrm{ach,lastSAFE}} \,/\,'
+        r'\rho_{\mathrm{eff,safe}} = R_{\mathrm{ach,lastSAFE}} \mathbin{/}'
         r' C_{\mathrm{measured}}',
     'δ = S(C_config/plateau − 1)':
         r'\delta = S(C_{\mathrm{config}}/\mathrm{plateau} - 1)',
@@ -196,9 +196,9 @@ MATH = {
     'queueCap = 50 · c': r'\mathrm{queueCap} = 50 \cdot c',
     '-0.006': r'-0.006',
     'h = (ρ*_E2b − ρ10) / D':
-        r'h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \,/\, D',
+        r'h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \mathbin{/} D',
     'h = (0.98 − 0.9137) / 0.0689 = +0.980':
-        r'h = (0.98 - 0.9137) \,/\, 0.0689 = +0.980',
+        r'h = (0.98 - 0.9137) \mathbin{/} 0.0689 = +0.980',
 }
 
 TEXTTT = {
@@ -269,6 +269,14 @@ def article_blocks(text, kind):
 # Inline conversion
 # --------------------------------------------------------------------------
 
+# \mathbin{/}, not \,/\, : a slash is a mathord, and TeX may not break a line
+# at one. Declaring it a binary operator makes the break legal, which is what
+# was left of the 44pt overfull box in section IV-E after the formula was
+# split at its "=" -- the right-hand side alone, R_ach,lastSAFE / C_measured,
+# is still 53 characters of otherwise unbreakable math. The spacing is
+# medmuskip either side rather than two thin spaces, which is the correct
+# spacing for a binary operator anyway. Display equations are deliberately not
+# changed: they are the paper's formal content and none of them overflows.
 MATH_SPLIT_CHARS = 50   # longer than this and the formula gets a break point
 MATH_SPLIT_MIN = 12     # ... but only if BOTH halves are worth a box
 
@@ -640,10 +648,9 @@ FIGURE_LAYOUT = {
     'fig:plateau':        ('column', None,                     1.0),
     'fig:overhead':       ('full',   None,                     1.0),
     'fig:signals':        ('column', None,                     1.0),
-    # Fig. S1 is over-scaled the same way, at 7.9-9.0pt. It is left alone
-    # deliberately: its generator still draws "ov" and must be regenerated
-    # anyway, and sizing it twice would mean measuring it twice.
-    'fig:capacity-model': ('full',   (57.0, 11.7, 3.7, 21.5),  1.0),
+    # Fig. S1, re-measured after the notation fix regenerated it. 0.90 puts
+    # its type at 7.9 / 7.4 / 6.9pt, which is F3's band exactly.
+    'fig:capacity-model': ('full',   (58.3, 11.2, 0.0, 21.5),  0.90),
 }
 
 

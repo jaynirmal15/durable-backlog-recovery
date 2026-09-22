@@ -89,7 +89,7 @@ Fig.~\ref{fig:capacity-model} pictures the relation equations \eqref{eq:4}--\eqr
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[trim=57.0 11.7 3.7 21.5, clip, width=\textwidth]{F2-capacity-model.pdf}
+\includegraphics[trim=58.3 11.2 0.0 21.5, clip, width=0.9\textwidth]{F2-capacity-model.pdf}
 \caption[Where the unaccounted cost enters.]{Where the unaccounted cost enters. The harness sizes the dependency as c = $\lceil$C\_config$\cdot$S$\rceil$ workers on the assumption that each turns a request round in exactly S, which makes capacity equal to C\_config by construction. A worker in fact pays a fixed additional 0.463 ms per request, almost all of it the operating system sleeping longer than asked. C\_model is therefore c/(S + $\delta$), as in (5), and because the cost is additive rather than proportional it consumes a larger share of a short service time than a long one.}
 \label{fig:capacity-model}
 \end{figure*}
@@ -173,7 +173,7 @@ One bracket is weaker than the rest and is named rather than averaged into the o
 
 Under the graceful profile the admission limit is $\mathrm{queueCap} = 50 \cdot c$; and under the \textit{cliff} profile it is $2 \cdot c$, returning an immediate rejection once full. The queue channel itself is allocated at four times the admission limit; admission is enforced by a token pool rather than by channel capacity, so the limit can be changed without reallocating.
 
-The time to traverse a full queue is the admission limit divided by the service rate. Under the intended occupancy model the service rate is $c \,/\, S$ and the traversal time is $50 \cdot S$ --- 250 ms at $S = 5$ ms. Under the corrected occupancy model of \S{}III-D the service rate is $c \,/\, (S + \delta)$ and the traversal time is $50 \cdot (S + \delta)$. In both cases the worker count cancels. The admission rule therefore cannot by itself produce a capacity-dependent or concurrency-dependent queue-delay scale, under either the intended model or the corrected one --- a point \S{}VIII returns to, since one of the retracted findings proposed exactly that mechanism.
+The time to traverse a full queue is the admission limit divided by the service rate. Under the intended occupancy model the service rate is $c \mathbin{/} S$ and the traversal time is $50 \cdot S$ --- 250 ms at $S = 5$ ms. Under the corrected occupancy model of \S{}III-D the service rate is $c \mathbin{/} (S + \delta)$ and the traversal time is $50 \cdot (S + \delta)$. In both cases the worker count cancels. The admission rule therefore cannot by itself produce a capacity-dependent or concurrency-dependent queue-delay scale, under either the intended model or the corrected one --- a point \S{}VIII returns to, since one of the retracted findings proposed exactly that mechanism.
 
 One separation is deliberate and load-bearing. The configured capacity parameter is exposed only on an administrative endpoint, which the consumer never reads. The harness was built so that a recovery controller could not rely on the configured capacity parameter and would have to operate from observations instead. The results later justify distrust of that configured value, while not determining whether a validated estimate should be supplied offline or inferred online --- a distinction \S{}I leaves open and this paper does not settle. The decision was taken before any measurement, for a reason narrower than the one that ultimately justified it.
 

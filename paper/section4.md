@@ -13,6 +13,7 @@ objects, 1.0002, the refusal of a [ρ_safe, 1] interval, and equations (7)–(8)
 Moved to S1: the stall detector's four conditions, the initial-bracket
 construction, inherited anchors, and the corrected cells' per-repetition spread
 against their 55 and 65 rps steps. No number, finding or rule changes.*
+*Draft 26 — APPROVED AND FROZEN by review, 2026-09-20, on all five checks: the seven-cell / corrected-cell scope in §IV-C; the corrected cells outside every seven-cell statistic while supporting §V, the plateau figure, §VII and A7; A6's registered framing versus the narrower reporting form in §IV-E; `C_measured` as normalisation reference, `ρ_eff,safe` SAFE-side only, no [ρ_safe, 1] interval; and both uncertainty terms in §IV-D.*
 *Draft 25 — CUT PASS, increment 1, 2026-09-20, under the reviewer's supplement
 ruling. §IV-G, §IV-H and §IV-I are compressed and their full text moves, unchanged,
 to Supplement S1 (`paper/supplement-S1.md`), together with Table 1. Kept in the

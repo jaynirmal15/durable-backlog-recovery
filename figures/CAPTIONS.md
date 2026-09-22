@@ -11,8 +11,12 @@ window-to-window scatter rather than an inferential interval, the long-arm
 non-discrimination and the two-corpus statement, and those are spread across all
 four; the first trailing paragraph explains the marks, which a reader needs. The
 post-A6 note below is not caption. **Fig. 2 notation corrected** from C·S/(S+ov) to
-c/(S + δ), matching (1) and (5): the caption was the only place in the paper that
-still wrote the overhead as "ov". Table captions are titles, per IEEE style;
+c/(S + δ), matching (1) and (5): the caption was the only place in the *text* that still wrote the overhead as
+"ov". **Correction, 2026-09-20: that claim was false as a claim about the paper** —
+the figure itself (now Fig. S1) still *draws* "ov" five times and draws
+`concurrency = ⌈C·S⌉` rather than `c = ⌈C_config·S⌉`, as the executor found. The
+drawn content therefore disagrees with its corrected caption until the generator
+is fixed. Table captions are titles, per IEEE style;
 explanation lives in the text. Table 1's caption stays in §IV where it was written,
 delimited there. **A trailing `:s1` on a `figure:` or `table:` marker puts that float in Supplement S1 instead of the article**; without it the float is the article's. The caption library below is shared: a caption is found by key, wherever its float is placed. **Each figure caption is preceded by a `figure:KEY:FILE` marker** binding the key to the artefact it sets, the figure counterpart of the `table:KEY` marker that sits before a table. The binding lives here rather than in a file name because the key is the identity and the file names do not change.*
 

@@ -106,7 +106,7 @@ The harness is four services in Go, orchestrated by Docker Compose, plus a runne
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[trim=62.9 27.9 12.5 24.0, clip, width=\textwidth]{F1-architecture.pdf}
+\includegraphics[trim=62.9 27.9 12.5 24.0, clip, width=0.85\textwidth]{F1-architecture.pdf}
 \caption[The harness.]{The harness. Live traffic reaches the dependency by direct HTTP and never enters the message broker; recovery traffic is produced into JetStream during the outage and drained from it by a rate-limited consumer. The two paths share nothing until the downstream, which is the only contended resource. The fault withdraws the dependency's capacity for 120 s, and its restoration is the time origin for every measurement reported here.}
 \label{fig:harness}
 \end{figure*}

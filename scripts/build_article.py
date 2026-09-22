@@ -623,14 +623,27 @@ def table(lines, key, caption, wide=True):
 # Cropping is preferred to reducing scale because it takes the margin instead
 # of the data region: it cuts height AND makes the type larger, since the
 # remaining ink is scaled up to the same printed width.
+#
+# The third field is a fraction of the span's width. It exists because
+# CROPPING CHANGES THE TYPE SIZE: trimming Fig. 1's margins and holding the
+# printed width at \textwidth scaled its remaining ink up 1.17x, so its labels
+# printed at 7.6-9.3pt -- above body text and above every other figure in the
+# paper, which print at 6.3-7.9pt. Setting it at 0.85 of the span puts the
+# same cropped figure at 6.4-7.9pt, in the band the others occupy, and takes
+# another 0.04 page with it. The lever for type size is HERE, not in the
+# generator: make_figures.py authors every figure at 8pt and the printed size
+# is authored size x (printed width / source width).
 FIGURE_LAYOUT = {
-    # key                  span      trim (l, b, r, t) in the figure's own pt
-    'fig:harness':        ('full',   (62.9, 27.9, 12.5, 24.0)),
-    'fig:collapse':       ('full',   None),
-    'fig:plateau':        ('column', None),
-    'fig:overhead':       ('full',   None),
-    'fig:signals':        ('column', None),
-    'fig:capacity-model': ('full',   (57.0, 11.7, 3.7, 21.5)),
+    # key                  span      trim (l, b, r, t)         width fraction
+    'fig:harness':        ('full',   (62.9, 27.9, 12.5, 24.0), 0.85),
+    'fig:collapse':       ('full',   None,                     1.0),
+    'fig:plateau':        ('column', None,                     1.0),
+    'fig:overhead':       ('full',   None,                     1.0),
+    'fig:signals':        ('column', None,                     1.0),
+    # Fig. S1 is over-scaled the same way, at 7.9-9.0pt. It is left alone
+    # deliberately: its generator still draws "ov" and must be regenerated
+    # anyway, and sizing it twice would mean measuring it twice.
+    'fig:capacity-model': ('full',   (57.0, 11.7, 3.7, 21.5),  1.0),
 }
 
 
@@ -638,10 +651,10 @@ def figure(key, filename, caption):
     if key not in FIGURE_LAYOUT:
         fail('figure %s has no entry in FIGURE_LAYOUT; placement and size are '
              'decided explicitly, never by default' % key)
-    span, trim = FIGURE_LAYOUT[key]
+    span, trim, frac = FIGURE_LAYOUT[key]
     env = 'figure*' if span == 'full' else 'figure'
     width = r'\textwidth' if span == 'full' else r'\columnwidth'
-    opts = 'width=%s' % width
+    opts = 'width=%s' % width if frac == 1.0 else 'width=%.3g%s' % (frac, width)
     if trim:
         opts = 'trim=%.1f %.1f %.1f %.1f, clip, %s' % (trim + (opts,))
     return [r'\begin{%s}[!t]' % env, r'\centering',

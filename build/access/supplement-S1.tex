@@ -89,7 +89,7 @@ Fig.~\ref{fig:capacity-model} pictures the relation equations \eqref{eq:4}--\eqr
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=\textwidth]{F2-capacity-model.pdf}
+\includegraphics[trim=57.0 11.7 3.7 21.5, clip, width=\textwidth]{F2-capacity-model.pdf}
 \caption[Where the unaccounted cost enters.]{Where the unaccounted cost enters. The harness sizes the dependency as c = $\lceil$C\_config$\cdot$S$\rceil$ workers on the assumption that each turns a request round in exactly S, which makes capacity equal to C\_config by construction. A worker in fact pays a fixed additional 0.463 ms per request, almost all of it the operating system sleeping longer than asked. C\_model is therefore c/(S + $\delta$), as in (5), and because the cost is additive rather than proportional it consumes a larger share of a short service time than a long one.}
 \label{fig:capacity-model}
 \end{figure*}

@@ -7,6 +7,7 @@ scale-mismatch statements, the paragraph stating the 0.463 ms bias and the 9.26%
 Compressed: the opening, the three-candidate paragraph (which §VIII tells in
 full), the control-consequence and design-position paragraphs (merged), the
 roadmap, and C3's per-cell detail (given in §VII). No number or finding changes.*
+*Draft 19.1 — APPROVED by review with four fixes, then frozen: "overstated its own capacity by a per-request timing bias" → "because of" (a time is not a capacity overstatement); "the overhead" qualified as "this per-request timing bias" and "the per-request bias" (δ varies with load, so it is never an unqualified "the overhead"); the withdrawn controller-comparison claim replaced by "the present experiments do not adjudicate between the two"; and C2's "the elimination is a registered prediction" → "the correction was tested by a registered prediction rather than fitted to the corrected runs", since the 94–95% removal comes from matched accounting, not from the prediction.*
 *Draft 18 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at the first mention of Little's law. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 17 — one-clause sync, 2026-09-20. C4 said "three findings retracted
 before publication rather than after" without saying which three. The draft note
@@ -98,15 +99,15 @@ in the 25 ms arm.
 That result is only useful if capacity is known, and the substance of this paper
 is that it was not. The downstream is a purpose-built instrument with an explicit
 capacity parameter, staffed from that parameter by Little's law [@little], built for this
-study and measured by its author. It overstated its own capacity by a
+study and measured by its author. It overstated its own capacity because of a
 per-request timing bias of `δ` = 0.463 ms — the pooled
 saturation-plateau-inferred value — which corresponds to a capacity
 overstatement of **9.26% at a 5 ms service time and 1.85% at 25 ms**. The safe margin being measured is under one percent. At the 5 ms
 service time, the error in the figure against which that margin was expressed was
 more than an order of magnitude larger than the margin itself.
 
-An error of that relative size does not announce itself as an error. Because the
-overhead is approximately constant in absolute terms, it distorts short service
+An error of that relative size does not announce itself as an error. Because this
+per-request timing bias is approximately constant in absolute terms, it distorts short service
 times far more than long ones, and a distortion that varies systematically with a
 configuration parameter looks, from the outside, like a property of the system.
 Of three candidate explanations of the boundary put to registered tests, the
@@ -135,10 +136,9 @@ first appear. A controller cannot safely treat configured or nominal capacity as
 ground truth when its operating margin is smaller than the calibration error in
 that figure; it requires a capacity estimate that has been empirically validated.
 Whether that estimate is supplied by external calibration or inferred online is
-not settled by this work: the overhead varies with offered load (§V), so an
-offline benchmark would itself have to be run at the load condition that matters,
-and choosing between the two requires a controller comparison this paper does not
-contain. The harness was built on the stronger assumption — its configured
+not settled by this work: the per-request bias varies with offered load (§V), so
+an offline benchmark would itself have to be run at the load condition that
+matters, and the present experiments do not adjudicate between the two. The harness was built on the stronger assumption — its configured
 capacity is exposed only on an administrative endpoint the consumer never reads,
 so that a controller would have to infer capacity rather than be told it — and
 the campaign then walked into the hazard that precaution guarded against.
@@ -168,8 +168,8 @@ dependence, which survived its registered falsification and which calibration
 removes by 94 to 95%. A second, the apparent service-time dependence, survived
 its own registered test and is undermined by the calibrated evidence without its
 registered statistic having been recomputed; §VIII states that limitation rather
-than counting it as a third case. The elimination is a registered prediction rather than
-a fit: correcting the emulated service time by that bias was predicted to
+than counting it as a third case. The correction was tested by a registered prediction rather than
+fitted to the corrected runs: correcting the emulated service time by that bias was predicted to
 yield capacities of 1987.4 and 1997.7 rps in the two arms, using constants
 measured by a different instrument on separate runs. The first corrected windows
 were 1987.4 and 1998.1 rps; addendum A8 subsequently replicated both plateaus at

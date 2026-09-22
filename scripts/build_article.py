@@ -607,11 +607,47 @@ def table(lines, key, caption, wide=True):
     return out
 
 
+# HOW EACH FIGURE IS PLACED AND SIZED. Adopted 2026-09-21 after measuring
+# every figure's intrinsic width, its type sizes at each candidate scale, and
+# its ink bounding box, then reading each candidate rendered at its printed
+# size. Nothing here touches a generator: data, axis limits, ticks, labels and
+# annotations are exactly as committed, and the figure PDFs are byte-unchanged.
+#
+# THE FINDING THAT DROVE IT: the generators produce TWO design widths, and the
+# build was applying one placement rule to both. F4 and F6 are drawn 244.8pt
+# wide -- column width -- and width=\textwidth was enlarging them 2.04x, so
+# their type printed at 13-16pt against 9pt body text and each cost over half
+# a page. Setting them single-column is their native size, not a compromise.
+#
+# 'crop' trims the figure's own whitespace via \includegraphics trim/clip.
+# Cropping is preferred to reducing scale because it takes the margin instead
+# of the data region: it cuts height AND makes the type larger, since the
+# remaining ink is scaled up to the same printed width.
+FIGURE_LAYOUT = {
+    # key                  span      trim (l, b, r, t) in the figure's own pt
+    'fig:harness':        ('full',   (62.9, 27.9, 12.5, 24.0)),
+    'fig:collapse':       ('full',   None),
+    'fig:plateau':        ('column', None),
+    'fig:overhead':       ('full',   None),
+    'fig:signals':        ('column', None),
+    'fig:capacity-model': ('full',   (57.0, 11.7, 3.7, 21.5)),
+}
+
+
 def figure(key, filename, caption):
-    return [r'\begin{figure*}[!t]', r'\centering',
-            r'\includegraphics[width=\textwidth]{%s}' % filename,
+    if key not in FIGURE_LAYOUT:
+        fail('figure %s has no entry in FIGURE_LAYOUT; placement and size are '
+             'decided explicitly, never by default' % key)
+    span, trim = FIGURE_LAYOUT[key]
+    env = 'figure*' if span == 'full' else 'figure'
+    width = r'\textwidth' if span == 'full' else r'\columnwidth'
+    opts = 'width=%s' % width
+    if trim:
+        opts = 'trim=%.1f %.1f %.1f %.1f, clip, %s' % (trim + (opts,))
+    return [r'\begin{%s}[!t]' % env, r'\centering',
+            r'\includegraphics[%s]{%s}' % (opts, filename),
             caption_tex(caption), r'\label{%s}' % key,
-            r'\end{figure*}']
+            r'\end{%s}' % env]
 
 
 # --------------------------------------------------------------------------

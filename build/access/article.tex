@@ -106,7 +106,7 @@ The harness is four services in Go, orchestrated by Docker Compose, plus a runne
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=\textwidth]{F1-architecture.pdf}
+\includegraphics[trim=62.9 27.9 12.5 24.0, clip, width=\textwidth]{F1-architecture.pdf}
 \caption[The harness.]{The harness. Live traffic reaches the dependency by direct HTTP and never enters the message broker; recovery traffic is produced into JetStream during the outage and drained from it by a rate-limited consumer. The two paths share nothing until the downstream, which is the only contended resource. The fault withdraws the dependency's capacity for 120 s, and its restoration is the time origin for every measurement reported here.}
 \label{fig:harness}
 \end{figure*}
@@ -239,12 +239,12 @@ Where a single per-point figure is required --- the per-cell value in Fig.~\ref{
 
 That sensitivity covers the seven cells --- four from E1, two from E2, one from E2b; forty points, 171 runs --- which are the boundary result and self-contained. The two corrected-harness cells were assembled by a separate analysis path. They support \S{}V's predict-and-eliminate result, two of the bars in Fig.~\ref{fig:plateau}, \S{}VII's signal series and A7, and contribute to no seven-cell number. Their per-repetition rates, since recovered from the retained run records, change none of those results under any aggregator. One difference remains: the seven measure over the delivery span (A4), the corrected cells over the drain window, which is why Fig.~\ref{fig:plateau}'s caption states that its bars come from two corpora.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=\textwidth]{F4-plateau-predicted-measured.pdf}
+\includegraphics[width=\columnwidth]{F4-plateau-predicted-measured.pdf}
 \caption[Predicting the plateau.]{Predicting the plateau. Maximum sustained throughput, predicted from the additive model and measured from the dependency's own served counter. In the uncorrected arms the configured capacity of 2000 overstates the measured plateau by 171 and 36 requests per second, and the model accounts for both to within 0.2\%. Reducing the configured sleep by the measured overhead, with concurrency held fixed, brings the measured plateau to 1989.0 and 1997.7 against predictions of 1987.4 and 1997.7 --- differences of +1.6 and +0.0 requests per second at two service times a factor of five apart. The +0.0 in the long arm is agreement, not evidence. The two candidate corrections imply plateaus 1.60 rps apart there, and the observed range across the ten windows is 2.83 rps, so that arm cannot separate them however closely its median lands. Candidate selection is tested only by the short arm, where the separation is 8.6 rps. \S{}V-D gives the argument. \par Predictions are drawn as points on a short rule, measurements as bars, so the two are not rendered in the same visual grammar. \par The two pairs come from different corpora. The uncorrected pair is E1 c10/C0 and E1 c50/C0, two of the seven-cell boundary campaign, whose plateaus are each the median of six per-run maximum-30 s-sustained measurements, repeatable to 0.11\% and 0.13\%. The corrected pair is the E2e campaign, replicated under pre-registration addendum A8: each corrected plateau is the median of n = 10 60-second closed-loop windows, the same median convention used for the seven cells. \par The whiskers on the two corrected bars are the observed interquartile range of those ten windows --- 1.71 and 1.29 requests per second. They are window-to-window scatter, not an inferential interval, and no confidence statement is attached to them. The uncorrected bars carry no whiskers because those plateaus were not replicated in this form; the absence is a statement about what was measured, not a claim of zero uncertainty.}
 \label{fig:plateau}
-\end{figure*}
+\end{figure}
 
 The search probes an anchor, steps upward to a first non-SAFE ceiling --- every candidate freshly probed at n = 3 --- and then bisects between the last SAFE point and the first non-SAFE one, rounding midpoints to 5 rps. A SAFE midpoint becomes the floor; an UNSAFE or MARGINAL midpoint becomes the ceiling (A1), so marginal behaviour lies inside the reported interval rather than below it. A non-SAFE anchor steps the search downward (A2). The search stops when the bracket is 5 rps wide, and the registration states that 5 rps is the resolution floor and that no claim is made below it. Supplement S1 gives the procedure in full, including one asymmetry in it: the upward search has no probe budget, a defect in the procedure that did not arise in this campaign.
 
@@ -609,12 +609,12 @@ On the E1 corpus, mean drain queue depth crossed its criterion before live tail 
 
 The corrected corpus answers differently in each of its two cells, and the two answers together are the result. In the corrected long-service cell there is no warning room at all: mean queue depth, all three live latency percentiles and mean in-flight requests first cross at the last safe point. In the corrected short-service cell there is warning room but no resolved ordering: mean queue depth, live p99, live p90 and mean in-flight all first cross one probe point --- roughly 110 requests per second --- before the last safe point, and they cross \textit{together}. Fig.~\ref{fig:signals} shows that cell: queue peak and live p99 rise across the safe range and then change sharply across the final 55 rps interval into the first unsafe probe.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=\textwidth]{F6-signal-selection.pdf}
+\includegraphics[width=\columnwidth]{F6-signal-selection.pdf}
 \caption[Both candidate signals rise together, then jump at the transition.]{Both candidate signals rise together, then jump at the transition. Drain queue peak and live tail latency across the corrected c10 cell as utilisation approaches its boundary, each point the largest of its three repetitions. Both rise across the sampled safe range --- queue peak 7, 18 and 111 requests and live p99 8, 14 and 58 ms at 975, 1075 and 1185 rps --- and then change sharply across the 55 rps interval to the first unsafe probe at 1240 rps, where the queue reaches its cap of 500 and live p99 reaches 508 ms. Read as leading indicators, the two do not separate. In the registered analysis (A7), which uses per-point means, mean queue depth and live p99 both first cross three standard deviations at 1075 rps, one probe point before the last safe one, together with live p90 and mean in-flight; live p50 crosses only at the last safe point, and timeout rate never crosses. The queue plotted here is its peak. That analysis's DEEP criterion concerns mean queue depth, which reaches 23.1 requests inside the safe range against a threshold of 50 and so does not cross it there; a peak of 111 at the same point does not contradict that.}
 \label{fig:signals}
-\end{figure*}
+\end{figure}
 
 The corrected corpus therefore does not reproduce the queue-before-latency ordering at its available resolution. It does not show that no metric gives advance warning. Those are different claims and this section keeps them apart. That the corrected corpus samples too coarsely near the boundary to separate the two onsets is offered as a hypothesis, not a finding --- not a fourth retracted finding --- and \S{}IX names the finer sweep that would settle it. DEEP applies to \textit{mean} drain queue depth, which peaks at 23.1 requests inside the safe range; Fig.~\ref{fig:signals} plots the queue \textit{peak}, a different quantity. The figure's pipeline uses no noise statistic, so it is unaffected by the downgrade in \S{}VII-B. Supplement S1 gives the per-point trajectories.
 

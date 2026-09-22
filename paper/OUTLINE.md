@@ -729,7 +729,7 @@ named in a section's header.
 
 ## §1 Introduction — 1,600 words
 
-<!-- plan-synced-to: section1 draft 18 -->
+<!-- plan-synced-to: section1 draft 19 -->
 
 Four moves:
 
@@ -861,7 +861,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 13 -->
+<!-- plan-synced-to: section3 draft 14 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after
@@ -913,7 +913,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 25 -->
+<!-- plan-synced-to: section4 draft 26 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval
@@ -1189,7 +1189,7 @@ retractions are a different set with a different cause.
 
 ## §7 What warns, and what does not — 1,350 words, F6
 
-<!-- plan-synced-to: section7 draft 7 -->
+<!-- plan-synced-to: section7 draft 8 -->
 
 **F6** on a corrected cell. The DEEP threshold
 (`drainQueueDepthMean ≥ 50`, `results/E1B-PLAN.md`, `09e41e5`, fixed before
@@ -1248,7 +1248,9 @@ cliff" — and (4) a passage in `A7-REPORT.md` asserting that the figure and the
 result agree, contradicted by A7's own table twenty lines above it. The cell
 shows queue peak rising 7 → 111 and p99 8 → 58 ms inside the safe range, with
 four metrics warning one probe point early. (1) and (2) are corrected at
-`9583797`; (3) and (4) are pending. **§VII must never claim that F6's title
+`9583797`; (3) at `ea22359` (the drawn title now reads "both signals rise across the
+safe range, then jump at the transition", confirmed in the PDF 2026-09-20) and (4) at
+`d151f94`. **§VII must never claim that F6's title
 describes the corrected corpus's behaviour, or that the figure and A7 agree** —
 an earlier version of this plan said to say so, and it was wrong.
 

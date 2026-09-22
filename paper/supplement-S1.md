@@ -185,3 +185,297 @@ column the generator produces, so that a reader checking the resolution
 discipline against the artefacts has the configured and measured capacities,
 the raw bisection step, the bracket width, the repetition count, the replicate
 spread and the measured capacity's own range in one place.
+
+## S1-F. The objective and the search (full text of the article's former §IV-B and §IV-C)
+
+*Reproduced unchanged except that the article's figure keys are written out as figure names, because a supplement cannot number the article's floats.*
+
+The objective is evaluated per one-second window over the drain window, on live
+traffic only. A window is a *latency breach* if live p99 exceeds 250 ms, an
+*error breach* if the live error rate exceeds 1%, and a *violating second* if
+either holds. `vSLO` is the fraction of violating seconds.
+
+Live traffic means injector-direct requests only. Two exclusions apply, both
+registered in advance, and both are reported here with their exercised extent
+because an outcome-dependent exclusion in a saturation experiment deserves
+scrutiny.
+
+Status 429 is an injector-side drop rather than a downstream signal and is
+excluded from error accounting. The concern this invites is real: an injector
+that drops more as load rises would starve the downstream and make a run look
+artificially safe. **No run recorded a single injector-side drop** — zero across
+the 171 runs of the seven-cell boundary corpus. The registered ±1% delivery guard checks warm-up rather than the
+drain, so in-drain delivery was measured separately: the worst sustained deficit
+among SAFE runs is 0.0099%, a hundredth of one percent, and delivery is
+marginally *better* in UNSAFE runs than in SAFE ones — the opposite of the
+direction that would flatter the result.
+
+Seconds flagged by the host-stall detector are excluded from both numerator and
+denominator, with the unexcluded value recorded as `vSLO_raw`. A second is
+flagged only when four conditions hold at once: live 1 s p99 at or above five
+times its rolling healthy baseline, recovery 1 s p99 at or above five times its
+own, downstream queue depth **at or below five requests**, and a maximum
+inter-sample gap in the request stream exceeding 150 ms; each flagged second
+also contaminates the following five. The third condition is why genuine
+overload cannot trigger it — at a collapsed point the queue is deep by
+definition. **It never fired**: zero seconds were excluded across the 171-run seven-cell
+boundary corpus, and
+no classification differs under `vSLO_raw`. It is therefore an untested
+safeguard, and what that establishes is not that the detector works but that no
+result in this paper depends on it.
+
+`vSLO_latency`, `vSLO_error` and `vSLO_both` are reported in every table and
+identify *which* failure mode produced a violation. They do not address
+sub-threshold degradation, and are not claimed to: a second at p99 = 249 ms is
+non-violating under all four measures. Continuous live p99 and queue-depth
+series are therefore retained separately, and it is those that §VII uses. The
+registration states — before any data — that `vSLO` alone is not a sufficient
+safety statistic, because it saturates deep in collapse and is blind to
+degraded-but-passing traffic at the other edge; the decomposition addresses the
+first of those, the continuous series the second.
+
+Each probed rate is run **n = 3** times and classified from those three `vSLO`
+values alone:
+
+- **SAFE** — `vSLO ≤ 0.01` in all three repetitions.
+- **UNSAFE** — `vSLO > 0.05` in at least two repetitions.
+- **MARGINAL** — anything else.
+
+The three classes are exhaustive and mutually exclusive. **Repetition
+disagreement is never averaged**, and this applies to rate as well as to `vSLO`.
+No single achieved rate is assigned to a probed point: the point retains all
+three, and the reported interval spans every achieved ρ observed at each
+endpoint, so disagreement between repetitions widens the interval rather than
+being collapsed into a mean or a median. Disagreement across repetitions is itself the
+signal that an operating point is unstable, which is the property the collapsed
+regime has, and the mean of three `vSLO` values is not computed and appears in
+no table.
+
+The search additionally raises a registered diagnostic whenever the achieved-ρ
+spread across repetitions at a point exceeds the search resolution, on the
+grounds that bisection would then be resolving finer than its own instrument.
+**It never fired** — zero of forty points across all seven boundary files,
+endpoints included; the worst point sits at 40% of its own resolution.
+
+**Two qualifications, both of which narrow that statement.** First, where a
+single figure is nonetheless required — the per-cell value plotted in the article's collapse figure —
+it is the maximum achieved ρ across the last SAFE point's repetitions. The
+choice is semantic before it is statistical: a point is classified SAFE only if
+**all three** repetitions satisfy the SAFE criterion, so the maximum is the
+highest empirically demonstrated safe throughput among repetitions at the
+terminal SAFE point. It is a defined safe-side quantity rather than the most
+favourable of several candidates.
+
+It is also immaterial. Recomputing under minimum, maximum, mean and median
+leaves the monotonicity audit, the identity of the last SAFE point in every
+cell, and the reported values after resolution-matched rounding all unchanged,
+because the largest within-point spread anywhere in the campaign is 0.0010, or
+two requests per second — below both the rounding step and the search
+resolution.
+
+Second, the scope of that statement has to be given exactly, because two
+distinct corpora appear in this paper.
+
+**The seven cells** — four from E1, two from E2, one from E2b; forty probed
+points, 171 runs — are the boundary result, and they are self-contained. Each
+cell's denominator comes from that cell's own saturation runs. Every one of the
+171 repetitions retains its own achieved rate, so the no-aggregation rule, the
+spread diagnostic and the aggregator sensitivity all apply to them, and to
+the article's collapse figure, which plots these cells and only these cells.
+
+**The two corrected-harness cells** were not produced by this search. They were
+assembled directly from run records by a separate analysis path that stored one
+median ρ per point. The per-repetition rates have since been recovered from the
+33 retained run records — every record carries the quantities the estimator
+needs, and the reconstruction reproduces all eleven committed medians exactly —
+so this is no longer a limitation of the corpus. They support the predict-and-eliminate result of §V, two of the
+four bars in the article's plateau figure, the signal series of §VII, and the re-analysis registered
+as A7. **They are not members of the seven and contribute to no seven-cell
+number.**
+
+The limitation therefore falls on the corrected cells and not on the boundary
+result: the repetition-level sensitivity reported above covers §VI's central
+comparison, and does not cover §V's brackets, the article's plateau figure's corrected bars, §VII or
+A7. The recovered per-repetition rates change nothing: the
+predict-and-eliminate verdict is identical under all four aggregators, and the
+A7 ordering is unchanged. Their per-point spread of 2.1 to 7.1 rps would flag
+against the registered 5 rps constant, but those searches resolved to 55 and 65
+rps rather than 5, so against the resolution actually achieved the spread is
+eight to ten times smaller than the step — more headroom than anywhere in the
+seven-cell corpus. The one difference that remains is estimator: the seven
+measure over the delivery span under A4, the corrected cells over the drain
+window as measured. the article's plateau figure places both side by side, which is legitimate
+because predicted against measured plateau is a direct throughput comparison
+with no ρ estimator involved, but its caption must say so.
+
+The initial bracket is constructed rather than assumed. A ceiling may be
+supplied; if it is not, the first candidate is the anchor raised by ten percent,
+rounded to 5 rps, and stepped again while it continues to classify SAFE. Every
+candidate — supplied or stepped — is freshly probed at the campaign's own
+repetition count before it is used, on every harness and without exception, so
+every rate appearing in a boundary file was actually run. A supplied ceiling
+that classifies SAFE is demoted to the floor and the upward search restarts from
+it. The downward search has the 5 rps resolution floor as its terminating guard;
+the upward search has no probe budget and no equivalent guard, an asymmetry that
+did not arise in this campaign but is a defect in the procedure rather than a
+property of the results.
+
+The search then bisects between the last-SAFE anchor and the first-non-SAFE
+ceiling. Midpoints are rounded to the nearest 5 rps. A SAFE midpoint becomes the new
+floor; an UNSAFE **or MARGINAL** midpoint becomes the new ceiling, so marginal
+behaviour lies inside the reported interval rather than below it. The anchor is
+probed first and, if it does not classify SAFE, the search steps downward rather
+than assuming a floor (amendment A2). Anchors inherited from an earlier phase do
+not count, because those points were measured on the defective harness.
+
+**The search stops when the bracket is 5 rps wide, and the registration states
+that 5 rps is the resolution floor and that no claim is made below it.**
+
+Bisection presupposes that safety is non-increasing in offered load, and the
+search terminates at the first non-SAFE classification. The two misclassification
+errors are not symmetric in their consequences. A spuriously **non-SAFE** point
+truncates the search conservatively, moving the reported last-SAFE point
+downward and therefore *away* from capacity — it costs the headline rather than
+supporting it. The consequential error is the opposite one: a spuriously
+**SAFE** point above the true boundary moves the safe-side estimate upward,
+toward the claim the paper makes. Requiring all three repetitions to satisfy the
+SAFE criterion, against two of three for UNSAFE, makes that classification
+deliberately the stringent one. The monotonicity assumption is nonetheless
+audited rather than assumed, and the audit needs its own rule, because a point
+retains three achieved rates and cannot be ordered by all three at once. The
+audit therefore proceeds at the point level using a single achieved rate per
+point, and was repeated under each of the four candidate aggregators — minimum,
+maximum, mean and median. The rank order of points within a cell is identical
+under all four, so the audit reads the same input in every case. **No inversion
+occurred in any of the seven cells, under any aggregator**, where an inversion
+means a higher-rate point classifying safer than a lower-rate one.
+
+Two facts bound what that audit establishes. First, it can speak only for the
+forty points that were probed; bisection does not sample what it does not
+choose. Second, **no point in the study ever classified MARGINAL** — the forty
+points divide as twenty SAFE and twenty UNSAFE. The MARGINAL class, and
+amendment A1 which governs its treatment as a ceiling, were therefore never
+exercised on any reported result. They are retained in the protocol as
+registered, not as machinery that shaped an outcome.
+
+One bracket is weaker than the rest and is named rather than averaged into the
+others. In E1 c10/C0 the last SAFE point reports three zero `vSLO` values and the
+first UNSAFE point reports 0.077, 0.000 and 0.135 — one replicate at exactly
+zero. Under the registered rule this is UNSAFE, since two of three exceed 0.05.
+The disagreement is not a defect in the classification but the instability the
+registration anticipated at an unstable operating point, and it is reported as
+such.
+
+## S1-G. Admission and the configured-capacity endpoint (from the article's former §III-C)
+
+*The article keeps equation (3) and the cancellation argument; the implementation detail and the endpoint history are here, unchanged.*
+
+Under the graceful profile the admission limit is `queueCap = 50 · c`; and under the *cliff* profile it is `2 · c`, returning an immediate rejection
+once full. The queue channel itself is allocated at four times the admission
+limit; admission is enforced by a token pool rather than by channel capacity, so
+the limit can be changed without reallocating.
+
+<!-- downstream/main.go queueCapFor(), NewServer(), fullQueueDelayMs() -->
+
+The time to traverse a full queue is the admission limit divided by the service
+rate. Under the intended occupancy model the service rate is `c / S` and the
+traversal time is `50 · S` — 250 ms at `S = 5` ms. Under the corrected occupancy
+model of §III-D the service rate is `c / (S + δ)` and the traversal time is
+`50 · (S + δ)`. In both cases the worker count cancels. **The admission rule
+therefore cannot by itself produce a capacity-dependent or concurrency-dependent
+queue-delay scale, under either the intended model or the corrected one** — a
+point §VIII returns to, since one of the retracted findings proposed exactly that
+mechanism.
+
+One separation is deliberate and load-bearing. The configured capacity parameter
+is exposed only on an administrative endpoint, which the consumer never reads.
+The harness was built so that a recovery controller could not rely on the
+configured capacity parameter and would have to operate from observations
+instead. The results later justify distrust of that configured value, while not
+determining whether a validated estimate should be supplied offline or inferred
+online — a distinction §I leaves open and this paper does not settle. The
+decision was taken before any measurement, for a reason narrower than the one
+that ultimately justified it.
+
+It is worth recording that the endpoint's response field is named `trueCapacity`,
+<!-- withdrawn-quote-ok: quoting the harness specification as a primary source, to contradict it -->
+and the specification describes it as exposing true capacity. It does not: it
+returns `C_config`. The name is itself a residue of the assumption this paper
+falsifies, and it is preserved unaltered in the archived artefact.
+
+## S1-H. The corrected corpus in detail (full text of the article's former §VII-C and §VII-D)
+
+*Reproduced unchanged except that the article's figure key is written out as a figure name.*
+
+### S1-H.1 The corrected corpus: warning without ordering
+
+The corrected corpus answers differently in each of its two cells, and the two
+answers together are the result.
+
+In the corrected **long-service** cell there is no warning room at all. Mean queue
+depth, all three live latency percentiles and mean in-flight requests first cross
+at `rl` 1210, which is the last safe point. On that cell the leading-indicator
+framing has nothing to lead with.
+
+In the corrected **short-service** cell there is warning room but no resolved
+ordering. Mean queue depth, live p99, live p90 and mean in-flight all first cross
+at `rl` 1075, with the last safe point at 1185 still ahead of them — one probe
+point, roughly 110 requests per second of safe operating range after the first
+crossing. Only live p50 crosses with no room, and only timeout rate never
+crosses. But those four cross *together*: what is absent in this cell is the
+ordering, not the warning.
+
+**The corrected corpus therefore does not reproduce the queue-before-latency
+ordering at its available resolution. It does not show that no metric gives
+advance warning.** Those are
+different claims and this section keeps them apart.
+
+One further observation belongs here, with its quantity named. In the
+short-service cell the *mean* drain queue depth never reaches its DEEP threshold
+anywhere inside the safe range, peaking at 23.1 requests against 50. That is a
+statement about the mean; the article's signal figure plots the queue *peak*, which behaves
+differently and is discussed below.
+
+A possible explanation suggests itself, and is offered as a hypothesis rather
+than as a finding. The corrected corpus samples coarsely near the boundary — 60
+and 100 requests per second between safe points, against E1 margins of 10 to 25 —
+so it may leave too little resolution to distinguish the relative *onset* of
+queue depth and live latency even where both give advance warning. Under that
+hypothesis a lead of E1's size would disappear below this corpus's sampling
+resolution. Whether the original separation was itself related to the calibration
+error remains untested.
+
+**This is not a fourth retracted finding, and the evidence here does not support
+making it one.** It is a hypothesis with a named experiment: a 5 requests per
+second sweep across the top 50 of each corrected cell's safe range, about sixty
+runs at n = 3, which would resolve a lead of E1's size in either direction.
+§IX records it as the study that would settle the question.
+
+### S1-H.2 What the figure shows, and why it is unaffected
+
+the article's signal figure plots drain queue peak and live tail latency across the corrected
+short-service cell as utilisation approaches its boundary. Both rise across the
+sampled safe range — the queue peak from 7 requests to 111, live p99 from 8 ms to
+58 — and both then change sharply at the transition between the final SAFE point
+and the following non-SAFE one: the queue reaches its cap of 500 and live p99
+rises to 508 ms. **That interval is 55 requests per second, not 5.** The
+corrected-harness searches did not resolve at the seven-cell corpus's 5 rps step;
+§IV records their achieved resolutions as 55 and 65 rps, and they are not members
+of the seven-cell boundary corpus.
+
+The figure is unaffected by the downgrade in §VII-B, and the reason is worth
+stating. Its pipeline uses no noise statistic anywhere — it reads utilisation,
+queue peak, live p99 and the classification directly — so it never depended on
+the quantity A5 chose or A7 re-examined. A figure that survives a downgrade
+because it never rested on the downgraded thing is evidence about the figure, not
+a coincidence.
+
+What §VII does **not** claim is that latency warns last, or that either signal is
+the right one to build a controller on. §II establishes live latency as a
+literature-grounded comparator, which is what makes these observations about a
+signal the literature already uses. This section reports only that on this
+harness, at
+this resolution, timeout rate never warns; the queue-depth lead observed on E1 is
+unreplicated and unresolvable on the available data; and on the corrected corpus
+some observables do give advance warning in one cell, but queue depth does not
+lead live p99 at the resolution available.

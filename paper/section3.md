@@ -1,5 +1,15 @@
 # §3 — The harness, the capacity model, and its error model
 
+*Draft 14 — CUT PASS, increment 4, 2026-09-20, under the reviewer's 18-page
+authorisation. §III compressed from ~1,700 to ~1,200 words. Kept: the four
+services, open-loop rate-limited recovery with no within-run controller,
+injector-direct live traffic and the population separation, the four capacity
+terms, equations (1)–(6) and the cancellation argument on (3), the δ components,
+the 9.26% / 1.85% overstatement, the in-sample caveat on the pooled check, and
+the implementation-specificity of δ. Moved to S1-G: the cliff profile, the token
+pool, the configured-capacity endpoint and its `trueCapacity` field. No number
+or finding changes.*
+*Draft 14.1 — APPROVED by review with two fixes: "retracted findings" → "candidate explanations" in §III-C, since the admission-limit explanation was never a finding; and the jitter parameters (σ = 0.15, clamp ±0.5) restored to §III-D. Frozen.*
 *Draft 13 — CUT PASS, 2026-09-20. Fig. 2 moves to Supplement S1 by the reviewer's ruling: it carries no measured result, and equations (4)–(6) state what it pictures. Its one reference is removed; the following sentences already name the three components of `δ`, which is the one sentence the ruling requires near (4).*
 *Draft 12 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 11 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at Little's law in the staffing relation (1), where §III uses it. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
@@ -40,40 +50,31 @@ post-hoc rationalisation" claim removed. Source comments strip in W6.*
 ### A. Architecture
 
 The harness is four services in Go, orchestrated by Docker Compose, plus a
-runner that drives each run and also generates the live traffic ([@fig:harness]). A *producer* publishes events to a subject on a NATS JetStream stream
-at a constant configured rate, and continues publishing throughout the
-experiment, including while the consumer is stopped — that is what accumulates
-the backlog. Every message carries a header recording its publish time in
-milliseconds. A *consumer* is a durable pull consumer with a fixed worker pool and a
-configured recovery rate limit `r_l`, applied to recovery-class messages only.
+runner that drives each run and also generates the live traffic ([@fig:harness]).
+A *producer* publishes events to a NATS JetStream stream at a constant configured
+rate throughout the experiment, including while the consumer is stopped — that is
+what accumulates the backlog — and every message carries its publish time. A
+*consumer*, a durable pull consumer with a fixed worker pool, classifies a message
+as *recovery* if it was published before the consumer was restarted, applies the
+recovery rate limit `r_l` to that class only, and issues the work request to the
+*downstream*, recording the class, latency, status and message age. A *live
+injector*, running inside the runner, issues open-loop HTTP requests at its own
+configured rate directly to the downstream, never through the broker.
+
 **The recovery path is open-loop rate-limited.** `r_l` is fixed for the duration
 of each run and varied between runs by the boundary search; no within-run feedback
 path adapts it in response to latency, queue depth, timeout rate or error rate.
-The live injector is independently paced at its configured live rate. The
-experiment therefore varies two independently configured open-loop rates that
+The experiment therefore varies two independently configured open-loop rates that
 compete at the shared downstream; it does not implement an adaptive recovery
-controller. For each message it
-compares the publish timestamp against a restoration epoch supplied by the
-orchestrator and classifies the message as *recovery* if it was published before
-the consumer was restarted. It then issues the work request to the *downstream*
-and records a sample carrying the class, the observed latency, the returned
-status and the message age. A *live injector* produces the live traffic: open-loop
-HTTP requests at a configured rate, issued directly to the downstream and never
-through the broker; it runs inside the runner process rather than as a fifth
-service. The *runner* drives one run end to end and writes the run record.
+controller.
 
-**Live traffic means injector-direct requests, and only those.** The live and
-recovery paths reach the shared downstream independently and are independently
-paced: the recovery path is the consumer draining the broker under `r_l`, which
-governs the recovery class only, and the live path is the injector at its own
-configured rate. The consumer
-also encounters messages published after the restoration epoch; these are *post-restoration brokered messages*, recorded but
-excluded from the service-level objective, which is evaluated over the
-injector-direct population alone. §IV gives the accounting. Classification by
-publish timestamp rather than by arrival order is what separates recovery work
-from the rest, and a harness reporting one blended latency could not evaluate the
-objective at all. Messages are acknowledged regardless of the status
-the downstream returns, since redelivery would confound the backlog count.
+**Live traffic means injector-direct requests, and only those.** Messages the
+consumer meets that were published after restoration are recorded but excluded
+from the service-level objective, which is evaluated over the injector-direct
+population alone (§IV). Classification by publish timestamp rather than by arrival
+order is what separates recovery work from the rest. Messages are acknowledged
+regardless of the status the downstream returns, since redelivery would confound
+the backlog count.
 
 ### B. Capacity: four distinct quantities
 
@@ -91,14 +92,12 @@ interchangeable.
 A central finding of this paper is that, in this harness, the first two did not
 equal the fourth.
 
-The downstream is a synthetic service whose capacity parameter is settable at
-run time. It is not a model of any particular dependency; it is an instrument
-built so that the quantity the experiment varies is the quantity under study.
-Capacity is realised as a bounded worker pool in front of an admission-limited
-queue. Under an idealised worker model, in which a worker is occupied for exactly
-the emulated service time `S` and is otherwise immediately available, Little's
-law [@little] gives a mean in-service concurrency of `C_config · S`. The pool is therefore
-staffed with
+The downstream is a synthetic service, built so that the quantity the experiment
+varies is the quantity under study: a bounded worker pool in front of an
+admission-limited queue. Under an idealised worker model, in which a worker is
+occupied for exactly the emulated service time `S` and is otherwise immediately
+available, Little's law [@little] gives a mean in-service concurrency of
+`C_config · S`. The pool is therefore staffed with
 
     c = ceil(C_config · S)                                                  (1)
 
@@ -106,17 +105,13 @@ workers, and the capacity that staffing implies under the idealised model is
 
     C_staffed = c / S                                                       (2)
 
-Where `C_config · S` is integral, `C_staffed = C_config` exactly; otherwise the
-ceiling in (1) makes `C_staffed` marginally larger. **In all seven cells of this
-campaign the product is integral**, so `C_staffed` and `C_config` coincide
-throughout and the ceiling contributes nothing to any reported quantity. All
-subsequent algebra is nonetheless expressed in terms of `c` and `C_staffed`, so
-that the quantisation in (1) cannot enter a derivation in a configuration where
-it would not vanish.
-
-The assumption embedded in (1) — that a worker's occupancy per request equals
-the service time it emulates — is stated explicitly because §III-D shows it to be
-false, and that falsity is the subject of this paper.
+Where `C_config · S` is integral, `C_staffed = C_config` exactly. **In all seven
+cells of this campaign the product is integral**, so the two coincide throughout;
+the algebra is nonetheless written in `c` and `C_staffed` so that the quantisation
+in (1) cannot enter a derivation where it would not vanish. The assumption
+embedded in (1) — that a worker's occupancy per request equals the service time
+it emulates — is stated explicitly because §III-D shows it to be false, and that
+falsity is the subject of this paper.
 
 ### C. Admission, and what the admission rule cannot explain
 
@@ -125,46 +120,23 @@ throughout this work the admission limit is
 
     queueCap = 50 · c                                                       (3)
 
-and under the *cliff* profile it is `2 · c`, returning an immediate rejection
-once full. The queue channel itself is allocated at four times the admission
-limit; admission is enforced by a token pool rather than by channel capacity, so
-the limit can be changed without reallocating.
+The time to traverse a full queue is the admission limit divided by the service
+rate. Under the intended occupancy model that is `50 · S` — 250 ms at `S = 5` ms;
+under the corrected model of §III-D it is `50 · (S + δ)`. In both cases the
+worker count cancels. **The admission rule therefore cannot by itself produce a
+capacity-dependent or concurrency-dependent queue-delay scale, under either the
+intended model or the corrected one** — a point §VIII returns to, since one of the
+candidate explanations proposed exactly that mechanism. Supplement S1 gives the
+admission implementation and the history of the configured-capacity endpoint.
 
 <!-- downstream/main.go queueCapFor(), NewServer(), fullQueueDelayMs() -->
-
-The time to traverse a full queue is the admission limit divided by the service
-rate. Under the intended occupancy model the service rate is `c / S` and the
-traversal time is `50 · S` — 250 ms at `S = 5` ms. Under the corrected occupancy
-model of §III-D the service rate is `c / (S + δ)` and the traversal time is
-`50 · (S + δ)`. In both cases the worker count cancels. **The admission rule
-therefore cannot by itself produce a capacity-dependent or concurrency-dependent
-queue-delay scale, under either the intended model or the corrected one** — a
-point §VIII returns to, since one of the retracted findings proposed exactly that
-mechanism.
-
-One separation is deliberate and load-bearing. The configured capacity parameter
-is exposed only on an administrative endpoint, which the consumer never reads.
-The harness was built so that a recovery controller could not rely on the
-configured capacity parameter and would have to operate from observations
-instead. The results later justify distrust of that configured value, while not
-determining whether a validated estimate should be supplied offline or inferred
-online — a distinction §I leaves open and this paper does not settle. The
-decision was taken before any measurement, for a reason narrower than the one
-that ultimately justified it.
-
-It is worth recording that the endpoint's response field is named `trueCapacity`,
-<!-- withdrawn-quote-ok: quoting the harness specification as a primary source, to contradict it -->
-and the specification describes it as exposing true capacity. It does not: it
-returns `C_config`. The name is itself a residue of the assumption this paper
-falsifies, and it is preserved unaltered in the archived artefact.
 
 ### D. Service-time emulation, and where the error enters
 
 A request that reaches a worker is held for a jittered service time and then
-returned. The jitter is a multiplicative Gaussian factor with a standard
-deviation of 0.15, clamped symmetrically at ±0.5, so the emulated service time is
-mean-preserving: jitter broadens the latency distribution without shifting its
-mean, and contributes nothing to the discrepancy below.
+returned. The jitter is a multiplicative Gaussian factor (`σ = 0.15`), clamped
+symmetrically at ±0.5 and mean-preserving, so it broadens the latency
+distribution without contributing to the discrepancy below.
 
 <!-- downstream/main.go jitteredServiceTime(), serviceTimeJitterSigma -->
 
@@ -200,33 +172,20 @@ correction, the overstatement is
 
 ### E. Checking the error model against the plateaus
 
-The model's explanatory accuracy can be checked against the campaign's own
-plateaus, and what that check is worth depends entirely on how the constant was
-obtained. Taking the **pooled** plateau-inferred `δ` = 0.463 ms — one
-constant applied unchanged to all seven cells, spanning two service times, three
-configured capacities and four concurrency levels — `C_model` reproduces
-`C_measured` for every cell to within 0.19%, with no cell failing. The per-cell
-inferred values are not used: each is recovered from its own cell's plateau, so
-substituting one back would reconstruct that plateau algebraically rather than
-check anything. §V reports the leave-one-out form of this test, in which the
-constant predicting each cell is estimated from the other six.
-
-**This is an in-sample common-parameter check, not independent validation:** the
-pooled constant was itself inferred from these seven plateaus, so applying it
-back to them tests whether one number suffices across the set, not whether the
-model holds outside it. What it does establish is that the pooled-model residual
-is smaller than one boundary-bisection step in every cell. A stronger test — a correction predicted in
-advance of the runs that tested it, using constants obtained from a separate
-instrument — is presented in §V.
+Taking the **pooled** plateau-inferred `δ` = 0.463 ms — one constant applied
+unchanged to all seven cells — `C_model` reproduces `C_measured` for every cell
+to within 0.19%, a residual smaller than one boundary-bisection step. **This is
+an in-sample common-parameter check, not independent validation:** the pooled
+constant was inferred from these seven plateaus, so the check tests whether one
+number suffices across the set, not whether the model holds outside it. §V gives
+the leave-one-out form and a stronger test: a correction predicted in advance of
+the runs that tested it, using constants from a separate instrument.
 
 <!-- results/REVIEWER-RESPONSE-W2.md task 3 -->
 
 ### F. What the downstream is not
 
-It has no persistent state, no I/O, no dependency of its own, and no failure
-modes beyond queue rejection and request timeout. It is a timing instrument. The
-threats this poses to the generality of the results are set out in §IX; the point
-to carry forward is narrower and, for the argument of this paper, sufficient: a
-purpose-built service with an explicit capacity parameter, constructed for this
-study and measured by its author, was wrong about its own capacity by an amount
-larger than the margin under measurement.
+It is a timing instrument with no persistent state, no I/O and no dependency of
+its own, so the numeric value of `δ` is specific to this implementation (§IX);
+what carries forward is that a purpose-built service, measured by its author, was
+wrong about its own capacity by more than the margin under measurement.

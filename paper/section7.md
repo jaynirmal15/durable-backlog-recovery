@@ -1,5 +1,18 @@
 # §7 — What warns, and what does not
 
+*Draft 8 — CUT PASS, increment 5, 2026-09-20, under the reviewer's 18-page
+authorisation. §VII compressed from ~1,300 to ~800 words. Kept, as the ruling
+requires: the warning rule and DEEP's status; timeout rate's result and its
+independent-corpus replication status under A7; both reasons the queue-depth lead
+is exploratory; and a compact §VII-C — no warning room in the long-service cell,
+warning room but a joint crossing in the short-service cell — with its
+two-sentence statement — "does not reproduce the queue-before-latency ordering
+… It does not show that no metric gives advance warning" — unchanged from Draft 7's
+§VII-C. Moved to S1-H: the
+per-point trajectories, the DEEP-versus-peak discussion, the figure-pipeline
+argument in full and the named sweep, which §IX also carries. The former §VII-D
+heading is dissolved into §VII-C. No number or finding changes.*
+*Draft 8.1 — APPROVED by review with one restoration: the sentence distinguishing mean queue depth (DEEP, peak 23.1) from the plotted queue peak, without which DEEP = 50 and a plotted peak above 50 would read as a contradiction. Frozen.*
 *Draft 7 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 6 — one-clause resync, 2026-09-20. §VII's close said "§II sets out why
 latency feedback is the conventional construction". That phrasing was withdrawn
@@ -52,18 +65,13 @@ An observable that moved before the safe boundary would provide advance warning
 of the transition. This section asks whether any measured signal did so, and
 reports three things at three different levels of confidence.
 
-The warning rule compares each metric with three times its own noise scale, and
-the drain queue additionally carries a separately preregistered DEEP threshold of
-50 requests, registered in `results/E1B-PLAN.md` at commit `09e41e5` before the
-runs it governs. Warning *room* is counted in probe points: a metric that first
-crosses at the last SAFE point has given none. **The 3σ crossing is what defines
-a warning in this analysis; DEEP is a separate preregistered absolute marker of
-queue depth, not a further condition a queue warning must satisfy.** A metric can
-therefore warn without the queue ever reaching DEEP, and in the corrected
-short-service cell it does. The noise-scale estimator was
-later changed under amendment A5, with the E1 data already in view — which is why
-§VII-B treats the E1 ordering as exploratory — and addendum A7 imports that
-frozen post-A5 statistic unchanged into the independent corrected corpus.
+The warning rule compares each metric with three times its own noise scale.
+Warning *room* is counted in probe points: a metric that first crosses at the
+last SAFE point has given none. The drain queue additionally carries a separately
+preregistered DEEP threshold of 50 requests, **an absolute marker of queue depth,
+not a further condition a queue warning must satisfy.** The noise-scale estimator
+was changed under amendment A5 with the E1 data already in view, and addendum A7
+imports that frozen post-A5 statistic unchanged into the corrected corpus.
 
 ### A. Replicated on an independent corpus: timeout rate gives no advance warning
 
@@ -71,117 +79,59 @@ frozen post-A5 statistic unchanged into the independent corrected corpus.
 cells evaluated in the leading-indicator analysis** — the four E1 boundaries and
 the two corrected cells. Its total σ is identically 0.00 in all six: the rate is
 flat at zero through every safe point and only moves once the system has already
-collapsed.
-
-The result reproduces on the corrected-harness corpus. That corpus was collected
-roughly thirty-four hours after amendment A5 froze the median-pooled noise
-statistic, and played no part in choosing it. Addendum A7 subsequently registered
-the criterion, statistic and prediction before re-analysing those already
-collected data, importing them from the original script rather than restating
-them so they could not drift. This is therefore an independent-corpus
-replication under a registered re-analysis, not a prospective replication.
-
-Timeout rate gave no advance warning of the safe boundary in either corpus.
+collapsed. The corrected corpus was collected roughly thirty-four hours after A5
+froze the statistic and played no part in choosing it; A7 registered the
+criterion, statistic and prediction before re-analysing those already collected
+data. This is therefore an independent-corpus replication under a registered
+re-analysis, not a prospective replication.
 
 ### B. Exploratory: the queue-depth lead does not survive as a contribution
 
 On the E1 corpus, mean drain queue depth crossed its criterion before live tail
 latency in three of the four boundaries, by 20, 25 and 10 requests per second;
-in the fourth it never crossed at all. That ordering was the campaign's most
-operationally attractive result, and it is reported here as **exploratory**, for
-two separate reasons that do different work: the first prevents a confirmatory
-interpretation of the E1 result, and the second prevents the corrected corpus
-from resolving the ordering independently.
-
-The first is chronological. The statistic the ordering depends on — A5's
-median-pooled noise scale — was chosen with the E1 numbers already in view. An
-ordering measured with a statistic selected against the same data cannot be
-treated as confirmatory of itself.
-
-The second is resolution. Addendum A7 re-ran the frozen criterion on the
-corrected corpus, and the ordering did not reproduce: queue depth and live p99
-first cross at the same probe rate in both corrected cells, a margin of zero.
-But that corpus cannot settle the question either way. Its safe points are
-spaced 60 requests per second apart in one cell and 100 in the other, against
-E1 margins of 10 to 25. **A lead of E1's size is below this corpus's resolution
-by construction**, so a tie is what the design would produce whether or not the
-effect exists.
-
-The honest reading is the stronger of the two, not the weaker: the ordering is
-unreplicated, and the only available independent corpus that could have
-adjudicated it is too coarsely sampled to have done so. It stands as a single-corpus finding on E1's own probe
-grid. A7 closed the remaining route by which it might have been promoted, and it
-is not promoted.
+in the fourth it never crossed at all. It is reported as **exploratory**, for two
+separate reasons that do different work. The first is chronological: the
+statistic the ordering depends on — A5's median-pooled noise scale — was chosen
+with the E1 numbers already in view, so the ordering cannot be treated as
+confirmatory of itself. The second is resolution. Under A7 the ordering did not
+reproduce: queue depth and live p99 first cross at the same probe rate in both
+corrected cells. But that corpus's safe points are spaced 60 and 100 requests per
+second apart, against E1 margins of 10 to 25. **A lead of E1's size is below this
+corpus's resolution by construction**, so a tie is what the design would produce
+whether or not the effect exists. The ordering is unreplicated, and the only
+available independent corpus that could have adjudicated it is too coarsely
+sampled to have done so. It stands as a single-corpus finding on E1's own probe
+grid, and it is not promoted.
 
 ### C. The corrected corpus: warning without ordering
 
 The corrected corpus answers differently in each of its two cells, and the two
-answers together are the result.
-
-In the corrected **long-service** cell there is no warning room at all. Mean queue
-depth, all three live latency percentiles and mean in-flight requests first cross
-at `rl` 1210, which is the last safe point. On that cell the leading-indicator
-framing has nothing to lead with.
-
-In the corrected **short-service** cell there is warning room but no resolved
-ordering. Mean queue depth, live p99, live p90 and mean in-flight all first cross
-at `rl` 1075, with the last safe point at 1185 still ahead of them — one probe
-point, roughly 110 requests per second of safe operating range after the first
-crossing. Only live p50 crosses with no room, and only timeout rate never
-crosses. But those four cross *together*: what is absent in this cell is the
-ordering, not the warning.
+answers together are the result. In the corrected **long-service** cell there is
+no warning room at all: mean queue depth, all three live latency percentiles and
+mean in-flight requests first cross at the last safe point. In the corrected
+**short-service** cell there is warning room but no resolved ordering: mean queue
+depth, live p99, live p90 and mean in-flight all first cross one probe point —
+roughly 110 requests per second — before the last safe point, and they cross
+*together*. [@fig:signals] shows that cell: queue peak and live p99 rise across
+the safe range and then change sharply across the final 55 rps interval into the
+first unsafe probe.
 
 **The corrected corpus therefore does not reproduce the queue-before-latency
 ordering at its available resolution. It does not show that no metric gives
-advance warning.** Those are
-different claims and this section keeps them apart.
-
-One further observation belongs here, with its quantity named. In the
-short-service cell the *mean* drain queue depth never reaches its DEEP threshold
-anywhere inside the safe range, peaking at 23.1 requests against 50. That is a
-statement about the mean; [@fig:signals] plots the queue *peak*, which behaves
-differently and is discussed below.
-
-A possible explanation suggests itself, and is offered as a hypothesis rather
-than as a finding. The corrected corpus samples coarsely near the boundary — 60
-and 100 requests per second between safe points, against E1 margins of 10 to 25 —
-so it may leave too little resolution to distinguish the relative *onset* of
-queue depth and live latency even where both give advance warning. Under that
-hypothesis a lead of E1's size would disappear below this corpus's sampling
-resolution. Whether the original separation was itself related to the calibration
-error remains untested.
-
-**This is not a fourth retracted finding, and the evidence here does not support
-making it one.** It is a hypothesis with a named experiment: a 5 requests per
-second sweep across the top 50 of each corrected cell's safe range, about sixty
-runs at n = 3, which would resolve a lead of E1's size in either direction.
-§IX records it as the study that would settle the question.
-
-### D. What the figure shows, and why it is unaffected
-
-[@fig:signals] plots drain queue peak and live tail latency across the corrected
-short-service cell as utilisation approaches its boundary. Both rise across the
-sampled safe range — the queue peak from 7 requests to 111, live p99 from 8 ms to
-58 — and both then change sharply at the transition between the final SAFE point
-and the following non-SAFE one: the queue reaches its cap of 500 and live p99
-rises to 508 ms. **That interval is 55 requests per second, not 5.** The
-corrected-harness searches did not resolve at the seven-cell corpus's 5 rps step;
-§IV records their achieved resolutions as 55 and 65 rps, and they are not members
-of the seven-cell boundary corpus.
-
-The figure is unaffected by the downgrade in §VII-B, and the reason is worth
-stating. Its pipeline uses no noise statistic anywhere — it reads utilisation,
-queue peak, live p99 and the classification directly — so it never depended on
-the quantity A5 chose or A7 re-examined. A figure that survives a downgrade
-because it never rested on the downgraded thing is evidence about the figure, not
-a coincidence.
+advance warning.** Those are different claims and this section keeps them apart.
+That the corrected corpus samples too coarsely near the boundary to separate the
+two onsets is offered as a hypothesis, not a finding — **not a fourth retracted
+finding** — and §IX names the finer sweep that would settle it. DEEP applies to
+*mean* drain queue depth, which peaks at 23.1 requests inside the safe range;
+[@fig:signals] plots the queue *peak*, a different quantity. The figure's
+pipeline uses no noise statistic, so it is unaffected by the downgrade in §VII-B.
+Supplement S1 gives the per-point trajectories.
 
 What §VII does **not** claim is that latency warns last, or that either signal is
 the right one to build a controller on. §II establishes live latency as a
 literature-grounded comparator, which is what makes these observations about a
 signal the literature already uses. This section reports only that on this
-harness, at
-this resolution, timeout rate never warns; the queue-depth lead observed on E1 is
-unreplicated and unresolvable on the available data; and on the corrected corpus
-some observables do give advance warning in one cell, but queue depth does not
-lead live p99 at the resolution available.
+harness, at this resolution, timeout rate never warns; the queue-depth lead
+observed on E1 is unreplicated and unresolvable on the available data; and on the
+corrected corpus some observables do give advance warning in one cell, but queue
+depth does not lead live p99 at the resolution available.

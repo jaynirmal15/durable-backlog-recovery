@@ -1,5 +1,12 @@
 # §1 — Introduction
 
+*Draft 19 — CUT PASS, increment 3, 2026-09-20. §I compressed from ~1,595 to
+1,261 words (measured; the ~1,150 aimed at was not reached). Verbatim and unchanged: the claim-register headline and
+scale-mismatch statements, the paragraph stating the 0.463 ms bias and the 9.26% /
+1.85% overstatement, C1 and C4, and C2's prediction and replication numbers.
+Compressed: the opening, the three-candidate paragraph (which §VIII tells in
+full), the control-consequence and design-position paragraphs (merged), the
+roadmap, and C3's per-cell detail (given in §VII). No number or finding changes.*
 *Draft 18 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at the first mention of Little's law. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 17 — one-clause sync, 2026-09-20. C4 said "three findings retracted
 before publication rather than after" without saying which three. The draft note
@@ -64,21 +71,15 @@ Claim-register wording used verbatim where marked. Source comments strip in W6.*
 
 ## I. INTRODUCTION
 
-A durable message broker does not lose work when its consumer stops. It
-accumulates it. When the consumer returns, the backlog is still there and the
-live traffic never went away, so the recovering system must do two jobs at once:
-serve what is arriving now, and work off what arrived while it was gone. These
+A durable message broker does not lose work when its consumer stops; it
+accumulates it. When the consumer returns, the backlog and the live traffic
 compete for the same downstream capacity. Drained at full speed, the backlog
 displaces live traffic, and users who were unaffected by the original outage
-experience the recovery as a second one.
-
-The operator's question is a rate. Given a downstream serving live traffic under
-a latency objective, how fast may the backlog be drained without violating that
-objective? Too slow and the backlog outlives the incident; too fast and the
-recovery becomes the incident. The question is ordinary, it recurs in every
-system built on a durable log, and it is usually answered by a number someone
-chose — a concurrency limit, a batch size, a token-bucket rate — and then adjusted
-after it goes wrong.
+experience the recovery as a second one. The operator's question is therefore a
+rate: how fast may the backlog be drained without violating the live latency
+objective? The question recurs in every system built on a durable log, and it is
+usually answered by a number someone chose — a concurrency limit, a batch size, a
+token-bucket rate — and then adjusted after it goes wrong.
 
 This paper measures where that boundary actually sits. In a controlled harness
 with a live path and a recovery path at independently configured open-loop rates,
@@ -87,12 +88,10 @@ catastrophic drain by pre-registered bisection across seven experimental cells,
 spanning two service times, three configured capacities, two admission limits and
 four concurrency levels. **Across those seven cells the safe drain boundary lay
 within 1% of measured service capacity, and was indistinguishable from capacity
-itself at the experiment's resolution.** Per-cell values are given in §VI at
-each cell's own resolution; no single range is quoted, because the cells do not
-share a precision and a range spanning them would assert one they do not have.
-Varying the latency objective produced no resolvable movement over the
-well-posed sweep — 50 to 500 ms in the 5 ms arm, 100 to 500 ms in the 25 ms
-arm.
+itself at the experiment's resolution.** Per-cell values are given in §VI, each at its
+own cell's resolution. Varying the latency objective produced no resolvable
+movement over the well-posed sweep — 50 to 500 ms in the 5 ms arm, 100 to 500 ms
+in the 25 ms arm.
 
 <!-- claim register headline, verbatim; range from results/REVIEWER-RESPONSE-W2.md T3 -->
 
@@ -107,21 +106,16 @@ service time, the error in the figure against which that margin was expressed wa
 more than an order of magnitude larger than the margin itself.
 
 An error of that relative size does not announce itself as an error. Because the
-overhead is approximately constant in absolute terms, it produces a large
-relative distortion at short service times and a small one at long ones, and a
-distortion that varies systematically with a configuration parameter is
-indistinguishable, from the outside, from a property of the system. Over three
-weeks this campaign put three candidate explanations of the boundary to
-registered tests, and the protocol did not treat them alike. That the boundary
-depended on the **admission limit** was rejected by its own falsification
-criterion, before any calibration. That it depended on **concurrency** survived
-that same test — and was removed almost entirely once the instrument was
-calibrated. That it depended on **service time** also survived its registered
-test; the calibrated evidence undermines that reading, but the registered
-statistic was never recomputed, because the corrected corpus contains no cell at
-the configuration it was measured in. The falsification machinery could reject a
-wrong explanation. It could not identify the timing bias from the effects that
-bias produced.
+overhead is approximately constant in absolute terms, it distorts short service
+times far more than long ones, and a distortion that varies systematically with a
+configuration parameter looks, from the outside, like a property of the system.
+Of three candidate explanations of the boundary put to registered tests, the
+**admission limit** was rejected by its own falsification criterion before any
+calibration; **concurrency** survived that test and was removed almost entirely
+once the instrument was calibrated; **service time** survived its test and is
+undermined, though not re-adjudicated, by the calibrated evidence (§VIII). The
+falsification machinery could reject a wrong explanation. It could not identify
+the timing bias from the effects that bias produced.
 
 The general form of the observation is this. **When the safety margin being
 characterised is sub-percent, a small and approximately service-time-independent
@@ -141,34 +135,20 @@ first appear. A controller cannot safely treat configured or nominal capacity as
 ground truth when its operating margin is smaller than the calibration error in
 that figure; it requires a capacity estimate that has been empirically validated.
 Whether that estimate is supplied by external calibration or inferred online is
-not settled by this work. One measurement reported in §V bears on the question
-without deciding it: the overhead is not a fixed constant but varies with offered
-load, so an offline benchmark would itself have to be conducted at the load
-condition that matters. Choosing between the two approaches requires a controller
-comparison, which this paper does not contain.
+not settled by this work: the overhead varies with offered load (§V), so an
+offline benchmark would itself have to be run at the load condition that matters,
+and choosing between the two requires a controller comparison this paper does not
+contain. The harness was built on the stronger assumption — its configured
+capacity is exposed only on an administrative endpoint the consumer never reads,
+so that a controller would have to infer capacity rather than be told it — and
+the campaign then walked into the hazard that precaution guarded against.
 
-The harness was nonetheless built on the stronger assumption. The downstream's
-configured capacity parameter is exposed only on an administrative endpoint that
-the consumer never reads, precisely so that a controller would be forced to infer
-capacity rather than be told it — a design position taken before any
-measurement. What this campaign shows is narrower than that
-position but sufficient to motivate it: the figure such a controller would
-otherwise have trusted could be wrong by substantially more than the operating
-margin — and, in the 5 ms arm, by more than an order of magnitude. The decision was taken as a precaution; the
-campaign then walked into the hazard it was guarding against.
-
-We therefore report two things that are usually separated: a measurement, and an
-account of why the measurement is hard to get right. Section II positions the
-work and states plainly what is not claimed. Section III describes the harness,
-its capacity model, and an error model for that capacity. Section IV sets out the
-pre-registration, the boundary estimator and the experiment's resolution.
-Section V presents the calibration — the overhead measured directly, then
-eliminated by prediction. Section VI presents the corrected boundary. Section VII
-reports which observables warn, and what the corrected data can and cannot
-establish about their ordering. Section VIII returns to the three candidate
-explanations, to what the calibration changed about each, and to what the
-differences between the three outcomes establish. Sections IX and X give threats
-to validity and conclusions.
+Section II positions the work and states what is not claimed. Section III
+describes the harness and its capacity error model; Section IV the
+pre-registration, estimator and resolution; Section V the calibration; and
+Section VI the corrected boundary. Section VII reports which observables warn,
+Section VIII returns to the three candidate explanations, and Sections IX and X
+give threats to validity and conclusions.
 
 The contributions are:
 
@@ -180,9 +160,9 @@ effect of configured capacity, admission limit, concurrency, service time, or th
 latency objective over the well-posed sweep was resolvable at that precision; §VI
 reports one residual that is below resolution and is not claimed.
 
-**C2 — The calibration trap.** Its magnitude and its behaviour: a per-request
-overhead constant to within 4% across a fivefold service-time range and varying
-with offered load, of which 99.8% is attributable to timer overrun. One
+**C2 — The calibration trap.** A per-request overhead constant to within 4%
+across a fivefold service-time range, varying with offered load, and 99.8%
+attributable to timer overrun. One
 second-order finding is traced to it in full — the apparent concurrency
 dependence, which survived its registered falsification and which calibration
 removes by 94 to 95%. A second, the apparent service-time dependence, survived
@@ -197,16 +177,13 @@ ten 60-second windows per arm, giving medians of 1988.96 and 1997.70 rps.
 
 **C3 — What warns, and what does not.** Request timeout rate gives no advance
 warning of the boundary: it never crosses its criterion before the last safe
-point. That result replicates on a corrected-harness corpus collected after the
-analysis statistic was frozen and independent of the choice of it. A queue-depth
-lead over live p99 was observed on the uncorrected corpus, but is reported as
-**exploratory**: the statistic it depends on was chosen with that data in view,
-and the one independent corpus available samples too coarsely to have resolved a
-lead of the size reported, in either direction. On the corrected corpus the two
-signals do not separate at the available resolution: in the long-service cell the
-measured observables give no warning room at all, and in the short-service cell
-several give advance warning but queue depth and live p99 cross together. The
-queue-depth-before-latency ordering therefore remains unresolved. §VII offers a
+point, and that result replicates on a corrected-harness corpus collected after
+the analysis statistic was frozen. A queue-depth lead over live p99, observed on
+the uncorrected corpus, is reported as **exploratory**: the statistic it depends
+on was chosen with that data in view, and the one independent corpus available
+samples too coarsely to have resolved a lead of that size in either direction. On
+the corrected corpus the two signals do not separate at the available resolution,
+so the queue-depth-before-latency ordering remains unresolved. §VII offers a
 hypothesis with a named experiment, not a result.
 
 **C4 — Method.** A public pre-registration with six dated amendments; three

@@ -48,6 +48,10 @@ EXPECT_S1_TABLES = 2
 EXPECT_EQUATIONS = 8
 S1_SOURCE = 'supplement-S1.md'
 S1_TITLE_RE = re.compile(r'^##\s+(S1-[A-Z]\.\s+.+?)\s*$')
+# S1-H acquired numbered sub-headings when §VII-C and §VII-D moved into it.
+# "S1-H.1" is the label a reader follows, so like the section labels it is set
+# with a starred form and never renumbered by the class.
+S1_SUBTITLE_RE = re.compile(r'^###\s+(S1-[A-Z]\.\d+\s+.+?)\s*$')
 MAX_NESTING = 12                    # bold in a cell, code in bold, italic in code
 
 # Template files the generated article actually needs. The class is used AS
@@ -188,6 +192,8 @@ MATH = {
     'f': r'f',
     'C = 400': r'C = 400',
     'f = +0.000': r'f = +0.000',
+    'σ = 0.15': r'\sigma = 0.15',
+    'queueCap = 50 · c': r'\mathrm{queueCap} = 50 \cdot c',
     '-0.006': r'-0.006',
     'h = (ρ*_E2b − ρ10) / D':
         r'h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \,/\, D',
@@ -856,6 +862,14 @@ class Build(object):
                 self.equations.append(n)
                 self.tex += [r'\begin{equation}', EQUATIONS[n],
                              r'\label{eq:%d}' % n, r'\end{equation}', '']
+                i += 1
+                continue
+
+            m = S1_SUBTITLE_RE.match(line) if self.target == 's1' else None
+            if m:
+                self.flush(para)
+                para = []
+                self.tex += [r'\subsection*{%s}' % inline(m.group(1)), '']
                 i += 1
                 continue
 

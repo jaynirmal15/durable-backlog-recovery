@@ -1,5 +1,18 @@
 # §4 — Method
 
+*Draft 26 — CUT PASS, increment 2, 2026-09-20. §IV-B and §IV-C are compressed
+and their full text moves, unchanged, to Supplement S1-F; §IV-D and §IV-E are
+tightened in place. Kept, per the ruling: the SLO definition and both registered
+exclusions with their exercised extent; n = 3 and the SAFE / UNSAFE / MARGINAL
+rules; no averaging of repetitions; the per-cell aggregator and its immateriality;
+the seven-cell / corrected-cell scope; bisection semantics and the 5 rps floor;
+the asymmetric-error argument and the monotonicity audit; the unexercised
+MARGINAL class; the weak E1 c10/C0 bracket; the numerator and denominator
+uncertainty terms with their scope; the "at or near" form; the two reported
+objects, 1.0002, the refusal of a [ρ_safe, 1] interval, and equations (7)–(8).
+Moved to S1: the stall detector's four conditions, the initial-bracket
+construction, inherited anchors, and the corrected cells' per-repetition spread
+against their 55 and 65 rps steps. No number, finding or rule changes.*
 *Draft 25 — CUT PASS, increment 1, 2026-09-20, under the reviewer's supplement
 ruling. §IV-G, §IV-H and §IV-I are compressed and their full text moves, unchanged,
 to Supplement S1 (`paper/supplement-S1.md`), together with Table 1. Kept in the
@@ -101,44 +114,22 @@ traffic only. A window is a *latency breach* if live p99 exceeds 250 ms, an
 *error breach* if the live error rate exceeds 1%, and a *violating second* if
 either holds. `vSLO` is the fraction of violating seconds.
 
-Live traffic means injector-direct requests only. Two exclusions apply, both
-registered in advance, and both are reported here with their exercised extent
-because an outcome-dependent exclusion in a saturation experiment deserves
-scrutiny.
+Live traffic means injector-direct requests only. Two exclusions were registered
+in advance, and **neither was exercised.** Status 429, an injector-side drop, is
+excluded from error accounting; no run in the 171-run seven-cell corpus recorded
+one, and the worst in-drain delivery deficit among SAFE runs is 0.0099%, with
+delivery marginally *better* in UNSAFE runs — the opposite of the direction that
+would flatter the result. Seconds flagged by the host-stall detector are
+excluded, with the unexcluded value kept as `vSLO_raw`; the detector requires a
+shallow downstream queue, so genuine overload cannot trigger it, and it never
+fired. No result depends on it. Supplement S1 gives both rules in full.
 
-Status 429 is an injector-side drop rather than a downstream signal and is
-excluded from error accounting. The concern this invites is real: an injector
-that drops more as load rises would starve the downstream and make a run look
-artificially safe. **No run recorded a single injector-side drop** — zero across
-the 171 runs of the seven-cell boundary corpus. The registered ±1% delivery guard checks warm-up rather than the
-drain, so in-drain delivery was measured separately: the worst sustained deficit
-among SAFE runs is 0.0099%, a hundredth of one percent, and delivery is
-marginally *better* in UNSAFE runs than in SAFE ones — the opposite of the
-direction that would flatter the result.
-
-Seconds flagged by the host-stall detector are excluded from both numerator and
-denominator, with the unexcluded value recorded as `vSLO_raw`. A second is
-flagged only when four conditions hold at once: live 1 s p99 at or above five
-times its rolling healthy baseline, recovery 1 s p99 at or above five times its
-own, downstream queue depth **at or below five requests**, and a maximum
-inter-sample gap in the request stream exceeding 150 ms; each flagged second
-also contaminates the following five. The third condition is why genuine
-overload cannot trigger it — at a collapsed point the queue is deep by
-definition. **It never fired**: zero seconds were excluded across the 171-run seven-cell
-boundary corpus, and
-no classification differs under `vSLO_raw`. It is therefore an untested
-safeguard, and what that establishes is not that the detector works but that no
-result in this paper depends on it.
-
-`vSLO_latency`, `vSLO_error` and `vSLO_both` are reported in every table and
-identify *which* failure mode produced a violation. They do not address
-sub-threshold degradation, and are not claimed to: a second at p99 = 249 ms is
-non-violating under all four measures. Continuous live p99 and queue-depth
-series are therefore retained separately, and it is those that §VII uses. The
-registration states — before any data — that `vSLO` alone is not a sufficient
-safety statistic, because it saturates deep in collapse and is blind to
-degraded-but-passing traffic at the other edge; the decomposition addresses the
-first of those, the continuous series the second.
+`vSLO_latency`, `vSLO_error` and `vSLO_both` identify which failure mode produced
+a violation. None of them sees sub-threshold degradation — a second at p99 =
+249 ms is non-violating under all four — so continuous live p99 and queue-depth
+series are retained separately, and §VII uses those. The registration states,
+before any data, that `vSLO` alone is not a sufficient safety statistic: it
+saturates deep in collapse and is blind to degraded-but-passing traffic.
 
 ### C. Point classification and the search
 
@@ -149,247 +140,142 @@ values alone:
 - **UNSAFE** — `vSLO > 0.05` in at least two repetitions.
 - **MARGINAL** — anything else.
 
-The three classes are exhaustive and mutually exclusive. **Repetition
-disagreement is never averaged**, and this applies to rate as well as to `vSLO`.
-No single achieved rate is assigned to a probed point: the point retains all
-three, and the reported interval spans every achieved ρ observed at each
-endpoint, so disagreement between repetitions widens the interval rather than
-being collapsed into a mean or a median. Disagreement across repetitions is itself the
-signal that an operating point is unstable, which is the property the collapsed
-regime has, and the mean of three `vSLO` values is not computed and appears in
-no table.
+**Repetition disagreement is never averaged**, for rate or for `vSLO`: a point
+retains all three achieved rates, and the reported interval spans every achieved
+ρ observed at each endpoint, so disagreement widens the interval rather than
+being collapsed into a mean or a median. Disagreement is itself the signal of an
+unstable operating point. A registered diagnostic, raised when a point's
+achieved-ρ spread exceeds the search resolution, **never fired**: zero of forty
+points, the worst at 40% of its own resolution.
 
-The search additionally raises a registered diagnostic whenever the achieved-ρ
-spread across repetitions at a point exceeds the search resolution, on the
-grounds that bisection would then be resolving finer than its own instrument.
-**It never fired** — zero of forty points across all seven boundary files,
-endpoints included; the worst point sits at 40% of its own resolution.
+Where a single per-point figure is required — the per-cell value in
+[@fig:collapse] — it is the maximum achieved ρ across the last SAFE point's
+repetitions. Because SAFE requires **all three** repetitions to pass, that is the
+highest demonstrated safe throughput at the terminal SAFE point, not the most
+favourable of several candidates. It is also immaterial: under minimum, maximum,
+mean and median the monotonicity audit, the last SAFE point in every cell and the
+rounded values are all unchanged, because the largest within-point spread in the
+campaign is 0.0010, or two requests per second.
 
-**Two qualifications, both of which narrow that statement.** First, where a
-single figure is nonetheless required — the per-cell value plotted in [@fig:collapse] —
-it is the maximum achieved ρ across the last SAFE point's repetitions. The
-choice is semantic before it is statistical: a point is classified SAFE only if
-**all three** repetitions satisfy the SAFE criterion, so the maximum is the
-highest empirically demonstrated safe throughput among repetitions at the
-terminal SAFE point. It is a defined safe-side quantity rather than the most
-favourable of several candidates.
+That sensitivity covers **the seven cells** — four from E1, two from E2, one from
+E2b; forty points, 171 runs — which are the boundary result and self-contained.
+**The two corrected-harness cells** were assembled by a separate analysis path.
+They support §V's predict-and-eliminate result, two of the bars in
+[@fig:plateau], §VII's signal series and A7, and **contribute to no seven-cell
+number.** Their per-repetition rates, since recovered from the retained run
+records, change none of those results under any aggregator. One difference
+remains: the seven measure over the delivery span (A4), the corrected cells over
+the drain window, which is why [@fig:plateau]'s caption states that its bars come
+from two corpora.
 
-It is also immaterial. Recomputing under minimum, maximum, mean and median
-leaves the monotonicity audit, the identity of the last SAFE point in every
-cell, and the reported values after resolution-matched rounding all unchanged,
-because the largest within-point spread anywhere in the campaign is 0.0010, or
-two requests per second — below both the rounding step and the search
-resolution.
+The search probes an anchor, steps upward to a first non-SAFE ceiling — every
+candidate freshly probed at n = 3 — and then bisects between the last SAFE point
+and the first non-SAFE one, rounding midpoints to 5 rps. A SAFE midpoint becomes
+the floor; an UNSAFE **or MARGINAL** midpoint becomes the ceiling (A1), so
+marginal behaviour lies inside the reported interval rather than below it. A
+non-SAFE anchor steps the search downward (A2). **The search stops when the
+bracket is 5 rps wide, and the registration states that 5 rps is the resolution
+floor and that no claim is made below it.** Supplement S1 gives the procedure in
+full, including one asymmetry in it: the upward search has no probe budget, a
+defect in the procedure that did not arise in this campaign.
 
-Second, the scope of that statement has to be given exactly, because two
-distinct corpora appear in this paper.
+Bisection presupposes that safety is non-increasing in offered load, and the two
+misclassification errors are not symmetric. A spurious **non-SAFE** point moves
+the reported estimate away from capacity, against the headline; a spurious
+**SAFE** point above the boundary moves it toward the claim the paper makes.
+Requiring three of three for SAFE, against two of three for UNSAFE, makes the
+consequential classification the stringent one. Monotonicity was audited rather
+than assumed, under all four aggregators: **no inversion occurred in any of the
+seven cells.** The audit speaks only for the forty probed points, and **no point
+ever classified MARGINAL** — twenty SAFE, twenty UNSAFE — so the MARGINAL class
+and A1 were never exercised on any reported result.
 
-**The seven cells** — four from E1, two from E2, one from E2b; forty probed
-points, 171 runs — are the boundary result, and they are self-contained. Each
-cell's denominator comes from that cell's own saturation runs. Every one of the
-171 repetitions retains its own achieved rate, so the no-aggregation rule, the
-spread diagnostic and the aggregator sensitivity all apply to them, and to
-[@fig:collapse], which plots these cells and only these cells.
-
-**The two corrected-harness cells** were not produced by this search. They were
-assembled directly from run records by a separate analysis path that stored one
-median ρ per point. The per-repetition rates have since been recovered from the
-33 retained run records — every record carries the quantities the estimator
-needs, and the reconstruction reproduces all eleven committed medians exactly —
-so this is no longer a limitation of the corpus. They support the predict-and-eliminate result of §V, two of the
-four bars in [@fig:plateau], the signal series of §VII, and the re-analysis registered
-as A7. **They are not members of the seven and contribute to no seven-cell
-number.**
-
-The limitation therefore falls on the corrected cells and not on the boundary
-result: the repetition-level sensitivity reported above covers §VI's central
-comparison, and does not cover §V's brackets, [@fig:plateau]'s corrected bars, §VII or
-A7. The recovered per-repetition rates change nothing: the
-predict-and-eliminate verdict is identical under all four aggregators, and the
-A7 ordering is unchanged. Their per-point spread of 2.1 to 7.1 rps would flag
-against the registered 5 rps constant, but those searches resolved to 55 and 65
-rps rather than 5, so against the resolution actually achieved the spread is
-eight to ten times smaller than the step — more headroom than anywhere in the
-seven-cell corpus. The one difference that remains is estimator: the seven
-measure over the delivery span under A4, the corrected cells over the drain
-window as measured. [@fig:plateau] places both side by side, which is legitimate
-because predicted against measured plateau is a direct throughput comparison
-with no ρ estimator involved, but its caption must say so.
-
-The initial bracket is constructed rather than assumed. A ceiling may be
-supplied; if it is not, the first candidate is the anchor raised by ten percent,
-rounded to 5 rps, and stepped again while it continues to classify SAFE. Every
-candidate — supplied or stepped — is freshly probed at the campaign's own
-repetition count before it is used, on every harness and without exception, so
-every rate appearing in a boundary file was actually run. A supplied ceiling
-that classifies SAFE is demoted to the floor and the upward search restarts from
-it. The downward search has the 5 rps resolution floor as its terminating guard;
-the upward search has no probe budget and no equivalent guard, an asymmetry that
-did not arise in this campaign but is a defect in the procedure rather than a
-property of the results.
-
-The search then bisects between the last-SAFE anchor and the first-non-SAFE
-ceiling. Midpoints are rounded to the nearest 5 rps. A SAFE midpoint becomes the new
-floor; an UNSAFE **or MARGINAL** midpoint becomes the new ceiling, so marginal
-behaviour lies inside the reported interval rather than below it. The anchor is
-probed first and, if it does not classify SAFE, the search steps downward rather
-than assuming a floor (amendment A2). Anchors inherited from an earlier phase do
-not count, because those points were measured on the defective harness.
-
-**The search stops when the bracket is 5 rps wide, and the registration states
-that 5 rps is the resolution floor and that no claim is made below it.**
-
-Bisection presupposes that safety is non-increasing in offered load, and the
-search terminates at the first non-SAFE classification. The two misclassification
-errors are not symmetric in their consequences. A spuriously **non-SAFE** point
-truncates the search conservatively, moving the reported last-SAFE point
-downward and therefore *away* from capacity — it costs the headline rather than
-supporting it. The consequential error is the opposite one: a spuriously
-**SAFE** point above the true boundary moves the safe-side estimate upward,
-toward the claim the paper makes. Requiring all three repetitions to satisfy the
-SAFE criterion, against two of three for UNSAFE, makes that classification
-deliberately the stringent one. The monotonicity assumption is nonetheless
-audited rather than assumed, and the audit needs its own rule, because a point
-retains three achieved rates and cannot be ordered by all three at once. The
-audit therefore proceeds at the point level using a single achieved rate per
-point, and was repeated under each of the four candidate aggregators — minimum,
-maximum, mean and median. The rank order of points within a cell is identical
-under all four, so the audit reads the same input in every case. **No inversion
-occurred in any of the seven cells, under any aggregator**, where an inversion
-means a higher-rate point classifying safer than a lower-rate one.
-
-Two facts bound what that audit establishes. First, it can speak only for the
-forty points that were probed; bisection does not sample what it does not
-choose. Second, **no point in the study ever classified MARGINAL** — the forty
-points divide as twenty SAFE and twenty UNSAFE. The MARGINAL class, and
-amendment A1 which governs its treatment as a ceiling, were therefore never
-exercised on any reported result. They are retained in the protocol as
-registered, not as machinery that shaped an outcome.
-
-One bracket is weaker than the rest and is named rather than averaged into the
-others. In E1 c10/C0 the last SAFE point reports three zero `vSLO` values and the
-first UNSAFE point reports 0.077, 0.000 and 0.135 — one replicate at exactly
-zero. Under the registered rule this is UNSAFE, since two of three exceed 0.05.
-The disagreement is not a defect in the classification but the instability the
-registration anticipated at an unstable operating point, and it is reported as
-such.
+One bracket is weaker than the rest and is named rather than averaged. In E1
+c10/C0 the first UNSAFE point reports 0.077, 0.000 and 0.135: UNSAFE under the
+registered rule, with one replicate at exactly zero — the instability the
+registration anticipated at an unstable operating point, reported as such.
 
 ### D. Resolution, and why the headline is phrased as it is
 
 That floor is the paper's precision discipline, and it was registered rather than
-adopted afterwards. The registration further states that quoting a value to more
-significant figures than the interval width supports is a protocol violation.
+adopted afterwards; the registration also makes quoting a value to more
+significant figures than its interval supports a protocol violation. At a
+capacity near 2000 rps one 5 rps step is about 0.25% of capacity. Per-cell
+resolution varies with capacity and is tabulated with each boundary; the
+coarsest cell resolves to 0.0127 in utilisation.
 
-At a capacity near 2000 rps one 5 rps step is approximately 0.25% of capacity.
-Per-cell resolution varies with capacity and is tabulated with each boundary;
-the coarsest cell resolves to 0.0127 in utilisation.
-
-Two sources of uncertainty enter the reported ratio, and both are characterised.
-
-In the **numerator**, replicate spread at points carrying n = 12 is at most 24%
-of one step, so where that replication exists the step — not run-to-run
-variation — dominates. **That bound is scoped and does not generalise to the whole
-campaign.** Five of seven cells carry a replicated point; every one of them is a
-last-SAFE endpoint and none is a first-non-SAFE endpoint, and both
-reduced-capacity cells are replicated at n = 3 only. The 24% figure therefore
-bounds safe-side variability in five cells, and no claim is made about
-variability at non-SAFE endpoints or in the two unreplicated cells.
+Two sources of uncertainty enter the reported ratio. In the **numerator**,
+replicate spread at points carrying n = 12 is at most 24% of one step, so where
+that replication exists the step dominates. **That bound is scoped:** the five
+replicated points are all last-SAFE endpoints, both reduced-capacity cells are
+replicated at n = 3 only, and nothing is claimed about non-SAFE endpoints or the
+two unreplicated cells. In the **denominator**, `C_measured` is the median,
+across a cell's 6 to 15 saturation runs, of each run's maximum 30-second
+sustained served rate from the downstream's own counter. Its range spans 0.10%
+to 0.24% of capacity, or 0.09 to 0.80 of that cell's step. The two terms are
+reported separately: one is a deterministic grid width and the other an observed
+range, and nothing in this design licenses combining them as variances. Read
+conservatively they add linearly, and the quoted resolution then understates the
+figure a reader should use by 1.09× to 1.80×.
 
 <!-- results/REVIEWER-RESPONSE-W2.md task 2; T3 in §VI -->
 
-In the **denominator**, `C_measured` is the median, across a cell's 6 to 15
-saturation runs, of each run's maximum 30-second sustained served rate taken from
-the downstream's own served counter — one such measurement per collapsed run. Its range spans 0.10% to 0.24% of
-capacity, which propagates to between 0.09 and 0.80 of that cell's bisection
-step — smaller than the search step in every cell, but not negligible in the
-widest. The two terms are reported separately rather than combined. They are different
-kinds of quantity — a deterministic search-grid width and an observed range over
-repeated measurements — and nothing in this design licenses adding them as though
-they were variances, which would import the probabilistic interpretation the rest
-of this section is at pains to avoid.
-Read conservatively they add linearly, in which case the quoted per-cell
-resolution understates the figure a reader should use by between 1.09× and
-1.80×, the upper end reached only in the cell whose denominator spread is
-widest.
-
 **The quoted per-cell resolution is the search step alone**, and §IX records
-that omission. One consequence is worth stating rather than leaving implicit: at
-the lowest plateau observed in each cell, two cells place the safe-side estimate
-marginally above 1.0. The statement the data support is that the boundary sits
-at or near measured capacity, indistinguishable from it at the
-experiment's resolution — not that every cell lies strictly below it. That
-strict form fails for two independent reasons, the numerator aggregator and the
-denominator spread, which is why it is not used anywhere in this paper.
+that omission. One consequence: at the lowest plateau observed in each cell, two
+cells place the safe-side estimate marginally above 1.0. The statement the data
+support is that the boundary sits at or near measured capacity, indistinguishable
+from it at the experiment's resolution — not that every cell lies strictly below
+it. That strict form fails for two independent reasons, the numerator aggregator
+and the denominator spread, and is used nowhere in this paper.
 
-Every reported value is therefore quoted at the resolution of its own cell:
-three decimals where the step permits, two in the coarsest cell, and never four.
-This is why §VI reports the corrected boundaries as indistinguishable *at the
-experiment's resolution* rather than as equal, and why no
-boundary comparison rests on a difference smaller than one cell's
-boundary-search resolution. Registered values are reproduced
-verbatim at whatever precision they were registered, and may therefore carry more
-digits than the surrounding analysis supports; re-rounding them would falsify the
-record of what was predicted.
+Every value is quoted at its own cell's resolution — three decimals where the
+step permits, two in the coarsest cell, never four — and no boundary comparison
+rests on a difference smaller than one cell's step. Registered values are
+reproduced verbatim at their registered precision; re-rounding them would
+falsify the record of what was predicted.
 
 ### E. What a boundary is, and what is quoted
 
-A6 forbids reporting achieved utilisation at collapsed points (§IV-H), which
-raises a question the reader must not have to infer: if the upper endpoint of a
-bracket may be collapsed, in what space is the boundary reported, and what is
-the single number quoted in §VI?
-
-Two objects are reported, and only two.
+A6 forbids reporting achieved utilisation at collapsed points, so the space in
+which the boundary is reported has to be stated. Two objects are reported, and
+only two.
 
 **The boundary bracket, in rate.** `[R_lastSAFE, R_firstNonSAFE]` — what the
 bisection actually resolved, and which no utilisation estimator touches.
 
 **A safe-side normalised estimate**, `ρ_eff,safe = R_ach,lastSAFE / C_measured`,
-computed at SAFE points only, where the estimator was built and validated. Where
-a single per-cell scalar is required the numerator is the maximum achieved rate
-across **all** of that point's repetitions — three at a point visited once by the
-search, and twelve or fifteen at the five points that were replicated. The
-distinction matters for the two cells that read above 1.0 below: over all
-repetitions they reach 1.0002, and over the first three neither exceeds 1.0.
-§IV-C reports the sensitivity of the aggregator choice.
+computed at SAFE points only, where the estimator was built and validated. The
+numerator is the maximum achieved rate across **all** of that point's
+repetitions — three at a point visited once by the search, twelve or fifteen at
+the five replicated points. This matters for the two cells that read above 1.0:
+over all repetitions they reach 1.0002, and over the first three neither exceeds
+1.0.
 
-**`C_measured` is a normalisation reference, not an imposed ceiling.** It is an
-empirical plateau estimate — the median across a cell's saturation runs of each
-run's maximum 30-second sustained served rate from the downstream's own counter,
-as §IV-D defines it — and both numerator and denominator are measurements. A safe-side ratio may therefore read slightly above 1.0 without
-implying service beyond a known physical bound, and two cells do: under the
-named aggregator they reach 1.0002. The excess corresponds to approximately one
-fifth of a bisection step and is therefore below the experiment's resolving
-capability.
+**`C_measured` is a normalisation reference, not an imposed ceiling.** Numerator
+and denominator are both measurements, so a safe-side ratio may read slightly
+above 1.0 without implying service beyond a known physical bound. The excess in
+those two cells is about a fifth of a bisection step, below the experiment's
+resolution. For the same reason **no `[ρ_safe, 1]` interval is constructed**, and
+no cell is described as degenerate or pinned at saturation: A6's registered text
+frames the report as an interval up to a cell ceiling, which assumes
+`C_measured` bounds the achieved rate from above. That text stands as the record
+of what was decided; the form used here is narrower. **No achieved utilisation
+is manufactured for a collapsed upper endpoint** — the per-cell value in §VI is
+the last SAFE point's, not a bracket midpoint and not an interpolation.
 
-**No `[ρ_safe, 1]` interval is constructed**, and no cell is described as
-degenerate or as pinned at saturation. Amendment A6, quoted verbatim where it is
-quoted, frames the corrected report as an interval running up to a cell ceiling;
-that framing assumes `C_measured` bounds the achieved rate from above, which the
-data do not support in every cell. The registered text stands as the record of
-what was decided on 13 September. The reporting form used here is narrower:
-a rate bracket, and a normalised safe-side scalar whose distance from 1.0 is
-read against the cell's own resolution.
-
-**No achieved utilisation is manufactured for a collapsed upper endpoint.** The
-per-cell value in §VI is the last SAFE point's, not a bracket midpoint, not an
-interpolation, and not derived from any non-SAFE run. The claim it supports is
-about how closely the boundary is approached from below.
-
-Two denominators are in use, they are never mixed within a table, and they are
-given distinct symbols because the paper carries four capacity quantities:
+Two denominators are in use, never mixed within a table:
 
     ρ_config = ( λ_L,ach + R_ach ) / C_config                               (7)
     ρ_eff    = ( λ_L,ach + R_ach ) / C_measured                             (8)
 
 Boundary files report `ρ_config`, following the registered definition of
-achieved ρ. **The collapse figures of §VI are `ρ_eff`**, which is what makes
-them a statement about measured service capacity rather than about the
-configured parameter. They are reported per cell at each cell's own resolution
-in [@tab:resolution]; no range spanning the cells is quoted, because the cells do not
-share a precision. Predicted plateaus are `C_model`. `C_staffed` is
-not a distinct quantity in this campaign: `ceil(C_config · S)` is exact in all
-seven cells, so `C_staffed` equals `C_config` identically. Each cell's
-measured-capacity reference ratio is
+achieved ρ. **The collapse figures of §VI are `ρ_eff`**, which makes them a
+statement about measured service capacity rather than about the configured
+parameter. They are reported per cell at each cell's own resolution in
+[@tab:resolution]; no range spanning the cells is quoted, because the cells do
+not share a precision. Predicted plateaus are `C_model`. `C_staffed` equals
+`C_config` identically in this campaign, since `ceil(C_config · S)` is exact in
+all seven cells, and each cell's measured-capacity reference ratio is
 `C_measured / C_config`. Every figure and table names its denominator at the
 point of use, and [@fig:collapse] names one per axis.
 

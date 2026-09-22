@@ -173,6 +173,8 @@ MATH = {
     'C_staffed = C_config': r'C_{\mathrm{staffed}} = C_{\mathrm{config}}',
     'C_measured / C_config': r'C_{\mathrm{measured}} \mathbin{/} C_{\mathrm{config}}',
     'ceil(C_config · S)': r'\lceil C_{\mathrm{config}} \cdot S \rceil',
+    'c = ceil(C_config · S)':
+        r'c = \lceil C_{\mathrm{config}} \cdot S \rceil',   # equation (1), inline
     'c = ceil(C·S)': r'c = \lceil C \cdot S \rceil',
     '[R_lastSAFE, R_firstNonSAFE]':
         r'[R_{\mathrm{lastSAFE}},\, R_{\mathrm{firstNonSAFE}}]',

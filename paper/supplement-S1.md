@@ -41,7 +41,7 @@ to avoid.
 
 ## S1-B. Amendments (full text of the article's former §IV-H, with Table S1)
 
-All ten amendments and record corrections are listed in [@tab:s1-amendments] with their commits; the article glosses the six that
+All ten amendments and record corrections are listed in [@tab:s1-amendments] with their commits; the article glosses the seven that
 later sections cite.
 
 <!-- caption:tab:s1-amendments:start -->
@@ -384,8 +384,8 @@ model of §III-D the service rate is `c / (S + δ)` and the traversal time is
 `50 · (S + δ)`. In both cases the worker count cancels. **The admission rule
 therefore cannot by itself produce a capacity-dependent or concurrency-dependent
 queue-delay scale, under either the intended model or the corrected one** — a
-point §VIII returns to, since one of the retracted findings proposed exactly that
-mechanism.
+point §VIII returns to, since one of the candidate explanations proposed exactly
+that mechanism.
 
 One separation is deliberate and load-bearing. The configured capacity parameter
 is exposed only on an administrative endpoint, which the consumer never reads.
@@ -479,3 +479,26 @@ this resolution, timeout rate never warns; the queue-depth lead observed on E1 i
 unreplicated and unresolvable on the available data; and on the corrected corpus
 some observables do give advance warning in one cell, but queue depth does not
 lead live p99 at the resolution available.
+
+## S1-I. Two documentation failures (full text from the article's former §IX-C)
+
+Two documentation failures belong here, recorded for what caught them. An
+incorrect reading of the corrected-corpus figure propagated through report
+prose, a caption, the title drawn inside the figure itself and an early section
+draft, because each layer was written from the previous summary rather than from
+the data, while the registered analysis's own table contradicted it throughout.
+Separately, a summary generalised one evidentiary pattern across three candidate
+explanations; generating the table meant to display them, with every quotation
+asserted against its source, showed that one had been refuted before calibration
+and another had no like-for-like post-calibration test. Neither is an
+experimental finding, and the lesson is the control rather than the error: for a
+claim about several items at once the authority is a generated table whose cells
+are checked against their sources, not the prose in between.
+
+## S1-J. Provenance of the campaign itself (the article's former §V-G)
+
+Two readings were made and corrected mid-campaign, both recorded in the
+registration, and one earlier claim — that a break within 0.0004 of a registered
+prediction confirmed the saturated figure — is withdrawn, the bracket having
+contained both candidates at a resolution that could not support the agreement.
+Section IX and the registration give all three in full.

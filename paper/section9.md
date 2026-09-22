@@ -1,5 +1,12 @@
 # §9 — Threats to validity
 
+*Draft 7 — CUT PASS, increment 6, 2026-09-20. §IX-C compressed from ~480 to
+~230 words and §IX-B's resolution paragraph shortened where it restated §IV-D.
+Kept: the standalone tool's missing provenance and what it costs the prospective
+test, the bounded window and A9's record of the gap, both mid-campaign
+corrections with their timing, the withdrawn 0.0004 claim and why it is
+arithmetic rather than evidential, and the generated-table control. Moved to
+S1-I: the two documentation failures in full. No number or finding changes.*
 *Draft 6 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 5 — W3 readability, 2026-09-20. §IX-C re-listed the four provenance
 fields §IV-G already teaches. The contrast is what this subsection needs — the
@@ -137,15 +144,12 @@ runs are 111 to 120 seconds under bursty arrivals, not 60-second windows under
 the calibration driver, so they cannot establish that the effect is not window
 scatter. The measurement that would settle it was not made.
 
-**Resolution.** [@tab:resolution]'s per-cell figures reflect the search step alone.
-`C_measured` is a median over 6 to 15 saturation measurements whose range
-propagates to between 0.09 and 0.80 of a bisection step. The two terms are
-reported separately and never combined in quadrature — a deterministic grid
-width and an observed range are not variances — and read conservatively they add
-linearly, giving 1.09 to 1.80 times the quoted figure. At each cell's lowest
-observed plateau two cells place the safe-side estimate marginally above 1.0,
-which is why §VI says the boundary lies at or near measured capacity rather than
-strictly below it.
+**Resolution.** [@tab:resolution]'s per-cell figures reflect the search step
+alone; the denominator's range adds 0.09 to 0.80 of a step, and read
+conservatively the two add linearly, giving 1.09 to 1.80 times the quoted figure
+(§IV-D). At each cell's lowest observed plateau two cells place the safe-side
+estimate marginally above 1.0, which is why §VI says the boundary lies at or near
+measured capacity rather than strictly below it.
 
 **One superseded figure.** An earlier committed analysis reported 96.3% of the
 inter-arm effect removed, from before-and-after values sharing neither
@@ -158,8 +162,8 @@ accounting in §V supersedes it.
 standalone tool that measures saturation plateaus stamps none of it — only a
 label, an offered rate, a connection count and the measurement — and both
 corrected plateau measurements and all twenty replication windows registered
-under A8 come from it. So the committed record cannot establish that
-the prediction was registered before the measurements that tested it. What it
+under A8 come from it. **So the committed record cannot establish that the
+prediction was registered before the measurements that tested it.** What it
 bounds is a window, 16:31:55 to 18:50:07 UTC, containing the 17:31:47
 registration; the rest of the support is the registration's forward-looking
 language, its statement that no boundary run had yet started, and an uncommitted
@@ -167,34 +171,17 @@ campaign log. Addendum A9 records the gap without closing it, no claim here is
 written as though it were closed, and the fix for any future campaign is to
 stamp provenance in that tool.
 
-Two readings were made mid-campaign and corrected in the registration, and the
-two corrections do not sit at the same point in the evidence. The first reading
-was that the bisection could not terminate, since achieved utilisation is
-bounded by capacity and the registered prediction puts the boundary at that
-ceiling; it was corrected **during the first probe that contradicted it, before
-that probe completed**. The evidence against it was in hand before it was made:
-over the three preceding probes the queue peak had gone 7, 18, 111 and live p99
-8, 14, 58 ms, and the error was reading two flat points as an asymptote. The
-second reading was that the saturated calibration figure governed the boundary
-and the 90%-load figure was excluded; it was corrected **before the deciding
-probe began**, with the reading for each outcome fixed in advance. The withdrawn
-claim belongs to that second episode: that a break sitting 0.0004 above a
-registered prediction confirmed it. The bracket in hand contained both candidate
-predictions and so could not distinguish between them, which is what makes the
-0.0004 proximity arithmetic rather than evidential.
-
-Two documentation failures belong here, recorded for what caught them. An
-incorrect reading of the corrected-corpus figure propagated through report
-prose, a caption, the title drawn inside the figure itself and an early section
-draft, because each layer was written from the previous summary rather than from
-the data, while the registered analysis's own table contradicted it throughout.
-Separately, a summary generalised one evidentiary pattern across three candidate
-explanations; generating the table meant to display them, with every quotation
-asserted against its source, showed that one had been refuted before calibration
-and another had no like-for-like post-calibration test. Neither is an
-experimental finding, and the lesson is the control rather than the error: for a
-claim about several items at once the authority is a generated table whose cells
-are checked against their sources, not the prose in between.
+Two readings were made mid-campaign and corrected in the registration: the first
+during the first probe that contradicted it, before that probe completed; the
+second before the deciding probe began, with the reading for each outcome fixed
+in advance. **The withdrawn claim belongs to the second** — that a break sitting
+0.0004 above a registered prediction confirmed it, when the bracket in hand
+contained both candidate predictions and so could not distinguish between them,
+which is what makes that proximity arithmetic rather than evidential. Two
+documentation failures are recorded in Supplement S1 with what caught them. The
+lesson in both is the control rather than the error: for a claim about several
+items at once the authority is a generated table whose cells are checked against
+their sources, not the prose in between.
 
 ### D. Claims overturned by independent checks
 

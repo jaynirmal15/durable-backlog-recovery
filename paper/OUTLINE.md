@@ -758,7 +758,7 @@ there a seven-cell campaign in a methods paper."*
 
 ## §2 Background and related work — 1,400 words
 
-<!-- plan-synced-to: section2 draft 7 -->
+<!-- plan-synced-to: section2 draft 8 -->
 
 <!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work
@@ -1416,7 +1416,7 @@ anywhere.) That is the implication paragraph, and it leads into §9.
 
 ## §9 Threats to validity — 1,650 words
 
-<!-- plan-synced-to: section9 draft 6 -->
+<!-- plan-synced-to: section9 draft 7 -->
 
 **SIX VALIDITY CATEGORIES PLUS A CLOSING FUTURE-WORK SUBSECTION — seven
 labelled, A to G. Ruled at the §9 review and settled.** (v8.5 and v8.6 both said

@@ -1,5 +1,18 @@
 # §5 — The calibration defect
 
+*Draft 23 — CUT PASS, increment 7, 2026-09-20, the last authorised cut. §V
+compressed from ~2,710 to ~1,900 words against the reviewer's content floor,
+which is kept in full: the direct measurement and its limitations; the
+constant-versus-proportional result and the timer attribution; δ's variation with
+load; the distinction between the pooled correction and the separate prediction
+constants; the registered 1987.4 / 1997.7 predictions; A8's different registered
+reading per arm; the replicated medians and ranges, with short-arm discrimination
+against long-arm non-discrimination; leave-one-out and its limitation; the failed
+finer boundary prediction under both estimators; the matched 94-95% elimination;
+and the provenance qualification. Compressed: narration and chronology around
+those. §V-G moves to S1-J, its content already carried by §IX. No number, finding
+or rule changes.*
+*Draft 23.1 — APPROVED AND FROZEN by review, 2026-09-20, after two synchronisation fixes: the claim register's exact C2 sentence (per-arm medians 0.4690 / 0.4505, probe constants 0.5165 / 0.5114, load range 0.463 to 0.517 ms) is restored verbatim in §V-C, replacing the dispersed and rounded wording; and `c = ceil(C·S)` is written `c = ceil(C_config · S)`, since the four capacity terms are never interchanged. The cut pass is closed at 20 pages.*
 *Draft 23 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. §V's four tables gain labels and in-text references, as the reviewer's ruling to number every article table requires: three references are parenthetical insertions into existing sentences; **one is a new sentence** introducing the δ-predictions table, which had no introducing sentence to attach to — worded, on review, as "the registered and comparison predictions" rather than "each candidate correction's prediction", because the table also carries the pooled correction and the in-situ estimate, which was explicitly not a candidate. It is the only new prose in this pass. No other wording changed.*
 *Draft 22 — SCIENCE FROZEN. 2026-09-20.
 Draft 22: §V-A said three effects each survived their falsification test. One of
@@ -49,14 +62,11 @@ claim-preserving audit, not another flaw hunt. Source comments strip in W6.*
 
 ### A. Why the instrument was measured
 
-Three candidate explanations of the boundary were put to registered
-falsification tests, and two of them survived: that it depended on concurrency,
-and that it depended on service time. The third, that it depended on the
-admission limit, was rejected by its own criterion. Section VIII gives all three
-and separates their statuses. Having failed to kill the two survivors by
-attacking the hypotheses, we turned the instrument on itself and
-asked what a worker actually costs per request. The defect was found by
-measuring the apparatus, not by reasoning about the results it produced.
+Two of the three registered candidate explanations survived their falsification
+tests (§VIII). Having failed to kill them by attacking the hypotheses, we turned
+the instrument on itself and asked what a worker actually costs per request. The
+defect was found by measuring the apparatus, not by reasoning about the results
+it produced.
 
 ### B. Measuring the overhead directly
 
@@ -72,31 +82,26 @@ per-cycle distribution, the clock-resolution argument and the percentile-buffer
 caveat.
 
 **The instrument was controlled before it was trusted, though the control is
-weaker than it looks.** A criterion was registered in advance: the saturation
-plateau must move by less than 0.5% between probe on and probe off. It moved
-0.04% at `S` = 5 ms and 0.09% at `S` = 25 ms. But the comparison is single-shot —
-one window per state per arm — and the plateau's own window-to-window scatter is
-now known to be larger than the shift reported, at 0.16% and 0.14% of capacity.
-The check detects no probe effect above a comparable scale of empirical
-variability, which is what it is good for; it does not bound the intrusion below
-that scale, and does not claim to.
+weaker than it looks.** A criterion registered in advance required the saturation
+plateau to move by less than 0.5% between probe on and probe off; it moved 0.04%
+at `S` = 5 ms and 0.09% at 25 ms. But the comparison is single-shot, and the
+plateau's own window-to-window scatter is now known to be larger than the shift
+reported, at 0.16% and 0.14% of capacity. The check detects no probe effect above
+a comparable scale of empirical variability; it does not bound the intrusion
+below that scale, and does not claim to.
 
 **The cost is approximately service-time-independent over the tested fivefold
-range.** At 90% of capacity, measured by the direct timing probe, a constant cost
-predicts `excess(25 ms) − excess(5 ms) = 0` and a proportional one predicts a
-ratio of five. The measured difference is **−0.0051 ms** and the measured ratio
-is **0.990** — the residual running *opposite* to what proportionality requires.
-The contrast was conducted at one load condition; §V-C shows the same direction
-at both others.
-
-**It is almost entirely timer overshoot.** At 90% of capacity, by the direct
-timing probe, the runtime's late return accounts for **99.81%** of the excess at
-`S` = 5 ms and 99.79% at `S` = 25 ms; queue and slot bookkeeping and the
-completion signal together contribute 1.29 µs and 1.38 µs. The attribution is not
-condition-free: at saturation the long arm falls to **99.75%**. Every figure is
-quoted with its load condition, as every `δ` in this paper is.
-
-[@fig:overhead] carries the decomposition and the constant-versus-proportional test.
+range.** At 90% of capacity a constant cost predicts
+`excess(25 ms) − excess(5 ms) = 0` and a proportional one a ratio of five. The
+measured difference is **−0.0051 ms** and the measured ratio is **0.990**, the
+residual running *opposite* to what proportionality requires. **It is almost
+entirely timer overshoot**: the runtime's late return accounts for **99.81%** of
+the excess at `S` = 5 ms and 99.79% at 25 ms, with queue and slot bookkeeping and
+the completion signal together contributing 1.29 and 1.38 µs. The attribution is
+not condition-free — at saturation the long arm falls to 99.75% — and every
+figure is quoted with its load condition, as every `δ` in this paper is.
+[@fig:overhead] carries the decomposition and the constant-versus-proportional
+test.
 
 ### C. One cost, three values, two instruments
 
@@ -117,39 +122,35 @@ figure's stability is partly estimator rather than condition.
 
 Two of the three isolate offered load, sharing an estimator and a construction:
 between 90% of capacity and saturation the estimate falls by 0.022 ms in the
-short arm and 0.020 ms in the long one, the same direction in both. Each is a
-single window, but the probe's run-to-run repeatability is available at the third
-condition, where the in-situ figure aggregates 18 and 15 runs whose run means
-span 0.0053 ms and 0.0040 ms. **The load effect is four to five times that full
-span**, and nine to ten times its interquartile range. The comparison is
-indicative rather than exact: those figures come from 111-to-120-second runs
-under the campaign's bursty arrivals, not 60-second windows under the smooth
-calibration driver, and repeatability at the two compared conditions was not
-measured. §IX takes up what it makes plausible.
+short arm and 0.020 ms in the long one, the same direction in both. The probe's
+run-to-run repeatability is available at the third condition, where the in-situ
+figure aggregates 18 and 15 runs whose run means span 0.0053 and 0.0040 ms.
+**The load effect is four to five times that full span**, and nine to ten times
+its interquartile range. The comparison is indicative rather than exact — those
+runs are 111 to 120 seconds under bursty arrivals, not 60-second windows under
+the calibration driver, and repeatability at the two compared conditions was not
+measured (§IX).
 
 A separate and weaker instrument infers `δ` from throughput rather than timing.
-The **pooled saturation-plateau-inferred** value is 0.463 ms — the median of
-seven per-cell estimates whose range is 0.032 ms, or 6.9% of that median. The seven are not
-interleaved across service-time arms. **They separate cleanly by service time and
-do not overlap**: 0.465, 0.469 and 0.473 ms in the short arm against 0.441,
-0.447, 0.454 and 0.463 ms in the long one, arm medians 0.469 and 0.451. The
-pooled median is the largest estimate in the long arm, lies below every
-short-arm estimate, and coincides exactly with one cell's own value, E2b's. That
-structure is the same approximately 4% arm-level difference reported below, seen
-in the inputs rather than the residuals, and it is why the paper calls
-service-time independence approximate.
+The **pooled saturation-plateau-inferred** value is 0.463 ms, the median of seven
+per-cell estimates whose range is 0.032 ms; they separate cleanly by service time
+and do not overlap — 0.465, 0.469 and 0.473 ms in the short arm against 0.441,
+0.447, 0.454 and 0.463 in the long one. Taking the two instruments together:
+a per-request overhead **approximately service-time-independent — constant
+to within 4% across a fivefold service-time range** — (per-arm medians 0.4690 ms at S=5 against 0.4505 at
+S=25; probe constants 0.5165 against 0.5114), and **varying with offered
+load** (0.463 to 0.517 ms across four measurements by two instruments). That
+arm-level difference is the same one the residuals report below, seen here in the
+inputs, and it is why the paper calls service-time independence approximate.
 
 **One pooled value was nonetheless applied to both arms, and that was not a
-considered choice.** At the time of the correction the seven estimates were
-believed to describe one population: the campaign report of 2026-09-13 records
-the overhead as constant across both service times, standard deviation 0.011 ms.
-The arms were found not to overlap the following day, by an audit of the probe,
-after the corrected runs had been taken. An arm-specific correction estimated
-from those same plateaus would have fitted service-time-specific information back
-into the comparison, so the common correction avoids that circularity — the
-94–95% removal in §V-F is obtained without it, and the residual 4% survives as a
-result rather than being fitted away. That consequence was recognised only
-afterwards, and was not why the pooled value was selected.
+considered choice.** When the correction was made the seven estimates were
+believed to describe one population; the arms were found not to overlap the
+following day, after the corrected runs had been taken. An arm-specific
+correction estimated from those same plateaus would have fitted
+service-time-specific information back into the comparison, so the common
+correction avoids that circularity and the residual 4% survives as a result
+rather than being fitted away — a consequence recognised only afterwards.
 
 The two instruments are kept distinct throughout, because §V-D depends on which
 supplied which quantity. The variation also matters beyond bookkeeping: a merely
@@ -163,13 +164,14 @@ would suffice.
 
 The correction applied to the emulated service time was the **pooled
 saturation-plateau-inferred** 0.463 ms, with the worker count held fixed by
-construction so that integer
-rounding in `c = ceil(C·S)` could not blur the prediction. Corrected and
-uncorrected arms ran with identical staffing and identical admission limits.
+construction so that integer rounding in `c = ceil(C_config · S)` could not blur the
+prediction; corrected and uncorrected arms ran with identical staffing and
+identical admission limits.
 
-The prediction did not use that constant. It used the **direct timing probe's
-saturation values**, 0.4947 and 0.4914 ms, measured on separate uncorrected runs
-by a different instrument from the one that produced the correction:
+**The prediction did not use that constant.** It used the **direct timing
+probe's saturation values**, 0.4947 and 0.4914 ms, measured on separate
+uncorrected runs by a different instrument from the one that produced the
+correction:
 
 ```
 S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms   →  10 / 0.0050317 = 1987.4 rps
@@ -177,42 +179,34 @@ S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms →  50 / 0.0250284 = 1997.7 rps
 ```
 
 **Both plateau figures were registered as plateaus, not derived afterwards.**
-Addendum 1 of the E2e plan, commit `67c448b`, tabulates 1987.4 and 1997.7 rps
-and states the check they govern: *each corrected cell's saturation plateau must
+Addendum 1 of the E2e plan, commit `67c448b`, tabulates 1987.4 and 1997.7 rps and
+states the check they govern: *each corrected cell's saturation plateau must
 match 1987.4 and 1997.7 before its boundary is read.* No parameter was estimated
 from the corrected runs. The same registration designated the saturation pair
-over its rival, stated the mechanism for preferring it, tabulated the rival's
-90%-load prediction, and pre-committed the reading if the rival won: *if the
-boundaries land nearer the 90%-load predictions instead, that is reported as the
-finding.* Registered at 17:31:47 UTC on 2026-09-13, it precedes the first
-corrected *boundary* run by 39 minutes against that record's committed
-`startedAt` of 18:10:27. The in-situ figure was not a candidate — it did not
-exist in the code until three hours later.
+over its rival, tabulated the rival's 90%-load prediction, and pre-committed the
+reading if the rival won: *if the boundaries land nearer the 90%-load predictions
+instead, that is reported as the finding.* Registered at 17:31:47 UTC on
+2026-09-13, it precedes the first corrected *boundary* run by 39 minutes against
+that record's committed `startedAt`. The in-situ figure was not a candidate — it
+did not exist in the code until three hours later.
 
 **The plateau measurements themselves are not timestamped, and the paper does not
-claim otherwise.** Boundary runs are written by the runner and carry a commit, a
-branch, a dirty flag and a start time; the saturation windows are written by a
-standalone tool that records the measurement and none of the four. The committed record
-therefore bounds the two corrected plateau measurements only to between
-`c96f406` at 16:31:55 UTC, the first commit able to run the corrected sleep, and
-`f032f12` at 18:50:07 UTC, which reports the c10 gate already passed — a window
-that contains the registration time. The ordering rests on the registration's
-forward-looking language, on its statement that no boundary run had started, and
-on a campaign log timestamping the c10 gate at 18:07:30 UTC that is not a
-committed artefact. A8's twenty replication windows use the same record type and
-are likewise untimed, though A8's registration does assert in committed text that
-no result existed when it was written. Addendum A9 records the gap; §IX carries it
-as a threat to validity.
+claim otherwise.** They are written by a standalone tool that records no
+provenance, so the committed record bounds them only to a window, 16:31:55 to
+18:50:07 UTC, that contains the registration time; the ordering rests on the
+registration's forward-looking language, on its statement that no boundary run
+had started, and on an uncommitted campaign log. A8's twenty replication windows
+are likewise untimed. Addendum A9 records the gap, and §IX carries it as a threat
+to validity.
 
 **Measured: 1987.4 and 1998.1 rps.** That was the original prospective test and,
 for the remainder of the campaign, the whole of the evidence: one 60-second
-window per arm. Every other cell carries 6 to 15 saturation measurements; these
-two carried one apiece, so the agreement could not be set against the scatter of
-the quantity it agreed with. Both plateaus were therefore replicated under
-addendum A8, registered in commit `590d1cc` before the harness was rebuilt and
-before any window was run — ten 60-second windows per arm, median convention,
-with the reading fixed in advance for every outcome, including the one that would
-have withdrawn the claim made here ([@tab:a8-replication]):
+window per arm, so the agreement could not be set against the scatter of the
+quantity it agreed with. Both plateaus were therefore replicated under addendum
+A8, registered in commit `590d1cc` before the harness was rebuilt and before any
+window was run — ten 60-second windows per arm, median convention, with the
+reading fixed in advance for every outcome, including the one that would have
+withdrawn the claim made here ([@tab:a8-replication]):
 
 <!-- table:tab:a8-replication -->
 | arm | n | min | median | max | range | IQR |
@@ -222,37 +216,29 @@ have withdrawn the claim made here ([@tab:a8-replication]):
 
 **A8 registered a separate reading for each arm, and the asymmetry is reproduced
 rather than smoothed into one rule.** For the short arm the reading is
-containment: the plateau implied by the registered constant inside the observed
-spread — A8 defines `spread` as the range of an arm's ten windows — and the
-rival's outside it. Registered 1987.40 lies inside [1987.27, 1990.38]; the rival
-1978.83 lies 8.4 rps outside. For the long arm the reading is a different
-quantity: that the spread would exceed the 1.60 rps separating the two implied
-plateaus. It does, at 2.83 rps, so that arm cannot distinguish the candidates.
-
-These are not the same rule. Applied uniformly, containment would credit both
-arms: the long arm's registered 1997.70 also falls inside its range and the rival
-1996.13 also falls outside — but by 0.39 rps against a spread of 2.83, a margin
-seven times smaller than the scatter. That is why containment settles nothing
-there, and why A8 registered spread-versus-separation for it instead. Each arm is
-reported on its own registered reading. (A8's preamble misstates these figures as
-unregistered; addendum A9 records the correction, and §IX gives the provenance.)
+containment: registered 1987.40 lies inside the observed [1987.27, 1990.38] and
+the rival 1978.83 lies 8.4 rps outside. For the long arm the reading is a
+different quantity — that the spread would exceed the 1.60 rps separating the two
+implied plateaus — and it does, at 2.83 rps, so that arm cannot distinguish the
+candidates. Applied uniformly, containment would credit both arms, but in the
+long arm by 0.39 rps against a spread of 2.83, a margin seven times smaller than
+the scatter; that is why A8 registered spread-versus-separation there instead.
+(A8's preamble misstates these figures as unregistered; addendum A9 records the
+correction.)
 
 **Two qualifications the replication supplies and the single windows could not.**
-The registered value sits near the *lower bound* of the observed range rather than
-at its centre — 0.13 rps above the lowest of ten windows, the replicated median
-1.56 rps above it. The original short-arm observation lay near that lower end,
-which is why the original agreement read as 0.02 rps; replication puts the
-prediction 1.6 rps below the central estimate and the rival 10.1 rps from it. The
-discrimination is robust; the apparent exactness was not. The long arm shows the
-reverse — its replicated median agrees to 0.03 rps and selects nothing. **The arm
-that discriminates has the larger prediction error, and the arm with near-exact
-agreement cannot discriminate at all.**
+The registered value sits near the *lower bound* of the observed range rather
+than at its centre, which is why the original short-arm agreement read as 0.02
+rps; replication puts the prediction 1.6 rps below the central estimate and the
+rival 10.1 rps from it. **The discrimination is robust; the apparent exactness
+was not.** The long arm shows the reverse — its replicated median agrees to 0.03
+rps and selects nothing. **The arm that discriminates has the larger prediction
+error, and the arm with near-exact agreement cannot discriminate at all.**
 
 Both original observations fall within the corresponding A8 ranges, and the
 spreads — 0.16% and 0.14% of capacity — fall inside the seven-cell corpus's
-0.10–0.24% repeatability. These plateaus were never noisier than the rest of the
-campaign. [@tab:delta-predictions] sets the registered and comparison predictions
-beside the replicated measured plateau.
+0.10–0.24% repeatability. [@tab:delta-predictions] sets the registered and
+comparison predictions beside the replicated measured plateau.
 
 <!-- table:tab:delta-predictions -->
 | `δ` source | predicted at `S` = 5 | predicted at `S` = 25 |
@@ -267,57 +253,43 @@ beside the replicated measured plateau.
 A correction fitted to produce the expected answer predicts exactly `C_config`,
 2000.0, in both arms — the circularity objection rendered in numbers. The
 registered prediction instead placed the plateau *below* that, at a value set by
-a constant the corrected runs never used. The table reports the replicated median
-and observed range; A8's adjudication uses the arm-specific registered rules
-above, not the original single-window observations, because one observation
-cannot be compared with a spread.
-
-[@fig:plateau] shows predicted against measured plateau, uncorrected and corrected, for
-both arms.
+a constant the corrected runs never used. A8's adjudication uses the
+arm-specific registered rules above, not the original single-window observations,
+because one observation cannot be compared with a spread. [@fig:plateau] shows
+predicted against measured plateau, uncorrected and corrected, for both arms.
 
 **Internal stability.** Taking the median saturation-plateau-inferred `δ` over
-the other six cells and predicting the held-out seventh places every held-out plateau within
-one bisection step — worst case 0.98 steps, RMS 2.44 rps. This is cross-validation *within* the
-campaign against the same error model: it shows the inferred correction is stable
-across those cells, not that the model is independently confirmed. The
-prospective, now replicated, plateau prediction is the out-of-sample evidence.
-The residuals show an arm-aligned sign pattern — the short-service arm
-over-predicted, three of four long-service cells under-predicted, a per-arm gap
-of 4% — so service-time independence is approximate rather than exact, and the
-paper quotes the 4%.
+the other six cells and predicting the held-out seventh places every held-out
+plateau within one bisection step — worst case 0.98 steps, RMS 2.44 rps. This is
+cross-validation *within* the campaign against the same error model: it shows the
+inferred correction is stable across those cells, not that the model is
+independently confirmed. The prospective, now replicated, plateau prediction is
+the out-of-sample evidence. The residuals show an arm-aligned sign pattern — the
+short-service arm over-predicted, three of four long-service cells
+under-predicted, a per-arm gap of 4% — so service-time independence is
+approximate rather than exact, and the paper quotes the 4%.
 
 ### E. A registered boundary prediction fails
 
-The replicated plateau measurements remained consistent with the registered
-prediction, and A8 separated that prediction from its rival in the short arm; the
-long arm was non-discriminating. A separately registered, finer prediction — that
-the corrected boundary would land at `ρ*` = 0.9937 in the short arm and 0.9989 in
-the long one — **did not survive.**
-
-The registration named the delivery-span estimator as the adjudicator; the
-campaign reported under the drain-window estimator instead. **The prediction fails
-under both estimators.** Under drain-window accounting the registered values sit
-outside the brackets [0.988, 0.992] and [0.992, 0.994], by 1.4 and 2.4 steps.
-Under delivery-span accounting the last-SAFE values alone already exceed the
-registered predictions, so those predictions are excluded without assigning any
-utilisation to the collapsed upper endpoints — which §IV forbids. Delivery-span
-utilisations are retained in committed artefacts and reproduce the quoted
-brackets exactly; §IV states what is and is not re-derivable from the repository
-alone.
+A separately registered, finer prediction — that the corrected boundary would
+land at `ρ*` = 0.9937 in the short arm and 0.9989 in the long one — **did not
+survive.** The registration named the delivery-span estimator as the adjudicator;
+the campaign reported under the drain-window estimator instead. **The prediction
+fails under both estimators.** Under drain-window accounting the registered
+values sit outside the brackets [0.988, 0.992] and [0.992, 0.994], by 1.4 and 2.4
+steps. Under delivery-span accounting the last-SAFE values alone already exceed
+the registered predictions, so those predictions are excluded without assigning
+any utilisation to the collapsed upper endpoints, which §IV forbids.
 
 **Post-hoc sensitivity analysis does not alter that verdict.** The two available
 utilisation estimators differ by approximately 0.008 in `ρ`, comparable to the
 separation among the candidate predictions, so the corpus cannot use the failed
 prediction to identify which load-conditioned `δ` describes the boundary. That
-dependence is a property of the accounting, not a confidence statement. It is
-reported at SAFE points only, as §IV requires, the delivery-span estimator
-over-reading at collapsed points.
-
-One result is reported because it went against the reasoning that produced it.
-The in-situ probe was motivated as potentially more representative, measuring
-under the campaign's own bursty arrival process rather than the smooth
-calibration driver, and it is the most stable of the three. It nonetheless
-predicts a higher boundary than the registered drain-window brackets support.
+dependence is a property of the accounting, not a confidence statement, and it is
+reported at SAFE points only. One result is reported because it went against the
+reasoning that produced it: the in-situ probe, motivated as potentially more
+representative and the most stable of the three, nonetheless predicts a higher
+boundary than the registered drain-window brackets support.
 
 ### F. What is and is not established
 
@@ -359,10 +331,3 @@ unmatched estimators; §IX records the supersession.
 few tenths of a percent. The registered boundary prediction fails and the
 estimator spread is too wide to adjudicate the candidates.
 
-### G. Provenance of the campaign itself
-
-Two readings were made and corrected mid-campaign, both recorded in the
-registration, and one earlier claim — that a break within 0.0004 of a registered
-prediction confirmed the saturated figure — is withdrawn, the bracket having
-contained both candidates at a resolution that could not support the agreement.
-Section IX and the registration give all three in full.

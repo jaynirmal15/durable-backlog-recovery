@@ -1,5 +1,6 @@
 # §2 — Background and related work
 
+*Draft 8 — CUT PASS, increment 6, 2026-09-20. §II-E's second paragraph tightened; both objections and the answer to each are unchanged in substance. No other section text changes.*
 *Draft 7 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at twelve citing sentences of §II-A to §II-D, carrying thirteen of the fourteen references (Little is keyed in §I and §III) (the GitLab pair on "recurring"; Papadopoulos on the general measurement-bias clause before the colon of §II-D's opening sentence, Mytkowicz on the concrete compiler example after it — reviewer ruling 2026-09-20, moved off the Heiser sentence, where the catalogue was the grammatical subject). The move puts Papadopoulos ahead of Mytkowicz in first-appearance order. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 6 — SCIENCE FROZEN, citation-inventory sync only. 2026-09-20. The
 reference list added Papadopoulos et al. at [14] — **the draft-5 numbering;
@@ -298,11 +299,10 @@ operating margin being characterised, and that we demonstrate this by falling
 into it under a public pre-registration with an explicit falsification protocol
 and a standing commitment to retract.
 
-The disclaimer answers one objection and not the other. It answers the reader
-who observes that Erlang-C already predicts sharp degradation near saturation —
-correct, and not in dispute. It does not answer the reader who observes that a
-runtime timer overrun is an implementation defect rather than a research result.
-The scale-mismatch claim above is what answers that one: the interesting fact is
-not the defect's cause, which is uninteresting, but that a sub-millisecond
-bookkeeping error was large enough relative to the quantity under study to
-manufacture a second-order finding that survived a test designed to kill it.
+That disclaimer answers the reader who observes that Erlang-C already predicts
+sharp degradation near saturation. It does not answer the reader who observes
+that a runtime timer overrun is an implementation defect rather than a research
+result; the scale-mismatch claim above answers that one, since the interesting
+fact is not the defect's cause but that a sub-millisecond bookkeeping error was
+large enough, relative to the quantity under study, to manufacture a
+second-order finding that survived a test designed to kill it.

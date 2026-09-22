@@ -33,7 +33,7 @@ What is not recoverable is the command line itself. The gap is therefore in the 
 
 \section*{S1-B. Amendments (full text of the article's former \S{}IV-H, with Table S1)}
 
-All ten amendments and record corrections are listed in Table~\ref{tab:s1-amendments} with their commits; the article glosses the six that later sections cite.
+All ten amendments and record corrections are listed in Table~\ref{tab:s1-amendments} with their commits; the article glosses the seven that later sections cite.
 
 \begin{table*}[!t]
 \caption[Amendments to the pre-registration, the A7 registered re-analysis, the A8 registered replication and the two record corrections.]{Amendments to the pre-registration, the A7 registered re-analysis, the A8 registered replication and the two record corrections. The two right-hand columns separate registration \textit{before the data existed} from registration \textit{before the analysis was run}; they are different claims and only the first is prospective registration. They do not apply to a record correction, which governs neither, and those rows read N/A rather than being forced into a category they do not belong to.}
@@ -173,7 +173,7 @@ One bracket is weaker than the rest and is named rather than averaged into the o
 
 Under the graceful profile the admission limit is $\mathrm{queueCap} = 50 \cdot c$; and under the \textit{cliff} profile it is $2 \cdot c$, returning an immediate rejection once full. The queue channel itself is allocated at four times the admission limit; admission is enforced by a token pool rather than by channel capacity, so the limit can be changed without reallocating.
 
-The time to traverse a full queue is the admission limit divided by the service rate. Under the intended occupancy model the service rate is $c \mathbin{/} S$ and the traversal time is $50 \cdot S$ --- 250 ms at $S = 5$ ms. Under the corrected occupancy model of \S{}III-D the service rate is $c \mathbin{/} (S + \delta)$ and the traversal time is $50 \cdot (S + \delta)$. In both cases the worker count cancels. The admission rule therefore cannot by itself produce a capacity-dependent or concurrency-dependent queue-delay scale, under either the intended model or the corrected one --- a point \S{}VIII returns to, since one of the retracted findings proposed exactly that mechanism.
+The time to traverse a full queue is the admission limit divided by the service rate. Under the intended occupancy model the service rate is $c \mathbin{/} S$ and the traversal time is $50 \cdot S$ --- 250 ms at $S = 5$ ms. Under the corrected occupancy model of \S{}III-D the service rate is $c \mathbin{/} (S + \delta)$ and the traversal time is $50 \cdot (S + \delta)$. In both cases the worker count cancels. The admission rule therefore cannot by itself produce a capacity-dependent or concurrency-dependent queue-delay scale, under either the intended model or the corrected one --- a point \S{}VIII returns to, since one of the candidate explanations proposed exactly that mechanism.
 
 One separation is deliberate and load-bearing. The configured capacity parameter is exposed only on an administrative endpoint, which the consumer never reads. The harness was built so that a recovery controller could not rely on the configured capacity parameter and would have to operate from observations instead. The results later justify distrust of that configured value, while not determining whether a validated estimate should be supplied offline or inferred online --- a distinction \S{}I leaves open and this paper does not settle. The decision was taken before any measurement, for a reason narrower than the one that ultimately justified it.
 
@@ -208,6 +208,14 @@ the article's signal figure plots drain queue peak and live tail latency across 
 The figure is unaffected by the downgrade in \S{}VII-B, and the reason is worth stating. Its pipeline uses no noise statistic anywhere --- it reads utilisation, queue peak, live p99 and the classification directly --- so it never depended on the quantity A5 chose or A7 re-examined. A figure that survives a downgrade because it never rested on the downgraded thing is evidence about the figure, not a coincidence.
 
 What \S{}VII does not claim is that latency warns last, or that either signal is the right one to build a controller on. \S{}II establishes live latency as a literature-grounded comparator, which is what makes these observations about a signal the literature already uses. This section reports only that on this harness, at this resolution, timeout rate never warns; the queue-depth lead observed on E1 is unreplicated and unresolvable on the available data; and on the corrected corpus some observables do give advance warning in one cell, but queue depth does not lead live p99 at the resolution available.
+
+\section*{S1-I. Two documentation failures (full text from the article's former \S{}IX-C)}
+
+Two documentation failures belong here, recorded for what caught them. An incorrect reading of the corrected-corpus figure propagated through report prose, a caption, the title drawn inside the figure itself and an early section draft, because each layer was written from the previous summary rather than from the data, while the registered analysis's own table contradicted it throughout. Separately, a summary generalised one evidentiary pattern across three candidate explanations; generating the table meant to display them, with every quotation asserted against its source, showed that one had been refuted before calibration and another had no like-for-like post-calibration test. Neither is an experimental finding, and the lesson is the control rather than the error: for a claim about several items at once the authority is a generated table whose cells are checked against their sources, not the prose in between.
+
+\section*{S1-J. Provenance of the campaign itself (the article's former \S{}V-G)}
+
+Two readings were made and corrected mid-campaign, both recorded in the registration, and one earlier claim --- that a break within 0.0004 of a registered prediction confirmed the saturated figure --- is withdrawn, the bracket having contained both candidates at a resolution that could not support the agreement. Section IX and the registration give all three in full.
 
 
 \EOD

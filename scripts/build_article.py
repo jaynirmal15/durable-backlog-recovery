@@ -1210,6 +1210,37 @@ def compile_pdf(latexmk, stem='article'):
     return log
 
 
+def promotion_scan():
+    """Run the promotion scan if the compiled PDFs are there to scan.
+
+    It needs the PDFs, not the sources: figure labels are drawn inside the
+    figure files and exist in no markdown the source checker can read. On a
+    machine without TeX the PDFs may still be present from a compile done
+    elsewhere, so this is keyed off the files rather than off the toolchain.
+    """
+    pdfs = [os.path.join(OUT, n) for n in ('article.pdf', 'supplement-S1.pdf')]
+    missing = [p for p in pdfs if not os.path.isfile(p)]
+    if missing:
+        print('\npromotion scan skipped: %s not built yet'
+              % ', '.join(os.path.basename(p) for p in missing))
+        return
+    stale = [p for p in pdfs
+             if os.path.getmtime(p) < os.path.getmtime(p[:-4] + '.tex')]
+    if stale:
+        print('\nNOTE: %s is older than the .tex beside it, so the scan below '
+              'is of\n      a previous compile.'
+              % ', '.join(os.path.basename(p) for p in stale))
+    print()
+    # Flush before handing stdout to the child. Without this the parent's
+    # buffered prints land AFTER the child's when the build is piped, so the
+    # staleness note above printed below the scan it warns about -- a warning
+    # in the wrong place is worse than none.
+    sys.stdout.flush()
+    subprocess.run([sys.executable,
+                    os.path.join(ROOT, 'scripts', 'promotion_scan.py')])
+    sys.stdout.flush()
+
+
 def build_one(target, args):
     """Generate one document and report on it. Returns (ok, tex path)."""
     b = Build(target)
@@ -1283,6 +1314,7 @@ def main():
             for _, path in paths:
                 print('  %s -interaction=nonstopmode %s   (three passes)'
                       % (tool, os.path.basename(path)))
+            promotion_scan()
             return 0
         for target, path in paths:
             stem = os.path.splitext(os.path.basename(path))[0]
@@ -1303,6 +1335,10 @@ def main():
             print('overfull boxes over 10pt: %d of %d' % (len(big), len(over)))
             for line in big[:20]:
                 print('   ' + line.strip())
+        # The promotion scan needs the compiled PDFs, so it belongs here and
+        # nowhere earlier: figure labels are drawn inside the figure PDFs and
+        # exist in no markdown the source checker can read.
+        promotion_scan()
     return 0
 
 

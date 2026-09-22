@@ -310,7 +310,7 @@ Two objects are reported, and only two.
 
 The boundary bracket, in rate. $[R_{\mathrm{lastSAFE}},\, R_{\mathrm{firstNonSAFE}}]$ --- what the bisection actually resolved, and which no utilisation estimator touches.
 
-A safe-side normalised estimate, $\rho_{\mathrm{eff,safe}} = R_{\mathrm{ach,lastSAFE}} \,/\, C_{\mathrm{measured}}$, computed at SAFE points only, where the estimator was built and validated. Where a single per-cell scalar is required the numerator is the maximum achieved rate across all of that point's repetitions --- three at a point visited once by the search, and twelve or fifteen at the five points that were replicated. The distinction matters for the two cells that read above 1.0 below: over all repetitions they reach 1.0002, and over the first three neither exceeds 1.0. \S{}IV-C reports the sensitivity of the aggregator choice.
+A safe-side normalised estimate, $\rho_{\mathrm{eff,safe}} =$ $R_{\mathrm{ach,lastSAFE}} \,/\, C_{\mathrm{measured}}$, computed at SAFE points only, where the estimator was built and validated. Where a single per-cell scalar is required the numerator is the maximum achieved rate across all of that point's repetitions --- three at a point visited once by the search, and twelve or fifteen at the five points that were replicated. The distinction matters for the two cells that read above 1.0 below: over all repetitions they reach 1.0002, and over the first three neither exceeds 1.0. \S{}IV-C reports the sensitivity of the aggregator choice.
 
 $C_{\mathrm{measured}}$ is a normalisation reference, not an imposed ceiling. It is an empirical plateau estimate --- the median across a cell's saturation runs of each run's maximum 30-second sustained served rate from the downstream's own counter, as \S{}IV-D defines it --- and both numerator and denominator are measurements. A safe-side ratio may therefore read slightly above 1.0 without implying service beyond a known physical bound, and two cells do: under the named aggregator they reach 1.0002. The excess corresponds to approximately one fifth of a bisection step and is therefore below the experiment's resolving capability.
 
@@ -472,8 +472,10 @@ The correction applied to the emulated service time was the pooled saturation-pl
 The prediction did not use that constant. It used the direct timing probe's saturation values, 0.4947 and 0.4914 ms, measured on separate uncorrected runs by a different instrument from the one that produced the correction:
 
 {\footnotesize\begin{alltt}
-S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms   \ensuremath{\rightarrow}  10 / 0.0050317 = 1987.4 rps
-S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms \ensuremath{\rightarrow}  50 / 0.0250284 = 1997.7 rps
+S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms
+         \ensuremath{\rightarrow}  10 / 0.0050317 = 1987.4 rps
+S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms
+         \ensuremath{\rightarrow}  50 / 0.0250284 = 1997.7 rps
 \end{alltt}}
 
 Both plateau figures were registered as plateaus, not derived afterwards. Addendum 1 of the E2e plan, commit \texttt{67c448b}, tabulates 1987.4 and 1997.7 rps and states the check they govern: \textit{each corrected cell's saturation plateau must match 1987.4 and 1997.7 before its boundary is read.} No parameter was estimated from the corrected runs. The same registration designated the saturation pair over its rival, stated the mechanism for preferring it, tabulated the rival's 90\%-load prediction, and pre-committed the reading if the rival won: \textit{if the boundaries land nearer the 90\%-load predictions instead, that is reported as the finding.} Registered at 17:31:47 UTC on 2026-09-13, it precedes the first corrected \textit{boundary} run by 39 minutes against that record's committed \texttt{startedAt} of 18:10:27. The in-situ figure was not a candidate --- it did not exist in the code until three hours later.

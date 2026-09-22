@@ -36,11 +36,15 @@ OUT = os.path.join(ROOT, 'build', 'access')
 
 MAX_BYTES = 40 * 1024 * 1024        # IEEE Access: source and PDF each under 40 MB
 # CUT-PLAN.md Draft 4 moved Fig. 2 and the amendment table to Supplement S1,
-# so the ARTICLE's ruled census is five and seven. S1's counts are reported,
-# not asserted: no ruling has fixed them, and the full resolution table
-# arriving there makes two S1 tables where the instruction named one.
+# so the ARTICLE's ruled census is five and seven. S1's own census was
+# reported rather than asserted while the count was open -- the instruction
+# named one S1 table and ruling 2 sent a second one there. It was ruled
+# 2026-09-21 at one figure and two tables, so it is asserted now: a reported
+# number nobody checks is the state this project keeps writing checks about.
 EXPECT_FIGURES = 5
 EXPECT_TABLES = 7
+EXPECT_S1_FIGURES = 1
+EXPECT_S1_TABLES = 2
 EXPECT_EQUATIONS = 8
 S1_SOURCE = 'supplement-S1.md'
 S1_TITLE_RE = re.compile(r'^##\s+(S1-[A-Z]\.\s+.+?)\s*$')
@@ -259,10 +263,46 @@ def article_blocks(text, kind):
 # Inline conversion
 # --------------------------------------------------------------------------
 
+MATH_SPLIT_CHARS = 50   # longer than this and the formula gets a break point
+MATH_SPLIT_MIN = 12     # ... but only if BOTH halves are worth a box
+
+
+def math_span(latex):
+    """One inline formula, split at its top-level "=" when it is long.
+
+    Inline math is one unbreakable box, so a formula wider than what remains
+    of a line pushes past the column: rho_eff,safe = R_ach,lastSAFE /
+    C_measured ran 45pt over in section IV-E. The slash is a mathord, not a
+    binary operator, so TeX may not break there, and this class gives no
+    usable break at the relation either. Closing the group after "=" and
+    reopening it makes an ordinary interword break point, with every glyph
+    unchanged and the spacing around "=" preserved by keeping it inside the
+    first group.
+    """
+    if len(latex) <= MATH_SPLIT_CHARS:
+        return '$' + latex + '$'
+    depth = 0
+    for i, ch in enumerate(latex):
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+        elif ch == '=' and depth == 0 and 0 < i < len(latex) - 1:
+            head, tail = latex[:i + 1].rstrip(), latex[i + 1:].lstrip()
+            # Both halves must be substantial. Splitting on the first "="
+            # regardless put "excess(25 ms) - excess(5 ms) =" in one box and a
+            # bare "0" in the next, which buys nothing and invites a line
+            # break that leaves the "= 0" stranded from what it evaluates.
+            if len(head) < MATH_SPLIT_MIN or len(tail) < MATH_SPLIT_MIN:
+                continue
+            return '$' + head + '$ $' + tail + '$'
+    return '$' + latex + '$'
+
+
 def code_span(span):
     """A backtick span, by explicit map. Neither class -> stop."""
     if span in MATH:
-        return '$' + MATH[span] + '$'
+        return math_span(MATH[span])
     if span in TEXTTT or HASH_RE.match(span):
         return r'\texttt{' + span.replace('_', r'\_').replace('"', "''") + '}'
     raise BuildError(
@@ -307,6 +347,35 @@ EQ_REFERENCED = set()
 # declaration, is not redefined by either class, and takes no argument.
 BOLD_OPEN = '{\\bfseries '
 BOLD_CLOSE = '}'
+
+
+ALLTT_COLS = 52         # what fits one column at \footnotesize in this class
+
+
+def alltt_wrap(line):
+    """Break a fenced-display line that is wider than one column.
+
+    The section-V arithmetic is 78 characters wide and ran 131pt past the
+    column. alltt cannot break a line itself, and the display cannot become a
+    float without becoming a numbered one, so the build breaks it: at the
+    arrow, which is where the calculation turns from the sum to the rate, and
+    the continuation is indented to sit under the expression rather than under
+    the label. No character is added or removed -- only the line breaks are
+    the build's.
+    """
+    if len(line) <= ALLTT_COLS:
+        return [line]
+    indent = len(line) - len(line.lstrip())
+    cut = line.rfind('→', 0, ALLTT_COLS + 1)
+    if cut < 0:
+        cut = line.rfind(' ', indent + 1, ALLTT_COLS + 1)
+    if cut < 0:
+        fail('fenced display line is %d characters and offers no break point '
+             'before column %d: %r' % (len(line), ALLTT_COLS, line))
+    head = line[:cut].rstrip()
+    tail = line[cut:].strip()
+    pad = ' ' * (indent + 9)
+    return [head] + alltt_wrap(pad + tail)
 
 
 def alltt_char(ch):
@@ -764,9 +833,12 @@ class Build(object):
                         if ch in ln:
                             fail('fenced block contains %r, which alltt reads '
                                  'as markup: %r' % (ch, ln))
+                wrapped = []
+                for ln in block:
+                    wrapped += alltt_wrap(ln)
                 self.tex += [r'{\footnotesize\begin{alltt}'] + \
                             [''.join(alltt_char(ch) for ch in ln)
-                             for ln in block] + \
+                             for ln in wrapped] + \
                             [r'\end{alltt}}', '']
                 i += 1
                 continue
@@ -988,11 +1060,12 @@ class Build(object):
                  'equation numbers are 1..%d with none missing'
                  % EXPECT_EQUATIONS)
         else:
-            # S1's counts are REPORTED, not ruled: no ruling has fixed them,
-            # and the full resolution table arriving here makes two S1 tables
-            # where the instruction named one.
-            out.append(('note', 'S1 carries %d figure(s) and %d table(s)'
-                        % (nfig, ntab)))
+            want(nfig == EXPECT_S1_FIGURES,
+                 'S1 figures: %d, the ruling says %d'
+                 % (nfig, EXPECT_S1_FIGURES))
+            want(ntab == EXPECT_S1_TABLES,
+                 'S1 tables: %d, the ruling says %d'
+                 % (ntab, EXPECT_S1_TABLES))
         for key in self.emitted_floats:
             want(tex.count(r'\ref{%s}' % key) >= 1,
                  'float %s is referenced in the prose' % key)

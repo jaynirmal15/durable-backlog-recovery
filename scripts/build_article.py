@@ -35,9 +35,15 @@ TEMPLATE = os.path.join(ROOT, 'build', 'template',
 OUT = os.path.join(ROOT, 'build', 'access')
 
 MAX_BYTES = 40 * 1024 * 1024        # IEEE Access: source and PDF each under 40 MB
-EXPECT_FIGURES = 6                  # ASSEMBLY-SPEC.md Draft 2, review ruling A
-EXPECT_TABLES = 8
+# CUT-PLAN.md Draft 4 moved Fig. 2 and the amendment table to Supplement S1,
+# so the ARTICLE's ruled census is five and seven. S1's counts are reported,
+# not asserted: no ruling has fixed them, and the full resolution table
+# arriving there makes two S1 tables where the instruction named one.
+EXPECT_FIGURES = 5
+EXPECT_TABLES = 7
 EXPECT_EQUATIONS = 8
+S1_SOURCE = 'supplement-S1.md'
+S1_TITLE_RE = re.compile(r'^##\s+(S1-[A-Z]\.\s+.+?)\s*$')
 MAX_NESTING = 12                    # bold in a cell, code in bold, italic in code
 
 # Template files the generated article actually needs. The class is used AS
@@ -82,6 +88,7 @@ UNICODE = {
     '\u2265': r'$\geq$',
     '\u00b1': r'$\pm$',
     '\u2192': r'$\rightarrow$',
+    '\u0394': r'$\Delta$',    # Table 2's "Resolution the-normalised-step"
     '\u2308': r'$\lceil$',
     '\u2309': r'$\rceil$',
     '\u03c1': r'$\rho$',
@@ -538,7 +545,8 @@ def figure(key, filename, caption):
 
 class Build(object):
 
-    def __init__(self):
+    def __init__(self, target='article'):
+        self.target = target
         self.tex = []
         self.equations = []
         self.conversions = []
@@ -549,55 +557,58 @@ class Build(object):
         self.pending = {}
 
     # -- inputs -----------------------------------------------------------
+    @staticmethod
+    def scope_of(suffix):
+        """':s1' on a placement marker puts the float in the supplement."""
+        return 's1' if suffix else 'article'
+
     def load_floats(self):
-        caps = read(os.path.join(FIGURES, 'CAPTIONS.md'))
-        self.captions.update(article_blocks(caps, 'caption'))
-        for m in re.finditer(
-                r'^[ \t]*<!--[ \t]*figure:(fig:[A-Za-z0-9._-]+):([^ \t>]+)'
-                r'[ \t]*-->[ \t]*$', caps, re.M):
-            path = os.path.join(FIGURES, m.group(2))
-            if not os.path.isfile(path):
-                raise BuildError('figure %s binds to %s, which is missing'
-                                 % (m.group(1), m.group(2)))
-            self.fig_files[m.group(1)] = m.group(2)
+        """Captions from every source; floats only from this target's scope.
 
-        for name in sorted(os.listdir(FIGURES)):
-            if not name.startswith('T') or not name.endswith('.md'):
-                continue
-            text = read(os.path.join(FIGURES, name))
-            lines = text.split('\n')
-            for m in re.finditer(
-                    r'^[ \t]*<!--[ \t]*table:(tab:[A-Za-z0-9._-]+)[ \t]*-->'
-                    r'[ \t]*$', text, re.M):
-                key = m.group(1)
-                start = text.count('\n', 0, m.start()) + 1
-                block = []
-                for line in lines[start:]:
-                    if line.strip().startswith('|'):
-                        block.append(line)
-                    elif block:
-                        break
-                if not block:
-                    raise BuildError('%s: marker %s is not followed by a table'
-                                     % (name, key))
-                self.file_tables[key] = block
+        The caption library is SHARED and looked up by key, because a caption
+        follows its float between documents unchanged -- Fig. 2's caption is
+        still in CAPTIONS.md now that its figure is declared ':s1'. Placement
+        markers are scoped, so the same run of this method serves either
+        target and a float cannot appear in both documents.
+        """
+        sources = [os.path.join(FIGURES, 'CAPTIONS.md')]
+        sources += [os.path.join(FIGURES, n)
+                    for n in sorted(os.listdir(FIGURES))
+                    if n.startswith('T') and n.endswith('.md')]
+        sources += [os.path.join(PAPER, 'section%d.md' % s) for s in range(1, 11)]
+        s1 = os.path.join(PAPER, S1_SOURCE)
+        if os.path.isfile(s1):
+            sources.append(s1)
 
-        for sec in range(1, 11):
-            name = 'section%d.md' % sec
-            text = read(os.path.join(PAPER, name))
+        for path in sources:
+            text = read(path)
+            name = os.path.basename(path)
             self.captions.update(article_blocks(text, 'caption'))
-            # Section tables are collected here, NOT emitted where their
-            # marker sits. LaTeX numbers floats by position in the source, so
-            # emitting a table at its marker printed Table 1 for the
-            # resolution table: tab:amendments is first REFERENCED at
-            # section4.md:85 but its markup sits at line 460, after the
-            # reference to tab:resolution. Every float is now placed at its
-            # first reference, which is what makes the printed numbers equal
-            # the ruling's order of first appearance.
             lines = text.split('\n')
+
             for m in re.finditer(
-                    r'^[ \t]*<!--[ \t]*table:(tab:[A-Za-z0-9._-]+)[ \t]*-->'
-                    r'[ \t]*$', text, re.M):
+                    r'^[ \t]*<!--[ \t]*figure:(fig:[A-Za-z0-9._-]+):'
+                    r'([^: \t>]+?)(?::(s1))?[ \t]*-->[ \t]*$', text, re.M):
+                key, fn = m.group(1), m.group(2)
+                if not os.path.isfile(os.path.join(FIGURES, fn)):
+                    raise BuildError('figure %s binds to %s, which is missing'
+                                     % (key, fn))
+                if self.scope_of(m.group(3)) != self.target:
+                    continue
+                if key in self.fig_files:
+                    raise BuildError('figure %s is bound twice' % key)
+                self.fig_files[key] = fn
+
+            # Tables are COLLECTED here, not emitted where their marker sits.
+            # LaTeX numbers floats by position in the source, so emitting a
+            # table at its marker printed the resolution table as Table 1:
+            # tab:amendments was first REFERENCED early in §IV while its
+            # markup sat hundreds of lines later. Every float is placed at its
+            # first reference instead, which is what makes the printed numbers
+            # equal the ruling's order of first appearance.
+            for m in re.finditer(
+                    r'^[ \t]*<!--[ \t]*table:(tab:[A-Za-z0-9._-]+)'
+                    r'(?::(s1))?[ \t]*-->[ \t]*$', text, re.M):
                 key = m.group(1)
                 start = text.count('\n', 0, m.start()) + 1
                 block = []
@@ -609,12 +620,16 @@ class Build(object):
                 if not block:
                     raise BuildError('%s: marker %s is not followed by a table'
                                      % (name, key))
+                if self.scope_of(m.group(2)) != self.target:
+                    continue
                 if key in self.file_tables:
                     raise BuildError('table %s is marked in two places' % key)
                 self.file_tables[key] = block
 
     # -- front matter -----------------------------------------------------
     def front_matter(self):
+        if self.target == 's1':
+            return self.s1_front_matter()
         fm = article_blocks(read(os.path.join(PAPER, 'frontmatter.md')),
                             'article')
         need = ['title', 'short-title', 'author', 'address', 'corresp',
@@ -658,7 +673,50 @@ class Build(object):
               r'\maketitle', '']
 
     # -- sections ---------------------------------------------------------
+    def s1_front_matter(self):
+        """The supplement is set with the same class and the same maps, so a
+        reader gets one typeface and one set of conventions across both files.
+
+        It is NOT an article: no abstract, no index terms, no bibliography and
+        no biography. Its floats are lettered S1, S2 ... by redefining
+        \\thetable and \\thefigure, because the class would otherwise number
+        them 1, 2 and collide with the article a reader has open beside it.
+        """
+        text = read(os.path.join(PAPER, S1_SOURCE))
+        m = re.match(r'#\s+(.+?)\s*$', text, re.M)
+        if not m:
+            raise BuildError('%s has no `# ` title line' % S1_SOURCE)
+        head = text[:text.index('\n---\n')] if '\n---\n' in text else ''
+        note = re.search(r'^\*(.+?)\*$', COMMENT_RE.sub('', head),
+                         re.M | re.S)
+        self.tex += [r'\documentclass{ieeeaccess}',
+                     r'\usepackage{cite}',
+                     r'\usepackage{amsmath,amssymb,amsfonts}',
+                     r'\usepackage{graphicx}',
+                     r'\usepackage{textcomp}',
+                     r'\usepackage{alltt}',
+                     r'\usepackage{array}',
+                     r'\usepackage{tabularx}',
+                     r'\renewcommand{\thetable}{S\arabic{table}}',
+                     r'\renewcommand{\thefigure}{S\arabic{figure}}',
+                     r'\begin{document}',
+                     r'\history{Supplementary material.}',
+                     r'\doi{10.1109/ACCESS.2026.0429000}',
+                     r'\title{%s}' % inline(m.group(1)),
+                     r'\author{\uppercase{Jay Suresh Nirmal}\authorrefmark{1}}',
+                     r'\address[1]{Independent Researcher, Boston, MA, USA}',
+                     r'\markboth{Nirmal: Supplement S1}{Nirmal: Supplement S1}',
+                     '']
+        if note:
+            self.tex += [r'\begin{abstract}',
+                         inline(' '.join(note.group(1).split())),
+                         r'\end{abstract}', '']
+        self.tex += [r'\titlepgskip=-15pt', r'\maketitle', '']
+
     def sections(self):
+        if self.target == 's1':
+            self.section(os.path.join(PAPER, S1_SOURCE), 0)
+            return
         for sec in range(1, 11):
             self.section(os.path.join(PAPER, 'section%d.md' % sec), sec)
 
@@ -729,6 +787,17 @@ class Build(object):
                 i += 1
                 continue
 
+            m = S1_TITLE_RE.match(line) if self.target == 's1' else None
+            if m:
+                self.flush(para)
+                para = []
+                # \section*, not \section: the label "S1-A" is the identity a
+                # reader follows from the article, so the class must not
+                # renumber it to "I".
+                self.tex += [r'\section*{%s}' % inline(m.group(1)), '']
+                i += 1
+                continue
+
             m = SECTION_RE.match(line)
             if m:
                 self.flush(para)
@@ -778,7 +847,13 @@ class Build(object):
 
     def keep_marker(self, comment):
         """Comments vanish, except the two that place a float."""
-        m = re.match(r'<!--\s*(table:tab:[A-Za-z0-9._-]+)\s*-->', comment)
+        # The optional :s1 must be matched here too. Without it the marker
+        # for an S1 table was not recognised as a marker at all, the comment
+        # was dropped with every other comment, and the table's rows fell
+        # through into the prose stream -- which the build then reported as a
+        # table with no marker above it, one line off from the real cause.
+        m = re.match(r'<!--\s*(table:tab:[A-Za-z0-9._-]+)(?::s1)?\s*-->',
+                     comment)
         if m:
             return '\n\x01' + m.group(1) + '\n'
         return ''
@@ -830,6 +905,9 @@ class Build(object):
 
     # -- back matter ------------------------------------------------------
     def bibliography(self):
+        if self.target == 's1':
+            self.tex += ['', r'\EOD', r'\end{document}', '']
+            return []
         WHERE[0] = 'references.md'
         text = read(os.path.join(PAPER, 'references.md'))
         starts = list(re.finditer(r'^\*\*\[(\d+)\]\*\*', text, re.M))
@@ -898,15 +976,23 @@ class Build(object):
              'the .tex is pure ASCII')
         want('<!--' not in tex, 'no HTML comment survives into the .tex')
         want('[@' not in tex, 'no [@ marker survives into the .tex')
-        want(nfig == EXPECT_FIGURES,
-             'figures: %d, the ruling says %d' % (nfig, EXPECT_FIGURES))
-        want(ntab == EXPECT_TABLES,
-             'tables: %d, the ruling says %d' % (ntab, EXPECT_TABLES))
-        want(len(self.equations) == EXPECT_EQUATIONS,
-             'equations: %d, the source has %d'
-             % (len(self.equations), EXPECT_EQUATIONS))
-        want(sorted(self.equations) == list(range(1, EXPECT_EQUATIONS + 1)),
-             'equation numbers are 1..%d with none missing' % EXPECT_EQUATIONS)
+        if self.target == 'article':
+            want(nfig == EXPECT_FIGURES,
+                 'figures: %d, the ruling says %d' % (nfig, EXPECT_FIGURES))
+            want(ntab == EXPECT_TABLES,
+                 'tables: %d, the ruling says %d' % (ntab, EXPECT_TABLES))
+            want(len(self.equations) == EXPECT_EQUATIONS,
+                 'equations: %d, the source has %d'
+                 % (len(self.equations), EXPECT_EQUATIONS))
+            want(sorted(self.equations) == list(range(1, EXPECT_EQUATIONS + 1)),
+                 'equation numbers are 1..%d with none missing'
+                 % EXPECT_EQUATIONS)
+        else:
+            # S1's counts are REPORTED, not ruled: no ruling has fixed them,
+            # and the full resolution table arriving here makes two S1 tables
+            # where the instruction named one.
+            out.append(('note', 'S1 carries %d figure(s) and %d table(s)'
+                        % (nfig, ntab)))
         for key in self.emitted_floats:
             want(tex.count(r'\ref{%s}' % key) >= 1,
                  'float %s is referenced in the prose' % key)
@@ -923,9 +1009,13 @@ class Build(object):
         # The % parity check the spec asks for by name: an unescaped percent
         # silently deletes the rest of its line, with no error anywhere.
         src = ''
-        for sec in range(1, 11):
-            src += COMMENT_RE.sub('', body_of(
-                read(os.path.join(PAPER, 'section%d.md' % sec))))
+        if self.target == 'article':
+            for sec in range(1, 11):
+                src += COMMENT_RE.sub('', body_of(
+                    read(os.path.join(PAPER, 'section%d.md' % sec))))
+        else:
+            src = COMMENT_RE.sub('', body_of(
+                read(os.path.join(PAPER, S1_SOURCE))))
         want(len(re.findall(r'(?<!\\)%', tex)) == 0,
              'every %% in the .tex is escaped (%d source, %d escaped)'
              % (src.count('%'), len(re.findall(r'\\%', tex))))
@@ -945,7 +1035,9 @@ class Build(object):
                              os.path.join(OUT, name))
         for key, fn in self.fig_files.items():
             shutil.copy2(os.path.join(FIGURES, fn), os.path.join(OUT, fn))
-        path = os.path.join(OUT, 'article.tex')
+        path = os.path.join(
+            OUT, 'article.tex' if self.target == 'article'
+            else 'supplement-S1.tex')
         with open(path, 'w', encoding='utf-8') as fh:
             fh.write('\n'.join(self.tex))
         return path
@@ -958,11 +1050,12 @@ def page_count(pdf):
     return len(re.findall(rb'/Type\s*/Page[^s]', data))
 
 
-def compile_pdf(latexmk):
-    log = os.path.join(OUT, 'build.log')
-    cmd = (['latexmk', '-pdf', '-interaction=nonstopmode', 'article.tex']
+def compile_pdf(latexmk, stem='article'):
+    log = os.path.join(OUT, stem + '-build.log')
+    tex = stem + '.tex'
+    cmd = (['latexmk', '-pdf', '-interaction=nonstopmode', tex]
            if latexmk else
-           ['pdflatex', '-interaction=nonstopmode', 'article.tex'])
+           ['pdflatex', '-interaction=nonstopmode', tex])
     runs = 1 if latexmk else 3      # 3 passes resolve refs, labels and floats
     with open(log, 'w') as fh:
         for _ in range(runs):
@@ -972,71 +1065,99 @@ def compile_pdf(latexmk):
     return log
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--compile', action='store_true',
-                    help='run pdflatex after generating (needs TeX)')
-    ap.add_argument('--latexmk', action='store_true',
-                    help='use latexmk instead of three pdflatex passes')
-    args = ap.parse_args()
-
-    b = Build()
+def build_one(target, args):
+    """Generate one document and report on it. Returns (ok, tex path)."""
+    b = Build(target)
+    label = 'article' if target == 'article' else 'Supplement S1'
     try:
         b.load_floats()
         b.front_matter()
         b.sections()
         entries = b.bibliography()
     except BuildError as e:
-        print('BUILD STOPPED\n\n  %s\n' % e)
-        return 1
+        print('BUILD STOPPED (%s)\n\n  %s\n' % (label, e))
+        return False, None
 
     path = b.write()
     results = b.checks(entries)
     failed = [m for s, m in results if s == 'FAIL']
 
+    print('--- %s ---' % label)
     print('generated %s (%d lines, %d bytes)'
           % (os.path.relpath(path, ROOT), len(b.tex), os.path.getsize(path)))
     print('floats, in the order the .tex places them:')
+    pre = '' if target == 'article' else 'S'
     fign = tabn = 0
     for key in b.emitted_floats:
         if key.startswith('fig:'):
             fign += 1
-            print('   Fig. %-2d %-22s %s' % (fign, key, b.fig_files[key]))
+            print('   Fig. %s%-3d %-22s %s' % (pre, fign, key, b.fig_files[key]))
         else:
             tabn += 1
-            print('   Table %-2d %-22s' % (tabn, key))
-    print('checks:')
+            print('   Table %s%-3d %-22s' % (pre, tabn, key))
     for status, msg in results:
         print('  %-4s %s' % (status, msg))
+    if failed:
+        print('  %d CHECK(S) FAILED.' % len(failed))
+    return not failed, path
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--compile', action='store_true',
+                    help='run pdflatex after generating (needs TeX)')
+    ap.add_argument('--latexmk', action='store_true',
+                    help='use latexmk instead of three pdflatex passes')
+    ap.add_argument('--only', choices=('article', 's1'),
+                    help='build just one of the two documents')
+    args = ap.parse_args()
+
+    targets = [args.only] if args.only else ['article', 's1']
+    ok = True
+    paths = []
+    for target in targets:
+        good, path = build_one(target, args)
+        ok = ok and good
+        if path:
+            paths.append((target, path))
+        print()
+    if not paths:
+        return 1
 
     size = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT))
     print('bundle: %d files, %.1f MB (limit %d MB per file)'
           % (len(os.listdir(OUT)), size / 1e6, MAX_BYTES // 1024 // 1024))
-
-    if failed:
-        print('\n%d CHECK(S) FAILED.\n' % len(failed))
+    if not ok:
         return 1
 
     if args.compile:
-        if not shutil.which('latexmk' if args.latexmk else 'pdflatex'):
-            print('\nno TeX on this machine; generation only. '
-                  'Compile where a toolchain exists.')
+        tool = 'latexmk' if args.latexmk else 'pdflatex'
+        if not shutil.which(tool):
+            print('\nno TeX on this machine; generation only. Compile where a '
+                  'toolchain exists:')
+            for _, path in paths:
+                print('  %s -interaction=nonstopmode %s   (three passes)'
+                      % (tool, os.path.basename(path)))
             return 0
-        log = compile_pdf(args.latexmk)
-        pdf = os.path.join(OUT, 'article.pdf')
-        if not os.path.isfile(pdf):
-            print('\ncompile produced no PDF; see %s'
-                  % os.path.relpath(log, ROOT))
-            return 1
-        text = open(log, encoding='utf-8', errors='replace').read()
-        m = re.findall(r'Output written on .*?\((\d+) pages', text)
-        over = re.findall(r'^(Overfull \\[hv]box.*)$', text, re.M)
-        print('\nPDF: %s pages (page tree: %d), %.2f MB'
-              % (m[-1] if m else '?', page_count(pdf),
-                 os.path.getsize(pdf) / 1e6))
-        print('overfull boxes: %d' % len(over))
-        for line in over[:20]:
-            print('   ' + line.strip())
+        for target, path in paths:
+            stem = os.path.splitext(os.path.basename(path))[0]
+            log = compile_pdf(args.latexmk, stem)
+            pdf = os.path.join(OUT, stem + '.pdf')
+            if not os.path.isfile(pdf):
+                print('\n%s produced no PDF; see %s'
+                      % (stem, os.path.relpath(log, ROOT)))
+                return 1
+            text = open(log, encoding='utf-8', errors='replace').read()
+            pages = re.findall(r'Output written on .*?\((\d+) pages', text)
+            over = re.findall(r'^(Overfull \\[hv]box.*)$', text, re.M)
+            big = [x for x in over
+                   if float(re.search(r'\(([\d.]+)pt', x).group(1)) > 10.0]
+            print('\n%s: %s pages (page tree: %d), %.2f MB'
+                  % (stem, pages[-1] if pages else '?', page_count(pdf),
+                     os.path.getsize(pdf) / 1e6))
+            print('overfull boxes over 10pt: %d of %d' % (len(big), len(over)))
+            for line in big[:20]:
+                print('   ' + line.strip())
     return 0
 
 

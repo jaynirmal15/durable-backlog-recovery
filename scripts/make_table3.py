@@ -99,9 +99,16 @@ def main():
     # "Sources, cell by cell" table below is artefact documentation and carries
     # no marker, so it cannot reach the article.
     print('<!-- table:tab:candidates -->')
-    print('| Candidate explanation | Registered falsification / challenge | '
-          'Pre-calibration outcome | Post-calibration evidence and status |')
-    print('|---|---|---|---|')
+    # THREE COLUMNS, per the Draft 4 ruling. The old pre- and post-calibration
+    # columns are merged into one "Standing after calibration" cell whose first
+    # sentence is the standing itself, because the three standings are
+    # ASYMMETRIC and that asymmetry is the table's point: one was rejected
+    # before calibration, one was dissolved by it, and one was affirmed before
+    # it and never re-adjudicated. Every number, commit and registered
+    # criterion from the four-column version is retained.
+    print('| Candidate explanation | Registered test | '
+          'Standing after calibration |')
+    print('|---|---|---|')
 
     print('| **The boundary depended on concurrency.** The two E1 arms separated '
           'by `D = m50 - m10 = 0.0689` in safe utilisation, 0.9137 at concurrency '
@@ -109,15 +116,14 @@ def main():
           '| Swap the admission limits across the arms and score the fraction of '
           '`D` that moves with the cap: **CONCURRENCY-DRIVEN** requires both '
           '`f ≤ 0.25` (E2 plan, `c823393`). '
-          '| Confirmed. `f = +0.000` and `-0.006`: neither cell moved toward the '
-          'other arm, so the gap did not follow the cap (E2 report). '
-          '| **No longer resolved after calibration.** Measured after the '
-          'correction, on the same two arms. '
-          'Under one recipe applied to both corpora the inter-arm gap falls from '
-          '**%.4f to %.4f** (%.0f%% removed) on the drain-window estimator and '
-          'from %.4f to %.4f (%.0f%% removed) on the delivery-span one — %.1f rps '
-          'to %.1f rps in throughput terms. **94–95%% of the separation is '
-          'removed.** |'
+          '| **Confirmed before calibration, and no longer resolved after it.** '
+          '`f = +0.000` and `-0.006`: neither cell moved toward the other arm, so '
+          'the gap did not follow the cap (E2 report). Measured after the '
+          'correction on those same two arms, under one recipe applied to both '
+          'corpora, the inter-arm gap falls from **%.4f to %.4f** (%.0f%% removed) '
+          'on the drain-window estimator and from %.4f to %.4f (%.0f%% removed) on '
+          'the delivery-span one — %.1f rps to %.1f rps in throughput terms. '
+          '**94–95%% of the separation is removed.** |'
           % (m['gapRhoUncorrected'], m['gapRhoCorrected'], m['fractionRemovedRho'],
              a4['gapRhoUncorrected'], a4['gapRhoCorrected'], a4['fractionRemovedRho'],
              m['gapRpsUncorrected'], m['gapRpsCorrected']))
@@ -127,33 +133,31 @@ def main():
           'concurrency 50 — so the cap was a live explanation of `D`. '
           '| The same swap, scored the other way: **CAP-DRIVEN** requires both '
           '`f ≥ 0.75` (E2 plan, `c823393`). '
-          '| **Refuted before calibration.** Registered verdict OFF-SCALE, '
-          '`f = +0.000` and `-0.006`; `CAP-DRIVEN` was unreachable once the first '
-          'cell returned +0.000, and neither cell moved materially in either '
-          'direction (E2 report). '
-          '| **Refuted pre-calibration by its own registered criterion. No '
-          'post-calibration evidence, and none possible.** The correction has '
-          'nothing to dissolve here: the campaign had already eliminated the cap '
-          'as an explanation before the bias was known. The corrected corpus also '
+          '| **Rejected before calibration, by its own registered criterion.** '
+          'Registered verdict OFF-SCALE, `f = +0.000` and `-0.006`; `CAP-DRIVEN` '
+          'was unreachable once the first cell returned +0.000, and neither cell '
+          'moved materially in either direction (E2 report). **No '
+          'post-calibration evidence, and none possible:** the corrected corpus '
           'ran only the original diagonal — c10 at cap 500, c50 at cap 2500 — so '
-          'no post-calibration value of `f` exists either. |')
+          'no post-calibration value of `f` exists. The correction has nothing to '
+          'dissolve here; the campaign had eliminated the cap before the bias was '
+          'known. |')
 
     print('| **Service time governed the boundary.** With concurrency and service '
           'time separated at `C = 400`, ρ* landed c50-like rather than c10-like. '
           '| Score ρ* against the two E1 midpoints: `h = (ρ*_E2b − ρ10) / D`, '
           'where **`h ≥ 0.75` reads S GOVERNS** and `h ≤ 0.25` reads concurrency '
           'governs (E2b plan, `a741d68`, with a dead band registered in advance). '
-          '| Confirmed. `h = (0.98 − 0.9137) / 0.0689 = +0.980` (E2b report), at '
-          'the S-governs end of the scale. '
-          '| **Affirmed pre-calibration; interpretation superseded; the '
-          'registered statistic not recomputed.** `h` is defined relative to the '
-          'E1 arm separation, which was measured against the configured capacity '
-          'parameter. Two later results undermine the S-governs reading without '
-          'recomputing `h`: physically correcting the harness removes most of the '
-          'separation between those same two arms (W8 matched accounting), and '
-          'expressing seven cells against measured capacity resolves no '
-          'service-time difference at all. **The exact registered `h` was '
-          'never recomputed: no `C = 400` cell exists on the corrected harness.** |')
+          '| **Affirmed before calibration, and not re-adjudicated after it.** '
+          '`h = (0.98 − 0.9137) / 0.0689 = +0.980` (E2b report), at the S-governs '
+          'end of the scale. `h` is defined relative to the E1 arm separation, '
+          'which was measured against the configured capacity parameter. Two '
+          'later results undermine the S-governs reading without recomputing '
+          '`h`: physically correcting the harness removes most of the separation '
+          'between those same two arms (W8 matched accounting), and expressing '
+          'seven cells against measured capacity resolves no service-time '
+          'difference at all. **The exact registered `h` was never recomputed: no '
+          '`C = 400` cell exists on the corrected harness.** |')
 
     print()
     print('## Sources, cell by cell')

@@ -211,6 +211,30 @@ way item 11 would. Finding 6.1 recovers much of item 11's saving without
 touching the §VIII/§IX boundary Draft 2 ruled on.
 
 
+## Draft 4 — REVIEW RULINGS ON THE FLOATS, and the target, 2026-09-20
+
+**Target: 19.** Success is a finished, defect-free submission below 20 pages
+with enough margin that ordinary float movement cannot push it back to 20;
+**19–19.5 is a successful endpoint.** §V → ~1,900 and §III → ~1,200 are **not**
+pre-authorised; they are reconsidered only if the authorised set still leaves
+the build above 20.
+
+**Authorised, then recompile:**
+- **Option (a)** with the **~250-word A4–A9(–A10) gloss retained** in §IV-H;
+  the full log and Table 1 move to S1. *(Applied: increment 1.)*
+- **Table 7 compact:** Candidate explanation | Registered test | Standing after
+  calibration, with the asymmetric standings kept in words — concurrency no
+  longer resolved after calibration; service time affirmed but not
+  re-adjudicated; admission limit rejected before calibration.
+- **Table 2 compact:** Cell | Boundary bracket (rps) | Resolution Δρ |
+  ρ_eff,safe — the resolution column is the **normalised** per-cell resolution
+  (coarsest 0.0127), not the raw bracket width. Full 11 columns to S1.
+- **Fig. 2 to S1**, not discarded. *(Applied: increment 1.)*
+- **Fig. 4 caption: all four paragraphs stay** with the figure; later
+  sentence-level compression only.
+
+---
+
 ## Why
 
 IEEE Access recommends under 20 pages and requires the Editor-in-Chief's

@@ -14,7 +14,7 @@ post-A6 note below is not caption. **Fig. 2 notation corrected** from C·S/(S+ov
 c/(S + δ), matching (1) and (5): the caption was the only place in the paper that
 still wrote the overhead as "ov". Table captions are titles, per IEEE style;
 explanation lives in the text. Table 1's caption stays in §IV where it was written,
-delimited there. **Each figure caption is preceded by a `figure:KEY:FILE` marker** binding the key to the artefact it sets, the figure counterpart of the `table:KEY` marker that sits before a table. The binding lives here rather than in a file name because the key is the identity and the file names do not change.*
+delimited there. **A trailing `:s1` on a `figure:` or `table:` marker puts that float in Supplement S1 instead of the article**; without it the float is the article's. The caption library below is shared: a caption is found by key, wherever its float is placed. **Each figure caption is preceded by a `figure:KEY:FILE` marker** binding the key to the artefact it sets, the figure counterpart of the `table:KEY` marker that sits before a table. The binding lives here rather than in a file name because the key is the identity and the file names do not change.*
 
 ---
 
@@ -28,7 +28,6 @@ fault withdraws the dependency's capacity for 120 s, and its restoration is the
 time origin for every measurement reported here.
 <!-- caption:fig:harness:end -->
 
-<!-- figure:fig:capacity-model:F2-capacity-model.pdf -->
 <!-- caption:fig:capacity-model:start -->
 **Where the unaccounted cost enters.** The harness sizes the dependency
 as c = ⌈C_config·S⌉ workers on the assumption that each turns a request round in
@@ -123,6 +122,14 @@ it there; a peak of 111 at the same point does not contradict that.
 ---
 
 ## Table captions
+
+<!-- caption:tab:resolution-full:start -->
+Per-cell resolution of the boundary estimate, in full: the article's compact
+table gives the bracket, the normalised resolution and the safe utilisation;
+this one adds the configured and measured capacities, the raw bisection step,
+the bracket width, the repetition count, the replicate spread and the measured
+capacity's own range.
+<!-- caption:tab:resolution-full:end -->
 
 <!-- caption:tab:resolution:start -->
 Per-cell resolution of the boundary estimate.

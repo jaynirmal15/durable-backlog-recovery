@@ -1,5 +1,6 @@
 # §3 — The harness, the capacity model, and its error model
 
+*Draft 13 — CUT PASS, 2026-09-20. Fig. 2 moves to Supplement S1 by the reviewer's ruling: it carries no measured result, and equations (4)–(6) state what it pictures. Its one reference is removed; the following sentences already name the three components of `δ`, which is the one sentence the ruling requires near (4).*
 *Draft 12 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 11 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at Little's law in the staffing relation (1), where §III uses it. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 10 — FROZEN.
@@ -167,8 +168,8 @@ mean, and contributes nothing to the discrepancy below.
 
 <!-- downstream/main.go jitteredServiceTime(), serviceTimeJitterSigma -->
 
-The worker's cycle, however, is longer than the service time it emulates
-([@fig:capacity-model]). Each request occupies its worker for the intended interval plus three
+The worker's cycle, however, is longer than the service time it emulates.
+Each request occupies its worker for the intended interval plus three
 further components: bookkeeping before the wait begins, the amount by which the
 runtime's timed wait overruns its requested duration, and bookkeeping after it
 ends. Writing the sum of those three as `δ`, the interval a worker is actually

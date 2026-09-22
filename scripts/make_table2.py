@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """T2: per-cell resolution, under the maximum numerator section 4 names.
 
+Emits TWO tables from one set of rows: the article's compact four-column
+table (tab:resolution) and Supplement S1's full eleven-column one
+(tab:resolution-full, marked :s1). Draft 4 ruling.
+
 Every value is read from committed artefacts; nothing is typed in.
 
   boundary files        rhoAchieved per repetition, runs, the rate bracket
@@ -69,10 +73,32 @@ def main():
           'numerator of ρ_eff,safe is the **maximum** achieved rate across the last '
           'SAFE point\'s repetitions, the per-cell value §IV defines.')
     print()
-    # The build sets ONLY the pipe table that follows this marker. Everything
+    # The build sets ONLY the pipe table that follows each marker. Everything
     # else in the generated file -- heading, provenance paragraph, column notes
-    # -- is artefact documentation and must not reach the article.
+    # -- is artefact documentation and must not reach either document.
+    #
+    # TWO TABLES FROM ONE SET OF ROWS, per the Draft 4 ruling. The article gets
+    # the three quantities its argument uses; Supplement S1 gets every column,
+    # marked :s1. Both are generated from the same `rows`, so the compact table
+    # cannot drift from the full one.
     print('<!-- table:tab:resolution -->')
+    print('| Cell | Boundary bracket (rps) | Resolution Δρ | ρ_eff,safe |')
+    print('|---|---|---:|---:|')
+    for r in rows:
+        lo, hi = r['bracket']
+        print('| %s | [%d, %d] | %.4f | %s |'
+              % (r['cell'], lo, hi, r['stepFrac'],
+                 u(r['rhoEff'], is_coarse(r['cell']))))
+    print()
+    print('**Resolution Δρ is the NORMALISED per-cell resolution**, the bisection '
+          'step divided by that cell\'s C_measured -- not the raw bracket width in '
+          'requests per second. The coarsest cell is E2b at C = 400, where Δρ = '
+          '0.0127; the finest are the C = 2000 cells at 0.0025. A margin smaller '
+          'than a cell\'s Δρ is not resolvable in that cell, which is the whole '
+          'use of the column, and a raw width of 5 rps means different things at '
+          'C = 400 and at C = 2000.')
+    print()
+    print('<!-- table:tab:resolution-full:s1 -->')
     print('| cell | C_config | C_measured | step (rps) | step / C_measured '
           '| rate bracket (rps) | width (rps) | n | replicate spread (rps) '
           '| ρ_eff,safe | C_measured range (rps) |')

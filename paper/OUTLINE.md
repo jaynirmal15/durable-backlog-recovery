@@ -861,7 +861,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 12 -->
+<!-- plan-synced-to: section3 draft 13 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after
@@ -913,7 +913,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 24 -->
+<!-- plan-synced-to: section4 draft 25 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval

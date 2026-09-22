@@ -29,6 +29,7 @@ CAPTIONS = os.path.join('figures', 'CAPTIONS.md')
 SEC4 = os.path.join('paper', 'section4.md')
 SEC5 = os.path.join('paper', 'section5.md')
 T2 = os.path.join('figures', 'T2-resolution.md')
+S1 = 'supplement-S1.md'
 
 
 class FloatKeyCase(unittest.TestCase):
@@ -93,13 +94,48 @@ class FloatKeyCase(unittest.TestCase):
                   '<!-- caption:tab:candidates:done -->')
         self.assertReports('never properly')
 
+    # -- scopes: the article and Supplement S1 ----------------------------
+    def test_the_s1_floats_are_not_counted_in_the_article_census(self):
+        # The ruled census is the ARTICLE's. S1's three floats must not leak
+        # into it, or moving a float to the supplement would look like losing
+        # one -- which is exactly what the cut pass does on purpose.
+        problems, order, floats, counts = C.float_keys(self.tmp)
+        self.assertEqual(problems, [])
+        self.assertEqual(counts['article'], (C.FLOAT_FIGURES, C.FLOAT_TABLES))
+        self.assertEqual(counts['s1'], (1, 2))
+
+    def test_the_article_may_not_reference_an_s1_float(self):
+        # A cross-document reference would print a number the article does not
+        # assign. §III's removed Fig. 2 reference is the live instance: put it
+        # back and the checker must object rather than silently numbering it.
+        self.edit(os.path.join('paper', 'section3.md'),
+                  'The worker\'s cycle, however, is longer than the service time it',
+                  'The worker\'s cycle ([@fig:capacity-model]), however, is longer '
+                  'than the service time it')
+        self.assertReports('cannot number the other')
+
+    def test_s1_may_not_reference_an_article_float(self):
+        self.edit(os.path.join('paper', S1),
+                  '## S1-C.',
+                  'See [@tab:accounting].\n\n## S1-C.')
+        self.assertReports('cannot number the other')
+
+    def test_dropping_the_s1_suffix_moves_a_float_into_the_article(self):
+        # The suffix IS the declaration. Losing it must break the census, not
+        # pass quietly with eight article tables again.
+        self.edit(os.path.join('paper', S1),
+                  '<!-- table:tab:s1-amendments:s1 -->',
+                  '<!-- table:tab:s1-amendments -->')
+        blob = self.assertReports('census')
+        self.assertIn('the article has 8 tables', blob)
+
     def test_caption_nobody_references(self):
         text = self.read(CAPTIONS)
         text += ('\n<!-- caption:tab:orphan:start -->\nNobody cites this.\n'
                  '<!-- caption:tab:orphan:end -->\n'
                  '<!-- table:tab:orphan -->\n| a |\n|---|\n| b |\n')
         self.write(CAPTIONS, text)
-        self.assertReports('no section references')
+        self.assertReports('nothing references')
 
     # -- key -> float -----------------------------------------------------
     def test_key_with_no_float(self):
@@ -136,12 +172,12 @@ class FloatKeyCase(unittest.TestCase):
     def test_losing_a_table_fails_the_census(self):
         self.edit(SEC5, '<!-- table:tab:a8-replication -->', '')
         blob = self.assertReports('census')
-        self.assertIn('found 7 tables', blob)
+        self.assertIn('the article has 6 tables', blob)
 
     def test_losing_a_figure_fails_the_census(self):
         self.edit(CAPTIONS, '<!-- figure:fig:overhead:F3-overhead-measured.pdf -->', '')
         blob = self.assertReports('census')
-        self.assertIn('found 5 figures', blob)
+        self.assertIn('the article has 4 figures', blob)
 
     # -- markers are syntax, not substrings (item 37) ----------------------
     def test_a_marker_named_in_prose_is_not_a_marker(self):

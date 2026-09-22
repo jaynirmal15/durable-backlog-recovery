@@ -382,10 +382,14 @@ def citation_markers():
     return problems, entries, cited
 
 
-FLOAT_FIGURES = 6
-FLOAT_TABLES = 8
-# The census is a RULING, not a measurement: ASSEMBLY-SPEC.md Draft 2, review
-# ruling A, fixes it at six figures and eight tables. Hard-coding it means
+FLOAT_FIGURES = 5
+FLOAT_TABLES = 7
+S1_FILE = 'supplement-S1.md'
+# The census is a RULING, not a measurement. ASSEMBLY-SPEC.md Draft 2 ruling A
+# fixed it at six figures and eight tables; CUT-PLAN.md Draft 4 moved Fig. 2
+# and the amendment table to Supplement S1, leaving the ARTICLE at five and
+# seven. S1's own counts are reported rather than asserted, because no ruling
+# has fixed them. Hard-coding it means
 # losing a float fails here instead of silently shortening the article. Adding
 # one is a deliberate edit to this line, which is the point.
 
@@ -411,7 +415,7 @@ def own_line_tags(text, pattern):
 
 
 def float_keys(root='.'):
-    """Check 5: keyed figure and table references resolve, both ways.
+    """Check 5: keyed figure and table references resolve, both ways, PER SCOPE.
 
     WHY THIS EXISTS. citation_markers() matches [@key] as
     [A-Za-z0-9][A-Za-z0-9._-]* , which excludes the colon, so every
@@ -422,26 +426,38 @@ def float_keys(root='.'):
     have reached the build. A check that silently ignores what it was not told
     about is worse than no check, because the clean line implies coverage.
 
-    Four relations, each failing separately:
+    SCOPES, added with the cut pass. A float belongs to the article or to
+    Supplement S1, declared by a trailing ':s1' on its placement marker. The
+    caption library is SHARED and looked up by key, because a caption follows
+    its float between documents unchanged. References are scoped by the file
+    they sit in: the ten sections are the article, supplement-S1.md is S1.
+
+    Five relations, each failing separately:
       key -> caption   exactly one delimited caption block per key
       key -> float     exactly one artefact: a figure FILE that exists, or a
                        table marker followed by a pipe table
-      float -> prose   every float referenced at least once
-      census           six figures and eight tables, per the ruling
+      float -> prose   every float referenced at least once, IN ITS OWN SCOPE
+      scope agreement  a document may not reference the other's float
+      census           the article's counts equal the ruling
     """
     problems = []
     paper = os.path.join(root, PAPER)
     figures = os.path.join(root, FIGURES)
     sections = [os.path.join(paper, 'section%d.md' % n) for n in range(1, 11)]
+    s1_path = os.path.join(paper, S1_FILE)
     others = []
     if os.path.isdir(figures):
         others = [os.path.join(figures, n) for n in sorted(os.listdir(figures))
                   if n.endswith('.md')]
+    ref_sources = [(p, 'article') for p in sections]
+    if os.path.isfile(s1_path):
+        ref_sources.append((s1_path, 's1'))
+    marker_sources = [p for p, _ in ref_sources] + others
 
-    # --- references in prose, in order of first appearance -------------------
+    # --- references in prose, in order of first appearance, per scope --------
     refs = {}
-    order = []
-    for sp in sections:
+    order = {'article': [], 's1': []}
+    for sp, scope in ref_sources:
         if not os.path.isfile(sp):
             continue
         with open(sp, encoding='utf-8') as fh:
@@ -450,13 +466,18 @@ def float_keys(root='.'):
             for m in re.finditer(r'\[@((?:fig|tab):[A-Za-z0-9][A-Za-z0-9._-]*)\]',
                                  line):
                 k = m.group(1)
-                if k not in refs:
-                    order.append(k)
-                refs.setdefault(k, []).append((sp, n))
+                # FIRST APPEARANCE IS PER SCOPE. Keying this off `refs`, which
+                # is global, meant a key referenced from BOTH documents landed
+                # only in the first scope's order -- so an S1 reference to an
+                # article float was never examined and the cross-scope check
+                # passed on it. The bug hid the very case the check exists for.
+                if k not in order[scope]:
+                    order[scope].append(k)
+                refs.setdefault(k, []).append((sp, n, scope))
 
-    # --- caption blocks ------------------------------------------------------
+    # --- caption blocks: one shared library, found by key -------------------
     captions = {}
-    for path in sections + others:
+    for path in marker_sources:
         if not os.path.isfile(path):
             continue
         with open(path, encoding='utf-8') as fh:
@@ -471,25 +492,32 @@ def float_keys(root='.'):
                                  'closes (no own-line :end after it)'
                                  % (path, line)))
 
-    # --- floats: figure files, and tables that really are tables -------------
+    # --- floats, each carrying the scope its marker declares ----------------
     floats = {}
-    for path in sections + others:
+    for path in marker_sources:
         if not os.path.isfile(path):
             continue
         with open(path, encoding='utf-8') as fh:
             text = fh.read()
         lines = text.split('\n')
         for key, _pos, line, m in own_line_tags(
-                text, r'figure:(fig:[A-Za-z0-9][A-Za-z0-9._-]*):([^ \t>]+)'):
-            fn = m.group(3)
-            floats.setdefault(key, []).append((path, line))
+                text,
+                r'figure:(fig:[A-Za-z0-9][A-Za-z0-9._-]*):'
+                r'([^: \t>]+):(s1)|figure:(fig:[A-Za-z0-9][A-Za-z0-9._-]*):'
+                r'([^: \t>]+)'):
+            gs = m.groups()
+            key = gs[1] or gs[4]
+            fn = gs[2] or gs[5]
+            scope = 's1' if gs[3] else 'article'
+            floats.setdefault(key, []).append((path, line, scope))
             if not os.path.isfile(os.path.join(figures, fn)):
                 problems.append(('figure:%s' % key,
                                  '%s:%d binds it to %s, which is not in %s/'
                                  % (path, line, fn, FIGURES)))
-        for key, _pos, line, _m in own_line_tags(
-                text, r'table:(tab:[A-Za-z0-9][A-Za-z0-9._-]*)'):
-            floats.setdefault(key, []).append((path, line))
+        for key, _pos, line, m in own_line_tags(
+                text, r'table:(tab:[A-Za-z0-9][A-Za-z0-9._-]*)(?::(s1))?'):
+            scope = 's1' if m.group(3) else 'article'
+            floats.setdefault(key, []).append((path, line, scope))
             nxt = ''
             for cand in lines[line:]:
                 if cand.strip():
@@ -500,48 +528,60 @@ def float_keys(root='.'):
                                  '%s:%d is not followed by a pipe table; the '
                                  'build would set the wrong block' % (path, line)))
 
-    # --- the four relations --------------------------------------------------
-    for key in order:
-        where = refs[key][0]
-        if key not in captions:
-            problems.append(('[@%s]' % key,
-                             'referenced at %s:%d but no caption block carries '
-                             'that key' % (where[0], where[1])))
-        elif len(captions[key]) > 1:
-            problems.append(('[@%s]' % key, 'has %d caption blocks: %s'
-                             % (len(captions[key]),
-                                ', '.join('%s:%d' % w for w in captions[key]))))
-        if key not in floats:
-            problems.append(('[@%s]' % key,
-                             'referenced at %s:%d but no float carries that key '
-                             '(a figure: binding or a table: marker)'
-                             % (where[0], where[1])))
-        elif len(floats[key]) > 1:
-            problems.append(('[@%s]' % key, 'has %d floats: %s'
-                             % (len(floats[key]),
-                                ', '.join('%s:%d' % w for w in floats[key]))))
+    # --- the five relations --------------------------------------------------
+    for scope in ('article', 's1'):
+        for key in order[scope]:
+            where = refs[key][0]
+            if key not in captions:
+                problems.append(('[@%s]' % key,
+                                 'referenced at %s:%d but no caption block '
+                                 'carries that key' % (where[0], where[1])))
+            elif len(captions[key]) > 1:
+                problems.append(('[@%s]' % key, 'has %d caption blocks: %s'
+                                 % (len(captions[key]),
+                                    ', '.join('%s:%d' % w
+                                              for w in captions[key]))))
+            if key not in floats:
+                problems.append(('[@%s]' % key,
+                                 'referenced at %s:%d but no float carries that '
+                                 'key (a figure: binding or a table: marker)'
+                                 % (where[0], where[1])))
+            elif len(floats[key]) > 1:
+                problems.append(('[@%s]' % key, 'has %d floats: %s'
+                                 % (len(floats[key]),
+                                    ', '.join('%s:%d' % (w[0], w[1])
+                                              for w in floats[key]))))
+            elif floats[key][0][2] != scope:
+                problems.append(('[@%s]' % key,
+                                 'referenced from %s but its float is declared '
+                                 '%s -- a document cannot number the other\'s '
+                                 'float' % (scope, floats[key][0][2])))
 
     for key, where in sorted(captions.items()):
         if key not in refs:
             problems.append(('caption:%s' % key,
-                             'written at %s:%d but no section references '
-                             '[@%s]' % (where[0][0], where[0][1], key)))
+                             'written at %s:%d but nothing references [@%s]'
+                             % (where[0][0], where[0][1], key)))
     for key, where in sorted(floats.items()):
         if key not in refs:
             problems.append(('float:%s' % key,
-                             'set at %s:%d but no section references [@%s] -- '
+                             'set at %s:%d but nothing references [@%s] -- '
                              'an unreferenced float has no number to print'
                              % (where[0][0], where[0][1], key)))
 
-    nfig = sum(1 for k in floats if k.startswith('fig:'))
-    ntab = sum(1 for k in floats if k.startswith('tab:'))
+    counts = {}
+    for scope in ('article', 's1'):
+        keys = [k for k, v in floats.items() if v and v[0][2] == scope]
+        counts[scope] = (sum(1 for k in keys if k.startswith('fig:')),
+                         sum(1 for k in keys if k.startswith('tab:')))
+    nfig, ntab = counts['article']
     if nfig != FLOAT_FIGURES:
-        problems.append(('census', 'found %d figures, the ruling says %d'
-                         % (nfig, FLOAT_FIGURES)))
+        problems.append(('census', 'the article has %d figures, the ruling '
+                         'says %d' % (nfig, FLOAT_FIGURES)))
     if ntab != FLOAT_TABLES:
-        problems.append(('census', 'found %d tables, the ruling says %d'
-                         % (ntab, FLOAT_TABLES)))
-    return problems, order, floats
+        problems.append(('census', 'the article has %d tables, the ruling '
+                         'says %d' % (ntab, FLOAT_TABLES)))
+    return problems, order, floats, counts
 
 
 def main():
@@ -558,7 +598,7 @@ def main():
     cite_problems, cite_entries, cited = citation_markers()
     entries, bib_problems = bibliography()
     uncited = citation_inventory(entries) if entries else []
-    float_problems, float_order, floats = float_keys()
+    float_problems, float_order, floats, float_counts = float_keys()
 
     ok = not (hits or stale or bib_problems or uncited or cite_problems
               or float_problems)
@@ -572,19 +612,25 @@ def main():
               'their delimited inventories' % len(entries))
         print('  citation markers  : %d keys cited, each resolving to exactly one '
               'entry; every entry cited' % len(cited))
-        nfig = sum(1 for k in floats if k.startswith('fig:'))
-        ntab = sum(1 for k in floats if k.startswith('tab:'))
-        print('  float keys        : %d figures + %d tables, each with one '
-              'caption, one float and at least one reference' % (nfig, ntab))
-        print('                      printed numbers, by first appearance:')
-        fign = tabn = 0
-        for key in float_order:
-            if key.startswith('fig:'):
-                fign += 1
-                print('                        Fig. %d  %s' % (fign, key))
-            else:
-                tabn += 1
-                print('                        Table %d %s' % (tabn, key))
+        af, at = float_counts['article']
+        sf, st = float_counts['s1']
+        print('  float keys        : article %d figures + %d tables (ruled); '
+              'S1 %d + %d (reported)' % (af, at, sf, st))
+        for scope, label in (('article', 'article'), ('s1', 'Supplement S1')):
+            if not float_order[scope]:
+                continue
+            print('                      %s, by first appearance:' % label)
+            pre = 'S' if scope == 's1' else ''
+            fign = tabn = 0
+            for key in float_order[scope]:
+                if key.startswith('fig:'):
+                    fign += 1
+                    print('                        Fig. %s%-3d %s'
+                          % (pre, fign, key))
+                else:
+                    tabn += 1
+                    print('                        Table %s%-3d %s'
+                          % (pre, tabn, key))
         return 0
 
     if hits:

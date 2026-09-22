@@ -1,5 +1,6 @@
 # §6 — The corrected boundary
 
+*Draft 10 — SYNCHRONISATION, 2026-09-20, ruled by review after the promotion scan. "No collapse factor is quoted" was categorical while Table 8 and S1 quote three superseded factors as part of the withdrawal record; §VI now says "as a current result" and names where the superseded figures live. The distinction is current result versus supersession record. No number or finding changes.*
 *Draft 9 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 8 — W3 readability, 2026-09-20. One edit, and it is a compression rather
 than a deletion. The `[ρ_safe, 1]` sentence is 0.92-similar to §IV's, but its
@@ -120,8 +121,10 @@ configured value the seven span **0.0719**. Against measured capacity they span
 The reportable statement is about detectability, not about a ratio. **Before the
 correction the spread across cells was resolvable; after it, the spread falls
 below the resolution of the coarsest cell involved.** No collapse factor is
-quoted: a ratio between two resolution-limited quantities carries an uncertainty
-question of its own, and the detectability statement is what the data support.
+quoted as a current result: a ratio between two resolution-limited quantities
+carries an uncertainty question of its own, and the detectability statement is
+what the data support. The factors that appear in Table 8 and Supplement S1 are
+superseded figures, retained there as part of the withdrawal record.
 
 Both axes use the maximum, as §IV requires. An earlier build took a maximum on
 one axis and a median on the other, which mixed statistics inside a comparison;

@@ -1,6 +1,7 @@
 # §5 — The calibration defect
 
-*Draft 23 — CUT PASS, increment 7, 2026-09-20, the last authorised cut. §V
+*Draft 25 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: "interquartile range (IQR)" pairs the acronym in §V-C before Table 4's IQR column, and §V-D's single "RMS" becomes "root-mean-square". No other change.*
+*Draft 24 — CUT PASS, review fixes applied; see the approval note below. Originally Draft 23 — CUT PASS, increment 7, 2026-09-20, the last authorised cut. §V
 compressed from ~2,710 to ~1,900 words against the reviewer's content floor,
 which is kept in full: the direct measurement and its limitations; the
 constant-versus-proportional result and the timer attribution; δ's variation with
@@ -126,7 +127,7 @@ short arm and 0.020 ms in the long one, the same direction in both. The probe's
 run-to-run repeatability is available at the third condition, where the in-situ
 figure aggregates 18 and 15 runs whose run means span 0.0053 and 0.0040 ms.
 **The load effect is four to five times that full span**, and nine to ten times
-its interquartile range. The comparison is indicative rather than exact — those
+its interquartile range (IQR). The comparison is indicative rather than exact — those
 runs are 111 to 120 seconds under bursty arrivals, not 60-second windows under
 the calibration driver, and repeatability at the two compared conditions was not
 measured (§IX).
@@ -260,7 +261,7 @@ predicted against measured plateau, uncorrected and corrected, for both arms.
 
 **Internal stability.** Taking the median saturation-plateau-inferred `δ` over
 the other six cells and predicting the held-out seventh places every held-out
-plateau within one bisection step — worst case 0.98 steps, RMS 2.44 rps. This is
+plateau within one bisection step — worst case 0.98 steps, root-mean-square 2.44 rps. This is
 cross-validation *within* the campaign against the same error model: it shows the
 inferred correction is stable across those cells, not that the model is
 independently confirmed. The prospective, now replicated, plateau prediction is

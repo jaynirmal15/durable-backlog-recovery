@@ -5,6 +5,12 @@
 **v10.1 closes W3. The readability pass is DONE and it removed two
 net words.**
 
+**DRAFT-LABEL RULE, adopted 2026-09-20 after the third label mismatch.** When a
+review approves a draft subject to fixes, the section takes **the next integer
+draft number**, and the plan-sync marker moves with it. Decimal labels such as
+"23.1" are not used: the checker's marker parser reads integers, so a decimal
+marker silently fails the freshness check.
+
 **THE W3 RULE, ruled and now formal — it governs any future pass:**
 > **A repetition is removable only when its second occurrence performs no local
 > interpretive function.**
@@ -64,8 +70,12 @@ not one). What the review found:
    multi-line window and reports the starting line.
 2. **Exemptions were lexical guesses** — "said", "never", "corrected" — so a
    live assertion one line from any of those became exempt. Replaced by an
-   explicit `<!-- withdrawn-quote-ok -->` marker. Explicit exemptions are
-   auditable; contextual guesses are not.
+   explicit `withdrawn-quote-ok` comment marker. Explicit exemptions are
+   auditable; contextual guesses are not. **This sentence deliberately does not
+   write that marker in its comment form**: the executor's marker audit found
+   that spelling it out here created a real, live marker inside the prose
+   describing the convention, exempting anything that later landed in its
+   window — item 37's defect class, running the other way.
 3. **Plan-sync never required a marker to EXIST.** Deleting one escaped
    silently while the script printed "all 10 marked current". Now every section
    needs exactly one marker, under its own plan heading, **equal** to the
@@ -758,7 +768,7 @@ there a seven-cell campaign in a methods paper."*
 
 ## §2 Background and related work — 1,400 words
 
-<!-- plan-synced-to: section2 draft 8 -->
+<!-- plan-synced-to: section2 draft 9 -->
 
 <!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work
@@ -861,7 +871,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 14 -->
+<!-- plan-synced-to: section3 draft 15 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after
@@ -913,7 +923,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 26 -->
+<!-- plan-synced-to: section4 draft 27 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval
@@ -954,7 +964,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §5 The calibration defect — 2,750 words, F3 + F4
 
-<!-- plan-synced-to: section5 draft 23 -->
+<!-- plan-synced-to: section5 draft 25 -->
 
 **Open with motivation, ~250 words.** Three candidate explanations appeared in
 sequence; each was pre-registered and each had a falsification test designed
@@ -1073,7 +1083,7 @@ caught in review and must not reappear.
 
 ## §6 The corrected boundary — 1,550 words, F5 + T2
 
-<!-- plan-synced-to: section6 draft 9 -->
+<!-- plan-synced-to: section6 draft 10 -->
 
 **Name the quantity the first time a per-cell ρ_eff appears**, before the
 figure: it is the achieved utilisation of the last SAFE point against measured
@@ -1189,7 +1199,7 @@ retractions are a different set with a different cause.
 
 ## §7 What warns, and what does not — 1,350 words, F6
 
-<!-- plan-synced-to: section7 draft 8 -->
+<!-- plan-synced-to: section7 draft 9 -->
 
 **F6** on a corrected cell. The DEEP threshold
 (`drainQueueDepthMean ≥ 50`, `results/E1B-PLAN.md`, `09e41e5`, fixed before

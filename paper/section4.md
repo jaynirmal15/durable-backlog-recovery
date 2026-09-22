@@ -1,5 +1,6 @@
 # §4 — Method
 
+*Draft 27 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: §IV-B's `vSLO` definition names it the SLO violation fraction. No other change; Draft 26's freeze otherwise stands.*
 *Draft 26 — CUT PASS, increment 2, 2026-09-20. §IV-B and §IV-C are compressed
 and their full text moves, unchanged, to Supplement S1-F; §IV-D and §IV-E are
 tightened in place. Kept, per the ruling: the SLO definition and both registered
@@ -113,7 +114,7 @@ Supplement S1 lists all ten with their commits.
 The objective is evaluated per one-second window over the drain window, on live
 traffic only. A window is a *latency breach* if live p99 exceeds 250 ms, an
 *error breach* if the live error rate exceeds 1%, and a *violating second* if
-either holds. `vSLO` is the fraction of violating seconds.
+either holds. `vSLO` is the fraction of violating seconds (the SLO violation fraction).
 
 Live traffic means injector-direct requests only. Two exclusions were registered
 in advance, and **neither was exercised.** Status 429, an injector-side drop, is

@@ -1,6 +1,6 @@
 # §3 — The harness, the capacity model, and its error model
 
-*Draft 14 — CUT PASS, increment 4, 2026-09-20, under the reviewer's 18-page
+*Draft 15 — CUT PASS, review fixes applied; see the approval note below. Originally Draft 14 — CUT PASS, increment 4, 2026-09-20, under the reviewer's 18-page
 authorisation. §III compressed from ~1,700 to ~1,200 words. Kept: the four
 services, open-loop rate-limited recovery with no within-run controller,
 injector-direct live traffic and the population separation, the four capacity

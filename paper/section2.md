@@ -1,5 +1,6 @@
 # §2 — Background and related work
 
+*Draft 9 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review. §II-B's heading no longer uses `SLO` before its expansion — "Overload control and admission under service level objectives" — and its first sentence pairs the two: "a service level objective (SLO)". Required by the IEEE Access checklist; no other change.*
 *Draft 8 — CUT PASS, increment 6, 2026-09-20. §II-E's second paragraph tightened; both objections and the answer to each are unchanged in substance. No other section text changes.*
 *Draft 7 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at twelve citing sentences of §II-A to §II-D, carrying thirteen of the fourteen references (Little is keyed in §I and §III) (the GitLab pair on "recurring"; Papadopoulos on the general measurement-bias clause before the colon of §II-D's opening sentence, Mytkowicz on the concrete compiler example after it — reviewer ruling 2026-09-20, moved off the Heiser sentence, where the catalogue was the grammatical subject). The move puts Papadopoulos ahead of Mytkowicz in first-appearance order. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
 *Draft 6 — SCIENCE FROZEN, citation-inventory sync only. 2026-09-20. The
@@ -188,9 +189,10 @@ no quantitative comparison point is also why the paper reports its own
 resolution so insistently. A measurement with an unstated precision is not a
 baseline for anything.
 
-### B. Overload control and SLO-aware admission
+### B. Overload control and admission under service level objectives
 
-Where a shared downstream must protect an objective, the established answer is
+Where a shared downstream must protect a service level objective (SLO), the
+established answer is
 to shed or delay work. Production and research overload controllers make that
 decision from an observed signal and a target: DAGOR [@dagor], deployed across WeChat's
 microservice fleet, detects overload from average request queueing time and

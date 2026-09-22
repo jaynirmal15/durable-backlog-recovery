@@ -21,3 +21,4 @@ overhead_run
 # build/template/ or figures/, and the PDF is a build product.
 build/access/*
 !build/access/article.tex
+!build/access/supplement-S1.tex

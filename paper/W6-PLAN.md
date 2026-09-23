@@ -167,13 +167,26 @@ published record cannot be deleted.
 - `https://doi.org/10.5281/zenodo.22761130` — the **concept** DOI the article
   cites — resolves to the newest version, CC BY 4.0, published 2026-09-23,
   which is what makes the abstract's *"publicly archived"* true. v1.0.0 was
-  record `22761131`; v1.0.1 supersedes it for a build defect on page 20;
+  record `22761131`; **v1.0.1 was published 2026-09-23 as record `22923220`**
+  for a build defect on page 20, and the concept DOI now lands there (302 →
+  302 → HTTP 200 at `https://zenodo.org/records/22923220`). v1.0.0's DOI still
+  returns 200 — superseded, not withdrawn;
 - the record's file count matches the manifest: seven objects, verified before
   publication at 815 checks with zero missing, extra, mismatched or unchecked.
+  **Re-verified against the PUBLISHED v1.0.1 record on 2026-09-23: 816
+  objects, zero missing, extra, wrong size, wrong hash or unchecked.**
 
-**Still open, carried to acceptance:** `DEPOSIT-W6.md` step 7 — add the
-`isSupplementTo` relation with the article DOI, as a metadata edit on the
-published record. Nothing else will prompt for it.
+**Still open, carried to acceptance:**
+- `DEPOSIT-W6.md` step 7 — add the `isSupplementTo` relation with the article
+  DOI, as a metadata edit on the published record. Nothing else will prompt
+  for it.
+- the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission
+  cosmetic in the deposited `supplement-S1.pdf`.
+
+> The v1.0.1 **version** DOI `10.5281/zenodo.22923220` 404s at doi.org and is
+> absent from DataCite as of 2026-09-23 — minting lag. Nothing the article
+> cites depends on it; the concept DOI is what §IV carries. Re-check before
+> submission.
 
 ---
 

@@ -6,13 +6,13 @@
 |---|---|
 | **Concept DOI — WHAT THE ARTICLE CITES** | **`10.5281/zenodo.22761130`** |
 | v1.0.0 version DOI | `10.5281/zenodo.22761131`, record `22761131`, published 2026-09-23 UTC, **superseded** |
-| v1.0.1 version DOI | minted when the new version is published |
-| State | v1.0.0 published; v1.0.1 supersedes it for a build defect on page 20 |
+| v1.0.1 version DOI | `10.5281/zenodo.22923220`, record `22923220`, published 2026-09-23, **current** |
+| State | v1.0.1 published and current; v1.0.0 remains published and citable, superseded for a build defect on page 20 |
 | Resolves to | the concept DOI follows the chain to the newest version |
 | Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-<version>.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE`. The archive is named for its version: v1.0.0 shipped `…-1.0.0.zip`, v1.0.1 ships `…-1.0.1.zip` |
-| Version / licence | 1.0.0 / CC BY 4.0 |
+| Version / licence | 1.0.1 / CC BY 4.0 (`cc-by-4.0`), open access |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
-| Staged from | git commit `e22e779547d19b462627cb06acfd07246c4d58ef` |
+| Staged from | v1.0.0: git commit `e22e779547d19b462627cb06acfd07246c4d58ef`; v1.0.1: git commit `b7731a32c16c444a097a97028f72051def33b538` (`MANIFEST.json` `gitCommit`) |
 
 This is the DOI §4 cites, and **it resolves.** The record was published by hand
 from the web interface, as steps 5 and 6 require.
@@ -192,6 +192,24 @@ design: a published record cannot be deleted and its files cannot be changed.
 
 - **DONE 2026-09-23** — `https://doi.org/10.5281/zenodo.22761130`, the concept
   DOI the article cites, resolves and follows the chain to the newest version.
+  Confirmed again after v1.0.1: 302 → 302 → HTTP 200 at
+  `https://zenodo.org/records/22923220`. `10.5281/zenodo.22761131` still
+  returns HTTP 200 at `https://zenodo.org/records/22761131`, so v1.0.0 remains
+  published and citable — a new version supersedes, it does not withdraw.
+- **DONE 2026-09-23 — v1.0.1 published.** Record `22923220`, version DOI
+  `10.5281/zenodo.22923220`, publication date 2026-09-23, licence `cc-by-4.0`,
+  access `open`, state `done`. Seven objects, no nested keys,
+  `paper2-rhc-artifact-1.0.1.zip` present and the inherited `…-1.0.0.zip`
+  swept. `zenodo_verify.py` against the **published** record: 816 objects
+  verified, zero missing, extra, wrong size, wrong hash or unchecked.
+- **The version DOI `10.5281/zenodo.22923220` does not resolve at doi.org
+  yet** — HTTP 404, and DataCite has no record of it, while the concept and
+  v1.0.0 DOIs are both `findable` there. This is Zenodo's registration lag on
+  a just-minted version DOI, not a defect in the deposit: the landing page
+  `https://zenodo.org/records/22923220` returns 200 and the concept DOI
+  already resolves to it. **Nothing the article cites depends on it** — §IV
+  cites the concept DOI. Re-check before submission; if it is still 404 after
+  a few days, raise it with Zenodo support.
 
 > **FILES ON A PUBLISHED RECORD CANNOT BE REPLACED BY THEIR OWNER.** Step 6's
 > note already quoted Zenodo saying so, and the 2026-09-23 replacement attempt
@@ -209,13 +227,18 @@ design: a published record cannot be deleted and its files cannot be changed.
   (§IV's reproducibility statement already carried the DOI and needed no
   change; `frontmatter.md` and `references.md` carry the status) and in the
   repository (`OUTLINE.md`, `W6-PLAN.md` and this file).
-- **STILL OPEN — carried forward to acceptance:** add the `isSupplementTo`
-  relation with the article DOI, per step 6. It is the only part of this
+- **STILL OPEN — carried forward to acceptance (1 of 2):** add the
+  `isSupplementTo` relation with the article DOI, per step 6. It is the only part of this
   checklist that runs after submission, and nothing else will prompt for it —
   the deposit is finished and the paper is away. Put it wherever acceptance is
   tracked.
 
-> **This is the one item that outlives the deposit.** Everything else in this
+- **STILL OPEN — carried forward to acceptance (2 of 2):** the supplement's
+  35.86 pt overfull box at `C_measured`. It is a pre-submission cosmetic, not
+  a deposit item; the deposited `supplement-S1.pdf` is the artifact and will
+  not be rebuilt for it now.
+
+> **These are the items that outlive the deposit.** Everything else in this
 > checklist is closed. The relation cannot be added until the article has a
 > DOI, which is months away, and adding it is a metadata edit on the published
 > record that Zenodo permits without a new version and without affecting this

@@ -18,8 +18,11 @@ keep their slashes. If the API refuses nested keys this script STOPS and says so
 rather than flattening.
 """
 import argparse
+import datetime
+import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
@@ -167,6 +170,163 @@ def legacy_put(base, token, dep_id, key, path, verbose=False):
                    length=len(body), verbose=verbose)
 
 
+EDIT_WINDOW_DAYS = 30           # Zenodo's self-service file-edit window
+
+
+def publish_edit(base, token, dep_id, expect_doi, stage_dir, archive,
+                 confirm=False):
+    """Publish a file edit on an ALREADY-PUBLISHED record. The only publish path.
+
+    THIS SCRIPT HAS NO GENERAL PUBLISH PATH AND MUST NOT ACQUIRE ONE. First
+    publication is irreversible, needs a human reading the record, and happens
+    from the web interface. This exception exists for one situation only:
+    replacing files on a record that is already published, inside Zenodo's
+    30-day window, where the edit does not take effect until it is published.
+    Every condition below is checked against a FRESH READ of the record, never
+    against an argument, and every branch refuses by default.
+
+    A DRY RUN IS THE DEFAULT. Without --confirm it prints the plan and exits
+    NON-ZERO. The value of printing the plan is that a person can stop it, and
+    a plan that proceeds on its own has no such value.
+    """
+    st, dep = api(base, token, 'GET', '/deposit/depositions/%s' % dep_id)
+    if st != 200:
+        print('cannot read deposition %s: status %s' % (dep_id, st))
+        return 1
+
+    # 1. already published, so this can never create a first publication
+    if not dep.get('submitted'):
+        print('REFUSED: deposition %s has never been published. This flag '
+              'edits an existing record; it does not publish a new one.'
+              % dep_id)
+        return 1
+
+    # 2. an edit must be open, or there is nothing to commit
+    if dep.get('state') != 'inprogress':
+        print('REFUSED: state is %r, not "inprogress". Open the edit first '
+              '(POST /actions/edit); publishing without an open edit would '
+              'republish whatever is there.' % dep.get('state'))
+        return 1
+
+    # 3. inside the window, computed from the record
+    created = (dep.get('created') or '')[:10]
+    pub = (dep.get('metadata') or {}).get('publication_date') or created
+    try:
+        age = (datetime.date.today()
+               - datetime.date(*[int(x) for x in pub.split('-')[:3]])).days
+    except Exception:
+        print('REFUSED: cannot read a publication date from the record.')
+        return 1
+    if age > EDIT_WINDOW_DAYS:
+        print('REFUSED: the record was published %s, %d days ago. Zenodo\'s '
+              'self-service file edit is %d days; past it, files change only '
+              'by contacting support.' % (pub, age, EDIT_WINDOW_DAYS))
+        return 1
+
+    # 4. the DOI must be the one expected, and must not move
+    doi = dep.get('doi') or ((dep.get('metadata') or {}).get('doi'))
+    if not doi:
+        print('REFUSED: the record reports no DOI.')
+        return 1
+    if doi != expect_doi:
+        print('REFUSED: --expect-doi is %r but the record holds %r.'
+              % (expect_doi, doi))
+        return 1
+
+    # 5. the record must hold exactly the seven expected keys, at the sizes
+    #    the staging says, so a partial upload cannot be published
+    want = {}
+    for name in HYBRID_INDIVIDUAL:
+        fp = os.path.join(stage_dir, name)
+        if not os.path.isfile(fp):
+            print('REFUSED: %s is not in the stage directory.' % name)
+            return 1
+        want[name] = os.path.getsize(fp)
+    if not (archive and os.path.isfile(archive)):
+        print('REFUSED: --archive is required and must exist.')
+        return 1
+    want[os.path.basename(archive)] = os.path.getsize(archive)
+
+    have = existing_files(base, token, dep_id)
+    missing = sorted(set(want) - set(have))
+    extra = sorted(set(have) - set(want))
+    wrong = sorted(k for k in want if k in have and have[k] != want[k])
+    if missing or extra:
+        print('REFUSED: the record does not hold exactly the %d expected '
+              'objects.' % len(want))
+        for k in missing:
+            print('   missing  %s' % k)
+        for k in extra:
+            print('   extra    %s' % k)
+        return 1
+    if wrong:
+        print('REFUSED: %d object(s) are uploaded at the wrong size; the '
+              'upload is incomplete.' % len(wrong))
+        for k in wrong:
+            print('   %-34s record %s, staged %s' % (k, have[k], want[k]))
+        return 1
+
+    # 6. the verifier must pass in THIS invocation, not a remembered one
+    verify = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          'zenodo_verify.py')
+    rc = subprocess.call([sys.executable, verify,
+                          '--deposition-id', str(dep_id),
+                          '--stage-dir', stage_dir, '--archive', archive]
+                         + (['--sandbox'] if base == SANDBOX else []))
+    if rc != 0:
+        print('\nREFUSED: zenodo_verify.py did not pass (exit %d).' % rc)
+        return 1
+
+    # 7. the plan, printed so a person can stop it
+    print()
+    print('PLAN for deposition %s, DOI %s' % (dep_id, doi))
+    print('  published %s, %d day(s) ago, inside the %d-day window'
+          % (pub, age, EDIT_WINDOW_DAYS))
+    print('  %d objects; digests before and after:' % len(want))
+    changed = 0
+    for key in sorted(want):
+        local = os.path.join(stage_dir, key) if key in HYBRID_INDIVIDUAL else archive
+        new = md5_of(local)
+        old = have_md5(base, token, dep_id).get(key, '(unknown)')
+        mark = '  CHANGES' if old != new else ''
+        changed += 1 if old != new else 0
+        print('    %-34s %s -> %s%s' % (key, old[:12], new[:12], mark))
+    print('  %d of %d objects change.' % (changed, len(want)))
+    if not confirm:
+        print()
+        print('DRY RUN. Nothing was published. Re-run with --confirm to '
+              'publish this edit.')
+        return 1
+
+    st, out = api(base, token, 'POST',
+                  '/deposit/depositions/%s/actions/publish' % dep_id)
+    if st not in (200, 202):
+        print('publish failed: status %s %s' % (st, str(out)[:200]))
+        return 1
+    st2, after = api(base, token, 'GET', '/deposit/depositions/%s' % dep_id)
+    now = after.get('doi') or ((after.get('metadata') or {}).get('doi'))
+    print('published. DOI before %s, after %s -- %s'
+          % (doi, now, 'UNCHANGED' if now == doi else '** DOI MOVED **'))
+    return 0 if now == doi else 1
+
+
+def md5_of(path):
+    h = hashlib.md5()
+    with open(path, 'rb') as fh:
+        for c in iter(lambda: fh.read(1 << 20), b''):
+            h.update(c)
+    return h.hexdigest()
+
+
+def have_md5(base, token, dep_id):
+    st, files = api(base, token, 'GET',
+                    '/deposit/depositions/%s/files' % dep_id)
+    if st != 200 or not isinstance(files, list):
+        return {}
+    return {(f.get('filename') or f.get('key')):
+            (f.get('checksum') or '').replace('md5:', '') for f in files}
+
+
 def existing_files(base, token, dep_id):
     """Key -> size for what is already uploaded, so a resume skips it."""
     st, body = api(base, token, 'GET', '/deposit/depositions/%s/files' % dep_id)
@@ -257,6 +417,15 @@ def main():
                          'metadata, reserve the DOI, and STOP. Uploads nothing. '
                          'The package goes up separately at W6 from the frozen '
                          'commit; uploading earlier only guarantees it goes stale.')
+    ap.add_argument('--publish-edit', type=int, metavar='ID',
+                    help='publish a FILE EDIT on an already-published record, '
+                         'inside Zenodo\'s 30-day window. Dry run unless '
+                         '--confirm. The only publish path in this script.')
+    ap.add_argument('--expect-doi',
+                    help='the DOI the record must already hold; a precondition '
+                         'checked against a fresh read, not an attestation')
+    ap.add_argument('--confirm', action='store_true',
+                    help='with --publish-edit, actually publish the edit')
     ap.add_argument('--verbose', action='store_true', default=True)
     a = ap.parse_args()
 
@@ -265,6 +434,19 @@ def main():
         print('ZENODO_TOKEN is not set in this process environment. Nothing was sent.')
         return 2
     base = SANDBOX if a.sandbox else LIVE
+
+    if a.publish_edit:
+        if not a.expect_doi:
+            print('--publish-edit requires --expect-doi: the DOI the record '
+                  'must already hold, checked against a fresh read.')
+            return 1
+        if not (a.stage_dir and a.archive):
+            print('--publish-edit requires --stage-dir and --archive: the '
+                  'record is checked against what was actually staged.')
+            return 1
+        return publish_edit(base, token, a.publish_edit, a.expect_doi,
+                            os.path.expanduser(a.stage_dir),
+                            os.path.expanduser(a.archive), a.confirm)
 
     if a.list_drafts:
         st, body = api(base, token, 'GET', '/deposit/depositions?size=100', verbose=True)

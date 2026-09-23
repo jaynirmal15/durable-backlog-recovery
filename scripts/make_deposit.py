@@ -98,6 +98,7 @@ raw per-request traces.
     tests/                the Aug-18 regression fixture pinning the metrics path
     harness/              Go source for the runner, downstream, consumer, producer
     figures/              paper figures as vector PDF, and their captions
+    article/              the submitted article and its supplement, as PDF
     MANIFEST.json         every file with its SHA-256, plus the git commit
 
 ## Reproducing
@@ -217,7 +218,30 @@ def main():
     n, b = copy_into(os.path.join(REPO, 'figures'), os.path.join(STAGE, 'figures'))
     parts['figures'] = {'files': n, 'bytes': b}
 
-    # 7. per-request traces: the campaigns this paper reports, gzip only
+    # 7. the submitted article and supplement, as compiled.
+    # These are BUILD PRODUCTS, not committed artefacts: build/access is
+    # gitignored apart from the two .tex sources, so unlike everything else in
+    # this package they are not regenerable from the recorded commit alone --
+    # they need a TeX installation and the vendored IEEE Access class. They are
+    # included because a reader who has the DOI should be able to read the
+    # paper the data belongs to without finding it elsewhere.
+    art = os.path.join(STAGE, 'article')
+    os.makedirs(art, exist_ok=True)
+    n = b = 0
+    for name in ('article.pdf', 'supplement-S1.pdf'):
+        src = os.path.join(REPO, 'build', 'access', name)
+        if not os.path.isfile(src):
+            print('  MISSING: %s -- compile before staging' % name)
+            continue
+        tex = src[:-4] + '.tex'
+        if os.path.isfile(tex) and os.path.getmtime(src) < os.path.getmtime(tex):
+            print('  STALE: %s is older than the .tex beside it' % name)
+        shutil.copy2(src, os.path.join(art, name))
+        n += 1
+        b += os.path.getsize(src)
+    parts['article'] = {'files': n, 'bytes': b}
+
+    # 8. per-request traces: the campaigns this paper reports, gzip only
     n, b = copy_into(RAW, os.path.join(STAGE, 'traces'),
                      lambda p: p.endswith('.gz'))
     parts['traces'] = {'files': n, 'bytes': b}

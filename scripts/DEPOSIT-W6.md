@@ -9,7 +9,7 @@
 | v1.0.1 version DOI | minted when the new version is published |
 | State | v1.0.0 published; v1.0.1 supersedes it for a build defect on page 20 |
 | Resolves to | the concept DOI follows the chain to the newest version |
-| Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-1.0.0.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE` |
+| Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-<version>.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE`. The archive is named for its version: v1.0.0 shipped `…-1.0.0.zip`, v1.0.1 ships `…-1.0.1.zip` |
 | Version / licence | 1.0.0 / CC BY 4.0 |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
 | Staged from | git commit `e22e779547d19b462627cb06acfd07246c4d58ef` |

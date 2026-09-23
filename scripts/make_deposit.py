@@ -153,7 +153,7 @@ can be read without downloading 400 MB:
     article.pdf           the submitted article
     supplement-S1.pdf     its supplement
 
-The seventh object, **paper2-rhc-artifact-1.0.0.zip**, holds the complete tree
+The seventh object, **paper2-rhc-artifact-1.0.1.zip**, holds the complete tree
 with the directory paths below intact. Nothing is flattened: extract the
 archive and the paths in this README, in MANIFEST.json and in the paper's
 reproducibility statement are the paths you get.
@@ -360,7 +360,13 @@ def main():
     print('git commit %s' % commit[:12])
 
     if a.archive:
-        base = os.path.expanduser('~/Jay_NIW/paper2-rhc-artifact-1.0.0')
+        # The archive is named for the version it belongs to. v1.0.0's
+        # object stays on v1.0.0's record and is never seen beside this one,
+        # so there is no continuity to preserve -- and an archive named 1.0.0
+        # inside a record labelled 1.0.1, beside a manifest that says 1.0.1,
+        # would misdescribe itself.
+        base = os.path.expanduser('~/Jay_NIW/paper2-rhc-artifact-%s'
+                                  % META['version'])
         print('archiving...')
         shutil.make_archive(base, 'zip', STAGE)
         z = base + '.zip'

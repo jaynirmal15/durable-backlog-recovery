@@ -33,7 +33,7 @@ Read-only. Never publishes, never deletes.
   ZENODO_TOKEN=$(security find-generic-password -a "$USER" -s zenodo-live -w) \
     python3 scripts/zenodo_verify.py --deposition-id 123 \
       --stage-dir ~/Jay_NIW/paper2-zenodo \
-      --archive ~/Jay_NIW/paper2-rhc-artifact-1.0.0.zip
+      --archive ~/Jay_NIW/paper2-rhc-artifact-1.0.1.zip
 
   python3 scripts/zenodo_verify.py --self-test    corrupt an entry, prove it fails
 """

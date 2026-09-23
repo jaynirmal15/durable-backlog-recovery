@@ -281,6 +281,12 @@ and no publications.
 
 **The artifact citations** — repository, pre-registration commit `371e477`,
 Zenodo DOI `10.5281/zenodo.22761131`, regression fixture — are cited in §IV's
-reproducibility statement rather than numbered here. **The DOI does not resolve
-until the W6 deposit is published**, which is a hard pre-submission check
-shared with the abstract's "publicly archived" sentence.
+reproducibility statement rather than numbered here. **The DOI resolves:
+published 2026-09-23**, which closes the pre-submission check it shared with
+the abstract's "publicly archived" sentence.
+
+The DOI is not a numbered reference and carries no accessed date, in §IV or
+here. That is deliberate and not an omission: the bibliography holds no
+self-citation and no other Zenodo record, so there is no form in this file to
+match one against, and inventing an accessed date for it would be the only
+such date in the paper.

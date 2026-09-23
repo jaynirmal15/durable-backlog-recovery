@@ -172,8 +172,15 @@ on 2026-09-20 and added none of it.**
 
 ## The other pre-submission assertion check
 
-**The abstract's closing sentence — "publicly archived" — is not yet true.** The
-Zenodo deposit is a W6 task and the reserved DOI must resolve before submission.
-This is a **hard pre-submission check**, not a rewrite: verify the deposit is
-published, then verify this sentence, then submit. If the deposit slips, this
-sentence is false at the moment of submission.
+**The abstract's closing sentence — "publicly archived" — is now true.
+SATISFIED 2026-09-23.** The Zenodo record is published at
+`https://doi.org/10.5281/zenodo.22761131`, which resolves to
+`https://zenodo.org/records/22761131`: version 1.0.0, CC BY 4.0, seven files,
+staged from commit `e22e779`. The check was: verify the deposit is published,
+then verify this sentence, then submit. The first two are done and the
+sentence stands as written; no rewrite was needed.
+
+*(The publication date is Zenodo's own, which is UTC. The commit recording it
+here is dated 2026-09-22 by the repository clock at −0400. Both are correct
+and they differ by the offset, which this project has mistaken for drift three
+times.)*

@@ -1,5 +1,6 @@
 # §4 — Method
 
+*Draft 28 — DEPOSIT PUBLISHED, 2026-09-22. **No body text changes.** The source comment beside §IV-I records the Zenodo record as published 2026-09-23 from commit `e22e779` rather than as a reserved empty draft. The reproducibility statement itself already read "are archived under DOI …" in the present tense, and publication made that true without an edit — which is what reserving the DOI in W2 was for.*
 *Draft 27 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: §IV-B's `vSLO` definition names it the SLO violation fraction. No other change; Draft 26's freeze otherwise stands.*
 *Draft 26 — CUT PASS, increment 2, 2026-09-20. §IV-B and §IV-C are compressed
 and their full text moves, unchanged, to Supplement S1-F; §IV-D and §IV-E are
@@ -369,6 +370,7 @@ counter-example, since fixed: the figures carried a wall-clock creation time
 (S1).
 
 <!-- repo commit, pre-registration 371e477, Zenodo DOI 10.5281/zenodo.22761131
-     (deposition 22761131, reserved 2026-09-14, empty draft; files uploaded and
-     the record published at W6 from the frozen commit, at which point the DOI
-     resolves), fixture tests/fixtures/aug18-regression -->
+     (deposition 22761131, reserved 2026-09-14 on an empty draft so this
+     sentence could cite it; PUBLISHED 2026-09-23 from commit e22e779, seven
+     objects, and the DOI now resolves to zenodo.org/records/22761131),
+     fixture tests/fixtures/aug18-regression -->

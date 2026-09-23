@@ -1,18 +1,25 @@
 # W6 — Zenodo deposit checklist
 
-## The reserved deposit — cite this
+## The published deposit — cite this
 
 | | |
 |---|---|
-| **Reserved DOI** | **`10.5281/zenodo.22761131`** |
+| **Version DOI** | **`10.5281/zenodo.22761131`** |
 | **Deposition ID** | **`22761131`** |
-| State | `unsubmitted` — a draft, not published |
-| Files uploaded | **0**, by design; the package goes up in W6 |
+| State | **published 2026-09-23** (Zenodo's date, UTC) |
+| Resolves to | `https://zenodo.org/records/22761131` |
+| Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-1.0.0.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE` |
+| Version / licence | 1.0.0 / CC BY 4.0 |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
-| Metadata from | git commit `349234c` |
+| Staged from | git commit `e22e779547d19b462627cb06acfd07246c4d58ef` |
 
-This is the DOI §4 cites. **It does not resolve until the record is published**,
-which happens in W6, from the web interface, by hand.
+This is the DOI §4 cites, and **it resolves.** The record was published by hand
+from the web interface, as steps 5 and 6 require.
+
+> **The DOI string never changed.** It was reserved on an empty draft in W2
+> precisely so §4 could cite it while the files were still coming; publication
+> made the same string resolve. Nothing in the manuscript needed a new DOI, and
+> the only edits publication required anywhere were of tense.
 
 An earlier draft, **22740491**, was created during the 2026-09-13 Zenodo outage
 (2026-09-14T02:17:53Z, i.e. 2026-09-13 22:17 −0400) and left broken: three
@@ -140,7 +147,7 @@ manifest is still what a reader verifies against.
 Expect zero missing, zero extra, zero mismatched. Probe objects count as extra
 and must be deleted.
 
-## 6. Publish — without the article DOI, which does not exist yet
+## 6. Publish — without the article DOI, which does not exist yet — DONE 2026-09-23
 
 **Publish the record with the metadata as staged.** Do not wait for the article
 DOI, and do not add `isSupplementTo` now.
@@ -182,13 +189,26 @@ design: a published record cannot be deleted and its files cannot be changed.
 
 ## 7. After publishing
 
-- Check `https://doi.org/<DOI>` resolves to the record.
-- Check the record's file count matches the manifest.
-- Record the published DOI and date in the paper and in the repository.
-- **Carry one item forward to acceptance:** add the `isSupplementTo` relation
-  with the article DOI, per step 6. It is the only part of this checklist that
-  runs after submission, and nothing else will prompt for it — the deposit is
-  finished and the paper is away. Put it wherever acceptance is tracked.
+- **DONE 2026-09-23** — `https://doi.org/10.5281/zenodo.22761131` resolves to
+  `https://zenodo.org/records/22761131`.
+- **DONE 2026-09-23** — the record's file count matches the manifest: seven
+  objects, verified before publication at 815 checks, zero missing, extra,
+  mismatched or unchecked.
+- **DONE 2026-09-23** — the published DOI and date are recorded in the paper
+  (§IV's reproducibility statement already carried the DOI and needed no
+  change; `frontmatter.md` and `references.md` carry the status) and in the
+  repository (`OUTLINE.md`, `W6-PLAN.md` and this file).
+- **STILL OPEN — carried forward to acceptance:** add the `isSupplementTo`
+  relation with the article DOI, per step 6. It is the only part of this
+  checklist that runs after submission, and nothing else will prompt for it —
+  the deposit is finished and the paper is away. Put it wherever acceptance is
+  tracked.
+
+> **This is the one item that outlives the deposit.** Everything else in this
+> checklist is closed. The relation cannot be added until the article has a
+> DOI, which is months away, and adding it is a metadata edit on the published
+> record that Zenodo permits without a new version and without affecting this
+> DOI.
 
 ## Standing constraints
 

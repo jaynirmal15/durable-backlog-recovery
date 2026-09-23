@@ -53,6 +53,7 @@ S1_TITLE_RE = re.compile(r'^##\s+(S1-[A-Z]\.\s+.+?)\s*$')
 # with a starred form and never renumbered by the class.
 S1_SUBTITLE_RE = re.compile(r'^###\s+(S1-[A-Z]\.\d+\s+.+?)\s*$')
 MAX_NESTING = 12                    # bold in a cell, code in bold, italic in code
+BIBITEM_MAX = 600                   # longest real entry is 334; see bibliography()
 
 # Template files the generated article actually needs. The class is used AS
 # SHIPPED -- never edited, because a reviewer's build must match ours.
@@ -1058,8 +1059,21 @@ class Build(object):
         if not starts:
             raise BuildError('references.md has no numbered entries')
         entries = []
+        # WHERE AN ENTRY ENDS. Running to the next entry -- and, for the last
+        # one, to END OF FILE -- put every drafting note in references.md
+        # inside \bibitem{heiser}: the rulings, the numbering discussion, the
+        # distribution table and "waits on Jay" were all typeset on page 20 of
+        # the article as part of reference [14]. An entry now also stops at the
+        # first own-line "---" or "## " after it, which is where the
+        # apparatus begins. Same defect class as the citation inventory that
+        # ran 752 lines instead of 66: a scope that ends at EOF ends nowhere.
+        stops = [mm.start() for mm in
+                 re.finditer(r'^(?:---|## )', text, re.M)]
         for j, m in enumerate(starts):
             end = starts[j + 1].start() if j + 1 < len(starts) else len(text)
+            after = [s for s in stops if s > m.start()]
+            if after:
+                end = min(end, after[0])
             block = text[m.start():end]
             k = re.search(r'<!--\s*marker-key:\s*([A-Za-z0-9._-]+)\s*-->', block)
             if not k:
@@ -1168,6 +1182,14 @@ class Build(object):
              'no source %% was lost in translation')
         want(len(entries) == len(set(k for _, k, _ in entries)),
              'bibliography keys are unique')
+        # A runaway entry scope is silent: the .tex still compiles and the
+        # bibliography still looks like a bibliography. It is caught by size,
+        # because a reference is a sentence or two and a swallowed section is
+        # not. The longest real entry here is 334 characters.
+        longest = max((len(b) for _, _, b in entries), default=0)
+        want(longest <= BIBITEM_MAX,
+             'no bibliography entry runs past its own end (longest %d chars, '
+             'cap %d)' % (longest, BIBITEM_MAX))
         return out
 
     # -- output -----------------------------------------------------------

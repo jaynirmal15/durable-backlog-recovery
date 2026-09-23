@@ -162,10 +162,17 @@ checksum with `zenodo_verify.py`, expect zero missing/extra/mismatched,
 **publish from the web interface by hand** — never from a script, because a
 published record cannot be deleted.
 
-**After publishing, two hard checks, each against a primary source:**
-- `https://doi.org/10.5281/zenodo.22761131` resolves to the published record,
-  which is what makes the abstract's *"publicly archived"* true;
-- the record's file count matches the manifest.
+**After publishing, two hard checks, each against a primary source. BOTH DONE
+2026-09-23:**
+- `https://doi.org/10.5281/zenodo.22761131` resolves to the published record at
+  `https://zenodo.org/records/22761131` — version 1.0.0, CC BY 4.0, published
+  2026-09-23 — which is what makes the abstract's *"publicly archived"* true;
+- the record's file count matches the manifest: seven objects, verified before
+  publication at 815 checks with zero missing, extra, mismatched or unchecked.
+
+**Still open, carried to acceptance:** `DEPOSIT-W6.md` step 7 — add the
+`isSupplementTo` relation with the article DOI, as a metadata edit on the
+published record. Nothing else will prompt for it.
 
 ---
 

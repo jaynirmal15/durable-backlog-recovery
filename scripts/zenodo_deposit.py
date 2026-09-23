@@ -463,8 +463,16 @@ def main():
     print('  DOI        : %s' % doi)
     print('  review at  : %s/deposit/%s'
           % ('https://sandbox.zenodo.org' if a.sandbox else 'https://zenodo.org', dep_id))
-    print('  files      : %d, %.1f MB' % (len(files),
-                                          man['totalBytes'] / 1048576.0))
+    # The SELECTED objects' own bytes, not the staged tree's. These differed
+    # once hybrid mode arrived: the line read "files: 7, 408.2 MB", pairing a
+    # count of seven deposited objects with the size of all 808 staged files,
+    # which is neither what was uploaded nor what the record holds. Labelled
+    # MiB because that is what the divisor produces.
+    print('  files      : %d object(s), %.1f MiB'
+          % (len(files), sum(f['bytes'] for f in files) / 1048576.0))
+    if a.hybrid:
+        print('  staged tree: %d files, %.1f MiB, inside the archive'
+              % (man['fileCount'], man['totalBytes'] / 1048576.0))
     print()
     print('Publishing is irreversible and this script will not do it. Publish from')
     print('the web interface after review.')

@@ -142,7 +142,11 @@ def check_archive_contents(archive, man, r):
         inside = {i.filename: i for i in z.infolist() if not i.is_dir()}
         for path in sorted(set(want) - set(inside)):
             r.missing.append('%s (inside the archive)' % path)
-        for path in sorted(set(inside) - set(want)):
+        # MANIFEST.json is written before the archive and cannot contain its
+        # own hash, so it is legitimately inside the archive and absent from
+        # the list the archive is checked against. Its own integrity is
+        # checked where it can be: as one of the individual objects.
+        for path in sorted(set(inside) - set(want) - {'MANIFEST.json'}):
             r.extra.append('%s (inside the archive)' % path)
         for path, w in sorted(want.items()):
             info = inside.get(path)

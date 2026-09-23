@@ -116,14 +116,48 @@ publication by contacting support."* A new version is the documented route,
 and unlike deletion it is reversible in the only sense that matters — nothing
 is destroyed and v1.0.0 stays citable.
 
-**What did not change.** No data, no code, no results, and no
-pre-registration text. In the article, the only body text that differs is the
-artifact-citation sentence in §IV-I, which now names the concept DOI and the
-version; the supplement's equivalent sentence in S1-C changed the same way.
-Page 20 differs only by the removal of the drafting apparatus described above.
+**What did not change, measured by diffing v1.0.0's manifest against this
+one — not asserted.** Every file under `results/` (521), `traces/` (205),
+`figures/` (10), `harness/` (4) and `tests/` (2) is **byte-identical**, and so
+is `PRE-REGISTRATION.md` and `LICENSE`. **No data, no per-request traces, no
+results, no run records, no analysis code, no figure generators, no regression
+fixture and no pre-registration text.** Of the 62 files under `scripts/`, **53
+are byte-identical**, including every analysis script and every figure and
+table generator — `make_figures.py`, `make_table2/3/4.py`, `e2e_analysis.py`,
+`capacity_calibration.py`, `locate_boundary.py` and the rest.
 
-**What was rebuilt.** Both PDFs, because both carry the DOI in their text.
+**What did change, in full.** One file added and eleven changed:
+
+    added    scripts/test_zenodo_guard.py
+
+    changed  article.pdf            548234 -> 544934
+             supplement-S1.pdf      362084 -> 362257
+             README.md                3687 -> 6237     (this file)
+             scripts/build_article.py
+             scripts/check_manuscript.py
+             scripts/make_deposit.py
+             scripts/promotion_scan.py
+             scripts/section_wordcount.py
+             scripts/test_check_manuscript.py
+             scripts/zenodo_deposit.py
+             scripts/zenodo_verify.py
+
+**The nine files under `scripts/` are the manuscript-build and deposit
+tooling, and they are the substance of this version rather than noise beside
+it.** The defect that made v1.0.1 necessary was a defect in exactly that
+tooling: `build_article.py` ended the last bibliography entry at end of file.
+Fixing it, and fixing the same shape wherever else it appeared, is what these
+diffs are. The deposit tooling changed alongside because this version is also
+how the replacement was carried out. None of it touches how a reported number
+is computed — every script that computes one is byte-identical.
+
+**Both PDFs were rebuilt**, because both carry the DOI in their text.
 `MANIFEST.json` and the archive follow from them.
+
+**The archive was renamed** from `paper2-rhc-artifact-1.0.0.zip` to
+`paper2-rhc-artifact-1.0.1.zip`, so that its name matches the version it
+belongs to. Nothing went missing: a reader comparing the two file lists sees
+one name replace the other, not a deletion and an unexplained addition.
 
 **Toolchain, and why the PDFs are not reproducible byte-for-byte.** v1.0.1 was
 compiled with pdfTeX 1.40.25; v1.0.0 with pdfTeX 1.40.22. pdfTeX embeds a

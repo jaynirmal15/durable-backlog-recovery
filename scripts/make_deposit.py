@@ -90,6 +90,51 @@ README = """# Recovery Headroom Control — measurement artifact v1.0.0
 Everything needed to check the reported numbers, and to re-derive them from the
 raw per-request traces.
 
+## Replacement note — 2026-09-23
+
+**All dates in this note are UTC.** The repository clock runs at −0400, so both
+the original publication and this replacement are 23 September UTC and 22
+September locally; they are the same two events under two clocks, not four.
+
+The files in this record were replaced in place on 2026-09-23, within Zenodo's
+30-day window. **The DOI is unchanged and resolves to the same record.** Zenodo
+shows no version history for an in-place file edit, so this note exists to
+explain why three digests differ from the ones published earlier the same day.
+
+**What changed.** `article.pdf` was recompiled. The earlier PDF carried a build
+defect: the last bibliography entry had no end bound, so reference [14]
+absorbed 726 words of drafting apparatus from the source file and typeset it in
+the right column of page 20. The count is measured from the typeset page. The
+defect was in the build script, not in the manuscript.
+
+**What did not change.** No data, no code, no results, no pre-registration
+text, and **no article body text**. The absorbed words were never part of the
+article. `supplement-S1.pdf` is unchanged and its checksum is the same as at
+first publication. The article is 20 pages in both builds: the absorbed text
+sat above the biography in the same column and never cost a page.
+
+**Which objects moved.** `article.pdf`, `MANIFEST.json` — which records
+`article.pdf`'s SHA-256 — and `paper2-rhc-artifact-1.0.0.zip`, which contains a
+copy of `article.pdf`. The other four objects are untouched.
+
+**Commits.** The superseded package was staged from
+`e22e779547d19b462627cb06acfd07246c4d58ef`. The defect was fixed at
+`79aaa680d15f0c4bf33e903f4962d4df0f796c30`, which is the build that produced
+the replacement PDF. The exact commit this package was staged from is recorded
+in `MANIFEST.json` as `gitCommit`; `build/access/article.tex` is byte-identical
+between that commit and the fix commit.
+
+**Toolchain, and why the PDF is not reproducible byte-for-byte.** The
+replacement `article.pdf` was compiled with pdfTeX 1.40.25; the superseded one
+with pdfTeX 1.40.22. pdfTeX embeds a creation timestamp and a document
+identifier, so no two builds of the same `.tex` are ever byte-identical, even
+on one machine with one toolchain. **`MANIFEST.json` therefore hashes the file
+that ships, not a rebuild of it.** A reader checking the manifest should hash
+the delivered file; re-compiling the `.tex` will reproduce the layout and the
+text but not the bytes.
+
+---
+
 ## How this record is stored
 
 Zenodo stores this deposit as **seven objects**, because its file API will not

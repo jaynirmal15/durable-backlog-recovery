@@ -28,12 +28,19 @@ import time
 import urllib.error
 import urllib.request
 
+class WouldWrite(Exception):
+    """A read-only path tried to issue a write. Never caught; always fatal."""
+
+
 LIVE = 'https://zenodo.org/api'
 SANDBOX = 'https://sandbox.zenodo.org/api'
 CHUNK = 1 << 20
 
 
 RETRY_STATUS = (0, 429, 500, 502, 503, 504)
+
+
+READ_ONLY = [False]             # set while --plan-only runs; see WouldWrite
 
 
 def request(url, token, method='GET', payload=None, body=None, ctype=None,
@@ -45,6 +52,13 @@ def request(url, token, method='GET', payload=None, body=None, ctype=None,
     5xx partway through is likely rather than exceptional. A body that is a file
     object is re-opened per attempt, since a consumed stream cannot be replayed.
     """
+    # READ-ONLY IS ENFORCED HERE, not promised by each caller. Every request
+    # in this module goes through this function, so a write attempted while
+    # the flag is set cannot reach the network -- including one added later by
+    # someone who did not read the docstring of the mode they were editing.
+    if READ_ONLY[0] and method != 'GET':
+        raise WouldWrite('%s %s attempted in a read-only mode'
+                         % (method, url.split('?')[0]))
     path = None
     if hasattr(body, 'read'):
         path = body.name
@@ -171,6 +185,107 @@ def legacy_put(base, token, dep_id, key, path, verbose=False):
 
 
 EDIT_WINDOW_DAYS = 30           # Zenodo's self-service file-edit window
+
+
+def read_only(base, token, path):
+    """GET, and nothing but GET.
+
+    --plan-only must be provably read-only, so it cannot reach `api()` at all:
+    it goes through here, and this refuses any verb but GET by construction
+    rather than by care. A read-only mode that merely "does not happen to
+    write" is a promise; one that cannot express a write is a property.
+    """
+    st, body = request(base + path, token, 'GET')
+    return st, body
+
+
+def plan_only(base, token, dep_id, stage_dir, archive):
+    """Print what a replacement WOULD change. Read-only, and always non-zero.
+
+    It exists because conditions 5 and 6 of --publish-edit are post-upload
+    facts -- the record holding the staged sizes, and zenodo_verify passing
+    against it -- so a gate built from them cannot fire before the upload.
+    This gate can: it compares the record as it is now against the staging as
+    it is now, and asks a person to rule before anything moves.
+
+    IT SATISFIES NO PRECONDITION OF --publish-edit. It writes no flag file,
+    caches nothing, and shares no state with it. Running this does not make
+    the next command easier, and that is deliberate: a review step that
+    unlocks something is a step people learn to skip.
+    """
+    if not os.path.isdir(stage_dir):
+        print('stage directory not found: %s' % stage_dir)
+        return 1
+    if not (archive and os.path.isfile(archive)):
+        print('archive not found: %s' % archive)
+        return 1
+
+    READ_ONLY[0] = True
+    try:
+        return _plan(base, token, dep_id, stage_dir, archive)
+    finally:
+        READ_ONLY[0] = False
+
+
+def _plan(base, token, dep_id, stage_dir, archive):
+    st, dep = read_only(base, token, '/deposit/depositions/%s' % dep_id)
+    if st != 200:
+        print('cannot read deposition %s: status %s' % (dep_id, st))
+        return 1
+    st, files = read_only(base, token,
+                          '/deposit/depositions/%s/files' % dep_id)
+    if st != 200 or not isinstance(files, list):
+        print('cannot read the file list: status %s' % st)
+        return 1
+
+    live = {}
+    for f in files:
+        live[f.get('filename') or f.get('key')] = (
+            int(f.get('filesize') or f.get('size') or 0),
+            (f.get('checksum') or '').replace('md5:', ''))
+
+    staged = {}
+    for name in HYBRID_INDIVIDUAL:
+        fp = os.path.join(stage_dir, name)
+        staged[name] = ((os.path.getsize(fp), md5_of(fp))
+                        if os.path.isfile(fp) else (None, None))
+    staged[os.path.basename(archive)] = (os.path.getsize(archive),
+                                         md5_of(archive))
+
+    doi = dep.get('doi') or ((dep.get('metadata') or {}).get('doi')) or '(none)'
+    print('PLAN ONLY -- read-only, nothing was sent, nothing is unlocked.')
+    print()
+    print('deposition %s   DOI %s' % (dep_id, doi))
+    print('state %r   submitted %s   published %s'
+          % (dep.get('state'), dep.get('submitted'),
+             (dep.get('metadata') or {}).get('publication_date')))
+    print()
+    keys = sorted(set(live) | set(staged))
+    print('%-32s %12s %-34s %s' % ('key', 'bytes', 'md5', 'verdict'))
+    replace = 0
+    for k in keys:
+        lsz, lmd5 = live.get(k, (None, None))
+        ssz, smd5 = staged.get(k, (None, None))
+        if lsz is None:
+            verdict = 'ADD -- not on the record'
+        elif ssz is None:
+            verdict = 'NOT STAGED -- would be left as is'
+        elif (lsz, lmd5) == (ssz, smd5):
+            verdict = 'unchanged'
+        else:
+            verdict = 'REPLACE'
+            replace += 1
+        print('%-32s %12s %-34s   live' % (k, lsz if lsz is not None else '-',
+                                           lmd5 or '-'))
+        print('%-32s %12s %-34s   staged -> %s'
+              % ('', ssz if ssz is not None else '-', smd5 or '-', verdict))
+    print()
+    print('%d of %d object(s) would be replaced.' % (replace, len(keys)))
+    print()
+    print('Nothing has been sent. This mode issues GET only and always exits')
+    print('non-zero, so it can never read as success and can never stand in')
+    print('for the checks --publish-edit makes against real uploaded state.')
+    return 1
 
 
 def publish_edit(base, token, dep_id, expect_doi, stage_dir, archive,
@@ -424,6 +539,10 @@ def main():
     ap.add_argument('--expect-doi',
                     help='the DOI the record must already hold; a precondition '
                          'checked against a fresh read, not an attestation')
+    ap.add_argument('--plan-only', type=int, metavar='ID',
+                    help='print what a replacement would change, GET only, '
+                         'always exits non-zero. Satisfies no precondition of '
+                         '--publish-edit.')
     ap.add_argument('--confirm', action='store_true',
                     help='with --publish-edit, actually publish the edit')
     ap.add_argument('--verbose', action='store_true', default=True)
@@ -434,6 +553,14 @@ def main():
         print('ZENODO_TOKEN is not set in this process environment. Nothing was sent.')
         return 2
     base = SANDBOX if a.sandbox else LIVE
+
+    if a.plan_only:
+        if not (a.stage_dir and a.archive):
+            print('--plan-only requires --stage-dir and --archive.')
+            return 1
+        return plan_only(base, token, a.plan_only,
+                         os.path.expanduser(a.stage_dir),
+                         os.path.expanduser(a.archive))
 
     if a.publish_edit:
         if not a.expect_doi:

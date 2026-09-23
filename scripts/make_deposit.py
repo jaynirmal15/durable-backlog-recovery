@@ -113,9 +113,11 @@ article. `supplement-S1.pdf` is unchanged and its checksum is the same as at
 first publication. The article is 20 pages in both builds: the absorbed text
 sat above the biography in the same column and never cost a page.
 
-**Which objects moved.** `article.pdf`, `MANIFEST.json` — which records
-`article.pdf`'s SHA-256 — and `paper2-rhc-artifact-1.0.0.zip`, which contains a
-copy of `article.pdf`. The other four objects are untouched.
+**Which objects moved: four of the seven.** `article.pdf`; `MANIFEST.json`,
+which records `article.pdf`'s SHA-256; `paper2-rhc-artifact-1.0.0.zip`, which
+contains a copy of `article.pdf`; and `README.md` — this file, because it
+carries this note. `LICENSE`, `PRE-REGISTRATION.md` and `supplement-S1.pdf`
+are byte-identical to first publication.
 
 **Commits.** The superseded package was staged from
 `e22e779547d19b462627cb06acfd07246c4d58ef`. The defect was fixed at

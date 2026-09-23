@@ -311,5 +311,113 @@ class WhyCheckFiveExists(unittest.TestCase):
         self.assertIsNone(pat.search('[@little]'))
 
 
+
+
+class CrossReferenceCase(unittest.TestCase):
+    """Check 6: literal float references and dangling section references.
+
+    The defect it was written for shipped. SS-VI-C said "Table 8" through the
+    cut pass, the deposit and a published Zenodo record, because check 5 looks
+    only at keyed references and a literal is the one kind that can go stale.
+    Three more had gone the same way in Supplement S1's headings. Each test
+    plants one of those four shapes.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix='checkxref-')
+        for d in ('paper', 'figures'):
+            shutil.copytree(os.path.join(ROOT, d), os.path.join(self.tmp, d))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def read(self, rel):
+        with open(os.path.join(self.tmp, rel), encoding='utf-8') as fh:
+            return fh.read()
+
+    def edit(self, rel, old, new):
+        text = self.read(rel)
+        self.assertEqual(text.count(old), 1,
+                         'fixture drift: %r appears %d times in %s'
+                         % (old, text.count(old), rel))
+        with open(os.path.join(self.tmp, rel), 'w', encoding='utf-8') as fh:
+            fh.write(text.replace(old, new))
+
+    def problems(self):
+        return '\n'.join('%s %s' % p for p in C.cross_references(self.tmp))
+
+    def test_clean_tree_is_clean(self):
+        self.assertEqual(C.cross_references(self.tmp), [])
+
+    def test_literal_float_reference_is_reported(self):
+        self.edit(os.path.join('paper', 'section6.md'),
+                  'The factors that appear in §IX-D and Supplement',
+                  'The factors that appear in Table 8 and Supplement')
+        self.assertIn('literal float reference', self.problems())
+
+    def test_section_that_does_not_exist_is_reported(self):
+        self.edit(os.path.join('paper', 'section6.md'),
+                  'The reportable statement is about detectability',
+                  'As §XI shows. The reportable statement is about detectability')
+        self.assertIn('no section XI', self.problems())
+
+    def test_subsection_removed_by_the_cut_is_reported(self):
+        self.edit(os.path.join('paper', 'section6.md'),
+                  'The reportable statement is about detectability',
+                  'As §V-G shows. The reportable statement is about detectability')
+        self.assertIn('§V-G', self.problems())
+
+    def test_marker_exempts_historical_text(self):
+        self.edit(os.path.join('paper', 'section6.md'),
+                  'The factors that appear in §IX-D and Supplement',
+                  '<!-- xref-ok: quoting the retired number -->\n'
+                  'The factors that appear in Table 8 and Supplement')
+        self.assertEqual(C.cross_references(self.tmp), [])
+
+    def test_apparatus_in_the_captions_file_is_not_scanned(self):
+        # The header legitimately says "Fig. 2" while explaining the keying
+        # rule. Scanning it would force an exemption on apparatus, which is how
+        # a check stops meaning anything.
+        self.assertNotIn('CAPTIONS.md', self.problems())
+
+
+class RetiredAggregatePhrases(unittest.TestCase):
+    """B1: "within 1%" and "within 0.7%" as seven-cell formulations.
+
+    SS-VI-B's own policy sentence forbids a range spanning the seven cells, and
+    four places asserted one anyway. Both adversarial reviews found it
+    independently, which is what a phrase list is for.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix='checkagg-')
+        shutil.copytree(os.path.join(ROOT, 'paper'),
+                        os.path.join(self.tmp, 'paper'))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.path = os.path.join(self.tmp, 'paper', 'section10.md')
+
+    def plant(self, text, marker=''):
+        with open(self.path, encoding='utf-8') as fh:
+            body = fh.read()
+        old = 'lay at or near measured service'
+        self.assertEqual(body.count(old), 1)
+        with open(self.path, 'w', encoding='utf-8') as fh:
+            fh.write(body.replace(old, marker + text))
+
+    def test_retired_phrases_are_in_the_list(self):
+        listed = [p for p, _ in C.WITHDRAWN]
+        self.assertIn('within 1%', listed)
+        self.assertIn('within 0.7%', listed)
+
+    def test_live_occurrence_fails(self):
+        self.plant('lay within 1% of measured service')
+        hits = C.phrase_hits(self.path, True)
+        self.assertTrue(any(h[2] == 'within 1%' for h in hits), hits)
+
+    def test_marked_historical_occurrence_passes(self):
+        self.plant('lay within 1% of measured service',
+                   '<!-- withdrawn-quote-ok: historical -->\n')
+        hits = C.phrase_hits(self.path, True)
+        self.assertFalse([h for h in hits if h[2] == 'within 1%'], hits)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

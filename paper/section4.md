@@ -1,5 +1,7 @@
 # §4 — Method
 
+*Draft 30 — TWO-REVIEW REVISION, 2026-09-23. A3: the excess above unity in the two highest cells is 0.06 and 0.08 of a bisection step, not "about a fifth". A fifth was imported from E2D-REPORT, where 0.18 and 0.14 of a step describe different cells falling short of 1.0.*
+
 *Draft 29 — CONCEPT DOI, 2026-09-23. §IV-I cites `10.5281/zenodo.22761130`, the **concept** DOI, naming the version in the sentence: "archived as version 1.0.1 under DOI …". The version DOI was replaced because once IEEE Access publishes, the DOI printed in the paper is frozen permanently, and a version DOI would leave that paper pointing at a superseded artefact with no edit available. Byte-pinning is unaffected — `MANIFEST.json` and the pre-registration commit do that — and naming the version tells a reader which entry in the Versions panel to open. **This is the only change: one DOI and the four words around it.***
 *Draft 28 — DEPOSIT PUBLISHED, 2026-09-22. **No body text changes.** The source comment beside §IV-I records the Zenodo record as published 2026-09-23 from commit `e22e779` rather than as a reserved empty draft. The reproducibility statement itself already read "are archived under DOI …" in the present tense, and publication made that true without an edit — which is what reserving the DOI in W2 was for.*
 *Draft 27 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: §IV-B's `vSLO` definition names it the SLO violation fraction. No other change; Draft 26's freeze otherwise stands.*
@@ -258,7 +260,7 @@ over all repetitions they reach 1.0002, and over the first three neither exceeds
 **`C_measured` is a normalisation reference, not an imposed ceiling.** Numerator
 and denominator are both measurements, so a safe-side ratio may read slightly
 above 1.0 without implying service beyond a known physical bound. The excess in
-those two cells is about a fifth of a bisection step, below the experiment's
+those two cells is 0.06 and 0.08 of a bisection step, below the experiment's
 resolution. For the same reason **no `[ρ_safe, 1]` interval is constructed**, and
 no cell is described as degenerate or pinned at saturation: A6's registered text
 frames the report as an interval up to a cell ceiling, which assumes

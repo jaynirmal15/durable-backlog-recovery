@@ -97,9 +97,10 @@ of configured capacity and then as a fraction of the capacity that cell was
 measured to have. Both use the maximum achieved rate across that point's
 repetitions, the per-cell value §IV defines for this figure. Against the
 configured value the boundaries span 0.0719 and appear to separate by
-concurrency arm; against measured capacity they close to 0.0071, and every cell
-sits within 0.7% of saturation — two of them fractionally above it, by about a
-fifth of a bisection step, which §IV explains. The apparent variation in safe
+concurrency arm. After normalisation by measured capacity, the between-cell
+spread is 0.0071. For the two cells defining that spread, E2b's bisection
+resolution of 0.0127 exceeds the residual; the boundary is therefore reported as
+at or near measured capacity, not as a shared percentage range. The apparent variation in safe
 utilisation is an artefact of a capacity figure that is wrong by a different
 amount in each cell.
 <!-- caption:fig:collapse:end -->

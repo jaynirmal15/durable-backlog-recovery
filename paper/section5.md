@@ -1,5 +1,7 @@
 # §5 — The calibration defect
 
+*Draft 26 — TWO-REVIEW REVISION, 2026-09-23. A4: the measured difference is −0.0052 ms, the difference of the unrounded means; −0.0051 is what differencing the table's displayed values gives, and both are now stated. A5: 99.81% and 1.29 µs were two different partitions — the remainder of δ is 0.98 µs, and 1.29 µs adds the timer read, which is measured outside δ. B2: §V-C's "δ is not a single number and is never reported as one" is narrowed to the measurements it describes.*
+
 *Draft 25 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: "interquartile range (IQR)" pairs the acronym in §V-C before Table 4's IQR column, and §V-D's single "RMS" becomes "root-mean-square". No other change.*
 *Draft 24 — CUT PASS, review fixes applied; see the approval note below. Originally Draft 23 — CUT PASS, increment 7, 2026-09-20, the last authorised cut. §V
 compressed from ~2,710 to ~1,900 words against the reviewer's content floor,
@@ -94,11 +96,14 @@ below that scale, and does not claim to.
 **The cost is approximately service-time-independent over the tested fivefold
 range.** At 90% of capacity a constant cost predicts
 `excess(25 ms) − excess(5 ms) = 0` and a proportional one a ratio of five. The
-measured difference is **−0.0051 ms** and the measured ratio is **0.990**, the
-residual running *opposite* to what proportionality requires. **It is almost
+measured difference is **−0.0052 ms** and the measured ratio is **0.990**, the
+residual running *opposite* to what proportionality requires. (Differencing the
+two values as [@tab:delta-conditions] displays them gives −0.0051; −0.0052 is
+the difference of the unrounded means, 0.516544 and 0.511366 ms.) **It is almost
 entirely timer overshoot**: the runtime's late return accounts for **99.81%** of
-the excess at `S` = 5 ms and 99.79% at 25 ms, with queue and slot bookkeeping and
-the completion signal together contributing 1.29 and 1.38 µs. The attribution is
+the excess at `S` = 5 ms and 99.79% at 25 ms, leaving 0.98 and 1.05 µs of queue
+and slot bookkeeping and the completion signal. The timer read is measured
+outside `δ`; adding it brings those remainders to 1.29 and 1.38 µs. The attribution is
 not condition-free — at saturation the long arm falls to 99.75% — and every
 figure is quoted with its load condition, as every `δ` in this paper is.
 [@fig:overhead] carries the decomposition and the constant-versus-proportional
@@ -106,7 +111,8 @@ test.
 
 ### C. One cost, three values, two instruments
 
-`δ` is not a single number and is never reported as one. The **direct timing
+`δ` is not a single condition-independent number in these measurements, and no
+unqualified single value is claimed. The **direct timing
 probe** measured it under three conditions, and the reported estimate decreases
 across them ([@tab:delta-conditions]):
 

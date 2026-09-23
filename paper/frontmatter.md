@@ -56,9 +56,8 @@ by a chosen number, adjusted after it goes wrong.
 
 We locate that boundary empirically. Across seven cells spanning two service
 times, three configured capacities, two admission limits and four concurrency
-levels, the safe drain boundary lay within one percent of measured service
-capacity and was indistinguishable from capacity itself at the experiment's
-resolution. Varying the latency objective produced no resolvable movement where
+levels, the safe drain boundary lay at or near measured service capacity and was
+indistinguishable from it at each cell's experimental resolution. Varying the latency objective produced no resolvable movement where
 the question is well posed.
 
 That result depends on an empirically validated capacity reference rather than

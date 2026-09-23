@@ -1,5 +1,7 @@
 # §3 — The harness, the capacity model, and its error model
 
+*Draft 16 — TWO-REVIEW REVISION, 2026-09-23. A6: §III-A names the execution environment — instance type, CPU, memory, kernel, Go and Docker versions — read from the platform block every run record carries, identical across all 171 runs behind the seven cells. The paper had attributed the bias to "this host and this Go runtime" without naming either.*
+
 *Draft 15 — CUT PASS, review fixes applied; see the approval note below. Originally Draft 14 — CUT PASS, increment 4, 2026-09-20, under the reviewer's 18-page
 authorisation. §III compressed from ~1,700 to ~1,200 words. Kept: the four
 services, open-loop rate-limited recovery with no within-run controller,
@@ -60,6 +62,12 @@ recovery rate limit `r_l` to that class only, and issues the work request to the
 *downstream*, recording the class, latency, status and message age. A *live
 injector*, running inside the runner, issues open-loop HTTP requests at its own
 configured rate directly to the downstream, never through the broker.
+
+**The execution environment.** Every run reported here ran on one AWS EC2
+`c6i.2xlarge` instance — 8 vCPUs of Intel Xeon Platinum 8375C at 2.90 GHz,
+15.3 GB of memory — under Linux kernel `7.0.0-1012-aws` on `linux/amd64`, with
+Go 1.25.3 and Docker 29.1.3. Every run record carries this block, and it is
+identical across all 171 runs behind the seven cells.
 
 **The recovery path is open-loop rate-limited.** `r_l` is fixed for the duration
 of each run and varied between runs by the boundary search; no within-run feedback

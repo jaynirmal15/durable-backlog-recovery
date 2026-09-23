@@ -200,13 +200,19 @@ MATH = {
     '-0.006': r'-0.006',
     'h = (ρ*_E2b − ρ10) / D':
         r'h = (\rho^{*}_{\mathrm{E2b}} - \rho_{10}) \mathbin{/} D',
-    'h = (0.98 − 0.9137) / 0.0689 = +0.980':
-        r'h = (0.98 - 0.9137) \mathbin{/} 0.0689 = +0.980',
+    # The operand is the UNROUNDED rho* midpoint. 0.98 gives 0.962, not 0.980:
+    # a rounded operand printed beside an unrounded result made the article
+    # state a false identity. Corrected 2026-09-23.
+    'h = (0.98125 − 0.9137) / 0.0689 = +0.980':
+        r'h = (0.98125 - 0.9137) \mathbin{/} 0.0689 = +0.980',
 }
 
 TEXTTT = {
     'trueCapacity', 'startedAt', 'results/E1B-PLAN.md', '"unknown"',
     '10.5281/zenodo.22761130', 'CAP-DRIVEN',
+    # SS-III-A, added 2026-09-23: the execution environment, read from the
+    # platform block every run record carries.
+    'c6i.2xlarge', '7.0.0-1012-aws', 'linux/amd64',
 }
 # Only spans the converted text actually uses are listed. Entries kept "just
 # in case" rot: they assert a rendering nobody checks, and they hide which

@@ -1,5 +1,7 @@
 # §10 — Conclusion
 
+*Draft 4 — TWO-REVIEW REVISION, 2026-09-23. B1: the headline retires "within 1%". B4: the prescription is scoped to this harness, keeping the sentence that declines to decide between external calibration and online inference.*
+
 *Draft 3 — SCIENCE FROZEN, copy edit only. 2026-09-20. "overstated its own
 service capacity **by** a per-request timing bias of 0.463 ms" put a throughput
 overstatement and a time quantity in the same measure; it is now "**because
@@ -41,8 +43,8 @@ measurement reviewer is likeliest to value it. Source comments strip in W6.*
 
 ## 10. CONCLUSION
 
-**Across seven cells the safe drain boundary lay within 1% of measured service
-capacity, and was indistinguishable from capacity itself at the experiment's
+**Across seven cells the safe drain boundary lay at or near measured service
+capacity and was indistinguishable from it at each cell's experimental
 resolution.** The cells span two service times, three configured capacities, two
 admission limits and four concurrency levels. Varying the latency objective over
 the range where the question is well posed moved the boundary by no resolvable
@@ -64,10 +66,11 @@ phenomenon under study, generate a stable but false second-order effect, survive
 deliberate falsification, and invalidate conclusions about which signals are
 usable for control.**
 
-The practical consequence is narrow and follows directly: a recovery controller
-requires a capacity estimate that has been empirically validated, and cannot
-treat a configured or nominal figure as ground truth when its operating margin
-is smaller than the calibration error in that figure. Whether the estimate
+The practical implication is methodological: in this harness, interpreting a
+sub-percent recovery margin required a capacity reference validated against
+observed throughput rather than the configured parameter. More generally, a
+configured capacity figure should not be treated as ground truth when its
+calibration error is unknown or comparable to the operating margin. Whether the estimate
 should be supplied by external calibration or inferred online is not settled
 here. One measurement bears on it without deciding it: the per-request cost is
 not fixed but varies with offered load, so an offline benchmark would itself

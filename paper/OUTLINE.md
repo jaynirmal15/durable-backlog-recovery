@@ -569,9 +569,18 @@ them. Every one is constrained by the resolution analysis.
 
 **Headline (abstract, §1, §10):**
 
-> Across seven cells the safe drain boundary lay within 1% of *measured*
-> service capacity, and was indistinguishable from capacity itself at the
-> experiment's resolution.
+> Across seven cells the safe drain boundary lay at or near *measured* service
+> capacity and was indistinguishable from it at each cell's experimental
+> resolution.
+
+<!-- withdrawn-quote-ok: the prohibition itself names both retired phrases -->
+**"Within 1%" and "within 0.7%" are struck as seven-cell formulations**
+(2026-09-23, both adversarial reviews, independently). They assert a shared
+precision across cells that §VI-B's own policy sentence denies — "no range
+spanning the seven is quoted: they do not share a precision, and a range would
+assert one they do not have." A percentage range is such a range. The
+replacement says *at or near*, and defers precision to each cell. The checker
+rejects live occurrences of either phrase; historical text must be marked.
 
 <!-- withdrawn-quote-ok: the prohibition itself, and its rationale quotes the word -->
 **"Statistically" is struck.** The indistinguishability argument rests on
@@ -586,8 +595,8 @@ level," a fight the paper does not need and §4 does not equip it for.
 comes from E2b at C = 400 — the one cell the precision rule restricts to two
 decimals — so any range spanning the cells mixes precisions and asserts one the
 cells do not share. §VI reports per-cell values at each cell's own resolution in
-Table 2 instead. Four decimals were never warranted: 0.9999 differs from 1.0000 by a
-fiftieth of a bisection step.
+the resolution table instead. Four decimals were never warranted: 0.9999 differs
+from 1.0000 by about a twenty-fifth of a bisection step in the finest cells.
 
 **The collapse (F5 caption, §6):**
 
@@ -743,7 +752,7 @@ named in a section's header.
 
 ## §1 Introduction — 1,600 words
 
-<!-- plan-synced-to: section1 draft 19 -->
+<!-- plan-synced-to: section1 draft 20 -->
 
 Four moves:
 
@@ -772,7 +781,7 @@ there a seven-cell campaign in a methods paper."*
 
 ## §2 Background and related work — 1,400 words
 
-<!-- plan-synced-to: section2 draft 9 -->
+<!-- plan-synced-to: section2 draft 10 -->
 
 <!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work
@@ -875,7 +884,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §3 The harness, the capacity model, and its error model — 1,700 words, F1 + F2
 
-<!-- plan-synced-to: section3 draft 15 -->
+<!-- plan-synced-to: section3 draft 16 -->
 
 - **Architecture — get the live path right; this contradicted §4 for six review
   rounds.** Producer publishes to JetStream throughout, including after
@@ -927,7 +936,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 29 -->
+<!-- plan-synced-to: section4 draft 30 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval
@@ -968,7 +977,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §5 The calibration defect — 2,750 words, F3 + F4
 
-<!-- plan-synced-to: section5 draft 25 -->
+<!-- plan-synced-to: section5 draft 26 -->
 
 **Open with motivation, ~250 words.** Three candidate explanations appeared in
 sequence; each was pre-registered and each had a falsification test designed
@@ -1087,7 +1096,7 @@ caught in review and must not reappear.
 
 ## §6 The corrected boundary — 1,550 words, F5 + T2
 
-<!-- plan-synced-to: section6 draft 10 -->
+<!-- plan-synced-to: section6 draft 11 -->
 
 **Name the quantity the first time a per-cell ρ_eff appears**, before the
 figure: it is the achieved utilisation of the last SAFE point against measured
@@ -1430,7 +1439,7 @@ anywhere.) That is the implication paragraph, and it leads into §9.
 
 ## §9 Threats to validity — 1,650 words
 
-<!-- plan-synced-to: section9 draft 7 -->
+<!-- plan-synced-to: section9 draft 8 -->
 
 **SIX VALIDITY CATEGORIES PLUS A CLOSING FUTURE-WORK SUBSECTION — seven
 labelled, A to G. Ruled at the §9 review and settled.** (v8.5 and v8.6 both said
@@ -1632,7 +1641,7 @@ Every item phrased as a finding. No apologies.
 
 ## §10 Conclusion — 460 words
 
-<!-- plan-synced-to: section10 draft 3 -->
+<!-- plan-synced-to: section10 draft 4 -->
 
 Margin, trap, consequence — one sentence each, in claim-register wording.
 Then: the result depends on an **empirically validated capacity reference**
@@ -1709,6 +1718,8 @@ likely to value.
 | W6 Oct 20–26 | Final pass. **Re-stage the Zenodo package from the frozen commit, upload, verify, publish — DONE 2026-09-23.** Staged from `e22e779`, uploaded as a hybrid deposit (one archive holding the tree with its paths, six flat objects beside it, because Zenodo refuses a key containing a slash), verified at 815 checks with zero missing/extra/mismatched/unchecked, published by hand. **The pre-submission item "the DOI must resolve before submission" is CLOSED — but not by the statement it originally made.** As written, the check asked whether a DOI resolved, and on 2026-09-23 `10.5281/zenodo.22761131` did. That turned out to be the weaker question: the record it resolved to carried the bibliography bleed, so a DOI that resolved was resolving to a defective artifact, and the check would have passed anyway. What closes it now is stronger and differently shaped: **the article cites the CONCEPT DOI `10.5281/zenodo.22761130`, which follows the version chain to whatever is newest, and that chain now lands on v1.0.1 — a clean artifact.** Verified 2026-09-23 from the API: 302 → 302 → HTTP 200 at `https://zenodo.org/records/22923220`, record state `done`, version `1.0.1`, licence `cc-by-4.0`, seven objects, and `zenodo_verify.py` against the published record reporting 816 verified with zero missing, extra, wrong-size, wrong-hash or unchecked. `10.5281/zenodo.22761131` still returns 200, so v1.0.0 stays citable; a new version supersedes rather than withdraws. The distinction is worth keeping: the check now guarantees that the cited DOI tracks the corrected artifact, which is not what a one-time resolution test could ever have guaranteed. Caveat recorded rather than glossed: the v1.0.1 VERSION DOI `10.5281/zenodo.22923220` is not yet registered at DataCite and 404s at doi.org — Zenodo's minting lag, and nothing the article cites depends on it. Two items are carried past submission to acceptance: `DEPOSIT-W6.md` step 7, the `isSupplementTo` relation, which waits on the article DOI; and the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission cosmetic left in the deposited PDF. Metadata to complete first: `description`, `related_identifiers` (repo URL, Paper 1's `10.5281/zenodo.22061184`), licence note covering `scripts/`, title naming the paper. **Hard pre-submission checks, each verified against a primary source and not against this outline:** (1) the abstract's "publicly archived" is true — the DOI resolves to a published record; (2) ~~the biography's first degree~~ **CLOSED 2026-09-20: the author confirmed the B.E.; the manuscript already reads B.E. and needs no change. The iCloud CV that says "B.S." is corrected separately so the question cannot reopen.** This row carries the check because the biography's editorial note is stripped before submission. Then submit. |
 | W6 — **DEFECT: the bibliography bleed, and it shipped** | **What it was:** `bibliography()` in `build_article.py` ended each reference at the start of the next one and the LAST reference at end of file, so `\bibitem{heiser}` swallowed everything below the entries in `references.md`. **What it did:** 726 words of drafting apparatus were typeset inside reference [14], in the right column of page 20 — the draft-2 rulings, "reversing my draft 1 inclination", the reference-distribution table, and the line that matters most, *"the biography, which waits on Jay rather than on verification: he has confirmed he has never been an IEEE Associate Editor."* **It reached the published Zenodo artifact.** `article.pdf` md5 `3806dff8fab8878833cd0f108cc37fcd` is identical in three places — the local build, `MANIFEST.json`'s SHA-256 `711a315c…`, and the published record — and a byte-identical copy is inside `paper2-rhc-artifact-1.0.0.zip`, so the 325.5 MiB archive carries it too. **Fixed at `79aaa680`:** an entry now also stops at the first own-line `---` or `## ` after it, which is where the apparatus begins; `article.tex` lost 4.2 kB and all fourteen entries are 132–334 characters. **Guard:** `BIBITEM_MAX = 600` fails the build if any entry exceeds 600 characters, on the reasoning that a reference is a sentence or two and a swallowed section is not. Mutation-tested: unbounding the scope again reports 4,313 characters and fails. **Class:** the same shape as the citation inventory that ran 752 lines instead of 66 — a scope whose end bound is "end of file" ends nowhere. Neither was caught by a test; both were caught by reading output. |
 | W6 — **DEFECT CLASS: a check that passes while measuring the wrong property** | **Named 2026-09-23, from the deposit replacement.** `MANIFEST.json` is **141,778 bytes both before and after** the correction and its content differs entirely: the old one certifies the bled `article.pdf`, the new one the corrected file. A size-only comparison calls that **unchanged**. Had the replacement gone out on a size check, the record would have kept a manifest certifying a PDF it no longer contained — and **the package would have passed its own integrity check while misdescribing its contents**, which is worse than failing it, because a reader who verifies gets a green answer to the wrong question. Caught because `--plan-only` compares **digests**, not sizes; `zenodo_verify.py` already compared MD5 for the same reason. **Guard:** every comparison of a deposited object is by digest, and size is reported beside it as context rather than used as the test. **Class:** distinct from "a scope ending at EOF" — that one reads too much, this one measures the wrong thing. Third instance in one day of a verification that looks authoritative without measuring what it claims. |
+<!-- withdrawn-quote-ok: the row names both retired phrases to record why -->
+| W6 — **DEFECT CLASS: a policy sentence the paper contradicts elsewhere** | **Named 2026-09-23, from the two adversarial reviews.** Second instance in this project, and both surfaced in the same pass. (1) **§VI-B states the policy** — *"No range spanning the seven is quoted: they do not share a precision, and a range would assert one they do not have"* — while the abstract, C1, §X and the Fig. 2 caption each quoted such a range, as *within 1%* or *within 0.7%*. Both reviews found it independently. (2) **§II-E states** that *"the observation that the boundary sits near capacity is not offered as a discovery"* while C1 was listed under a heading reading *"The contributions are:"*. **What is diagnostic about the class:** neither was found by checking a number against a record. Every figure involved was correct. They were found by reading the paper against itself, and the paper had a sentence forbidding each of them at the time it made them — so a data audit, a float audit and a promotion scan could all pass while the contradiction stood. **Guards:** the claim register's headline was rewritten, and the checker now retires *within 1%* and *within 0.7%* as seven-cell formulations through the withdrawn-phrase mechanism, so regeneration cannot restore them; the contributions heading now reads *"The paper's main results and methodological contributions are:"* and C1 is *Boundary characterization*. **A guard is not the same as a pass:** a phrase list catches the two manifestations that were found and says nothing about the next policy sentence. **PRE-SUBMISSION: a dedicated read-the-paper-against-itself pass belongs on the list** — take each sentence that constrains what the paper may claim (§IV's resolution rule, §VI-B's precision rule, §II-E's disclaimer, §IX's concessions) and check every claim elsewhere against it. That is a different operation from checking claims against data, and this project has now run the data pass many times and this one never. |
 | W6 — **PREMISE FAILURE: Zenodo does not permit self-service file replacement** | **Found 2026-09-23 by an API refusal, not by reading.** The in-place file replacement was planned, staged, verified and rehearsed on the premise of a 30-day self-service file edit. Opening `/actions/edit` succeeds and the record moves to `inprogress`, but the first `PUT` to the bucket returns **403 `Bucket is locked for modifications`**. Zenodo's documentation is explicit: *"You can edit the metadata (title, creators, etc) of a published record at any time. Files in the record however can only be edited (added, modified or deleted) after publication by contacting support."* The 30-day window is for **deletion**, not file editing — two different facilities conflated into one plan. **`DEPOSIT-W6.md` step 6 already quoted that exact sentence, recorded 2026-09-20.** The project held the correct answer in writing and planned against a different premise for a day. **What saved it:** the upload aborted on the first object, discarded the edit rather than improvising inside it, and the record returned to `done` with all seven objects byte-identical — because the discard path had been rehearsed while nothing was at stake. **Open question for the record:** the cited DOI `10.5281/zenodo.22761131` is the *version* DOI; the concept DOI `10.5281/zenodo.22761130` resolves to the latest version. A new version therefore does not correct what §IV cites. |
 | W6 — **PRE-SUBMISSION COSMETIC, decide after the deposit settles** | **Supplement S1 carries a 35.86 pt paragraph overfull at `C_measured`, line 117.** Reported from the v1.0.1 compile and **identical in the published v1.0.0 build**, so it is pre-existing and not a regression — but it is wide enough to run into the margin and it will be in front of IEEE Access reviewers. Not a deposit blocker and deliberately not fixed during the version work: the delivered PDFs are the artefacts and changing one to chase a cosmetic would have meant another build, another set of digests and another version. **Decide after the deposit is settled**, with the other pre-submission items. |
 

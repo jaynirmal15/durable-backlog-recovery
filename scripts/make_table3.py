@@ -31,6 +31,23 @@ W8 = json.load(open('results/W8-effect-size-accounting.json'))
 # reports are regenerated artefacts and their wording tracks their generators,
 # whereas the plans are registration-grade and are pinned to the commit that
 # registered them.
+# THE OPERAND IS THE UNROUNDED MIDPOINT, NOT THE ROUNDED ONE. E2B-REPORT's
+# summary table prints the interval as [0.97, 0.99] and its midpoint as 0.98;
+# the generated boundary artefact it was written from says [0.975, 0.9875],
+# midpoint 0.98125. h = +0.980 follows from the unrounded midpoint and NOT
+# from 0.98, which yields 0.962. Printing a rounded operand beside an
+# unrounded result made the article state a false identity. Both operands are
+# read from the artefact here so the identity cannot drift again.
+_E2B = json.load(open('results/e2b/boundaries/c50-C0.json'))['boundary']
+_IV = _E2B['rhoStarInterval']
+RHO_STAR_E2B = (_IV[0] + _IV[1]) / 2.0
+RHO10, D_E1 = 0.9137, 0.0689                 # E2B-PLAN.md at a741d68
+H_E2B = (RHO_STAR_E2B - RHO10) / D_E1
+assert _IV == [0.975, 0.9875], _IV
+assert abs(RHO_STAR_E2B - 0.98125) < 1e-9, RHO_STAR_E2B
+assert round(H_E2B, 3) == 0.980, H_E2B      # the registered verdict, unchanged
+assert round((0.98 - RHO10) / D_E1, 3) == 0.962   # what the rounded operand gives
+
 QUOTES = {
     'D':        ('c823393', 'results/E2-PLAN.md',   'D   = m50 - m10 = 0.0689'),
     'conc_crit':('c823393', 'results/E2-PLAN.md',   '**CONCURRENCY-DRIVEN** | both `f ≤ 0.25`'),
@@ -149,7 +166,10 @@ def main():
           'where **`h ≥ 0.75` reads S GOVERNS** and `h ≤ 0.25` reads concurrency '
           'governs (E2b plan, `a741d68`, with a dead band registered in advance). '
           '| **Affirmed before calibration, and not re-adjudicated after it.** '
-          '`h = (0.98 − 0.9137) / 0.0689 = +0.980` (E2b report), at the S-governs '
+          '`h = (%.5f − 0.9137) / 0.0689 = %+.3f` (E2b report; ρ* is the '
+          'unrounded midpoint of the boundary interval [0.975, 0.9875], which '
+          'that report\'s summary table rounds to 0.98), at the S-governs '
+          % (RHO_STAR_E2B, H_E2B) +
           'end of the scale. `h` is defined relative to the E1 arm separation, '
           'which was measured against the configured capacity parameter. Two '
           'later results undermine the S-governs reading without recomputing '

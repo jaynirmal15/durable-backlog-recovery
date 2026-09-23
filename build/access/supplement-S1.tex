@@ -31,7 +31,7 @@ One provenance gap remains and is reported rather than closed. The search driver
 
 What is not recoverable is the command line itself. The gap is therefore in the reproducibility of probe \textit{selection}, not in the measurements: for every cell, all probed rates, all repetitions, all classifications and the terminal 5 rps bracket are retained and used, no run carries an exclusion reason, and none is absent from its cell's analysis --- the search driver raises rather than continuing if a run is invalid, so a silently dropped run is not a state it can reach. Adding an argument echo would prevent a recurrence and would recover nothing retrospectively; the driver is left unaltered, because changing a frozen instrument after its campaigns have closed is the practice this section exists to avoid.
 
-\section*{S1-B. Amendments (full text of the article's former \S{}IV-H, with Table S1)}
+\section*{S1-B. Amendments (the full text behind the article's \S{}IV-H gloss)}
 
 All ten amendments and record corrections are listed in Table~\ref{tab:s1-amendments} with their commits; the article glosses the seven that later sections cite.
 
@@ -83,7 +83,7 @@ The harness, the pre-registration with all six amendments, the A7 registered re-
 
 That property was verified rather than assumed, and verifying it found a counter-example. The data artefacts reproduced byte-identically throughout; the figures did not, because the plotting library stamps a wall-clock creation time into each file, so two runs over unchanged inputs produced different bytes with identical drawn content. The metadata is now suppressed and determinism is verified over consecutive runs, with the rendered marks confirmed unchanged against the committed versions. The claim as stated held for the artefacts it had been checked against and not for the ones it had not, which is the ordinary way such claims fail.
 
-\section*{S1-D. The capacity model, pictured (the article's former Fig. 2)}
+\section*{S1-D. The capacity model, pictured (cut from the article for length)}
 
 Fig.~\ref{fig:capacity-model} pictures the relation equations \eqref{eq:4}--\eqref{eq:6} state algebraically: the harness staffs its pool on the assumption that a worker turns a request round in exactly the emulated service time, each worker in fact pays a fixed additional cost per request, and because that cost is additive rather than proportional it consumes a larger share of a short service time than a long one. The figure carries no measured result, which is why the article states the relation in equations and keeps the picture here.
 
@@ -94,7 +94,7 @@ Fig.~\ref{fig:capacity-model} pictures the relation equations \eqref{eq:4}--\eqr
 \label{fig:capacity-model}
 \end{figure*}
 
-\section*{S1-E. Per-cell resolution in full (the article's Table 2, all columns)}
+\section*{S1-E. Per-cell resolution in full (the article's resolution table, all columns)}
 
 The article's resolution table is compacted to the three quantities its argument uses: the boundary bracket, the normalised per-cell resolution and the safe utilisation. Table~\ref{tab:resolution-full} is the same seven cells with every column the generator produces, so that a reader checking the resolution discipline against the artefacts has the configured and measured capacities, the raw bisection step, the bracket width, the repetition count, the replicate spread and the measured capacity's own range in one place.
 
@@ -181,7 +181,7 @@ It is worth recording that the endpoint's response field is named \texttt{trueCa
 
 and the specification describes it as exposing true capacity. It does not: it returns $C_{\mathrm{config}}$. The name is itself a residue of the assumption this paper falsifies, and it is preserved unaltered in the archived artefact.
 
-\section*{S1-H. The corrected corpus in detail (full text of the article's former \S{}VII-C and \S{}VII-D)}
+\section*{S1-H. The corrected corpus in detail (the full text behind the article's \S{}VII gloss)}
 
 \textit{Reproduced unchanged except that the article's figure key is written out as a figure name.}
 
@@ -213,7 +213,7 @@ What \S{}VII does not claim is that latency warns last, or that either signal is
 
 Two documentation failures belong here, recorded for what caught them. An incorrect reading of the corrected-corpus figure propagated through report prose, a caption, the title drawn inside the figure itself and an early section draft, because each layer was written from the previous summary rather than from the data, while the registered analysis's own table contradicted it throughout. Separately, a summary generalised one evidentiary pattern across three candidate explanations; generating the table meant to display them, with every quotation asserted against its source, showed that one had been refuted before calibration and another had no like-for-like post-calibration test. Neither is an experimental finding, and the lesson is the control rather than the error: for a claim about several items at once the authority is a generated table whose cells are checked against their sources, not the prose in between.
 
-\section*{S1-J. Provenance of the campaign itself (the article's former \S{}V-G)}
+\section*{S1-J. Provenance of the campaign itself (cut from the article's \S{}V for length)}
 
 Two readings were made and corrected mid-campaign, both recorded in the registration, and one earlier claim --- that a break within 0.0004 of a registered prediction confirmed the saturated figure --- is withdrawn, the bracket having contained both candidates at a resolution that could not support the agreement. Section IX and the registration give all three in full.
 

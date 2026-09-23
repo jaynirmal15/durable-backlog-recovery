@@ -39,7 +39,7 @@ nothing retrospectively; the driver is left unaltered, because changing a frozen
 instrument after its campaigns have closed is the practice this section exists
 to avoid.
 
-## S1-B. Amendments (full text of the article's former §IV-H, with Table S1)
+## S1-B. Amendments (the full text behind the article's §IV-H gloss)
 
 All ten amendments and record corrections are listed in [@tab:s1-amendments] with their commits; the article glosses the seven that
 later sections cite.
@@ -164,7 +164,7 @@ against the committed versions. The claim as stated held for the artefacts it
 had been checked against and not for the ones it had not, which is the ordinary
 way such claims fail.
 
-## S1-D. The capacity model, pictured (the article's former Fig. 2)
+## S1-D. The capacity model, pictured (cut from the article for length)
 
 [@fig:capacity-model] pictures the relation equations (4)–(6) state
 algebraically: the harness staffs its pool on the assumption that a worker
@@ -176,7 +176,7 @@ article states the relation in equations and keeps the picture here.
 
 <!-- figure:fig:capacity-model:F2-capacity-model.pdf:s1 -->
 
-## S1-E. Per-cell resolution in full (the article's Table 2, all columns)
+## S1-E. Per-cell resolution in full (the article's resolution table, all columns)
 
 The article's resolution table is compacted to the three quantities its
 argument uses: the boundary bracket, the normalised per-cell resolution and the
@@ -403,7 +403,7 @@ and the specification describes it as exposing true capacity. It does not: it
 returns `C_config`. The name is itself a residue of the assumption this paper
 falsifies, and it is preserved unaltered in the archived artefact.
 
-## S1-H. The corrected corpus in detail (full text of the article's former §VII-C and §VII-D)
+## S1-H. The corrected corpus in detail (the full text behind the article's §VII gloss)
 
 *Reproduced unchanged except that the article's figure key is written out as a figure name.*
 
@@ -495,7 +495,7 @@ experimental finding, and the lesson is the control rather than the error: for a
 claim about several items at once the authority is a generated table whose cells
 are checked against their sources, not the prose in between.
 
-## S1-J. Provenance of the campaign itself (the article's former §V-G)
+## S1-J. Provenance of the campaign itself (cut from the article's §V for length)
 
 Two readings were made and corrected mid-campaign, both recorded in the
 registration, and one earlier claim — that a break within 0.0004 of a registered

@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
-"""Five invariants over the manuscript's live text. Renamed from
+"""Six invariants over the manuscript's live text. Renamed from
 check_withdrawn_phrases.py, which understated what it does.
+
+Check 6 was added 2026-09-23 after a review found "Table 8" still standing in
+SS-VI-C, a number no float has had since the cut pass moved the audit trail
+into the supplement. Check 5 validated keyed references and was silent about
+literals, so the one reference that could go stale was the one nothing looked
+at.
 
 WHY THIS EXISTS. Five times in this project a phrase was withdrawn from the
 place a reviewer was looking at and left standing somewhere else: the F6 caption
@@ -102,6 +108,21 @@ WITHDRAWN = [
      'terms are C_config, C_staffed, C_model, C_measured. The harness field '
      'trueCapacity is an identifier and is exempt; SS-III quoting the '
      'specification as a primary source is exempt by marker.'),
+    # B1, 2026-09-23. Both adversarial reviews found this independently. SS-VI-B
+    # states the policy -- "no range spanning the seven is quoted: they do not
+    # share a precision, and a range would assert one they do not have" -- and
+    # four places asserted exactly such a range anyway. Retiring the four
+    # manifestations alone would let regeneration restore them, so the phrases
+    # are retired here and the claim register's headline was rewritten.
+    ('within 1%',
+     'Retired as a seven-cell formulation: it asserts a precision the seven '
+     'cells do not share, which SS-VI-B expressly refuses. Say "at or near '
+     'measured capacity, indistinguishable from it at each cell\'s '
+     'experimental resolution".'),
+    ('within 0.7%',
+     'Same: a shared percentage range across cells of different resolution. '
+     'The Fig. 2 caption now reports the 0.0071 spread against E2b\'s 0.0127 '
+     'resolution instead.'),
     ('statistically',
      'Struck from the claim register: the indistinguishability argument rests '
      'on resolution -- bisection step, interval width, replicate spread -- not '
@@ -473,6 +494,142 @@ def own_line_tags(text, pattern):
     return out
 
 
+XREF_OK = 'xref-ok'
+XREF_OK_RE = re.compile(r'<!--[^>]*' + re.escape(XREF_OK) + r'[^>]*-->')
+ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
+
+# A literal float number, anywhere in live text. "Table~8" is included because
+# the build emits that form and a source could too.
+LITERAL_FLOAT = re.compile(
+    r'(?<![\w:])(Tables?|Figs?\.|Figures?)[ ~]+(S?\d+)')
+SECTION_REF = re.compile(r'§[ ~]*([IVX]+)(?:-([A-Z]))?')
+
+
+def section_inventory(root='.'):
+    """The article's sections and subsections, read from the sources.
+
+    Both documents' section references point at ARTICLE sections: the
+    supplement's own divisions are S1-A, S1-B and so on, and it refers to the
+    article by number throughout. So one inventory serves both.
+    """
+    inv = {}
+    for n in range(1, 11):
+        path = os.path.join(root, PAPER, 'section%d.md' % n)
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding='utf-8') as fh:
+            lines = fh.readlines()
+        letters = set()
+        for _, line in body_of(lines, True, path):
+            m = re.match(r'###\s+([A-Z])\.\s', line)
+            if m:
+                letters.add(m.group(1))
+        inv[ROMAN[n - 1]] = letters
+    return inv
+
+
+def shipped_only(numbered):
+    """In figures/*.md, only delimited captions and pipe tables are typeset.
+
+    The rest of the file is apparatus -- and the apparatus legitimately says
+    "Fig. 2" and "Table 1" while explaining why the body may not. Scanning it
+    would have made the check unusable and taught the project to exempt its
+    way out of a real rule, which is how a check stops meaning anything.
+    """
+    out, inside = [], False
+    for n, line in numbered:
+        s = line.strip()
+        if re.match(r'<!--\s*caption:[^>]*:start\s*-->', s):
+            inside = True
+            continue
+        if re.match(r'<!--\s*caption:[^>]*:end\s*-->', s):
+            inside = False
+            continue
+        if inside or s.startswith('|'):
+            out.append((n, line))
+    return out
+
+
+def cross_references(root='.'):
+    """Check 6: every cross-reference resolves, in the document that makes it.
+
+    WHY THIS EXISTS. The cut pass moved the audit trail into Supplement S1 and
+    renumbered everything after it, and SS-VI-C went on saying "Table 8" -- a
+    number no float in the article has had since. Nothing caught it: check 5
+    validates KEYED references and says nothing about literals, so a literal
+    was invisible in exactly the way an unkeyed reference goes stale. Three
+    more had gone stale the same way in Supplement S1's headings, pointing at
+    an article Fig. 2, an article Table 2, a SS-V-G and a SS-VII-D that the cut
+    had moved, renumbered or removed.
+
+    Two rules, and the second is the one the cut broke:
+
+      FLOAT REFERENCES MUST BE KEYED. A literal "Table 8" or "Fig. 2" in live
+      text is an error wherever it appears, because a literal cannot be
+      checked against the float that would carry that number and cannot
+      survive renumbering. This also enforces the scope rule -- a literal is
+      the only way one document could name the other's float, since check 5
+      already rejects a keyed cross-document reference.
+
+      SECTION REFERENCES MUST RESOLVE. Every SS-X and SS-X-Y, in either
+      document, must name a section and subsection the article actually has.
+
+    Historical text quotes a retired number legitimately; mark it with
+    <!-- xref-ok: why --> on or beside the line, the same explicit-marker
+    mechanism the withdrawn list uses, and for the same reason: a contextual
+    guess at what counts as historical is not auditable.
+    """
+    problems = []
+    inv = section_inventory(root)
+    if not inv:
+        return [('inventory', 'no article sections found; nothing was checked')]
+    paper = os.path.join(root, PAPER)
+    figures = os.path.join(root, FIGURES)
+    sources = [(os.path.join(paper, 'section%d.md' % n), True)
+               for n in range(1, 11)]
+    sources.append((os.path.join(paper, S1_FILE), True))
+    sources.append((os.path.join(paper, 'frontmatter.md'), True))
+    if os.path.isdir(figures):
+        sources += [(os.path.join(figures, n), False)
+                    for n in sorted(os.listdir(figures)) if n.endswith('.md')]
+    for path, skip in sources:
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding='utf-8') as fh:
+            lines = fh.readlines()
+        numbered = body_of(lines, skip, path)
+        if not skip:
+            numbered = shipped_only(numbered)
+        for n, line in numbered:
+            window = ' '.join(l for m, l in numbered if n - 1 <= m <= n + 1)
+            exempt = XREF_OK_RE.search(window)
+            for m in LITERAL_FLOAT.finditer(line):
+                if exempt:
+                    continue
+                problems.append(('%s:%d' % (path, n),
+                                 'literal float reference %r -- float '
+                                 'references must be keyed, as [@tab:key] or '
+                                 '[@fig:key], so they cannot go stale when '
+                                 'floats are renumbered' % m.group(0)))
+            for m in SECTION_REF.finditer(line):
+                sec, sub = m.group(1), m.group(2)
+                if sec not in inv:
+                    if exempt:
+                        continue
+                    problems.append(('%s:%d' % (path, n),
+                                     'section reference %r -- the article has '
+                                     'no section %s' % (m.group(0), sec)))
+                elif sub and sub not in inv[sec]:
+                    if exempt:
+                        continue
+                    have = ''.join(sorted(inv[sec])) or 'none'
+                    problems.append(('%s:%d' % (path, n),
+                                     'section reference %r -- article section '
+                                     '%s has subsections %s'
+                                     % (m.group(0), sec, have)))
+    return problems
+
+
 def float_keys(root='.'):
     """Check 5: keyed figure and table references resolve, both ways, PER SCOPE.
 
@@ -658,9 +815,10 @@ def main():
     entries, bib_problems = bibliography()
     uncited = citation_inventory(entries) if entries else []
     float_problems, float_order, floats, float_counts = float_keys()
+    xref_problems = cross_references()
 
     ok = not (hits or stale or bib_problems or uncited or cite_problems
-              or float_problems)
+              or float_problems or xref_problems)
     if ok:
         print('clean.')
         print('  withdrawn phrases : none in live manuscript-facing text '
@@ -671,6 +829,11 @@ def main():
               'their delimited inventories' % len(entries))
         print('  citation markers  : %d keys cited, each resolving to exactly one '
               'entry; every entry cited' % len(cited))
+        inv = section_inventory()
+        nsub = sum(len(v) for v in inv.values())
+        print('  cross-references  : every float reference keyed; every section '
+              'reference resolves (%d sections, %d subsections)'
+              % (len(inv), nsub))
         af, at = float_counts['article']
         sf, st = float_counts['s1']
         print('  float keys        : article %d figures + %d tables (ruled); '
@@ -715,6 +878,13 @@ def main():
             print('  %-18s %s' % (label, msg))
         print('\nEvery [@key] must resolve to exactly one entry, and every entry '
               'must be cited at least once.\n')
+    if xref_problems:
+        print('CROSS-REFERENCES\n')
+        for label, msg in xref_problems:
+            print('  %-28s %s' % (label, msg))
+        print('\nFloat references must be keyed; section references must name a '
+              'section the article has. To keep a retired number in historical '
+              'text, put <!-- %s: why --> on or beside the line.\n' % XREF_OK)
     if float_problems:
         print('FIGURE AND TABLE KEYS\n')
         for label, msg in float_problems:

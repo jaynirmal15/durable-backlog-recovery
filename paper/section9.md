@@ -1,5 +1,7 @@
 # §9 — Threats to validity
 
+*Draft 8 — TWO-REVIEW REVISION, 2026-09-23. A6: §IX-A's "this host and this Go runtime" now points at §III-A, which names them.*
+
 *Draft 7 — CUT PASS, increment 6, 2026-09-20. §IX-C compressed from ~480 to
 ~230 words and §IX-B's resolution paragraph shortened where it restated §IV-D.
 Kept: the standalone tool's missing provenance and what it costs the prospective
@@ -104,7 +106,7 @@ strip in W6.*
 
 One synthetic downstream, on one instance type, with no real dependency, no
 persistent state and no I/O. The per-request bias measured here is a property of
-this implementation, this host and this Go runtime, and the paper does not offer
+this implementation, this host and this Go runtime (§III-A), and does not offer
 0.463 ms as a constant anyone else should expect to find. What generalises is
 not the number but the relation: a configured capacity figure was wrong by more
 than the operating margin the experiment set out to characterise, in an

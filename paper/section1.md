@@ -1,5 +1,7 @@
 # §1 — Introduction
 
+*Draft 20 — TWO-REVIEW REVISION, 2026-09-23. B1: the claim-register headline and C1 retire "within 1%" as a seven-cell formulation, which §VI-B's own policy sentence forbids. B3: the contributions heading now reads "main results and methodological contributions", C1 is renamed "Boundary characterization", and one sentence records that the campaign preregistered the search procedure, not a boundary location. B4: the controller prescription is scoped to this harness. No number changes.*
+
 *Draft 19 — CUT PASS, increment 3, 2026-09-20. §I compressed from ~1,595 to
 1,261 words (measured; the ~1,150 aimed at was not reached). Verbatim and unchanged: the claim-register headline and
 scale-mismatch statements, the paragraph stating the 0.463 ms bias and the 9.26% /
@@ -88,8 +90,8 @@ sharing one capacity-controlled downstream, we locate the transition between saf
 catastrophic drain by pre-registered bisection across seven experimental cells,
 spanning two service times, three configured capacities, two admission limits and
 four concurrency levels. **Across those seven cells the safe drain boundary lay
-within 1% of measured service capacity, and was indistinguishable from capacity
-itself at the experiment's resolution.** Per-cell values are given in §VI, each at its
+at or near measured service capacity, and was indistinguishable from it at each
+cell's experimental resolution.** Per-cell values are given in §VI, each at its
 own cell's resolution. Varying the latency objective produced no resolvable
 movement over the well-posed sweep — 50 to 500 ms in the 5 ms arm, 100 to 500 ms
 in the 25 ms arm.
@@ -132,10 +134,11 @@ measuring the instrument, not by reasoning about the results.
 <!-- claim register, scale-mismatch statement, verbatim -->
 
 The consequence for recovery control is specific, and narrower than it may
-first appear. A controller cannot safely treat configured or nominal capacity as
-ground truth when its operating margin is smaller than the calibration error in
-that figure; it requires a capacity estimate that has been empirically validated.
-Whether that estimate is supplied by external calibration or inferred online is
+first appear. In this harness, interpreting a sub-percent recovery margin
+required a capacity reference validated against observed throughput rather than
+the configured parameter; more generally, a configured capacity figure should
+not be treated as ground truth when its calibration error is unknown or
+comparable to the operating margin. Whether that estimate is supplied by external calibration or inferred online is
 not settled by this work: the per-request bias varies with offered load (§V), so
 an offline benchmark would itself have to be run at the load condition that
 matters, and the present experiments do not adjudicate between the two. The harness was built on the stronger assumption — its configured
@@ -150,15 +153,20 @@ Section VI the corrected boundary. Section VII reports which observables warn,
 Section VIII returns to the three candidate explanations, and Sections IX and X
 give threats to validity and conclusions.
 
-The contributions are:
+The paper's main results and methodological contributions are:
 
-**C1 — The boundary measurement.** Seven cells, uniform 5 rps bracketing, a
+**C1 — Boundary characterization.** Seven cells, uniform 5 rps bracketing, a
 pre-registered mechanical estimator, n = 3 at each original probed point, with five
-last-SAFE endpoints subsequently replicated to n = 12 or n = 15. The safe boundary lies within 1% of measured
-capacity and is indistinguishable from it at the experiment's resolution. No
-effect of configured capacity, admission limit, concurrency, service time, or the
-latency objective over the well-posed sweep was resolvable at that precision; §VI
-reports one residual that is below resolution and is not claimed.
+last-SAFE endpoints subsequently replicated to n = 12 or n = 15. The safe boundary
+lies at or near measured capacity and is indistinguishable from it at each cell's
+own experimental resolution. No effect of configured capacity, admission limit,
+concurrency, service time, or the latency objective over the well-posed sweep was
+resolvable at those resolutions; §VI reports one residual that remains below the
+applicable resolution and is not claimed. The seven-cell campaign preregistered
+the boundary-search procedure and tests of configuration dependence, not an
+absolute boundary location relative to measured capacity; the near-capacity
+location is therefore a measured descriptive result rather than confirmation of
+a preregistered location prediction.
 
 **C2 — The calibration trap.** A per-request overhead constant to within 4%
 across a fivefold service-time range, varying with offered load, and 99.8%

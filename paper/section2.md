@@ -1,5 +1,7 @@
 # §2 — Background and related work
 
+*Draft 10 — TWO-REVIEW REVISION, 2026-09-23. B4: §II-C's universal "the paper therefore requires an empirically validated capacity estimate" is brought into the same conditional form as §I and §X. No number changes.*
+
 *Draft 9 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review. §II-B's heading no longer uses `SLO` before its expansion — "Overload control and admission under service level objectives" — and its first sentence pairs the two: "a service level objective (SLO)". Required by the IEEE Access checklist; no other change.*
 *Draft 8 — CUT PASS, increment 6, 2026-09-20. §II-E's second paragraph tightened; both objections and the answer to each are unchanged in substance. No other section text changes.*
 *Draft 7 — CITATION MARKERS ONLY, 2026-09-20. Keyed markers `[@key]` inserted at twelve citing sentences of §II-A to §II-D, carrying thirteen of the fourteen references (Little is keyed in §I and §III) (the GitLab pair on "recurring"; Papadopoulos on the general measurement-bias clause before the colon of §II-D's opening sentence, Mytkowicz on the concrete compiler example after it — reviewer ruling 2026-09-20, moved off the Heiser sentence, where the catalogue was the grammatical subject). The move puts Papadopoulos ahead of Mytkowicz in first-appearance order. **No prose changed**; each marker attaches to a sentence the frozen draft already carries. Keys render to IEEE numbers by order of first appearance in a separate mechanical pass after review.*
@@ -249,9 +251,10 @@ is that a purpose-built instrument,
 whose capacity parameter was chosen by its author and whose worker count was
 derived from it by Little's law, overstated its own service capacity by 9.26% at
 one service time and 1.85% at another — while the safety margin being
-characterised was under one percent. The paper therefore requires an empirically
-validated capacity estimate, and deliberately does not decide whether that
-estimate should be supplied offline or inferred online, because the measurement
+characterised was under one percent. The paper therefore reports what
+interpreting that margin required — a capacity reference validated against
+observed throughput rather than the configured parameter — and deliberately does
+not decide whether such an estimate should be supplied offline or inferred online, because the measurement
 reported in §V bears on that question without settling it: the per-request cost
 is not a fixed constant but varies with offered load, so an offline benchmark
 would itself have to be run at the load condition that matters.

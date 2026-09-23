@@ -1,5 +1,7 @@
 # §6 — The corrected boundary
 
+*Draft 11 — TWO-REVIEW REVISION, 2026-09-23. A2: "Table 8" named no float — the audit trail moved in the cut pass and the number went stale — and now names §IX-D, where that table is discussed. A float key would have made §VI-C the table's first appearance, renumbering it and moving the float out of §IX. A3: the excess above unity is 0.06 and 0.08 of a bisection step, not about a fifth.*
+
 *Draft 10 — SYNCHRONISATION, 2026-09-20, ruled by review after the promotion scan. "No collapse factor is quoted" was categorical while Table 8 and S1 quote three superseded factors as part of the withdrawal record; §VI now says "as a current result" and names where the superseded figures live. The distinction is current result versus supersession record. No number or finding changes.*
 *Draft 9 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 8 — W3 readability, 2026-09-20. One edit, and it is a compression rather
@@ -73,7 +75,7 @@ reported as a rate bracket rather than as a utilisation interval.
 `C_measured` is a normalisation reference, not a ceiling. Both numerator and
 denominator are measurements, so a ratio may read slightly above 1.0 without
 implying service beyond a physical bound, and two cells do: they reach 1.0002,
-about a fifth of a bisection step above unity and below what the experiment can
+under a tenth of a bisection step above unity and below what the experiment can
 resolve — which is why no `[ρ_safe, 1]` interval is constructed and no cell is
 called degenerate or pinned at saturation.
 
@@ -108,7 +110,7 @@ resolution threshold.** Their difference of 0.0071 sits inside E2b's own step of
 of the two cells producing it.
 
 **The highest cells are not distinguishable from unity.** Their excess above 1.0
-is about a fifth of a bisection step. The paper therefore says the boundary lies
+is 0.06 and 0.08 of a bisection step. The paper therefore says the boundary lies
 at or near measured capacity, and does not say it lies strictly below.
 
 ### C. What the correction changed, and what it did not
@@ -123,8 +125,8 @@ correction the spread across cells was resolvable; after it, the spread falls
 below the resolution of the coarsest cell involved.** No collapse factor is
 quoted as a current result: a ratio between two resolution-limited quantities
 carries an uncertainty question of its own, and the detectability statement is
-what the data support. The factors that appear in Table 8 and Supplement S1 are
-superseded figures, retained there as part of the withdrawal record.
+what the data support. The factors that appear in §IX-D and Supplement
+S1 are superseded figures, retained there as part of the withdrawal record.
 
 Both axes use the maximum, as §IV requires. An earlier build took a maximum on
 one axis and a median on the other, which mixed statistics inside a comparison;

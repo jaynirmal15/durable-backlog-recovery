@@ -8,8 +8,12 @@ net words.**
 **DRAFT-LABEL RULE, adopted 2026-09-20 after the third label mismatch.** When a
 review approves a draft subject to fixes, the section takes **the next integer
 draft number**, and the plan-sync marker moves with it. Decimal labels such as
-"23.1" are not used: the checker's marker parser reads integers, so a decimal
-marker silently fails the freshness check.
+"23.1" are not used, and the reason is the reverse of what this rule first said,
+as the executor's test showed: a decimal **marker** fails loudly ("expected
+exactly 1 marker, found 0"), while a decimal **header** is truncated to its
+integer, so a section labelled 23.1 whose marker says 23 passes the freshness
+check while the label claims a version the checker never saw. The silent case is
+the header, which is what this rule prevents.
 
 **THE W3 RULE, ruled and now formal — it governs any future pass:**
 > **A repetition is removable only when its second occurrence performs no local

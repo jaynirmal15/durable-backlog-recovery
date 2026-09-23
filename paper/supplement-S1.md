@@ -49,7 +49,7 @@ Amendments to the pre-registration, the A7 registered
 re-analysis, the A8 registered replication and the two record corrections. The
 two right-hand columns separate registration *before the data existed* from
 registration *before the analysis was run*; they are different claims and only
-the first is prospective registration. They do not apply to a record correction,
+the first is registration before the data. They do not apply to a record correction,
 which governs neither, and those rows read N/A rather than being forced into a
 category they do not belong to.
 <!-- caption:tab:s1-amendments:end -->
@@ -68,16 +68,17 @@ category they do not belong to.
 | A9 | 2026-09-19 | `9caf476` | *Record correction, not an amendment.* A8's short-arm reading states that neither plateau figure was itself registered as a plateau; `67c448b` tabulates both and gates the boundary read on them, so that statement is wrong. No A8 criterion, datum or result depends on it | **N/A** — governs no data | **N/A** — governs no analysis |
 | A10 | 2026-09-19 | `51026cc` | *Record correction, not an amendment.* A6 reports the E2d collapse factor as 10.3×, computed from a midpoint numerator against a SAFE-only denominator; matched on the SAFE side it is 10.5×. The denominator, the direction and A6's verdict are unchanged | **N/A** — governs no data | **N/A** — governs no analysis |
 
-A7 is a registered re-analysis of an already-collected corpus, not a prospective
-registration, and the two columns are separated so that the distinction cannot
+A7 is a registered re-analysis of an already-collected corpus, not a
+registration before the data, and the two columns are separated so that the distinction cannot
 be read the other way.
 
 A8 is neither an amendment nor a re-analysis. It changes no rule and revisits no
 existing data: it registers a *new* measurement — the window-to-window
 repeatability of two plateaus the campaign had measured once each — before that
 measurement was taken, and fixes in advance what each possible outcome would
-mean, including the outcome that would have removed a prospective claim §V
-currently makes. It is prospective in the same strict sense as A1 through A3,
+mean, including the outcome that would have removed a claim §V makes about
+that prediction. It is registered before its own data in the same strict sense
+as A1 through A3 — subject to the file-timestamp limitation §IX-C records —
 and appears last only because it postdates the measurement campaign it bears
 on. Its result is reported in §V-D.
 
@@ -480,9 +481,10 @@ unreplicated and unresolvable on the available data; and on the corrected corpus
 some observables do give advance warning in one cell, but queue depth does not
 lead live p99 at the resolution available.
 
-## S1-I. Two documentation failures (full text from the article's former §IX-C)
+## S1-I. Two documentation failures, and two harness defects
 
-Two documentation failures belong here, recorded for what caught them. An
+Two documentation failures belong here, recorded for what caught them; the
+full text is the article's, cut for length. An
 incorrect reading of the corrected-corpus figure propagated through report
 prose, a caption, the title drawn inside the figure itself and an early section
 draft, because each layer was written from the previous summary rather than from
@@ -494,6 +496,15 @@ and another had no like-for-like post-calibration test. Neither is an
 experimental finding, and the lesson is the control rather than the error: for a
 claim about several items at once the authority is a generated table whose cells
 are checked against their sources, not the prose in between.
+
+Two harness defects belong with them, moved here from the article's §IX-E and
+reported as evidence that the checking regime operated rather than as
+incidental. A spin-wait admission profile was found to amplify a transient
+rejection into a sustained collapse, and was replaced. The overhead record's own
+descriptive field contradicted the arithmetic of the record it was written into,
+in every record it wrote, until it was corrected at the source and in all 43
+affected records — after which every consuming artefact regenerated
+byte-identically.
 
 ## S1-J. Provenance of the campaign itself (cut from the article's §V for length)
 

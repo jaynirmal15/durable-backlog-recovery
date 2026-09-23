@@ -609,6 +609,22 @@ Not "a factor of 10.5". The ratio invites a question about the ratio's own
 uncertainty. Detectability is the claim, and detectability is what the paper
 is about.
 
+**The concurrency separation after calibration (C2, abstract, §1, §5, §8):**
+
+> Calibration reduced the previously resolved concurrency-associated separation
+> to a residual below the corrected search resolution. Under matched last-SAFE
+> accounting, the point estimates correspond to a 94–95% reduction depending on
+> estimator; that percentage describes the measured point estimates, not a
+> resolved residual effect.
+
+**The 94–95% is a point-estimate reduction, never a resolved remainder**
+(2026-09-23, ruling 1). The corrected searches bracket at 55 and 65 requests
+per second, so a 6.4 rps residual is not something they resolve. The arithmetic
+is valid and stays; its status as a measured magnitude does not. This applies
+to C2 the rule §VI already applies to every other residual, rather than
+exempting the flagship result. Four places must agree — the abstract, §I's C2,
+§V-F and §VIII-A — and the generated Table 6 says "point-estimate reduction".
+
 **The overhead (C2, §5):**
 
 > A per-request overhead **approximately service-time-independent — constant
@@ -752,7 +768,7 @@ named in a section's header.
 
 ## §1 Introduction — 1,600 words
 
-<!-- plan-synced-to: section1 draft 20 -->
+<!-- plan-synced-to: section1 draft 21 -->
 
 Four moves:
 
@@ -936,7 +952,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 30 -->
+<!-- plan-synced-to: section4 draft 31 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval
@@ -957,12 +973,25 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
   record corrections whose temporal columns read **N/A** — they govern neither
   data nor analysis and must not be forced into Yes/No. Columns: change, date, commit, and **two separate temporal
   columns** — predates governed *data*, predates governed *analysis*. Different
-  claims; only the first is prospective registration. A7 is a registered
-  re-analysis of already-collected data, never described as prospective or as
-  confirmatory; A4's partial status gets its own sentence; **A8 is a registered
-  replication and is neither of the other two** — it changes no rule and
-  re-analyses nothing, it registers a new measurement before that measurement is
-  taken, so it is prospective in the strict sense and is described that way.
+  claims; only the first is registration before the data. A7 is a registered
+  re-analysis of already-collected data, never described as confirmatory; A4's
+  partial status gets its own sentence; **A8 is a registered replication and is
+  neither of the other two** — it changes no rule and re-analyses nothing, it
+  registers a new measurement before that measurement is taken, so it is
+  registered before its own data in the strict sense and is described that way,
+  subject to the file-timestamp limitation §IX-C records.
+
+  <!-- withdrawn-quote-ok: the ruling that retired the word has to name it -->
+  **"Prospective" and "prospectively" are retired (2026-09-23, ruling 3).**
+  §IX-C discloses that the plateau records carry no file-level timestamp, so
+  nothing in the archive establishes that the registration preceded the
+  measurements — and a disclosure in §IX does not cure affirmative language
+  elsewhere. The claim that survives is DATA INDEPENDENCE: the predicted 1987.4
+  and 1997.7 came from direct-probe constants while the correction used the
+  pooled 0.463 ms. That holds whatever the timestamps can show. The checker
+  rejects both words; the three registered addenda in `paper/` are outside the
+  phrase list's scope, because their text is immutable and a phrase that cannot
+  be edited must not be reported as fixable.
   Adding it reopened frozen §4 (draft 13), which is the intended use of the
   freeze rule: new §V evidence made the frozen text factually incomplete.
 - **vSLO** defined exactly: fraction of violating seconds, live p99 ≤ 250 ms
@@ -977,7 +1006,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §5 The calibration defect — 2,750 words, F3 + F4
 
-<!-- plan-synced-to: section5 draft 26 -->
+<!-- plan-synced-to: section5 draft 27 -->
 
 **Open with motivation, ~250 words.** Three candidate explanations appeared in
 sequence; each was pre-registered and each had a falsification test designed
@@ -1096,7 +1125,7 @@ caught in review and must not reappear.
 
 ## §6 The corrected boundary — 1,550 words, F5 + T2
 
-<!-- plan-synced-to: section6 draft 11 -->
+<!-- plan-synced-to: section6 draft 12 -->
 
 **Name the quantity the first time a per-cell ρ_eff appears**, before the
 figure: it is the achieved utilisation of the last SAFE point against measured
@@ -1212,7 +1241,7 @@ retractions are a different set with a different cause.
 
 ## §7 What warns, and what does not — 1,350 words, F6
 
-<!-- plan-synced-to: section7 draft 9 -->
+<!-- plan-synced-to: section7 draft 10 -->
 
 **F6** on a corrected cell. The DEEP threshold
 (`drainQueueDepthMean ≥ 50`, `results/E1B-PLAN.md`, `09e41e5`, fixed before
@@ -1286,7 +1315,7 @@ must not return. The section does not assert that latency "warns last".
 
 ## §8 How calibration changed the interpretation — 1,070 words, T3
 
-<!-- plan-synced-to: section8 draft 4 -->
+<!-- plan-synced-to: section8 draft 5 -->
 
 > ## BLOCKER RESOLVED 2026-09-20 — ruling below; §8 may be drafted once §1, §5,
 > ## the claim register and this plan are all synchronised (they now are).
@@ -1439,7 +1468,7 @@ anywhere.) That is the implication paragraph, and it leads into §9.
 
 ## §9 Threats to validity — 1,650 words
 
-<!-- plan-synced-to: section9 draft 8 -->
+<!-- plan-synced-to: section9 draft 9 -->
 
 **SIX VALIDITY CATEGORIES PLUS A CLOSING FUTURE-WORK SUBSECTION — seven
 labelled, A to G. Ruled at the §9 review and settled.** (v8.5 and v8.6 both said
@@ -1718,6 +1747,7 @@ likely to value.
 | W6 Oct 20–26 | Final pass. **Re-stage the Zenodo package from the frozen commit, upload, verify, publish — DONE 2026-09-23.** Staged from `e22e779`, uploaded as a hybrid deposit (one archive holding the tree with its paths, six flat objects beside it, because Zenodo refuses a key containing a slash), verified at 815 checks with zero missing/extra/mismatched/unchecked, published by hand. **The pre-submission item "the DOI must resolve before submission" is CLOSED — but not by the statement it originally made.** As written, the check asked whether a DOI resolved, and on 2026-09-23 `10.5281/zenodo.22761131` did. That turned out to be the weaker question: the record it resolved to carried the bibliography bleed, so a DOI that resolved was resolving to a defective artifact, and the check would have passed anyway. What closes it now is stronger and differently shaped: **the article cites the CONCEPT DOI `10.5281/zenodo.22761130`, which follows the version chain to whatever is newest, and that chain now lands on v1.0.1 — a clean artifact.** Verified 2026-09-23 from the API: 302 → 302 → HTTP 200 at `https://zenodo.org/records/22923220`, record state `done`, version `1.0.1`, licence `cc-by-4.0`, seven objects, and `zenodo_verify.py` against the published record reporting 816 verified with zero missing, extra, wrong-size, wrong-hash or unchecked. `10.5281/zenodo.22761131` still returns 200, so v1.0.0 stays citable; a new version supersedes rather than withdraws. The distinction is worth keeping: the check now guarantees that the cited DOI tracks the corrected artifact, which is not what a one-time resolution test could ever have guaranteed. Caveat recorded rather than glossed: the v1.0.1 VERSION DOI `10.5281/zenodo.22923220` is not yet registered at DataCite and 404s at doi.org — Zenodo's minting lag, and nothing the article cites depends on it. Two items are carried past submission to acceptance: `DEPOSIT-W6.md` step 7, the `isSupplementTo` relation, which waits on the article DOI; and the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission cosmetic left in the deposited PDF. Metadata to complete first: `description`, `related_identifiers` (repo URL, Paper 1's `10.5281/zenodo.22061184`), licence note covering `scripts/`, title naming the paper. **Hard pre-submission checks, each verified against a primary source and not against this outline:** (1) the abstract's "publicly archived" is true — the DOI resolves to a published record; (2) ~~the biography's first degree~~ **CLOSED 2026-09-20: the author confirmed the B.E.; the manuscript already reads B.E. and needs no change. The iCloud CV that says "B.S." is corrected separately so the question cannot reopen.** This row carries the check because the biography's editorial note is stripped before submission. Then submit. |
 | W6 — **DEFECT: the bibliography bleed, and it shipped** | **What it was:** `bibliography()` in `build_article.py` ended each reference at the start of the next one and the LAST reference at end of file, so `\bibitem{heiser}` swallowed everything below the entries in `references.md`. **What it did:** 726 words of drafting apparatus were typeset inside reference [14], in the right column of page 20 — the draft-2 rulings, "reversing my draft 1 inclination", the reference-distribution table, and the line that matters most, *"the biography, which waits on Jay rather than on verification: he has confirmed he has never been an IEEE Associate Editor."* **It reached the published Zenodo artifact.** `article.pdf` md5 `3806dff8fab8878833cd0f108cc37fcd` is identical in three places — the local build, `MANIFEST.json`'s SHA-256 `711a315c…`, and the published record — and a byte-identical copy is inside `paper2-rhc-artifact-1.0.0.zip`, so the 325.5 MiB archive carries it too. **Fixed at `79aaa680`:** an entry now also stops at the first own-line `---` or `## ` after it, which is where the apparatus begins; `article.tex` lost 4.2 kB and all fourteen entries are 132–334 characters. **Guard:** `BIBITEM_MAX = 600` fails the build if any entry exceeds 600 characters, on the reasoning that a reference is a sentence or two and a swallowed section is not. Mutation-tested: unbounding the scope again reports 4,313 characters and fails. **Class:** the same shape as the citation inventory that ran 752 lines instead of 66 — a scope whose end bound is "end of file" ends nowhere. Neither was caught by a test; both were caught by reading output. |
 | W6 — **DEFECT CLASS: a check that passes while measuring the wrong property** | **Named 2026-09-23, from the deposit replacement.** `MANIFEST.json` is **141,778 bytes both before and after** the correction and its content differs entirely: the old one certifies the bled `article.pdf`, the new one the corrected file. A size-only comparison calls that **unchanged**. Had the replacement gone out on a size check, the record would have kept a manifest certifying a PDF it no longer contained — and **the package would have passed its own integrity check while misdescribing its contents**, which is worse than failing it, because a reader who verifies gets a green answer to the wrong question. Caught because `--plan-only` compares **digests**, not sizes; `zenodo_verify.py` already compared MD5 for the same reason. **Guard:** every comparison of a deposited object is by digest, and size is reported beside it as context rather than used as the test. **Class:** distinct from "a scope ending at EOF" — that one reads too much, this one measures the wrong thing. Third instance in one day of a verification that looks authoritative without measuring what it claims. |
+| W6 — **DEFECT CLASS: a value that crosses a semantic boundary while its digits stay right** | **Named 2026-09-23, from the second review pass.** Four instances, none of them an arithmetic error. (1) `0.98` was the E2b ρ* midpoint ROUNDED; printed beside an unrounded result it made `h = 0.980` read as false, when the operand is 0.98125. (2) `−0.0051` is the difference of two DISPLAYED values; `−0.0052` is the difference of the measurements. (3) `1.29 µs` is the remainder of a partition that INCLUDES the timer read, printed as the complement of a 99.81% share computed without it. (4) *"a fifth of a bisection step"* was a fraction measured on OTHER cells falling SHORT of 1.0, carried onto two cells EXCEEDING it. **The class:** a number is not a number — it carries a corpus, an estimator, a denominator, a population and an operation, and each of those is a boundary it can cross while remaining correct as digits. Every existing check compares digits to digits and is blind to all five. **Guard, narrow form, built 2026-09-23:** check 7, a registry of the seventeen values these two passes touched, each with the dimensions its context must name, enforced paragraph by paragraph and row by row against the table's own header. It found one live crossing nobody had reported — §VI-C gave 0.0696 and 0.0019 their denominator and not their estimator — and four thinner contexts. Mutation-tested on three shapes. **What it does NOT do:** it checks that the context NAMES the dimension, not that the naming is true; a paragraph saying "drain-window" beside a delivery-span figure passes. It catches the silent crossing, which is the observed failure, not a mislabelling, which has not happened here. **POST-SUBMISSION:** the general form — high-risk derived values carrying a semantic key at the point they are computed, so the key travels with the value instead of being re-asserted in prose. Deliberately not built now: infrastructure does not block a finished paper. |
 <!-- withdrawn-quote-ok: the row names both retired phrases to record why -->
 | W6 — **DEFECT CLASS: a policy sentence the paper contradicts elsewhere** | **Named 2026-09-23, from the two adversarial reviews.** Second instance in this project, and both surfaced in the same pass. (1) **§VI-B states the policy** — *"No range spanning the seven is quoted: they do not share a precision, and a range would assert one they do not have"* — while the abstract, C1, §X and the Fig. 2 caption each quoted such a range, as *within 1%* or *within 0.7%*. Both reviews found it independently. (2) **§II-E states** that *"the observation that the boundary sits near capacity is not offered as a discovery"* while C1 was listed under a heading reading *"The contributions are:"*. **What is diagnostic about the class:** neither was found by checking a number against a record. Every figure involved was correct. They were found by reading the paper against itself, and the paper had a sentence forbidding each of them at the time it made them — so a data audit, a float audit and a promotion scan could all pass while the contradiction stood. **Guards:** the claim register's headline was rewritten, and the checker now retires *within 1%* and *within 0.7%* as seven-cell formulations through the withdrawn-phrase mechanism, so regeneration cannot restore them; the contributions heading now reads *"The paper's main results and methodological contributions are:"* and C1 is *Boundary characterization*. **A guard is not the same as a pass:** a phrase list catches the two manifestations that were found and says nothing about the next policy sentence. **PRE-SUBMISSION: a dedicated read-the-paper-against-itself pass belongs on the list** — take each sentence that constrains what the paper may claim (§IV's resolution rule, §VI-B's precision rule, §II-E's disclaimer, §IX's concessions) and check every claim elsewhere against it. That is a different operation from checking claims against data, and this project has now run the data pass many times and this one never. |
 | W6 — **PREMISE FAILURE: Zenodo does not permit self-service file replacement** | **Found 2026-09-23 by an API refusal, not by reading.** The in-place file replacement was planned, staged, verified and rehearsed on the premise of a 30-day self-service file edit. Opening `/actions/edit` succeeds and the record moves to `inprogress`, but the first `PUT` to the bucket returns **403 `Bucket is locked for modifications`**. Zenodo's documentation is explicit: *"You can edit the metadata (title, creators, etc) of a published record at any time. Files in the record however can only be edited (added, modified or deleted) after publication by contacting support."* The 30-day window is for **deletion**, not file editing — two different facilities conflated into one plan. **`DEPOSIT-W6.md` step 6 already quoted that exact sentence, recorded 2026-09-20.** The project held the correct answer in writing and planned against a different premise for a day. **What saved it:** the upload aborted on the first object, discarded the edit rather than improvising inside it, and the record returned to `done` with all seven objects byte-identical — because the discard path had been rehearsed while nothing was at stake. **Open question for the record:** the cited DOI `10.5281/zenodo.22761131` is the *version* DOI; the concept DOI `10.5281/zenodo.22761130` resolves to the latest version. A new version therefore does not correct what §IV cites. |

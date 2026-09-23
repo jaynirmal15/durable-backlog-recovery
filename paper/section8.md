@@ -1,5 +1,7 @@
 # §8 — How calibration changed the interpretation
 
+*Draft 5 — FINAL REVISION, 2026-09-23. §VIII-A is rewritten to separate three operations that were conflated: the registered E1 statistic against configured capacity, the matched physical correction, and §VI-C's accounting-only re-normalisation. Each of 0.0689, 0.0670, 0.0696, 0.0032, 0.0043 and 0.0019 names its estimator, population and operation. "94–95% of it removed" is gone; the complete-chain sentence says the effect became unresolved after physical correction.*
+
 *Draft 4 — KEYED FIGURE AND TABLE REFERENCES, 2026-09-20. Every literal "Fig. N", "Figure N" and "Table N" in the body is replaced by a key (`[@fig:…]`, `[@tab:…]`) that the build renders as "Fig. N" / "Table N" from order of first appearance — the citation design, applied to floats, so numbering cannot go stale when tables are added. No other wording changed.*
 *Draft 3 — SCIENCE FROZEN, package included. 2026-09-20. The freeze condition
 was seeing the regenerated Table 3 under the asymmetric schema; that table is
@@ -53,8 +55,9 @@ calibrated capacity reference. [@tab:candidates] keeps the two apart throughout.
 
 ### A. Concurrency: affirmed, then no longer resolved after calibration
 
-The E1 arms separated by 0.0689 in achieved utilisation at the last safe point —
-0.9137 at concurrency 10 against 0.9826 at concurrency 50. Two explanations were
+The E1 arms separated by 0.0689 in achieved utilisation at the last safe point,
+against configured capacity — 0.9137 at concurrency 10 against 0.9826 at
+concurrency 50. Two explanations were
 available and confounded in E1, because the arms differed in both concurrency and
 admission limit.
 
@@ -65,17 +68,26 @@ the separation stayed with the arm while the cap moved fivefold. The finding
 survived a test designed to kill it, and the test was registered before the cells
 ran.
 
-The resolved concurrency effect did not survive calibration. Expressed against
-measured rather than configured capacity, the same separation between the same two arms falls from 0.0670 to
-0.0032 under drain-window accounting and from 0.0696 to 0.0043 under
-delivery-span — **94 to 95% of it removed**, or 134.0 requests per second down to
-6.4. §V-F gives the matched accounting.
+**The resolved concurrency effect did not survive calibration, and three
+distinct operations are involved.** The registered E1 test began from a 0.0689
+separation between the two original arms, measured against configured capacity.
+That registered statistic is not identical to the matched correction accounting
+below. For the uncorrected C0 pair, the last-SAFE gap is 0.0670 under
+drain-window accounting and 0.0696 under delivery-span accounting. After
+physically correcting the sleep path and rerunning the two arms, the
+corresponding point-estimate gaps are 0.0032 and 0.0043; both residuals are
+below the corrected search resolution, which is 55 requests per second in one
+arm and 65 in the other. A separate accounting-only comparison in §VI-C does not
+rerun the harness: re-dividing the original delivery-span boundaries by measured
+capacity gives 0.0019. Re-normalisation therefore closes that original gap
+further than physical correction does, and the two operations are not presented
+as interchangeable. §V-F gives the matched accounting and its point-estimate
+reductions.
 
 This is the one complete chain in the paper: a second-order effect that was
-registered, challenged, survived its challenge, and was then almost entirely
-removed by measuring the instrument. What survives of it is a small fraction of
-the original separation, below what this experiment resolves (§VI). The paper's
-central lesson rests on it.
+registered, challenged, survived its challenge, and became unresolved once the
+instrument was physically corrected. What survives of it is not resolved by the
+corrected searches (§VI). The paper's central lesson rests on it.
 
 ### B. Service time: affirmed, and not re-adjudicated
 

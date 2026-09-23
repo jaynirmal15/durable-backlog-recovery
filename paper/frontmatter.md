@@ -68,7 +68,7 @@ estimate, the overstatement is 9.26 percent at a
 five-millisecond service time and 1.85 percent at twenty-five, against a margin
 under one percent. That bias generated a stable second-order effect, which survived a falsification
 test registered before the data that tested it were collected, and which
-calibration then removed almost entirely.
+calibration then reduced to below the corrected search resolution.
 
 We report the measurement, the trap, and three further written claims that later
 measurement overturned during the pre-registered campaign. The harness, the pre-registration with its dated amendments, the

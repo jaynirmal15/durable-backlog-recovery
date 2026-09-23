@@ -419,5 +419,99 @@ class RetiredAggregatePhrases(unittest.TestCase):
         self.assertFalse([h for h in hits if h[2] == 'within 1%'], hits)
 
 
+
+
+class SemanticRegistryCase(unittest.TestCase):
+    """Check 7: a registered value may appear only where its key is named.
+
+    All three mechanical defects of these two review passes were the same
+    failure -- a value staying numerically correct while crossing an estimator,
+    population, denominator or operation boundary. These tests plant that
+    crossing in each of the shapes it actually took.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix='checksem-')
+        for d in ('paper', 'figures'):
+            shutil.copytree(os.path.join(ROOT, d), os.path.join(self.tmp, d))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def read(self, rel):
+        with open(os.path.join(self.tmp, rel), encoding='utf-8') as fh:
+            return fh.read()
+
+    def edit(self, rel, old, new):
+        text = self.read(rel)
+        self.assertEqual(text.count(old), 1,
+                         'fixture drift: %r appears %d times in %s'
+                         % (old, text.count(old), rel))
+        with open(os.path.join(self.tmp, rel), 'w', encoding='utf-8') as fh:
+            fh.write(text.replace(old, new))
+
+    def problems(self):
+        return '\n'.join('%s %s' % p for p in C.semantic_registry(self.tmp))
+
+    def test_clean_tree_is_clean(self):
+        self.assertEqual(C.semantic_registry(self.tmp), [])
+
+    def test_a_delta_without_its_load_condition_is_reported(self):
+        self.edit(SEC5, '| at saturation | 0.4947 ms | 0.4914 ms |',
+                  '| the other pair | 0.4947 ms | 0.4914 ms |')
+        self.assertIn('0.4947 appears without naming its condition',
+                      self.problems())
+
+    def test_a_gap_whose_row_loses_its_estimator_is_reported(self):
+        # The row is read against its own header, not against the whole table.
+        # Grouped, the delivery-span row would have excused this one.
+        self.edit(SEC5, '| drain-window, utilisation | 0.0670 | 0.0032 | 95% |',
+                  '| utilisation | 0.0670 | 0.0032 | 95% |')
+        blob = self.problems()
+        self.assertIn('0.0670 appears without naming its estimator', blob)
+        self.assertIn('0.0032 appears without naming its estimator', blob)
+
+    def test_the_crossed_partition_is_reported(self):
+        # Exactly the A5 defect as it shipped: 1.29 us printed as the
+        # complement of 99.81% without saying the timer sits outside delta.
+        self.edit(SEC5,
+                  'The timer read is measured\noutside `\u03b4`; adding it brings '
+                  'those remainders to 1.29 and 1.38 \u00b5s.',
+                  'Queue and slot bookkeeping and the completion signal\n'
+                  'contribute 1.29 and 1.38 \u00b5s.')
+        self.assertIn('1.29 and 1.38', self.problems())
+
+    def test_marker_exempts_a_displayed_calculation(self):
+        self.assertNotIn('semantic-ok', self.problems())
+        self.assertEqual(C.semantic_registry(self.tmp), [])
+
+    def test_table_rows_are_read_against_their_own_header(self):
+        paras = C.paragraphs_of([(1, '| a | b |\n'), (2, '|---|---|\n'),
+                                 (3, '| x | 1 |\n'), (4, '| y | 2 |\n')])
+        bodies = [p for p in paras if len(p) == 2]
+        self.assertEqual(len(bodies), 2)
+        for p in bodies:
+            self.assertEqual(p[0][0], 1)
+
+
+class RegisteredTextIsOutOfPhraseScope(unittest.TestCase):
+    """The three registered addenda are immutable, so the phrase list skips them.
+
+    Marking live registered prose `withdrawn-quote-ok` would label it a
+    historical quotation, which it is not. A stated scope is auditable; a false
+    label is not.
+    """
+
+    def test_registration_files_are_not_phrase_targets(self):
+        names = [os.path.basename(p) for p, _ in C.targets()]
+        for reg in C.REGISTERED:
+            self.assertNotIn(reg, names)
+
+    def test_they_still_exist_and_still_contain_the_retired_word(self):
+        # If this stops being true the exclusion is dead weight and should go.
+        path = os.path.join(ROOT, 'paper', 'A8-registration.md')
+        self.assertTrue(os.path.isfile(path))
+        with open(path, encoding='utf-8') as fh:
+            self.assertIn('prospective', fh.read())
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

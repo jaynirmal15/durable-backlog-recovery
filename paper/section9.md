@@ -1,5 +1,7 @@
 # §9 — Threats to validity
 
+*Draft 9 — FINAL REVISION, 2026-09-23. §IX-E adds the uneven replication depth and states that n = 3 attaches no probabilistic bound; its two harness-defect examples move to S1-I. §IX-F is replaced: the broker-path limit is stated explicitly, and outage duration was fixed at 120 s. §IX-A names which δ it declines to generalise.*
+
 *Draft 8 — TWO-REVIEW REVISION, 2026-09-23. A6: §IX-A's "this host and this Go runtime" now points at §III-A, which names them.*
 
 *Draft 7 — CUT PASS, increment 6, 2026-09-20. §IX-C compressed from ~480 to
@@ -107,7 +109,8 @@ strip in W6.*
 One synthetic downstream, on one instance type, with no real dependency, no
 persistent state and no I/O. The per-request bias measured here is a property of
 this implementation, this host and this Go runtime (§III-A), and does not offer
-0.463 ms as a constant anyone else should expect to find. What generalises is
+the pooled saturation-plateau-inferred 0.463 ms as a constant anyone else
+should expect to find. What generalises is
 not the number but the relation: a configured capacity figure was wrong by more
 than the operating margin the experiment set out to characterise, in an
 instrument built for that experiment and inspected by its author.
@@ -155,8 +158,9 @@ measured capacity rather than strictly below it.
 
 **One superseded figure.** An earlier committed analysis reported 96.3% of the
 inter-arm effect removed, from before-and-after values sharing neither
-estimator, aggregator, observation interval nor statistic. The matched 94 to 95%
-accounting in §V supersedes it.
+estimator, aggregator, observation interval nor statistic. The matched
+point-estimate accounting in §V supersedes it, at a 94–95% point-estimate
+reduction.
 
 ### C. Provenance, and corrections to the record
 
@@ -213,22 +217,29 @@ quantity.
 `δ` was estimated in sample, with no cell held out. §V reports the leave-one-out
 construction that tests what that costs, and its result in full.
 
-Defects in the harness were found and fixed during the campaign, and are
-reported as evidence that the checking regime operated rather than as
-incidental. A spin-wait admission profile was found to amplify a transient
-rejection into a sustained collapse, and was replaced. The overhead record's own
-descriptive field contradicted the arithmetic of the record it was written into,
-in every record it wrote, until it was corrected at the source and in all 43
-affected records — after which every consuming artefact regenerated
-byte-identically.
+Additional harness defects found and corrected during the campaign are
+documented in Supplement S1.
+
+**Replication depth is uneven:** five last-SAFE endpoints were expanded to
+n = 12 or n = 15, while the two reduced-capacity cells remain at n = 3.
+
+**The 3-of-3 SAFE rule is deliberately stringent, but n = 3 is not a
+statistical error guarantee:** the study estimates neither a run-level violation
+probability nor a false-SAFE probability, so no probabilistic bound is attached
+to that classification.
 
 ### F. External
 
-One implementation, one instance type, one broker, one consumer cohort. No real
-dependency, no persistent state, and no operational consequence measured: the
-objective is a latency-and-error rule evaluated per second, not a user-visible
-outcome. The boundary result is a statement about this system, and the
-methodological result is what the paper offers beyond it.
+External validity is limited to one implementation, instance type, broker and
+consumer cohort. The synthetic downstream has no real dependency or persistent
+state. Live SLO traffic bypasses JetStream and reaches the downstream directly,
+while post-restoration brokered messages are excluded from the SLO; the measured
+boundary therefore isolates competition at the shared downstream, not a
+deployment in which live and recovery traffic also share the broker path. No
+user-visible operational consequence was measured.
+
+Outage duration was fixed at 120 s, so sensitivity to backlog size was not
+tested.
 
 ### G. What remains open, and what would settle it
 

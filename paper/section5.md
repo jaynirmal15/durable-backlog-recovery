@@ -1,5 +1,7 @@
 # §5 — The calibration defect
 
+*Draft 27 — FINAL REVISION, 2026-09-23. §V-F states the reduction as a point-estimate reduction against a 55–65 rps corrected search resolution; the accounting table's final column is renamed. §V-D becomes "The registered plateau prediction" and rests on data independence rather than on prospectivity. 0.4947/0.4914's displayed arithmetic carries a semantic-ok marker.*
+
 *Draft 26 — TWO-REVIEW REVISION, 2026-09-23. A4: the measured difference is −0.0052 ms, the difference of the unrounded means; −0.0051 is what differencing the table's displayed values gives, and both are now stated. A5: 99.81% and 1.29 µs were two different partitions — the remainder of δ is 0.98 µs, and 1.29 µs adds the timer read, which is measured outside δ. B2: §V-C's "δ is not a single number and is never reported as one" is narrowed to the measurements it describes.*
 
 *Draft 25 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: "interquartile range (IQR)" pairs the acronym in §V-C before Table 4's IQR column, and §V-D's single "RMS" becomes "root-mean-square". No other change.*
@@ -167,7 +169,7 @@ represented reliably by a single fixed correction — which is why §I declines 
 claim either that capacity must be estimated online or that an offline benchmark
 would suffice.
 
-### D. The prospective plateau prediction
+### D. The registered plateau prediction
 
 The correction applied to the emulated service time was the **pooled
 saturation-plateau-inferred** 0.463 ms, with the worker count held fixed by
@@ -180,6 +182,9 @@ probe's saturation values**, 0.4947 and 0.4914 ms, measured on separate
 uncorrected runs by a different instrument from the one that produced the
 correction:
 
+<!-- semantic-ok: the saturation condition is named in the sentence that
+     introduces this block; repeating it inside the arithmetic would not make
+     the reader better informed -->
 ```
 S = 5:   c = 10   4.537 + 0.4947 = 5.0317 ms   →  10 / 0.0050317 = 1987.4 rps
 S = 25:  c = 50   24.537 + 0.4914 = 25.0284 ms →  50 / 0.0250284 = 1997.7 rps
@@ -206,7 +211,7 @@ had started, and on an uncommitted campaign log. A8's twenty replication windows
 are likewise untimed. Addendum A9 records the gap, and §IX carries it as a threat
 to validity.
 
-**Measured: 1987.4 and 1998.1 rps.** That was the original prospective test and,
+**Measured: 1987.4 and 1998.1 rps.** That was the original registered test and,
 for the remainder of the campaign, the whole of the evidence: one 60-second
 window per arm, so the agreement could not be set against the scatter of the
 quantity it agreed with. Both plateaus were therefore replicated under addendum
@@ -270,8 +275,10 @@ the other six cells and predicting the held-out seventh places every held-out
 plateau within one bisection step — worst case 0.98 steps, root-mean-square 2.44 rps. This is
 cross-validation *within* the campaign against the same error model: it shows the
 inferred correction is stable across those cells, not that the model is
-independently confirmed. The prospective, now replicated, plateau prediction is
-the out-of-sample evidence. The residuals show an arm-aligned sign pattern — the
+independently confirmed. The registered and now replicated plateau prediction is
+the data-independent evidence: its constants were measured by a different
+instrument on separate runs, which holds whatever the file timestamps can and
+cannot establish. The residuals show an arm-aligned sign pattern — the
 short-service arm over-predicted, three of four long-service cells
 under-predicted, a per-arm gap of 4% — so service-time independence is
 approximate rather than exact, and the paper quotes the 4%.
@@ -313,15 +320,16 @@ algebraically rather than test it. In the short arm the replicated plateaus plac
 constant's implied value inside the observed range and its rival outside; the
 long arm cannot separate them.
 
-**Established, under matched accounting.** The correction largely removes the
-inter-arm difference, reported under each estimator separately in
+**Established, under matched accounting.** The correction reduces the inter-arm
+point estimates to below the corrected search resolution, reported under each
+estimator separately in
 [@tab:accounting]. The four-decimal
 quantities are derived inter-arm differences, not measured per-cell utilisations;
 the extra digit keeps the subtraction from erasing the effect, and the underlying
 measured utilisations remain resolution-matched.
 
 <!-- table:tab:accounting -->
-| accounting | before | after | removed |
+| accounting | before | after | point-estimate reduction |
 |---|---:|---:|---:|
 | drain-window, utilisation | 0.0670 | 0.0032 | 95% |
 | drain-window, throughput | 134.0 rps | 6.4 rps | 95% |
@@ -330,9 +338,14 @@ measured utilisations remain resolution-matched.
 Every row compares like with like — the last SAFE point only, one estimator on
 both sides, the same aggregator and denominator. The throughput row carries no
 utilisation denominator at all and agrees exactly with its utilisation
-counterpart, which is the check worth having. **94 to 95% of the apparent effect
-is removed, depending on estimator.** An earlier analysis reported 96.3% using
-unmatched estimators; §IX records the supersession.
+counterpart, which is the check worth having. **Physical correction reduced the
+apparent concurrency separation to a residual below the corrected search
+resolution.** Under matched last-SAFE point accounting, the point estimates fall
+from 0.0670 to 0.0032 under drain-window accounting and from 0.0696 to 0.0043
+under delivery-span accounting, corresponding to 94–95% point-estimate
+reductions; the remaining separation is not resolved by the 55–65 rps corrected
+searches. An earlier analysis reported 96.3% using unmatched estimators; §IX
+records the supersession.
 
 **Not established.** Which load-conditioned `δ` governs the boundary in the final
 few tenths of a percent. The registered boundary prediction fails and the

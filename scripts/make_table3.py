@@ -137,10 +137,12 @@ def main():
           '`f = +0.000` and `-0.006`: neither cell moved toward the other arm, so '
           'the gap did not follow the cap (E2 report). Measured after the '
           'correction on those same two arms, under one recipe applied to both '
-          'corpora, the inter-arm gap falls from **%.4f to %.4f** (%.0f%% removed) '
-          'on the drain-window estimator and from %.4f to %.4f (%.0f%% removed) on '
-          'the delivery-span one — %.1f rps to %.1f rps in throughput terms. '
-          '**94–95%% of the separation is removed.** |'
+          'corpora, the inter-arm point estimate falls from **%.4f to %.4f** '
+          '(%.0f%% point-estimate reduction) on the drain-window estimator and '
+          'from %.4f to %.4f (%.0f%% point-estimate reduction) on the '
+          'delivery-span one — %.1f rps to %.1f rps in throughput terms. '
+          '**94–95%% point-estimate reduction; the residual is not resolved by '
+          'the 55–65 rps corrected searches.** |'
           % (m['gapRhoUncorrected'], m['gapRhoCorrected'], m['fractionRemovedRho'],
              a4['gapRhoUncorrected'], a4['gapRhoCorrected'], a4['fractionRemovedRho'],
              m['gapRpsUncorrected'], m['gapRpsCorrected']))

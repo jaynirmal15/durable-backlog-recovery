@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Six invariants over the manuscript's live text. Renamed from
+"""Seven invariants over the manuscript's live text. Renamed from
 check_withdrawn_phrases.py, which understated what it does.
 
 Check 6 was added 2026-09-23 after a review found "Table 8" still standing in
@@ -123,6 +123,19 @@ WITHDRAWN = [
      'Same: a shared percentage range across cells of different resolution. '
      'The Fig. 2 caption now reports the 0.0071 spread against E2b\'s 0.0127 '
      'resolution instead.'),
+    # Ruling 3, 2026-09-23. SS-IX-C discloses that the plateau records carry no
+    # file-level timestamp, so nothing establishes that the registration
+    # preceded the measurements. A disclosure in SS-IX does not cure
+    # affirmative language elsewhere, and "prospective" is that language. The
+    # surviving claim is DATA INDEPENDENCE -- the predicted 1987.4 and 1997.7
+    # came from direct-probe constants while the correction used the pooled
+    # 0.463 ms -- which holds whatever the timestamps can show.
+    ('prospective',
+     'The prospectivity of the plateau prediction is not established: the '
+     'plateau records carry no file-level timestamp (SS-IX-C). Say '
+     '"registered", or "registered before the data" where that is the claim, '
+     'and rest the argument on data independence.'),
+    ('prospectively', 'Same as "prospective".'),
     ('statistically',
      'Struck from the claim register: the indistinguishability argument rests '
      'on resolution -- bisection step, interval width, replicate spread -- not '
@@ -131,9 +144,21 @@ WITHDRAWN = [
 ]
 
 
+# Registered addenda are IMMUTABLE RECORDS, not manuscript text: once their
+# commit is cited they cannot be edited, so a withdrawn phrase inside one
+# cannot be fixed and must not be reported as though it could. Marking them
+# `withdrawn-quote-ok` instead would put a false label -- "historical
+# quotation" -- on live registered prose. They are named here so the exclusion
+# is a stated scope rather than an exemption nobody audits. Every other check
+# still reads them; this is the phrase list only.
+REGISTERED = ('A8-registration.md', 'A9-registration.md', 'A10-registration.md')
+
+
 def targets():
     out = []
     for name in sorted(os.listdir(PAPER)):
+        if name in REGISTERED:
+            continue
         if name.endswith('.md'):
             out.append((os.path.join(PAPER, name), True))
     for d in (FIGURES, SCRIPTS):
@@ -494,6 +519,132 @@ def own_line_tags(text, pattern):
     return out
 
 
+# ---------------------------------------------------------------------------
+# Check 7: the semantic registry.
+#
+# THE NARROW VERSION, DELIBERATELY. Three defects in two review passes were the
+# same failure and none of them was an arithmetic error: a value stayed
+# numerically correct while crossing a boundary it was defined against.
+#
+#   0.98 was the rho* midpoint ROUNDED; printed beside an unrounded result it
+#        made the identity h = 0.980 read as false.
+#   -0.0051 was the difference of two DISPLAYED values; -0.0052 is the
+#        difference of the measurements.
+#   1.29 us was the remainder of a partition that INCLUDES the timer read,
+#        printed as the complement of a share computed without it.
+#   "a fifth of a bisection step" was a fraction measured on OTHER CELLS
+#        falling short of 1.0, carried onto two cells exceeding it.
+#
+# So a number is not a number: it carries a corpus, an estimator, a denominator,
+# a population and an operation, and every one of those is a boundary it can
+# cross while the digits stay right. The general answer is that high-risk
+# derived values should carry that key everywhere they are computed. That is
+# infrastructure, it goes on the post-submission list, and it is not allowed to
+# block a finished paper.
+#
+# This is the narrow form: a registry of the specific values this pass touched,
+# each with the dimensions its context must name. A value may appear only in a
+# paragraph that names every dimension it is defined against -- so moving
+# 0.0696 into a sentence that gives its denominator but not its estimator is
+# reported, which is exactly how the three defects above travelled.
+#
+# WHAT IT DOES NOT DO, stated so the clean line is not read as more than it is:
+# it checks that the context NAMES the dimension, not that the naming is
+# correct. A paragraph that says "drain-window" beside a delivery-span figure
+# passes. It catches the silent crossing, which is the observed failure mode,
+# and not a mislabelling, which has not yet happened here.
+SEMANTIC_OK = 'semantic-ok'
+SEMANTIC_OK_RE = re.compile(r'<!--[^>]*' + re.escape(SEMANTIC_OK) + r'[^>]*-->')
+
+# value -> {dimension: [tokens, any one of which names it]}
+REGISTRY = {
+    # The registered E1 separation. Its denominator is the CONFIGURED
+    # parameter, which is the whole reason the matched accounting below is a
+    # different quantity.
+    '0.0689': {'corpus': ['e1'],
+               'denominator': ['configured', 'm50 - m10', 'concurrency gap']},
+    # Matched last-SAFE accounting, uncorrected side.
+    '0.0670': {'estimator': ['drain-window'],
+               'population': ['last safe', 'last-safe', 'uncorrected', 'before']},
+    '0.0696': {'estimator': ['delivery-span', 'delivery span'],
+               'population': ['last safe', 'last-safe', 'uncorrected', 'before',
+                              'derived gap']},
+    # Matched last-SAFE accounting, PHYSICALLY CORRECTED side. The operation is
+    # the dimension that was being crossed: re-normalisation is not correction.
+    '0.0032': {'estimator': ['drain-window'],
+               'operation': ['correct', 'after']},
+    '0.0043': {'estimator': ['delivery-span', 'delivery span', 'matched estimator'],
+               'operation': ['correct', 'after']},
+    # Accounting only: the SAME measured boundaries, re-divided. No rerun.
+    '0.0019': {'denominator': ['measured capacity'],
+               'operation': ['re-divid', 're-normalis', 'accounting', 'not rerun',
+                             'does not rerun']},
+    # E2b's rho*: the UNROUNDED midpoint, which is the operand h needs.
+    '0.98125': {'population': ['midpoint', 'interval'],
+                'operation': ['unrounded']},
+    # The direct probe. Every delta is quoted with its load condition.
+    '0.5165': {'condition': ['90%', '90 %', 'probe constant']},
+    '0.5114': {'condition': ['90%', '90 %', 'probe constant']},
+    '0.4947': {'condition': ['saturation', 'saturated']},
+    '0.4914': {'condition': ['saturation', 'saturated']},
+    '0.4775': {'condition': ['in situ', 'during a drain']},
+    '0.4746': {'condition': ['in situ', 'during a drain']},
+    '0.463': {'estimator': ['plateau-inferred', 'plateau inferred', 'pooled',
+                            'saturation-plateau']},
+    # The partition that was crossed. 99.81% is a share of delta; its
+    # complement is 0.98 us. 1.29 us adds the timer read, which is OUTSIDE
+    # delta, so it may not stand where the timer is not named.
+    '99.81': {'condition': ['90%', '5 ms', 's` = 5', 's = 5'],
+              'remainder': ['0.98']},
+    # "timer" alone is too weak a token: the same paragraph calls the whole
+    # effect timer overshoot. What has to be said is that the timer read sits
+    # OUTSIDE delta, which is the fact that makes 1.29 not the complement of
+    # 99.81%.
+    '1.29 and 1.38 µs': {'partition': ['outside `δ`', 'measured outside',
+                                        'adding it brings']},
+}
+
+
+def semantic_registry(root='.'):
+    """Check 7: registered values appear only where their key is named."""
+    problems = []
+    paper = os.path.join(root, PAPER)
+    figures = os.path.join(root, FIGURES)
+    sources = [(os.path.join(paper, 'section%d.md' % n), True)
+               for n in range(1, 11)]
+    sources.append((os.path.join(paper, S1_FILE), True))
+    sources.append((os.path.join(paper, 'frontmatter.md'), True))
+    if os.path.isdir(figures):
+        sources += [(os.path.join(figures, n), False)
+                    for n in sorted(os.listdir(figures)) if n.endswith('.md')]
+    pats = {v: re.compile(r'(?<![\d.])' + re.escape(v) + r'(?![\d])')
+            for v in REGISTRY}
+    for path, skip in sources:
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding='utf-8') as fh:
+            lines = fh.readlines()
+        numbered = body_of(lines, skip, path)
+        if not skip:
+            numbered = shipped_only(numbered)
+        for para in paragraphs_of(numbered):
+            window = re.sub(r'\s+', ' ',
+                            ' '.join(l for _, l in para)).lower()
+            first = para[0][0]
+            if SEMANTIC_OK_RE.search(' '.join(l for _, l in para)):
+                continue
+            for value, dims in REGISTRY.items():
+                if not pats[value].search(window):
+                    continue
+                for dim, tokens in sorted(dims.items()):
+                    if not any(tok in window for tok in tokens):
+                        problems.append(
+                            ('%s:%d' % (path, first),
+                             '%s appears without naming its %s -- the context '
+                             'must say one of %s' % (value, dim, tokens)))
+    return problems
+
+
 XREF_OK = 'xref-ok'
 XREF_OK_RE = re.compile(r'<!--[^>]*' + re.escape(XREF_OK) + r'[^>]*-->')
 ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
@@ -526,6 +677,43 @@ def section_inventory(root='.'):
                 letters.add(m.group(1))
         inv[ROMAN[n - 1]] = letters
     return inv
+
+
+def paragraphs_of(numbered):
+    """Blank-line-separated paragraphs of (lineno, text).
+
+    A PIPE-TABLE ROW IS ITS OWN PARAGRAPH, carrying the table's header row with
+    it. Left grouped, a table is one window and any row's estimator excuses
+    every other row's -- which is precisely the crossing check 7 exists to
+    catch, so grouping them would have made the check pass over its own subject
+    matter. A reader reads one row against the header; so does this.
+    """
+    out, cur, head = [], [], None
+    for n, line in numbered:
+        s = line.strip()
+        if not s:
+            if cur:
+                out.append(cur)
+                cur = []
+            head = None
+            continue
+        if s.startswith('|'):
+            if cur:
+                out.append(cur)
+                cur = []
+            if head is None:
+                head = (n, line)
+                out.append([(n, line)])
+            elif set(s) <= set('|-: '):
+                out.append([(n, line)])          # the separator row
+            else:
+                out.append([head, (n, line)])
+            continue
+        head = None
+        cur.append((n, line))
+    if cur:
+        out.append(cur)
+    return out
 
 
 def shipped_only(numbered):
@@ -816,9 +1004,10 @@ def main():
     uncited = citation_inventory(entries) if entries else []
     float_problems, float_order, floats, float_counts = float_keys()
     xref_problems = cross_references()
+    sem_problems = semantic_registry()
 
     ok = not (hits or stale or bib_problems or uncited or cite_problems
-              or float_problems or xref_problems)
+              or float_problems or xref_problems or sem_problems)
     if ok:
         print('clean.')
         print('  withdrawn phrases : none in live manuscript-facing text '
@@ -834,6 +1023,8 @@ def main():
         print('  cross-references  : every float reference keyed; every section '
               'reference resolves (%d sections, %d subsections)'
               % (len(inv), nsub))
+        print('  semantic registry : %d registered values, every live '
+              'occurrence naming its key' % len(REGISTRY))
         af, at = float_counts['article']
         sf, st = float_counts['s1']
         print('  float keys        : article %d figures + %d tables (ruled); '
@@ -885,6 +1076,14 @@ def main():
         print('\nFloat references must be keyed; section references must name a '
               'section the article has. To keep a retired number in historical '
               'text, put <!-- %s: why --> on or beside the line.\n' % XREF_OK)
+    if sem_problems:
+        print('SEMANTIC REGISTRY\n')
+        for label, msg in sem_problems:
+            print('  %-28s %s' % (label, msg))
+        print('\nA registered value may appear only where its context names '
+              'every dimension it is defined against. If the context is one '
+              'paragraph away and repeating it would not help a reader, put '
+              '<!-- %s: why --> in the paragraph.\n' % SEMANTIC_OK)
     if float_problems:
         print('FIGURE AND TABLE KEYS\n')
         for label, msg in float_problems:

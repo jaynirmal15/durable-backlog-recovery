@@ -1,5 +1,7 @@
 # §1 — Introduction
 
+*Draft 21 — FINAL REVISION, 2026-09-23. C2 leads with the unresolved residual: calibration reduced the concurrency-associated separation to a residual below the corrected search resolution, and 94–95% is named as a point-estimate reduction rather than a resolved magnitude. C2's prospectivity claim is demoted to data independence — the predictions appear in the registration, but the plateau records carry no file-level timestamp, and §IX-C holds that gap. §I's three-candidate sentence follows.*
+
 *Draft 20 — TWO-REVIEW REVISION, 2026-09-23. B1: the claim-register headline and C1 retire "within 1%" as a seven-cell formulation, which §VI-B's own policy sentence forbids. B3: the contributions heading now reads "main results and methodological contributions", C1 is renamed "Boundary characterization", and one sentence records that the campaign preregistered the search procedure, not a boundary location. B4: the controller prescription is scoped to this harness. No number changes.*
 
 *Draft 19 — CUT PASS, increment 3, 2026-09-20. §I compressed from ~1,595 to
@@ -114,8 +116,8 @@ times far more than long ones, and a distortion that varies systematically with 
 configuration parameter looks, from the outside, like a property of the system.
 Of three candidate explanations of the boundary put to registered tests, the
 **admission limit** was rejected by its own falsification criterion before any
-calibration; **concurrency** survived that test and was removed almost entirely
-once the instrument was calibrated; **service time** survived its test and is
+calibration; **concurrency** survived that test and was reduced to a residual
+below the corrected search resolution once the instrument was corrected; **service time** survived its test and is
 undermined, though not re-adjudicated, by the calibrated evidence (§VIII). The
 falsification machinery could reject a wrong explanation. It could not identify
 the timing bias from the effects that bias produced.
@@ -172,14 +174,21 @@ a preregistered location prediction.
 across a fivefold service-time range, varying with offered load, and 99.8%
 attributable to timer overrun. One
 second-order finding is traced to it in full — the apparent concurrency
-dependence, which survived its registered falsification and which calibration
-removes by 94 to 95%. A second, the apparent service-time dependence, survived
+dependence, which survived its registered falsification. Calibration reduced that
+previously resolved concurrency-associated separation to a residual below the
+corrected search resolution. Under matched last-SAFE accounting, the point
+estimates correspond to a 94–95% reduction depending on estimator; that
+percentage describes the measured point estimates, not a resolved residual
+effect. A second finding, the apparent service-time dependence, survived
 its own registered test and is undermined by the calibrated evidence without its
 registered statistic having been recomputed; §VIII states that limitation rather
-than counting it as a third case. The correction was tested by a registered prediction rather than
-fitted to the corrected runs: correcting the emulated service time by that bias was predicted to
-yield capacities of 1987.4 and 1997.7 rps in the two arms, using constants
-measured by a different instrument on separate runs. The first corrected windows
+than counting it as a third case. The correction was checked against plateau
+predictions derived from independently measured timing constants rather than
+fitted to the corrected runs: correcting the emulated service time by that bias
+was predicted to yield capacities of 1987.4 and 1997.7 rps in the two arms.
+Those predictions appear in the registration, but the committed plateau records
+do not establish whether the registration preceded the measurements; §IX-C
+records that provenance gap. The first corrected windows
 were 1987.4 and 1998.1 rps; addendum A8 subsequently replicated both plateaus at
 ten 60-second windows per arm, giving medians of 1988.96 and 1997.70 rps.
 

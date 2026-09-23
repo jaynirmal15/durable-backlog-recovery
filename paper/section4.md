@@ -1,5 +1,7 @@
 # §4 — Method
 
+*Draft 31 — FINAL REVISION, 2026-09-23. "Prospective" is swept from §IV-H: registration before the data is the claim, and A8 is described as registered before its own measurement with §IX-C's timestamp limitation named.*
+
 *Draft 30 — TWO-REVIEW REVISION, 2026-09-23. A3: the excess above unity in the two highest cells is 0.06 and 0.08 of a bisection step, not "about a fifth". A fifth was imported from E2D-REPORT, where 0.18 and 0.14 of a step describe different cells falling short of 1.0.*
 
 *Draft 29 — CONCEPT DOI, 2026-09-23. §IV-I cites `10.5281/zenodo.22761130`, the **concept** DOI, naming the version in the sentence: "archived as version 1.0.1 under DOI …". The version DOI was replaced because once IEEE Access publishes, the DOI printed in the paper is frozen permanently, and a version DOI would leave that paper pointing at a superseded artefact with no edit available. Byte-pinning is unaffected — `MANIFEST.json` and the pre-registration commit do that — and naming the version tells a reader which entry in the Versions panel to open. **This is the only change: one DOI and the four words around it.***
@@ -334,7 +336,7 @@ Supplement S1 gives the full record.
 
 Supplement S1 tabulates all ten entries with their commits and, for each, whether
 it was registered before the data it governs and before the analysis it governs —
-different claims, of which only the first is prospective registration. A1–A3
+different claims, of which only the first is registration before the data. A1–A3
 predate all governed data and fix details of the search and the injector. The
 seven that later sections rely on are:
 
@@ -354,7 +356,8 @@ seven that later sections rely on are:
   and that corpus could not have resolved the ordering in either direction (§VII).
 - **A8** is a registered replication: ten 60-second windows per arm for the two
   corrected plateaus, with each arm's reading fixed before any window was run. It
-  changes no rule and is prospective in the strict sense; §V-D reports it.
+  changes no rule and was registered before its own measurement, in the strict
+  sense; §V-D reports it, with the timestamp limitation §IX-C carries.
 - **A9** and **A10** are record corrections: dated addenda fixing factual
   misstatements in earlier registration text, with the originals left standing.
   Neither changes a rule, a datum or a conclusion; §IX gives both.

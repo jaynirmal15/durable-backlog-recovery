@@ -1,5 +1,7 @@
 # §7 — What warns, and what does not
 
+*Draft 10 — FINAL REVISION, 2026-09-23. "Not a prospective replication" becomes "not a replication registered before the data existed".*
+
 *Draft 9 — CUT PASS, review fixes applied; see the approval note below. Originally Draft 8 — CUT PASS, increment 5, 2026-09-20, under the reviewer's 18-page
 authorisation. §VII compressed from ~1,300 to ~800 words. Kept, as the ruling
 requires: the warning rule and DEEP's status; timeout rate's result and its
@@ -83,7 +85,7 @@ collapsed. The corrected corpus was collected roughly thirty-four hours after A5
 froze the statistic and played no part in choosing it; A7 registered the
 criterion, statistic and prediction before re-analysing those already collected
 data. This is therefore an independent-corpus replication under a registered
-re-analysis, not a prospective replication.
+re-analysis, not a replication registered before the data existed.
 
 ### B. Exploratory: the queue-depth lead does not survive as a contribution
 

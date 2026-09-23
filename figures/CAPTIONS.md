@@ -36,8 +36,8 @@ time origin for every measurement reported here.
 **Where the unaccounted cost enters.** The harness sizes the dependency
 as c = ⌈C_config·S⌉ workers on the assumption that each turns a request round in
 exactly S, which makes capacity equal to C_config by construction. A worker in fact pays a fixed
-additional 0.463 ms per request, almost all of it the operating system sleeping
-longer than asked. C_model is therefore c/(S + δ), as in (5), and because the cost is
+additional 0.463 ms per request — the pooled saturation-plateau-inferred value
+— almost all of it the operating system sleeping longer than asked. C_model is therefore c/(S + δ), as in (5), and because the cost is
 additive rather than proportional it consumes a larger share of a short service
 time than a long one.
 <!-- caption:fig:capacity-model:end -->

@@ -281,9 +281,12 @@ and no publications.
 
 **The artifact citations** — repository, pre-registration commit `371e477`,
 Zenodo DOI `10.5281/zenodo.22761131`, regression fixture — are cited in §IV's
-reproducibility statement rather than numbered here. **The DOI resolves:
-published 2026-09-23**, which closes the pre-submission check it shared with
-the abstract's "publicly archived" sentence.
+reproducibility statement rather than numbered here. §IV cites the **concept**
+DOI `10.5281/zenodo.22761130`, which always resolves to the newest version,
+and names the version in the sentence. **It resolves**, which closes the
+pre-submission check it shared with the abstract's "publicly archived"
+sentence. The version DOI is deliberately not cited: the DOI printed in an
+accepted paper cannot afterwards be changed, so it must not name one version.
 
 The DOI is not a numbered reference and carries no accessed date, in §IV or
 here. That is deliberate and not an omission: the bibliography holds no

@@ -4,10 +4,11 @@
 
 | | |
 |---|---|
-| **Version DOI** | **`10.5281/zenodo.22761131`** |
-| **Deposition ID** | **`22761131`** |
-| State | **published 2026-09-23** (Zenodo's date, UTC) |
-| Resolves to | `https://zenodo.org/records/22761131` |
+| **Concept DOI — WHAT THE ARTICLE CITES** | **`10.5281/zenodo.22761130`** |
+| v1.0.0 version DOI | `10.5281/zenodo.22761131`, record `22761131`, published 2026-09-23 UTC, **superseded** |
+| v1.0.1 version DOI | minted when the new version is published |
+| State | v1.0.0 published; v1.0.1 supersedes it for a build defect on page 20 |
+| Resolves to | the concept DOI follows the chain to the newest version |
 | Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-1.0.0.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE` |
 | Version / licence | 1.0.0 / CC BY 4.0 |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
@@ -189,8 +190,18 @@ design: a published record cannot be deleted and its files cannot be changed.
 
 ## 7. After publishing
 
-- **DONE 2026-09-23** — `https://doi.org/10.5281/zenodo.22761131` resolves to
-  `https://zenodo.org/records/22761131`.
+- **DONE 2026-09-23** — `https://doi.org/10.5281/zenodo.22761130`, the concept
+  DOI the article cites, resolves and follows the chain to the newest version.
+
+> **FILES ON A PUBLISHED RECORD CANNOT BE REPLACED BY THEIR OWNER.** Step 6's
+> note already quoted Zenodo saying so, and the 2026-09-23 replacement attempt
+> proved it: `/actions/edit` opens, the record moves to `inprogress`, and the
+> first `PUT` returns **403 `Bucket is locked for modifications`**. The 30-day
+> window is for DELETION, not file editing. The route for corrected files is a
+> NEW VERSION, which keeps both versions citable and mints a new version DOI
+> while the concept DOI follows the chain. Deletion is not an option: it
+> tombstones the DOI permanently and cannot be undone by anyone, including
+> Zenodo.
 - **DONE 2026-09-23** — the record's file count matches the manifest: seven
   objects, verified before publication at 815 checks, zero missing, extra,
   mismatched or unchecked.

@@ -206,7 +206,7 @@ MATH = {
 
 TEXTTT = {
     'trueCapacity', 'startedAt', 'results/E1B-PLAN.md', '"unknown"',
-    '10.5281/zenodo.22761131', 'CAP-DRIVEN',
+    '10.5281/zenodo.22761130', 'CAP-DRIVEN',
 }
 # Only spans the converted text actually uses are listed. Entries kept "just
 # in case" rot: they assert a rendering nobody checks, and they hide which

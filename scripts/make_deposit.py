@@ -25,19 +25,21 @@ REPO = os.path.expanduser('~/Jay_NIW/durable-backlog-recovery')
 RAW = os.path.expanduser('~/Jay_NIW/rhc-raw-data/results')
 STAGE = os.path.expanduser('~/Jay_NIW/paper2-zenodo')
 
-# The DOI for this deposit, and the record it belongs to. Recorded here because
-# this is where the deposit metadata lives; the paper cites the DOI in section
-# 4. Reserved 2026-09-14 on an empty draft so section 4 could cite it while the
-# files were still coming, and PUBLISHED 2026-09-23, at which point the same
-# string began to resolve. See scripts/DEPOSIT-W6.md.
-RESERVED_DOI = '10.5281/zenodo.22761131'
-DEPOSITION_ID = 22761131
+# The DOIs for this deposit. THE ARTICLE CITES THE CONCEPT DOI: the DOI printed
+# in an accepted paper cannot be changed, so it must not name one version.
+# 22761131 is v1.0.0, published 2026-09-23 and superseded by v1.0.1 for a build
+# defect on page 20. See scripts/DEPOSIT-W6.md.
+CONCEPT_DOI = '10.5281/zenodo.22761130'      # always the newest version
+V1_0_0_DOI = '10.5281/zenodo.22761131'       # superseded
+V1_0_0_ID = 22761131                         # newversion is taken from this
+RESERVED_DOI = CONCEPT_DOI
+DEPOSITION_ID = V1_0_0_ID
 
 META = {
     'title': 'Recovery Headroom Control: pre-registered boundary measurements, '
              'per-request traces and analysis code',
     'upload_type': 'dataset',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'license': 'cc-by-4.0',
     'creators': [{'name': 'Nirmal, Jay Suresh',
                   'orcid': '0009-0003-0886-4663'}],
@@ -90,53 +92,51 @@ README = """# Recovery Headroom Control — measurement artifact v1.0.0
 Everything needed to check the reported numbers, and to re-derive them from the
 raw per-request traces.
 
-## Replacement note — 2026-09-23
+## Version note — v1.0.1, 2026-09-23
 
-**All dates in this note are UTC.** The repository clock runs at −0400, so both
-the original publication and this replacement are 23 September UTC and 22
-September locally; they are the same two events under two clocks, not four.
+**All dates in this note are UTC.** The repository clock runs at −0400, so
+2026-09-23 UTC is 2026-09-22 locally; they are one date under two clocks.
 
-The files in this record were replaced in place on 2026-09-23, within Zenodo's
-30-day window. **The DOI is unchanged and resolves to the same record.** Zenodo
-shows no version history for an in-place file edit, so this note exists to
-explain why four objects differ from the ones first staged from commit
-`e22e779547d19b462627cb06acfd07246c4d58ef`. The commit is the anchor rather
-than the date: both publications fall on 2026-09-23 in UTC, so a date cannot
-tell them apart.
+**This is version 1.0.1. It supersedes version 1.0.0**, published earlier the
+same day as record `22761131`. Both versions remain available and both keep
+their own DOI. The concept DOI `10.5281/zenodo.22761130` always resolves to
+the newest version, and it is the DOI the article cites.
 
-**What changed.** `article.pdf` was recompiled. The earlier PDF carried a build
+**Why there is a second version.** v1.0.0's `article.pdf` carried a build
 defect: the last bibliography entry had no end bound, so reference [14]
-absorbed 726 words of drafting apparatus from the source file and typeset it in
-the right column of page 20. The count is measured from the typeset page. The
-defect was in the build script, not in the manuscript.
+absorbed 726 words of drafting apparatus from the source file and typeset it
+in the right column of page 20. The count is measured from the typeset page.
+The defect was in the build script, not in the manuscript. It is corrected in
+v1.0.1.
 
-**What did not change.** No data, no code, no results, no pre-registration
-text, and **no article body text**. The absorbed words were never part of the
-article. `supplement-S1.pdf` is unchanged and its checksum is the same as at
-first publication. The article is 20 pages in both builds: the absorbed text
-sat above the biography in the same column and never cost a page.
+**Why a new version rather than a correction in place.** Zenodo does not
+permit files on a published record to be replaced by their owner: *"Files in
+the record however can only be edited (added, modified or deleted) after
+publication by contacting support."* A new version is the documented route,
+and unlike deletion it is reversible in the only sense that matters — nothing
+is destroyed and v1.0.0 stays citable.
 
-**Which objects moved: four of the seven.** `article.pdf`; `MANIFEST.json`,
-which records `article.pdf`'s SHA-256; `paper2-rhc-artifact-1.0.0.zip`, which
-contains a copy of `article.pdf`; and `README.md` — this file, because it
-carries this note. `LICENSE`, `PRE-REGISTRATION.md` and `supplement-S1.pdf`
-are byte-identical to first publication.
+**What did not change.** No data, no code, no results, and no
+pre-registration text. In the article, the only body text that differs is the
+artifact-citation sentence in §IV-I, which now names the concept DOI and the
+version; the supplement's equivalent sentence in S1-C changed the same way.
+Page 20 differs only by the removal of the drafting apparatus described above.
 
-**Commits.** The superseded package was staged from
+**What was rebuilt.** Both PDFs, because both carry the DOI in their text.
+`MANIFEST.json` and the archive follow from them.
+
+**Toolchain, and why the PDFs are not reproducible byte-for-byte.** v1.0.1 was
+compiled with pdfTeX 1.40.25; v1.0.0 with pdfTeX 1.40.22. pdfTeX embeds a
+creation timestamp and a document identifier, so no two builds of the same
+`.tex` are ever byte-identical, even on one machine with one toolchain.
+**`MANIFEST.json` therefore hashes the files that ship, not a rebuild of
+them.** A reader checking the manifest should hash the delivered files;
+recompiling the `.tex` reproduces the layout and the text but not the bytes.
+
+**Commits.** v1.0.0 was staged from
 `e22e779547d19b462627cb06acfd07246c4d58ef`. The defect was fixed at
-`79aaa680d15f0c4bf33e903f4962d4df0f796c30`, which is the build that produced
-the replacement PDF. The exact commit this package was staged from is recorded
-in `MANIFEST.json` as `gitCommit`; `build/access/article.tex` is byte-identical
-between that commit and the fix commit.
-
-**Toolchain, and why the PDF is not reproducible byte-for-byte.** The
-replacement `article.pdf` was compiled with pdfTeX 1.40.25; the superseded one
-with pdfTeX 1.40.22. pdfTeX embeds a creation timestamp and a document
-identifier, so no two builds of the same `.tex` are ever byte-identical, even
-on one machine with one toolchain. **`MANIFEST.json` therefore hashes the file
-that ships, not a rebuild of it.** A reader checking the manifest should hash
-the delivered file; re-compiling the `.tex` will reproduce the layout and the
-text but not the bytes.
+`79aaa680d15f0c4bf33e903f4962d4df0f796c30`. The commit this version was staged
+from is recorded in `MANIFEST.json` as `gitCommit`.
 
 ---
 

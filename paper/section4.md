@@ -1,5 +1,6 @@
 # §4 — Method
 
+*Draft 29 — CONCEPT DOI, 2026-09-23. §IV-I cites `10.5281/zenodo.22761130`, the **concept** DOI, naming the version in the sentence: "archived as version 1.0.1 under DOI …". The version DOI was replaced because once IEEE Access publishes, the DOI printed in the paper is frozen permanently, and a version DOI would leave that paper pointing at a superseded artefact with no edit available. Byte-pinning is unaffected — `MANIFEST.json` and the pre-registration commit do that — and naming the version tells a reader which entry in the Versions panel to open. **This is the only change: one DOI and the four words around it.***
 *Draft 28 — DEPOSIT PUBLISHED, 2026-09-22. **No body text changes.** The source comment beside §IV-I records the Zenodo record as published 2026-09-23 from commit `e22e779` rather than as a reserved empty draft. The reproducibility statement itself already read "are archived under DOI …" in the present tense, and publication made that true without an edit — which is what reserving the DOI in W2 was for.*
 *Draft 27 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review: §IV-B's `vSLO` definition names it the SLO violation fraction. No other change; Draft 26's freeze otherwise stands.*
 *Draft 26 — CUT PASS, increment 2, 2026-09-20. §IV-B and §IV-C are compressed
@@ -360,8 +361,8 @@ seven that later sections rely on are:
 
 The harness, the pre-registration with its amendments and record corrections,
 every run record and per-request trace, the analysis code, the figure generators,
-the regression fixture and Supplement S1 are archived under DOI
-`10.5281/zenodo.22761131`. The traces are held in the deposit rather than the
+the regression fixture and Supplement S1 are archived as version 1.0.1 under
+DOI `10.5281/zenodo.22761130`. The traces are held in the deposit rather than the
 repository, so delivery-span quantities are re-derivable from raw observations
 only with the deposit. Every reported artefact regenerates byte-identically from
 the committed data by its own script, and a manifest records a SHA-256 for each
@@ -369,8 +370,10 @@ file and the commit the package was built from. Verifying that property found on
 counter-example, since fixed: the figures carried a wall-clock creation time
 (S1).
 
-<!-- repo commit, pre-registration 371e477, Zenodo DOI 10.5281/zenodo.22761131
-     (deposition 22761131, reserved 2026-09-14 on an empty draft so this
-     sentence could cite it; PUBLISHED 2026-09-23 from commit e22e779, seven
-     objects, and the DOI now resolves to zenodo.org/records/22761131),
+<!-- repo commit, pre-registration 371e477, Zenodo CONCEPT DOI
+     10.5281/zenodo.22761130, which always resolves to the newest version.
+     v1.0.0 was published 2026-09-23 as record 22761131 from commit e22e779
+     and carried a build defect on page 20; v1.0.1 supersedes it. The version
+     DOI is deliberately NOT cited here: the DOI printed in an accepted paper
+     cannot be changed, so it must not name one version.
      fixture tests/fixtures/aug18-regression -->

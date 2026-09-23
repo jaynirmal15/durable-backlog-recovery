@@ -443,17 +443,98 @@ def have_md5(base, token, dep_id):
 
 
 def existing_files(base, token, dep_id):
-    """Key -> size for what is already uploaded, so a resume skips it."""
+    """Key -> (size, md5) for what is already uploaded.
+
+    IT RETURNS THE DIGEST BECAUSE SIZE IS NOT IDENTITY. MANIFEST.json was
+    141,778 bytes before and after a correction, with entirely different
+    content: the old one certified the superseded article.pdf. A resume that
+    skipped on key and size would have left that stale object in place and
+    published it. Same defect class as the size-only comparison named in
+    OUTLINE.md -- a check that passes while measuring the wrong property.
+    """
     st, body = api(base, token, 'GET', '/deposit/depositions/%s/files' % dep_id)
     if st != 200 or not isinstance(body, list):
         return {}
     out = {}
     for f in body:
         key = f.get('filename') or f.get('key')
-        size = f.get('filesize') or f.get('size')
         if key:
-            out[key] = size
+            out[key] = (int(f.get('filesize') or f.get('size') or 0),
+                        (f.get('checksum') or '').replace('md5:', ''))
     return out
+
+
+class ReadbackMismatch(Exception):
+    """The record holds something other than what was sent. Contents suspect."""
+
+
+class TransportFailure(Exception):
+    """The wire broke. Whether the server accepted the body is UNKNOWN."""
+
+
+class HTTPRefusal(Exception):
+    """The server answered with a status and refused. A premise, not a hiccup."""
+
+
+def md5_file(path):
+    h = hashlib.md5()
+    with open(path, 'rb') as fh:
+        for c in iter(lambda: fh.read(1 << 20), b''):
+            h.update(c)
+    return h.hexdigest()
+
+
+def put_verified(base, token, dep_id, bucket, key, path, log=print):
+    """PUT one object and prove the record holds it. Three failure branches.
+
+    THE BRANCHES ARE NOT INTERCHANGEABLE, and collapsing them cost a draft:
+
+      readback mismatch   the record's contents are untrustworthy. Raise
+                          ReadbackMismatch; the caller deletes the draft.
+      transport failure   the wire broke and what the server did is UNKNOWN --
+                          a broken pipe can land AFTER the body was accepted,
+                          so the object may well exist. RESOLVE BY READING,
+                          never by inference: re-read the object and re-PUT
+                          only if it is absent or wrong.
+      HTTP status error   the server answered and refused. 403 "bucket is
+                          locked" is a premise failure, not a hiccup. Raise
+                          HTTPRefusal; stop and report, delete nothing.
+    """
+    if '/' in key:
+        raise HTTPRefusal('key %r contains a slash; the bucket 404s on those'
+                          % key)
+    size, want = os.path.getsize(path), md5_file(path)
+    for attempt in (1, 2):
+        st, body = put_file(bucket, token, key, path, size)
+        if st in (200, 201):
+            break
+        if st == 0:
+            log('  transport failure on %s (%s); re-reading the record rather '
+                'than assuming' % (key, str(body.get('error'))[:60]))
+            have = existing_files(base, token, dep_id).get(key)
+            if have == (size, want):
+                log('  %s is present and correct despite the broken pipe; '
+                    'moving on' % key)
+                return 'landed-after-transport-failure'
+            log('  %s is %s; re-sending'
+                % (key, 'absent' if have is None else 'present but wrong'))
+            if attempt == 2:
+                raise TransportFailure('%s still not correct after a re-send'
+                                       % key)
+            continue
+        raise HTTPRefusal('PUT %s returned %s: %s'
+                          % (key, st, str(body)[:200]))
+    have = existing_files(base, token, dep_id).get(key)
+    if have is None:
+        raise ReadbackMismatch('%s is absent after a success status -- the key '
+                               'was renamed or dropped' % key)
+    if have != (size, want):
+        raise ReadbackMismatch('%s read back %s/%s, sent %s/%s'
+                               % (key, have[0], have[1], size, want))
+    return 'uploaded'
+
+
+
 
 
 def metadata_only(base, token, dep_id, man):
@@ -733,8 +814,14 @@ def main():
     have = existing_files(base, token, dep_id)
     print('  already uploaded: %d files' % len(have))
 
-    todo = [f for f in files
-            if not (f['path'] in have and have[f['path']] == f['bytes'])]
+    # Skip on DIGEST, never on size: see existing_files().
+    todo = []
+    for f in files:
+        p = f.get('abs') or os.path.join(a.stage_dir, f['path'])
+        cur = have.get(f['path'])
+        if cur and cur == (f['bytes'], md5_file(p)):
+            continue
+        todo.append(f)
     skipped = len(files) - len(todo)
     print('  skipping %d unchanged, uploading %d (%.1f MB)'
           % (skipped, len(todo), sum(f['bytes'] for f in todo) / 1048576.0))

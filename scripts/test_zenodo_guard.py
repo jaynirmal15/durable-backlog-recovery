@@ -156,6 +156,117 @@ class PlanOnlyUnlocksNothing(unittest.TestCase):
         self.assertFalse(Z.READ_ONLY[0])
 
 
+class ThreeAbortBranches(unittest.TestCase):
+    """A mismatch, a broken wire and a refusal are three different facts.
+
+    Collapsing them cost a draft: a broken pipe on a 341 MB push was treated
+    as "contents untrustworthy" and deleted a draft whose other six objects
+    had uploaded correctly. The branches exist so that each failure gets the
+    response its own evidence supports.
+    """
+
+    def setUp(self):
+        self.real_put, self.real_api = Z.put_file, Z.api
+        self.addCleanup(lambda: setattr(Z, 'put_file', self.real_put))
+        self.addCleanup(lambda: setattr(Z, 'api', self.real_api))
+        self.path = os.path.abspath(__file__)
+        self.size = os.path.getsize(self.path)
+        self.md5 = Z.md5_file(self.path)
+
+    def serve(self, files):
+        def api(base, token, method, path, **kw):
+            if path.endswith('/files'):
+                return 200, [{'filename': k, 'filesize': v[0],
+                              'checksum': 'md5:' + v[1]}
+                             for k, v in files.items()]
+            return 200, {}
+        Z.api = api
+
+    def test_success_that_reads_back_correctly(self):
+        self.serve({'k': (self.size, self.md5)})
+        Z.put_file = lambda *a, **k: (201, {})
+        self.assertEqual(
+            Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path, log=lambda *a: None),
+            'uploaded')
+
+    def test_readback_mismatch_raises_its_own_error(self):
+        self.serve({'k': (self.size, 'deadbeef' * 4)})
+        Z.put_file = lambda *a, **k: (201, {})
+        with self.assertRaises(Z.ReadbackMismatch):
+            Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path, log=lambda *a: None)
+
+    def test_renamed_key_is_a_mismatch_not_a_success(self):
+        self.serve({'k_renamed': (self.size, self.md5)})
+        Z.put_file = lambda *a, **k: (201, {})
+        with self.assertRaises(Z.ReadbackMismatch):
+            Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path, log=lambda *a: None)
+
+    def test_transport_failure_where_the_object_actually_landed(self):
+        # The case that matters: a broken pipe AFTER the server took the body.
+        self.serve({'k': (self.size, self.md5)})
+        calls = []
+        def put(*a, **k):
+            calls.append(1)
+            return 0, {'error': '[Errno 32] Broken pipe'}
+        Z.put_file = put
+        out = Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path,
+                             log=lambda *a: None)
+        self.assertEqual(out, 'landed-after-transport-failure')
+        self.assertEqual(len(calls), 1, 'it re-sent an object that was already correct')
+
+    def test_transport_failure_where_nothing_landed_resends(self):
+        state = {}
+        def api(base, token, method, path, **kw):
+            if path.endswith('/files'):
+                return 200, [{'filename': k, 'filesize': v[0],
+                              'checksum': 'md5:' + v[1]} for k, v in state.items()]
+            return 200, {}
+        Z.api = api
+        calls = []
+        def put(bucket, token, key, path, size, **k):
+            calls.append(1)
+            if len(calls) == 1:
+                return 0, {'error': '[Errno 32] Broken pipe'}
+            state['k'] = (self.size, self.md5)
+            return 201, {}
+        Z.put_file = put
+        out = Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path,
+                             log=lambda *a: None)
+        self.assertEqual(out, 'uploaded')
+        self.assertEqual(len(calls), 2, 'it did not re-send after a lost body')
+
+    def test_http_status_error_is_a_refusal_not_a_hiccup(self):
+        self.serve({})
+        Z.put_file = lambda *a, **k: (403, {'error': 'Bucket is locked'})
+        with self.assertRaises(Z.HTTPRefusal):
+            Z.put_verified(Z.LIVE, 't', 1, 'b', 'k', self.path, log=lambda *a: None)
+
+    def test_a_nested_key_is_refused_before_the_wire(self):
+        self.serve({})
+        Z.put_file = lambda *a, **k: (201, {})
+        with self.assertRaises(Z.HTTPRefusal):
+            Z.put_verified(Z.LIVE, 't', 1, 'b', 'a/b.txt', self.path,
+                           log=lambda *a: None)
+
+
+class ResumeComparesDigest(unittest.TestCase):
+
+    def test_same_size_different_content_is_not_skipped(self):
+        # MANIFEST.json was 141,778 bytes before and after, entirely different.
+        import tempfile
+        d = tempfile.mkdtemp(prefix='resume-')
+        p = os.path.join(d, 'MANIFEST.json')
+        open(p, 'wb').write(b'A' * 1000)
+        stale_md5 = Z.md5_file(p)
+        open(p, 'wb').write(b'B' * 1000)          # same size, new content
+        fresh_md5 = Z.md5_file(p)
+        self.assertEqual(os.path.getsize(p), 1000)
+        self.assertNotEqual(stale_md5, fresh_md5)
+        have = {'MANIFEST.json': (1000, stale_md5)}
+        skip = have.get('MANIFEST.json') == (1000, Z.md5_file(p))
+        self.assertFalse(skip, 'a stale object of equal size would be skipped')
+
+
 class PublishEditRefuses(unittest.TestCase):
 
     def setUp(self):

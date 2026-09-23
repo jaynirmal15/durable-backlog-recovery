@@ -100,6 +100,12 @@ def api(base, token, method, path, **kw):
     return request(base + path, token, method, **kw)
 
 
+# Deposited as their own objects: every one is a flat key, which is the only
+# kind Zenodo keeps. zenodo_verify.py holds the same list and checks it.
+HYBRID_INDIVIDUAL = ('README.md', 'LICENSE', 'PRE-REGISTRATION.md',
+                     'MANIFEST.json', 'article.pdf', 'supplement-S1.pdf')
+
+
 def put_file(bucket, token, key, path, size, verbose=False):
     """Bucket API: PUT {bucket}/{key}. Keys keep their slashes."""
     with open(path, 'rb') as fh:
@@ -232,6 +238,10 @@ def metadata_only(base, token, dep_id, man):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--stage-dir')
+    ap.add_argument('--hybrid', action='store_true',
+                    help='upload the six flat-keyed files plus --archive, '
+                         'instead of walking the tree into nested keys')
+    ap.add_argument('--archive', help='the zip holding the full tree')
     ap.add_argument('--deposition-id', type=int,
                     help='resume into this draft instead of creating one')
     ap.add_argument('--sandbox', action='store_true')
@@ -384,6 +394,33 @@ def main():
         mp = os.path.join(a.stage_dir, 'MANIFEST.json')
         files.append({'path': 'MANIFEST.json', 'bytes': os.path.getsize(mp)})
 
+    # HYBRID DEPOSIT. Zenodo will not store a key containing a slash: the
+    # bucket route 404s whether the slash is raw or percent-encoded, and the
+    # legacy files API accepts the upload and SILENTLY RENAMES traces/x.gz to
+    # traces_x.gz, returning 201. Flattening is forbidden -- the README, the
+    # manifest and the paper's reproducibility statement all document the
+    # paths -- so the tree goes up as one archive and only flat-keyed files go
+    # up individually. See scripts/DEPOSIT-W6.md.
+    if a.hybrid:
+        chosen = [f for f in files if f['path'] in HYBRID_INDIVIDUAL]
+        names = {f['path'] for f in chosen}
+        for want in HYBRID_INDIVIDUAL:
+            if want not in names:
+                print('  MISSING from the stage: %s' % want)
+                return 1
+        if not a.archive:
+            print('  --hybrid needs --archive <zip>')
+            return 1
+        zp = os.path.expanduser(a.archive)
+        if not os.path.isfile(zp):
+            print('  archive not found: %s' % zp)
+            return 1
+        chosen.append({'path': os.path.basename(zp),
+                       'bytes': os.path.getsize(zp), 'abs': zp})
+        files = chosen
+        print('  hybrid: %d individual object(s) + the archive'
+              % len(HYBRID_INDIVIDUAL))
+
     have = existing_files(base, token, dep_id)
     print('  already uploaded: %d files' % len(have))
 
@@ -395,7 +432,7 @@ def main():
 
     failed = []
     for i, f in enumerate(todo, 1):
-        p = os.path.join(a.stage_dir, f['path'])
+        p = f.get('abs') or os.path.join(a.stage_dir, f['path'])
         st, body = put_file(bucket, token, f['path'], p, f['bytes'],
                             verbose=(a.verbose and len(failed) < 3))
         if st not in (200, 201):

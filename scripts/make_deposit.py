@@ -89,7 +89,30 @@ README = """# Recovery Headroom Control — measurement artifact v1.0.0
 Everything needed to check the reported numbers, and to re-derive them from the
 raw per-request traces.
 
-## Layout
+## How this record is stored
+
+Zenodo stores this deposit as **seven objects**, because its file API will not
+accept a key containing a slash. Six files are deposited individually so they
+can be read without downloading 400 MB:
+
+    README.md             this file
+    LICENSE
+    PRE-REGISTRATION.md   the contract, with all six amendments A1-A6
+    MANIFEST.json         every file with its SHA-256, plus the git commit
+    article.pdf           the submitted article
+    supplement-S1.pdf     its supplement
+
+The seventh object, **paper2-rhc-artifact-1.0.0.zip**, holds the complete tree
+with the directory paths below intact. Nothing is flattened: extract the
+archive and the paths in this README, in MANIFEST.json and in the paper's
+reproducibility statement are the paths you get.
+
+**MANIFEST.json's SHA-256s verify against the extracted files.** Extract the
+archive first, then hash; the manifest describes the tree, not the archive.
+The six individual objects are also inside the archive, so an extracted copy
+is complete on its own.
+
+## Layout, inside the archive
 
     PRE-REGISTRATION.md   the contract, with all six amendments A1-A6
     results/              run records, boundary files, derived JSON, reports
@@ -98,7 +121,8 @@ raw per-request traces.
     tests/                the Aug-18 regression fixture pinning the metrics path
     harness/              Go source for the runner, downstream, consumer, producer
     figures/              paper figures as vector PDF, and their captions
-    article/              the submitted article and its supplement, as PDF
+    article.pdf           the submitted article, as compiled
+    supplement-S1.pdf     its supplement
     MANIFEST.json         every file with its SHA-256, plus the git commit
 
 ## Reproducing
@@ -225,8 +249,10 @@ def main():
     # they need a TeX installation and the vendored IEEE Access class. They are
     # included because a reader who has the DOI should be able to read the
     # paper the data belongs to without finding it elsewhere.
-    art = os.path.join(STAGE, 'article')
-    os.makedirs(art, exist_ok=True)
+    # AT THE STAGE ROOT, not under article/: these two are deposited as
+    # individual Zenodo objects, and Zenodo will not take a key with a slash
+    # in it. Keeping them flat here makes the manifest path and the object key
+    # the same string, so the verifier compares like with like.
     n = b = 0
     for name in ('article.pdf', 'supplement-S1.pdf'):
         src = os.path.join(REPO, 'build', 'access', name)
@@ -236,7 +262,7 @@ def main():
         tex = src[:-4] + '.tex'
         if os.path.isfile(tex) and os.path.getmtime(src) < os.path.getmtime(tex):
             print('  STALE: %s is older than the .tex beside it' % name)
-        shutil.copy2(src, os.path.join(art, name))
+        shutil.copy2(src, os.path.join(STAGE, name))
         n += 1
         b += os.path.getsize(src)
     parts['article'] = {'files': n, 'bytes': b}
@@ -264,12 +290,12 @@ def main():
     json.dump(man, open(os.path.join(STAGE, 'MANIFEST.json'), 'w'), indent=2)
 
     print('staged at %s' % STAGE)
-    print('%-18s %8s %14s' % ('component', 'files', 'size'))
+    print('%-18s %8s %16s' % ('component', 'files', 'size'))
     for k, v in parts.items():
-        print('%-18s %8s %13.1f MB' % (k, v.get('files', '-'),
-                                       v.get('bytes', 0) / 1048576.0))
-    print('%-18s %8d %13.1f MB' % ('TOTAL', len(files),
-                                   sum(f['bytes'] for f in files) / 1048576.0))
+        print('%-18s %8s %12.1f MiB' % (k, v.get('files', '-'),
+                                        v.get('bytes', 0) / 1048576.0))
+    print('%-18s %8d %12.1f MiB' % ('TOTAL', len(files),
+                                    sum(f['bytes'] for f in files) / 1048576.0))
     print('git commit %s' % commit[:12])
 
     if a.archive:
@@ -277,7 +303,8 @@ def main():
         print('archiving...')
         shutil.make_archive(base, 'zip', STAGE)
         z = base + '.zip'
-        print('%s  %.1f MB  sha256 %s' % (z, os.path.getsize(z) / 1048576.0, sha256(z)))
+        print('%s\n  %.1f MiB  sha256 %s'
+              % (z, os.path.getsize(z) / 1048576.0, sha256(z)))
     return 0
 
 

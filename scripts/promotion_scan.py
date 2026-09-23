@@ -114,6 +114,13 @@ def pages_of(path):
 
 def sentence_around(text, start, end):
     """The sentence the hit sits in, so a reader can judge it in one glance."""
+    # ASSESSED, DEFECT CLASS "a missing end bound", AND LEFT. The sentence
+    # search below falls back to the end of the PAGE when no full stop
+    # follows, which is the same shape as the bibliography bleed. It is left
+    # because the fallback is bounded twice over -- by one page of text, and
+    # by the 420-character cap below -- and because this function only decides
+    # how much context to PRINT beside a finding. It cannot change whether a
+    # finding is reported, so the worst case is a long quotation.
     flat = re.sub(r'\s+', ' ', text)
     # map into the flattened text by re-finding the hit's immediate neighbours
     left = re.sub(r'\s+', ' ', text[:start]).rstrip()

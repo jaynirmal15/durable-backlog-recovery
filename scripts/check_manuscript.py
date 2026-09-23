@@ -126,14 +126,27 @@ def targets():
     return out
 
 
-def body_of(lines, skip_header):
-    """Drop the leading header block: it is a change log, not manuscript text."""
+class ScopeError(Exception):
+    """A slice whose end bound could not be found. Never a fallback."""
+
+
+def body_of(lines, skip_header, name='(unnamed)'):
+    """Drop the leading header block: it is a change log, not manuscript text.
+
+    A MISSING END BOUND RAISES when a header was expected. Falling back to the
+    whole file meant a paper/ file without its `---` would have had its entire
+    drafting header scanned as live manuscript text -- and, in the build's
+    copy of this function, typeset. Files that legitimately have no header
+    still pass skip_header=False and are returned whole, which is a stated
+    choice rather than a fallback.
+    """
     if not skip_header:
         return list(enumerate(lines, 1))
     for i, line in enumerate(lines):
         if line.strip() == '---':
             return list(enumerate(lines[i + 1:], i + 2))
-    return list(enumerate(lines, 1))
+    raise ScopeError('%s has no own-line `---`, so where its header ends is '
+                     'unknown' % name)
 
 
 def phrase_hits(path, skip_header):
@@ -151,7 +164,7 @@ def phrase_hits(path, skip_header):
     hits = []
     with open(path, encoding='utf-8') as fh:
         lines = fh.readlines()
-    numbered = body_of(lines, skip_header)
+    numbered = body_of(lines, skip_header, path)
     if not numbered:
         return hits
 
@@ -231,11 +244,24 @@ def plan_sync():
         text = fh.read()
 
     # Split the outline into its per-section plans, so placement is checkable.
+    #
+    # A PLAN ENDS AT THE NEXT "## " OF ANY KIND, not at the next plan heading.
+    # Ending the last plan at len(text) gave §10 a 9,566-character slice that
+    # ran to end of file and swallowed two unrelated "## " sections. It passed
+    # only because exactly one plan-synced-to marker happened to fall inside
+    # it; a stray marker anywhere below the last plan would have been credited
+    # to §10 silently. Bounded, that slice is 1,489 characters.
     plans = {}
     heads = list(re.finditer(r'^## §(\d{1,2}) [^\n]*$', text, re.M))
+    allheads = [m.start() for m in re.finditer(r'^## ', text, re.M)]
     for k, m in enumerate(heads):
-        end = heads[k + 1].start() if k + 1 < len(heads) else len(text)
-        plans.setdefault(int(m.group(1)), text[m.start():end])
+        after = [s for s in allheads if s > m.start()]
+        if not after:
+            raise ScopeError(
+                'OUTLINE.md: the plan for §%s is the last "## " heading in the '
+                'file, so where it ends is unknown. A plan that runs to end of '
+                'file adopts every marker below it.' % m.group(1))
+        plans.setdefault(int(m.group(1)), text[m.start():after[0]])
 
     for sec in range(1, 11):
         path = os.path.join(PAPER, 'section%d.md' % sec)
@@ -270,18 +296,54 @@ def plan_sync():
     return problems
 
 
-def bibliography():
-    """Parse references.md for entries AND their cite keys (bug 5: one source)."""
+def reference_blocks():
+    """references.md's entries, each bounded at its own end. ONE parser.
+
+    There were two, and that was the second defect behind the first. Both read
+    this file, both sliced from `**[n]**` to the next entry, and they used
+    DIFFERENT separators to do it -- `\n\n**[` in one and `\n**[` in the other --
+    so the same file had two notions of where an entry began. Both then fell
+    back to len(text) for the LAST entry, which swallowed every drafting note
+    below the bibliography: 4,719 characters against a 1,020-character
+    maximum for the others.
+
+    An entry ends at the next entry or at the first own-line `---` or `## `
+    after it, whichever comes first. THE LAST ENTRY MUST HAVE ONE: if nothing
+    closes it, that is a missing end bound and this raises rather than reading
+    to end of file.
+    """
     path = os.path.join(PAPER, 'references.md')
     if not os.path.isfile(path):
-        return [], [('references.md', 'missing')]
+        return None, [('references.md', 'missing')]
     with open(path, encoding='utf-8') as fh:
         text = fh.read()
-    entries, problems = [], []
-    for m in re.finditer(r'^\*\*\[(\d+)\]\*\*', text, re.M):
-        num = int(m.group(1))
-        end = text.find('\n\n**[', m.start() + 1)
-        block = text[m.start():end if end > 0 else len(text)]
+    starts = list(re.finditer(r'^\*\*\[(\d+)\]\*\*', text, re.M))
+    stops = [m.start() for m in re.finditer(r'^(?:---|## )', text, re.M)]
+    out = []
+    for j, m in enumerate(starts):
+        after = [s for s in stops if s > m.start()]
+        if j + 1 < len(starts):
+            end = min(starts[j + 1].start(), after[0] if after else len(text))
+        elif after:
+            end = after[0]
+        else:
+            raise ScopeError(
+                'references.md entry [%s] is the last one and nothing closes '
+                'it -- no own-line `---` or `## ` follows. Where it ends is '
+                'unknown, and reading to end of file is how 726 words of '
+                'drafting notes were typeset inside reference [14].'
+                % m.group(1))
+        out.append((int(m.group(1)), text[m.start():end]))
+    return out, []
+
+
+def bibliography():
+    """Cite keys, from the one shared parser."""
+    blocks, problems = reference_blocks()
+    if blocks is None:
+        return [], problems
+    entries = []
+    for num, block in blocks:
         k = re.search(r'<!--\s*cite-key:\s*([^>]+?)\s*-->', block)
         if not k:
             problems.append(('[%d]' % num,
@@ -339,15 +401,12 @@ def citation_markers():
     Keys are read from an HTML comment, never as a bare substring -- item 37.
     """
     problems = []
-    path = os.path.join(PAPER, 'references.md')
-    if not os.path.isfile(path):
-        return [('references.md', 'missing')]
-    text = open(path, encoding='utf-8').read()
+    blocks, probs = reference_blocks()
+    if blocks is None:
+        return probs, {}, {}
+    problems += probs
     entries = {}
-    for m in re.finditer(r'^\*\*\[(\d+)\]\*\*', text, re.M):
-        num = int(m.group(1))
-        end = text.find('\n**[', m.end())
-        block = text[m.start():end if end > 0 else len(text)]
+    for num, block in blocks:
         k = re.search(r'<!--\s*marker-key:\s*([A-Za-z0-9][A-Za-z0-9._-]*)\s*-->', block)
         if not k:
             problems.append(('[%d]' % num, 'no <!-- marker-key: ... --> comment'))
@@ -361,7 +420,7 @@ def citation_markers():
             continue
         with open(sp, encoding='utf-8') as fh:
             lines = fh.readlines()
-        for n, line in body_of(lines, True):
+        for n, line in body_of(lines, True, sp):
             for m in re.finditer(r'\[@([A-Za-z0-9][A-Za-z0-9._-]*)\]', line):
                 cited.setdefault(m.group(1), []).append((sp, n))
 
@@ -462,7 +521,7 @@ def float_keys(root='.'):
             continue
         with open(sp, encoding='utf-8') as fh:
             lines = fh.readlines()
-        for n, line in body_of(lines, True):
+        for n, line in body_of(lines, True, sp):
             for m in re.finditer(r'\[@((?:fig|tab):[A-Za-z0-9][A-Za-z0-9._-]*)\]',
                                  line):
                 k = m.group(1)

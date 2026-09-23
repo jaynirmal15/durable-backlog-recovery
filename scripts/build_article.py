@@ -233,11 +233,22 @@ def read(path):
         return fh.read()
 
 
-def body_of(text):
+def body_of(text, name='(unnamed)'):
     """Everything below the first own-line `---`: the header block is a change
-    log, not article text."""
+    log, not article text.
+
+    A MISSING END BOUND RAISES. It used to return the whole file when no `---`
+    was found, which would have typeset an entire section's drafting header --
+    every superseded draft note, every withdrawn phrase -- as article text.
+    That is the bibliography bleed again with a bigger blast radius, and it was
+    latent only because every file happens to have its separator today.
+    """
     m = re.search(r'^---\s*$', text, re.M)
-    return text[m.end():] if m else text
+    if not m:
+        fail('%s has no own-line `---`, so where its header ends is unknown. '
+             'The header is drafting apparatus and must not be typeset; add '
+             'the separator rather than letting the build guess.' % name)
+    return text[m.end():]
 
 
 def article_blocks(text, kind):
@@ -856,7 +867,7 @@ class Build(object):
 
     def section(self, path, num):
         text = COMMENT_RE.sub(lambda m: self.keep_marker(m.group(0)),
-                              body_of(read(path)))
+                              body_of(read(path), path))
         lines = text.split('\n')
         i, para = 0, []
         while i < len(lines):
@@ -883,6 +894,14 @@ class Build(object):
                         % (os.path.basename(path), i + 1, line.strip()))
                 self.flush(para)
                 para = []
+                # ASSESSED, DEFECT CLASS "a missing end bound", AND LEFT.
+                # An unclosed fence consumes to the end of the section rather
+                # than raising, which is the same shape as the bibliography
+                # bleed. It is left because the consequence is visibly absurd
+                # rather than silent -- the rest of the section would appear
+                # as monospace in the PDF, and the Unicode allowlist would
+                # almost certainly stop the build first. Revisit if a fenced
+                # block is ever added to a section whose tail is short.
                 block, i = [], i + 1
                 while i < len(lines) and lines[i].strip() != '```':
                     block.append(lines[i])
@@ -1089,7 +1108,8 @@ class Build(object):
         # to catch it.
         order, seen = [], set()
         for sec in range(1, 11):
-            b = body_of(read(os.path.join(PAPER, 'section%d.md' % sec)))
+            name = os.path.join(PAPER, 'section%d.md' % sec)
+            b = body_of(read(name), name)
             for m in re.finditer(r'\[@([A-Za-z0-9][A-Za-z0-9._-]*)\]', b):
                 if m.group(1) not in seen:
                     seen.add(m.group(1))
@@ -1170,11 +1190,11 @@ class Build(object):
         src = ''
         if self.target == 'article':
             for sec in range(1, 11):
-                src += COMMENT_RE.sub('', body_of(
-                    read(os.path.join(PAPER, 'section%d.md' % sec))))
+                sp = os.path.join(PAPER, 'section%d.md' % sec)
+                src += COMMENT_RE.sub('', body_of(read(sp), sp))
         else:
-            src = COMMENT_RE.sub('', body_of(
-                read(os.path.join(PAPER, S1_SOURCE))))
+            sp = os.path.join(PAPER, S1_SOURCE)
+            src = COMMENT_RE.sub('', body_of(read(sp), sp))
         want(len(re.findall(r'(?<!\\)%', tex)) == 0,
              'every %% in the .tex is escaped (%d source, %d escaped)'
              % (src.count('%'), len(re.findall(r'\\%', tex))))

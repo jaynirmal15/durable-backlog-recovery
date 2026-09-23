@@ -200,6 +200,99 @@ class FloatKeyCase(unittest.TestCase):
         self.assertEqual(self.run_check(), [])
 
 
+class MissingEndBound(unittest.TestCase):
+    """The defect class: a slice whose end bound falls back to end-of-file.
+
+    It shipped once -- 726 words of drafting notes typeset inside reference
+    [14] on page 20 of the published article -- so every parser that had the
+    shape now raises instead of falling back, and every one of those raises is
+    asserted here. The rule is one line: A MISSING END BOUND RAISES.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix='bounds-')
+        for d in ('paper', 'figures'):
+            shutil.copytree(os.path.join(ROOT, d), os.path.join(self.tmp, d))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def strip_rule(self, rel):
+        """Remove the own-line `---` that bounds a file's header."""
+        p = os.path.join(self.tmp, rel)
+        lines = open(p, encoding='utf-8').read().split('\n')
+        for i, l in enumerate(lines):
+            if l.strip() == '---':
+                del lines[i]
+                break
+        open(p, 'w', encoding='utf-8').write('\n'.join(lines))
+        return p
+
+    def test_body_of_raises_when_the_header_has_no_end(self):
+        p = self.strip_rule(os.path.join('paper', 'section5.md'))
+        lines = open(p, encoding='utf-8').readlines()
+        with self.assertRaises(C.ScopeError):
+            C.body_of(lines, True, p)
+
+    def test_body_of_still_returns_whole_files_that_have_no_header(self):
+        # skip_header=False is a stated choice, not a fallback: figures/ and
+        # scripts/ files carry no change log. It must keep working.
+        lines = ['one\n', 'two\n']
+        self.assertEqual(len(C.body_of(lines, False)), 2)
+
+    def test_reference_blocks_bounds_the_last_entry(self):
+        blocks, problems = C.reference_blocks()
+        self.assertEqual(problems, [])
+        self.assertEqual(len(blocks), 14)
+        sizes = [len(b) for _, b in blocks]
+        # The bug made the last entry 4,719 characters against a 1,020 max.
+        self.assertLess(sizes[-1], 1200, 'last entry ran past its own end')
+        self.assertLess(max(sizes), 1200)
+
+    def test_reference_blocks_raises_when_nothing_closes_the_last_entry(self):
+        p = os.path.join(self.tmp, 'paper', 'references.md')
+        t = open(p, encoding='utf-8').read()
+        cut = t.rindex('\n**[14]**')
+        # Keep the entries, delete every own-line --- and ## below them.
+        head, tail = t[:cut], t[cut:]
+        tail = '\n'.join(l for l in tail.split('\n')
+                         if l.strip() != '---' and not l.startswith('## '))
+        open(p, 'w', encoding='utf-8').write(head + tail)
+        old = C.PAPER
+        C.PAPER = os.path.join(self.tmp, 'paper')
+        try:
+            with self.assertRaises(C.ScopeError):
+                C.reference_blocks()
+        finally:
+            C.PAPER = old
+
+    def test_plan_sync_bounds_the_last_plan(self):
+        import re as _re
+        o = open(os.path.join(ROOT, 'paper', 'OUTLINE.md'), encoding='utf-8').read()
+        heads = list(_re.finditer(r'^## \u00a7(\d{1,2}) [^\n]*$', o, _re.M))
+        allh = [m.start() for m in _re.finditer(r'^## ', o, _re.M)]
+        last = heads[-1]
+        after = [s for s in allh if s > last.start()]
+        self.assertTrue(after, 'the last plan must be closed by another ## ')
+        # Unbounded it ran 9,566 characters to end of file.
+        self.assertLess(after[0] - last.start(), 3000)
+
+    def test_plan_sync_raises_when_the_last_plan_is_the_last_heading(self):
+        p = os.path.join(self.tmp, 'paper', 'OUTLINE.md')
+        t = open(p, encoding='utf-8').read()
+        import re as _re
+        heads = list(_re.finditer(r'^## \u00a7(\d{1,2}) [^\n]*$', t, _re.M))
+        tail = t[heads[-1].start():]
+        tail = '\n'.join(l for l in tail.split('\n') if not l.startswith('## ')
+                         or l.startswith('## \u00a7'))
+        open(p, 'w', encoding='utf-8').write(t[:heads[-1].start()] + tail)
+        old = C.PAPER
+        C.PAPER = os.path.join(self.tmp, 'paper')
+        try:
+            with self.assertRaises(C.ScopeError):
+                C.plan_sync()
+        finally:
+            C.PAPER = old
+
+
 class WhyCheckFiveExists(unittest.TestCase):
     """The gap that motivated it, asserted rather than described."""
 

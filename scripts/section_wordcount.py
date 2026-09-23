@@ -49,15 +49,23 @@ BUDGETS = {1: 1600, 2: 1400, 3: 1700, 4: 4750, 5: 2750,
            6: 1550, 7: 1350, 8: 1070, 9: 1650, 10: 460}
 
 
-def split_body(text):
-    """Everything below the first '---' line: the header block is a change log."""
-    for m in re.finditer(r'^---\s*$', text, re.M):
-        return text[m.end():]
-    return text
+def split_body(text, name='(unnamed)'):
+    """Everything below the first '---' line: the header block is a change log.
+
+    A MISSING END BOUND RAISES. Returning the whole text counted every
+    superseded draft note as manuscript prose, which would have inflated the
+    very budget this script exists to measure -- silently, and in the
+    direction that makes the paper look longer than it is.
+    """
+    m = re.search(r'^---\s*$', text, re.M)
+    if not m:
+        raise ValueError('%s has no own-line `---`, so where its header ends '
+                         'is unknown' % name)
+    return text[m.end():]
 
 
-def counts(text):
-    body = split_body(text)
+def counts(text, name='(unnamed)'):
+    body = split_body(text, name)
     body = re.sub(r'<!--.*?-->', ' ', body, flags=re.S)
 
     raw = len(body.split())
@@ -77,7 +85,7 @@ def main():
         if not os.path.isfile(path):
             continue
         with open(path, encoding='utf-8') as fh:
-            prose, raw = counts(fh.read())
+            prose, raw = counts(fh.read(), path)
         rows.append((n, prose, raw, BUDGETS.get(n)))
 
     print('%-4s %8s %8s %8s %9s   %s' %

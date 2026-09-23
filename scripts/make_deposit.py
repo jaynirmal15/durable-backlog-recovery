@@ -99,7 +99,10 @@ September locally; they are the same two events under two clocks, not four.
 The files in this record were replaced in place on 2026-09-23, within Zenodo's
 30-day window. **The DOI is unchanged and resolves to the same record.** Zenodo
 shows no version history for an in-place file edit, so this note exists to
-explain why three digests differ from the ones published earlier the same day.
+explain why four objects differ from the ones first staged from commit
+`e22e779547d19b462627cb06acfd07246c4d58ef`. The commit is the anchor rather
+than the date: both publications fall on 2026-09-23 in UTC, so a date cannot
+tell them apart.
 
 **What changed.** `article.pdf` was recompiled. The earlier PDF carried a build
 defect: the last bibliography entry had no end bound, so reference [14]
@@ -307,9 +310,19 @@ def main():
         if not os.path.isfile(src):
             print('  MISSING: %s -- compile before staging' % name)
             continue
+        # KNOWN FALSE POSITIVE, LOGGED RATHER THAN FIXED. This compares
+        # MTIMES, and a regeneration that produces byte-identical .tex still
+        # bumps its mtime -- so a PDF compiled from exactly this .tex is
+        # reported stale after any rebuild. It fired on supplement-S1.pdf
+        # during the 2026-09-23 replacement, where the PDF was the published,
+        # correct one. The check should compare CONTENT lineage: record the
+        # .tex's SHA-256 beside the PDF at compile time and compare that.
+        # Until then, treat this as a prompt to check the digest by hand, not
+        # as a finding.
         tex = src[:-4] + '.tex'
         if os.path.isfile(tex) and os.path.getmtime(src) < os.path.getmtime(tex):
-            print('  STALE: %s is older than the .tex beside it' % name)
+            print('  STALE(mtime, may be a false positive): %s is older than '
+                  'the .tex beside it -- verify by digest, not by date' % name)
         shutil.copy2(src, os.path.join(STAGE, name))
         n += 1
         b += os.path.getsize(src)

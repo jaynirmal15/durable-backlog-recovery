@@ -172,16 +172,16 @@ no "after" size printed here, and deliberately: this file is one of them, and
 size into this note changes the thing the number describes. `MANIFEST.json`
 records both, measured after the fact, which is where a size belongs.
 
-    article.pdf                            544934 -> 547913
-    supplement-S1.pdf                      362257 -> 362979
+    article.pdf                            544934 -> 548454
+    supplement-S1.pdf                      362257 -> 362963
     README.md                               8034 ->  see MANIFEST.json
     figures/CAPTIONS.md                     11959 ->  12097
     figures/T3-candidate-explanations.md     7498 ->   7732
     scripts/build_article.py                62414 ->  64728
-    scripts/check_manuscript.py             33491 ->  51617
+    scripts/check_manuscript.py             33491 ->  53876
     scripts/make_deposit.py                 19753 ->  see MANIFEST.json
     scripts/make_table3.py                  14137 ->  15479
-    scripts/test_check_manuscript.py        14536 ->  23484
+    scripts/test_check_manuscript.py        14536 ->  27844
     scripts/test_zenodo_guard.py             8182 ->  13072
     scripts/zenodo_deposit.py               35524 ->  39271
 

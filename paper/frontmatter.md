@@ -118,14 +118,10 @@ appears in the byline. No other word changed.*
 **JAY SURESH NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
 from the University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in
 information systems from Northeastern University, Boston, MA, USA, in 2019. He is
-currently a Senior Software Engineer in Boston, MA, USA, with experience in
-distributed systems, real-time communication, back-end engineering, and production
-reliability. His engineering work includes real-time communication systems, cloud
-infrastructure, failure recovery, observability, and reliability improvement for
-a large-scale online assessment platform. He also conducts independent systems
-research. His research interests include distributed systems, failure recovery and
-fault tolerance, systems measurement, observability, and reproducible experimental
-methods.
+currently a Senior Software Engineer in Boston, MA, USA, working on distributed
+systems, real-time communication, failure recovery and observability for a
+large-scale online assessment platform, and conducts independent systems
+research in systems measurement and reproducible experimental methods.
 <!-- article:biography:end -->
 
 ---

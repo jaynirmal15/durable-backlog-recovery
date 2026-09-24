@@ -1,5 +1,7 @@
 # §2 — Background and related work
 
+*Draft 11 — FINAL TRIM, 2026-09-24. §II-A's closing paragraph and §II-B's closing paragraph are replaced by one sentence each: the first restated the paragraph above it, the second re-summarised §VII's results, which §VII owns in full. Every literature claim is preserved and no citation marker is removed — all fourteen reference numbers are byte-identical before and after, verified by dumping the bibitem order and the first-appearance order both ways.*
+
 *Draft 10 — TWO-REVIEW REVISION, 2026-09-23. B4: §II-C's universal "the paper therefore requires an empirically validated capacity estimate" is brought into the same conditional form as §I and §X. No number changes.*
 
 *Draft 9 — ACRONYM COMPLIANCE, 2026-09-20, ruled by review. §II-B's heading no longer uses `SLO` before its expansion — "Overload control and admission under service level objectives" — and its first sentence pairs the two: "a service level objective (SLO)". Required by the IEEE Access checklist; no other change.*
@@ -182,14 +184,9 @@ spillover queues, throttling, and processing fresh work ahead of old backlog,
 rather than metering a shared path. Separately, public incident records show backlogs and
 queueing-objective violations recurring in production message processing [@gitlab-20797], [@gitlab-21046].
 
-The operational sources reviewed here do not quantify the safe drain boundary or
-report it with experimental resolution: they establish that the competition
-matters and give qualitative guidance for managing it. This paper supplies such
-a measurement — the rate at which a recovering consumer begins to violate a live
-latency objective, located empirically and reported with its resolution. Having
-no quantitative comparison point is also why the paper reports its own
-resolution so insistently. A measurement with an unstated precision is not a
-baseline for anything.
+These sources establish the operational problem and qualitative mitigation, not
+a quantitative safe-drain rule. This paper measures that boundary and reports
+the measurement at its experimental resolution.
 
 ### B. Overload control and admission under service level objectives
 
@@ -215,15 +212,9 @@ open-loop rate-limited — a fixed rate per run, varied between runs by the sear
 — precisely so that the boundary is a property of the system rather than of a
 controller's dynamics. No controller is evaluated here and none is recommended.
 
-The broader one is that **latency-derived feedback is an established
-construction in overload and admission control**, and it is worth stating
-plainly because §VII reports observations about it. §VII finds that request
-timeout rate gives no advance warning of the boundary in either corrected cell,
-and that a queue-depth lead over live latency, observed in the uncorrected
-corpus, remains exploratory: the one independent corrected corpus available
-samples too coarsely to resolve an effect of that size in either direction.
-This makes live latency a literature-grounded comparator rather than an invented
-baseline for §VII, which examines it alongside timeout rate and queue depth.
+Together, DAGOR, Breakwater and Bouncer establish latency-derived feedback as a
+literature-grounded comparator for §VII, which examines live latency alongside
+timeout rate and queue depth.
 
 ### C. Capacity estimation and self-tuning
 

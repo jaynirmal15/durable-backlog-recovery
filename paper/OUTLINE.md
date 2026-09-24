@@ -797,7 +797,7 @@ there a seven-cell campaign in a methods paper."*
 
 ## §2 Background and related work — 1,400 words
 
-<!-- plan-synced-to: section2 draft 10 -->
+<!-- plan-synced-to: section2 draft 11 -->
 
 <!-- citation-inventory:start -->
 **VERIFIED ANCHORS, from the 2026-09-20 search. Cite these; do not add a work

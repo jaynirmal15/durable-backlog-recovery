@@ -505,11 +505,3 @@ descriptive field contradicted the arithmetic of the record it was written into,
 in every record it wrote, until it was corrected at the source and in all 43
 affected records — after which every consuming artefact regenerated
 byte-identically.
-
-## S1-J. Provenance of the campaign itself (cut from the article's §V for length)
-
-Two readings were made and corrected mid-campaign, both recorded in the
-registration, and one earlier claim — that a break within 0.0004 of a registered
-prediction confirmed the saturated figure — is withdrawn, the bracket having
-contained both candidates at a resolution that could not support the agreement.
-Section IX and the registration give all three in full.

@@ -33,6 +33,23 @@ FIGURES = os.path.join(ROOT, 'figures')
 TEMPLATE = os.path.join(ROOT, 'build', 'template',
                         'ACCESS_latex_template_20260513')
 OUT = os.path.join(ROOT, 'build', 'access')
+OUT_DIRS = {'access': OUT, 'spe': os.path.join(ROOT, 'build', 'spe')}
+
+# THE SPE VARIANT. Software: Practice and Experience takes a free-format
+# submission, so the body, the class and the template are identical to the
+# IEEE Access build and only the front matter differs. It is a VARIANT rather
+# than a fork for one reason: two hand-maintained copies of an abstract drift,
+# and the drift is invisible because both read fine on their own.
+#
+# So the SPE abstract and index terms are DERIVED, not duplicated. The build
+# removes exactly one sentence and exactly one term from the article blocks
+# and FAILS if either was not there to remove -- which means the two
+# submissions cannot silently come to differ anywhere else.
+SPE_DROP_SENTENCE = ('That result depends on an empirically validated capacity '
+                     'reference rather than on the configured parameter.')
+SPE_DROP_TERM = 'service level agreements'
+SPE_ABSTRACT_MAX = 250          # SPE's ceiling
+SPE_KEYWORDS = 6
 
 MAX_BYTES = 40 * 1024 * 1024        # IEEE Access: source and PDF each under 40 MB
 # CUT-PLAN.md Draft 4 moved Fig. 2 and the amendment table to Supplement S1,
@@ -213,6 +230,9 @@ TEXTTT = {
     # SS-III-A, added 2026-09-23: the execution environment, read from the
     # platform block every run record carries.
     'c6i.2xlarge', '7.0.0-1012-aws', 'linux/amd64',
+    # SPE's data-availability statement, added 2026-09-24. Used by the spe
+    # variant only; the access build never reaches these spans.
+    'MANIFEST.json',
 }
 # Only spans the converted text actually uses are listed. Entries kept "just
 # in case" rot: they assert a rendering nobody checks, and they hide which
@@ -570,6 +590,21 @@ TIGHT_TABLES = {
 }
 
 
+def spe_points(raw):
+    """The numbered Practitioner Points, one per entry.
+
+    Split on the `N.` markers rather than on blank lines, because each point
+    is hard-wrapped across several lines and a blank-line split would return
+    one item.
+    """
+    parts = re.split(r'(?m)^\s*\d+\.\s+', raw.strip())
+    items = [' '.join(p.split()) for p in parts if p.strip()]
+    if len(items) not in (1, 2, 3):
+        raise BuildError('SPE allows up to three Practitioner Points; the '
+                         'block has %d' % len(items))
+    return items
+
+
 def short_caption(raw):
     """The entry for the list of figures: a moving argument, so it must be one
     short line with no \\par in it.
@@ -730,7 +765,8 @@ def figure(key, filename, caption):
 
 class Build(object):
 
-    def __init__(self, target='article'):
+    def __init__(self, target='article', variant='access'):
+        self.variant = variant
         self.target = target
         self.tex = []
         self.equations = []
@@ -822,6 +858,32 @@ class Build(object):
         for k in need:
             if k not in fm:
                 raise BuildError('frontmatter.md has no article:%s block' % k)
+        if self.variant == 'spe':
+            fm = dict(fm)
+            spe = article_blocks(read(os.path.join(PAPER, 'frontmatter.md')),
+                                 'spe')
+            for k in ('practitioner-points', 'statements'):
+                if k not in spe:
+                    raise BuildError('frontmatter.md has no spe:%s block' % k)
+            self.spe = spe
+            # DERIVED, and it fails rather than no-ops if the target text has
+            # moved. A silent no-op here would ship the IEEE abstract to SPE.
+            abs_one = ' '.join(fm['abstract'].split())
+            if SPE_DROP_SENTENCE not in abs_one:
+                raise BuildError(
+                    'the SPE abstract drops one sentence and it is not in the '
+                    'article abstract any more:\n  %s' % SPE_DROP_SENTENCE)
+            fm['abstract'] = abs_one.replace(SPE_DROP_SENTENCE + ' ', '', 1)
+            terms = [x.strip() for x in fm['index-terms'].split(',')
+                     if x.strip()]
+            if SPE_DROP_TERM not in terms:
+                raise BuildError('the SPE term list drops %r and it is not in '
+                                 'the article terms' % SPE_DROP_TERM)
+            terms = [x for x in terms if x != SPE_DROP_TERM]
+            if len(terms) != SPE_KEYWORDS:
+                raise BuildError('SPE keywords: %d, the ruling says %d'
+                                 % (len(terms), SPE_KEYWORDS))
+            fm['index-terms'] = ', '.join(terms)
         self.fm = fm
         t = self.tex
         t += [r'\documentclass{ieeeaccess}',
@@ -856,6 +918,12 @@ class Build(object):
               '',
               r'\titlepgskip=-15pt',
               r'\maketitle', '']
+        if self.variant == 'spe':
+            t += [r'\section*{Practitioner Points}',
+                  r'\begin{itemize}']
+            for item in spe_points(self.spe['practitioner-points']):
+                t.append(r'\item %s' % inline(item))
+            t += [r'\end{itemize}', '']
 
     # -- sections ---------------------------------------------------------
     def s1_front_matter(self):
@@ -1160,6 +1228,13 @@ class Build(object):
                 'references.md order disagrees with first appearance.\n'
                 '  committed: %s\n  markers  : %s' % (committed, order))
 
+        if self.variant == 'spe':
+            self.tex += ['', r'\section*{Statements}', '']
+            for para in [p.strip() for p in
+                         self.spe['statements'].split('\n\n') if p.strip()]:
+                # keep_bold: the statement labels are bold in the
+                # source and SPE sets them as run-in headings.
+                self.tex += [inline(' '.join(para.split()), keep_bold=True), '']
         self.tex += ['', r'\begin{thebibliography}{%d}' % len(entries)]
         for _, key, body in entries:
             self.tex.append(r'\bibitem{%s} %s' % (key, inline(body)))
@@ -1254,16 +1329,17 @@ class Build(object):
 
     # -- output -----------------------------------------------------------
     def write(self):
-        if not os.path.isdir(OUT):
-            os.makedirs(OUT)
+        out = OUT_DIRS[self.variant]
+        if not os.path.isdir(out):
+            os.makedirs(out)
         for name in os.listdir(TEMPLATE):
             if name in TEMPLATE_FILES or name.endswith(TEMPLATE_GLOBS):
                 shutil.copy2(os.path.join(TEMPLATE, name),
-                             os.path.join(OUT, name))
+                             os.path.join(out, name))
         for key, fn in self.fig_files.items():
-            shutil.copy2(os.path.join(FIGURES, fn), os.path.join(OUT, fn))
+            shutil.copy2(os.path.join(FIGURES, fn), os.path.join(out, fn))
         path = os.path.join(
-            OUT, 'article.tex' if self.target == 'article'
+            out, 'article.tex' if self.target == 'article'
             else 'supplement-S1.tex')
         with open(path, 'w', encoding='utf-8') as fh:
             fh.write('\n'.join(self.tex))
@@ -1323,9 +1399,9 @@ def promotion_scan():
     sys.stdout.flush()
 
 
-def build_one(target, args):
+def build_one(target, args, variant='access'):
     """Generate one document and report on it. Returns (ok, tex path)."""
-    b = Build(target)
+    b = Build(target, variant)
     label = 'article' if target == 'article' else 'Supplement S1'
     try:
         b.load_floats()
@@ -1368,13 +1444,17 @@ def main():
                     help='use latexmk instead of three pdflatex passes')
     ap.add_argument('--only', choices=('article', 's1'),
                     help='build just one of the two documents')
+    ap.add_argument('--variant', choices=('access', 'spe'), default='access',
+                    help='front-matter variant; the body is identical. '
+                         '"spe" writes to build/spe and never touches '
+                         'build/access.')
     args = ap.parse_args()
 
     targets = [args.only] if args.only else ['article', 's1']
     ok = True
     paths = []
     for target in targets:
-        good, path = build_one(target, args)
+        good, path = build_one(target, args, args.variant)
         ok = ok and good
         if path:
             paths.append((target, path))
@@ -1382,9 +1462,11 @@ def main():
     if not paths:
         return 1
 
-    size = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT))
-    print('bundle: %d files, %.1f MB (limit %d MB per file)'
-          % (len(os.listdir(OUT)), size / 1e6, MAX_BYTES // 1024 // 1024))
+    out = OUT_DIRS[args.variant]
+    size = sum(os.path.getsize(os.path.join(out, f)) for f in os.listdir(out))
+    print('bundle: %d files, %.1f MB (limit %d MB per file)  [%s]'
+          % (len(os.listdir(out)), size / 1e6, MAX_BYTES // 1024 // 1024,
+             os.path.relpath(out, ROOT)))
     if not ok:
         return 1
 

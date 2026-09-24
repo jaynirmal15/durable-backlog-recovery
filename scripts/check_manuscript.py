@@ -648,6 +648,30 @@ REGISTRY = {
     # 99.81%.
     '1.29 and 1.38 µs': {'partition': ['outside `δ`', 'measured outside',
                                         'adding it brings']},
+    # ADDED 2026-09-24 FOR THE SPE PRACTITIONER POINTS. Those are derived
+    # values in new prose, outside the body, written to be quoted on their
+    # own -- the exact conditions under which a condition detaches. Running
+    # the registry over them while it held none of their figures would have
+    # been a clean pass measuring nothing, which is class 2 of the defect
+    # list. The overstatement figures are per-arm and per-estimator, and the
+    # leading-indicator population is six specific cells.
+    # SCOPED TO frontmatter.md, and the scope is a limitation rather than a
+    # convenience. Run across the whole manuscript these three entries report
+    # four body sites -- SS-II-C summarising "9.26% at one service time and
+    # 1.85% at another" with neither estimator nor condition named, and SS-III
+    # doing the same -- which are arguable findings in frozen, reviewed text.
+    # The manuscript is frozen and the IEEE Access build must stay
+    # byte-identical, so acting on them is not this pass's to do. They are
+    # reported rather than exempted; widening the scope is a decision for
+    # whoever reopens the body.
+    '9.26': {'files': ('frontmatter.md',),
+             'condition': ['5 ms', 'five-millisecond', 'short arm'],
+             'estimator': ['pooled', 'saturation-plateau', 'measured capacity',
+                           'plateau-inferred']},
+    '1.85': {'files': ('frontmatter.md',), 'condition': ['25 ms', 'twenty-five', 'long arm'],
+             'estimator': ['pooled', 'saturation-plateau', 'measured capacity',
+                           'plateau-inferred']},
+    'six cells evaluated': {'files': ('frontmatter.md',), 'population': ['e1'], 'operation': ['corrected']},
 }
 
 
@@ -680,9 +704,14 @@ def semantic_registry(root='.'):
             if SEMANTIC_OK_RE.search(' '.join(l for _, l in para)):
                 continue
             for value, dims in REGISTRY.items():
+                only = dims.get('files')
+                if only and os.path.basename(path) not in only:
+                    continue
                 if not pats[value].search(window):
                     continue
                 for dim, tokens in sorted(dims.items()):
+                    if dim == 'files':
+                        continue
                     if not any(tok in window for tok in tokens):
                         problems.append(
                             ('%s:%d' % (path, first),

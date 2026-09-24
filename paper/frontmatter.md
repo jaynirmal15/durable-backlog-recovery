@@ -114,6 +114,58 @@ name now reads JAY SURESH NIRMAL, matching the byline, the ORCID record and
 Paper 1's author block — an IEEE biography opens with the author's name as it
 appears in the byline. No other word changed.*
 
+## SPE front matter
+
+*Added 2026-09-24. Software: Practice and Experience is the target venue; IEEE
+Access is the fallback and its build is untouched. SPE takes a free-format
+submission, so the body does not change and the template does not change — only
+what is below. **The abstract and the index terms are NOT duplicated here.**
+The SPE build derives both from the article blocks above by removing exactly
+one sentence and exactly one term, and asserts that each was present before it
+went. Two hand-maintained copies of an abstract is how they drift.*
+
+<!-- spe:practitioner-points:start -->
+1. Validate the capacity reference before using it to set a recovery drain
+   rate. In this harness the configured figure overstated service capacity by
+   9.26% at a 5 ms service time and 1.85% at 25 ms, both against measured
+   capacity from the pooled saturation-plateau estimate; at 5 ms that error was
+   more than an order of magnitude larger than the sub-percent margin being
+   characterised.
+
+2. Across all seven tested cells the safe drain boundary lay at or near
+   measured service capacity, and was indistinguishable from it at each cell's
+   own experimental resolution. Differences among the tested configurations —
+   service time, configured capacity, admission limit, concurrency and the
+   latency objective — were not resolved by the experiment.
+
+3. Request timeout rate gave no advance warning of the boundary in any of the
+   six cells evaluated for leading indicators — the four E1 boundaries and the
+   two corrected-harness cells — remaining below its criterion through every
+   safe point, with a total sigma of 0.00 in all six. The result reproduced on
+   the corrected-harness corpus, which was collected after the analysis
+   statistic was frozen and played no part in choosing it.
+<!-- spe:practitioner-points:end -->
+
+<!-- spe:statements:start -->
+**Data availability.** The harness, the pre-registration with its amendments
+and addenda, every run record and per-request trace, the analysis code, the
+figure generators, and the regression fixture are archived under concept DOI
+`10.5281/zenodo.22761130`. `MANIFEST.json` records a SHA-256 for every archived
+file and the commit from which the package was built. Every reported artefact
+regenerates byte-identically from the committed data by running its associated
+script.
+
+**Funding.** This research received no external funding.
+
+**Conflict of interest.** The author declares no conflict of interest.
+
+**Ethics approval.** Not applicable; the study involved no human or animal
+subjects.
+
+**Permission to reproduce.** Not applicable; no material from other sources is
+reproduced.
+<!-- spe:statements:end -->
+
 <!-- article:biography:start -->
 **JAY SURESH NIRMAL** (Member, IEEE) received the B.E. degree in computer engineering
 from the University of Mumbai, Mumbai, India, in 2017, and the M.S. degree in

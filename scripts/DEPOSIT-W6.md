@@ -6,11 +6,12 @@
 |---|---|
 | **Concept DOI — WHAT THE ARTICLE CITES** | **`10.5281/zenodo.22761130`** |
 | v1.0.0 version DOI | `10.5281/zenodo.22761131`, record `22761131`, published 2026-09-23 UTC, **superseded** |
-| v1.0.1 version DOI | `10.5281/zenodo.22923220`, record `22923220`, published 2026-09-23, **current** |
-| State | v1.0.1 published and current; v1.0.0 remains published and citable, superseded for a build defect on page 20 |
+| v1.0.1 version DOI | `10.5281/zenodo.22923220`, record `22923220`, published 2026-09-23, **superseded by v1.1.0** |
+| v1.1.0 version DOI | `10.5281/zenodo.22941578` reserved, record `22941578`, **draft staged 2026-09-24, awaiting publication by hand** |
+| State | v1.1.0 staged and unpublished; v1.0.1 published and current until it is; v1.0.0 published and citable. A new version supersedes, it does not withdraw |
 | Resolves to | the concept DOI follows the chain to the newest version |
 | Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-<version>.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE`. The archive is named for its version: v1.0.0 shipped `…-1.0.0.zip`, v1.0.1 ships `…-1.0.1.zip` |
-| Version / licence | 1.0.1 / CC BY 4.0 (`cc-by-4.0`), open access |
+| Version / licence | 1.1.0 / CC BY 4.0 (`cc-by-4.0`), open access |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
 | Staged from | v1.0.0: git commit `e22e779547d19b462627cb06acfd07246c4d58ef`; v1.0.1: git commit `b7731a32c16c444a097a97028f72051def33b538` (`MANIFEST.json` `gitCommit`) |
 
@@ -227,14 +228,27 @@ design: a published record cannot be deleted and its files cannot be changed.
   (§IV's reproducibility statement already carried the DOI and needed no
   change; `frontmatter.md` and `references.md` carry the status) and in the
   repository (`OUTLINE.md`, `W6-PLAN.md` and this file).
+- **DONE 2026-09-24 — v1.1.0 staged, not published.** Draft `22941578` from
+  `/actions/newversion` on record `22923220`; reserved DOI
+  `10.5281/zenodo.22941578`; concept DOI unchanged. Archive uploaded first,
+  then the six flat objects, readback MATCHES on all seven; the inherited
+  `paper2-rhc-artifact-1.0.1.zip` swept (204); exactly seven asserted; no
+  nested keys. `zenodo_verify.py`: 816 verified, zero in every failure
+  counter. `--plan-only`: **0 of 7 object(s) would be replaced.** Jay
+  publishes from the web interface.
 - **STILL OPEN — carried forward to acceptance (1 of 2):** add the
   `isSupplementTo` relation with the article DOI, per step 6. It is the only part of this
   checklist that runs after submission, and nothing else will prompt for it —
   the deposit is finished and the paper is away. Put it wherever acceptance is
   tracked.
 
-- **STILL OPEN — carried forward to acceptance (2 of 2):** the supplement's
-  35.86 pt overfull box at `C_measured`. It is a pre-submission cosmetic, not
+- **CLOSED 2026-09-24** — the supplement's 35.86 pt overfull box at
+  `C_measured` is gone. It was one table starved of width by `tabularx`;
+  `\tabcolsep` at 2pt in that float gives both X columns 51.10pt against a
+  widest token of 43.10pt. Max paragraph overfull in both documents is now
+  9.27 pt, the `\maketitle` box. No longer carried.
+- ~~**STILL OPEN — carried forward to acceptance (2 of 2):** the supplement's
+  35.86 pt overfull box at `C_measured`.~~ It is a pre-submission cosmetic, not
   a deposit item; the deposited `supplement-S1.pdf` is the artifact and will
   not be rebuilt for it now.
 

@@ -215,7 +215,8 @@ touching the §VIII/§IX boundary Draft 2 ruled on.
 
 **Target: 19.** Success is a finished, defect-free submission below 20 pages
 with enough margin that ordinary float movement cannot push it back to 20;
-**19–19.5 is a successful endpoint.** §V → ~1,900 and §III → ~1,200 are **not**
+**19–19.5 is a successful endpoint.** (**Outcome: 21**, and accepted. The
+target rested on a page-limit claim corrected below; see "Why".) §V → ~1,900 and §III → ~1,200 are **not**
 pre-authorised; they are reconsidered only if the authorised set still leaves
 the build above 20.
 
@@ -237,8 +238,8 @@ the build above 20.
 
 ## Why
 
-IEEE Access recommends under 20 pages and requires the Editor-in-Chief's
-approval above it. The first compile gave **26 pages** with defects; the
+IEEE Access recommends under 20 pages. This plan also said it required the
+Editor-in-Chief's approval above that. **CORRECTED 2026-09-24. The Editor-in-Chief approval claim was wrong, and it was ours, not IEEE's.** It appears nowhere the author could verify: IEEE Access's author-guidelines pages 404, and current guidance is that there is **no strict page limit and no over-length waiver procedure** — editors judge length against the contribution during review. The 20-page line is a readability recommendation, which is what `OUTLINE.md` said all along; this file contradicted it and drove a cut pass on a premise nobody had checked. **21 pages needs no gate.** The cut pass was still worth doing — it removed repetition and unsupported aggregate claims — but it was not compelled by a rule. The first compile gave **26 pages** with defects; the
 corrected build is estimated at **24-27**. The target is **18**, leaving room
 for additions a reviewer asks for. That is roughly **6 pages**, which is about
 4,500 words of prose plus about 1.5 pages of floats.
@@ -362,8 +363,9 @@ and deposited on Zenodo.**
 - **Order matters:** the build defects get fixed first so the page count is
   trustworthy, then cuts are applied section by section, recompiling after each.
 - **Rough effort:** two to three working sessions of drafting and review. That
-  is a smaller delay than waiting on an Editor-in-Chief exception, and it
-  produces a paper that reviews better.
+  produces a paper that reviews better. (The clause that once stood here —
+  that this was faster than waiting on an Editor-in-Chief exception — rested on
+  the corrected claim above. There is no exception to wait on.)
 
 ## Decisions needed
 

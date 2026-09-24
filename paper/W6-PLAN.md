@@ -73,9 +73,11 @@ with their account. The ORCID profile must be publicly visible and populated."*
 If Jay does not have one, it is created and populated before submission, not
 during it. This is the cheapest item here and the easiest to discover too late.
 
-**3. Page count — the one with lead time.** IEEE Access *"strongly
-recommend[s] keeping the page count under 20 pages"*, and **exceeding 20 pages
-requires pre-submission approval from the Editor-in-Chief**. The manuscript is
+**3. Page count — no longer the one with lead time.** IEEE Access *"strongly
+recommend[s] keeping the page count under 20 pages"*. This plan also said that
+exceeding 20 pages required pre-submission approval from the Editor-in-Chief.
+**CORRECTED 2026-09-24. The Editor-in-Chief approval claim was wrong, and it was ours, not IEEE's.** It appears nowhere the author could verify: IEEE Access's author-guidelines pages 404, and current guidance is that there is **no strict page limit and no over-length waiver procedure** — editors judge length against the contribution during review. The 20-page line is a readability recommendation, which is what `OUTLINE.md` said all along; this file contradicted it and drove a cut pass on a premise nobody had checked. **21 pages needs no gate.** The cut pass was still worth doing — it removed repetition and unsupported aggregate claims — but it was not compelled by a rule. The manuscript ships at 21.
+ The manuscript is
 18,321 prose words plus six figures and **four** tables — T2, T3 and T4
 generated, and Table 1, the amendments table, hand-written in `section4.md`, with
 the most rows of the four (11), though T3 carries the most content — which has been estimated at 22-23 pages in the
@@ -120,7 +122,8 @@ identical content.
      already defined in the abstract*;
    - **keywords: 3 to 10.** The index terms are seven. Compliant;
    - **biographies for all authors** — one author, one biography. Present;
-   - the page count, against the 20-page line above.
+   - the page count. **No gate**: 21 pages, and the 20-page line is a
+     recommendation, not a threshold requiring anyone's approval.
 4. **Freeze.** The commit at the end of this phase is the commit §IV cites and
    the commit the deposit is built from. Nothing content-bearing lands after it
    until submission.

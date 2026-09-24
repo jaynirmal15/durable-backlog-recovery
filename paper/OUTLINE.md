@@ -1746,15 +1746,198 @@ likely to value.
 | W5 Oct 13–19 | Revision. External review against this outline. Artifact package final. **Artefact renames — DONE at `f44d2f1` (pushed); generators `make_table2/3/4.py`, historical reports annotated not rewritten. Original instruction retained below:** **Artefact renames, to the v7.1 manuscript numbering — the v8.1 instruction pointed the false-findings table at Table 2, which v7.1 had already made Table 4. Correct set: `figures/T1-false-findings.md` -> `T4-false-findings.md` and `scripts/make_table1.py` -> `make_table4.py`; `figures/T3-resolution.md` -> `T2-resolution.md`; `figures/calibration-artefact-findings.md` -> `T3-candidate-explanations.md` with its generator. Resolves the collision noted in the deliverables table and in METHOD-AUDIT item 33.** |
 | W6 Oct 20–26 | Final pass. **Re-stage the Zenodo package from the frozen commit, upload, verify, publish — DONE 2026-09-23.** Staged from `e22e779`, uploaded as a hybrid deposit (one archive holding the tree with its paths, six flat objects beside it, because Zenodo refuses a key containing a slash), verified at 815 checks with zero missing/extra/mismatched/unchecked, published by hand. **The pre-submission item "the DOI must resolve before submission" is CLOSED — but not by the statement it originally made.** As written, the check asked whether a DOI resolved, and on 2026-09-23 `10.5281/zenodo.22761131` did. That turned out to be the weaker question: the record it resolved to carried the bibliography bleed, so a DOI that resolved was resolving to a defective artifact, and the check would have passed anyway. What closes it now is stronger and differently shaped: **the article cites the CONCEPT DOI `10.5281/zenodo.22761130`, which follows the version chain to whatever is newest, and that chain now lands on v1.0.1 — a clean artifact.** Verified 2026-09-23 from the API: 302 → 302 → HTTP 200 at `https://zenodo.org/records/22923220`, record state `done`, version `1.0.1`, licence `cc-by-4.0`, seven objects, and `zenodo_verify.py` against the published record reporting 816 verified with zero missing, extra, wrong-size, wrong-hash or unchecked. `10.5281/zenodo.22761131` still returns 200, so v1.0.0 stays citable; a new version supersedes rather than withdraws. The distinction is worth keeping: the check now guarantees that the cited DOI tracks the corrected artifact, which is not what a one-time resolution test could ever have guaranteed. Caveat recorded rather than glossed: the v1.0.1 VERSION DOI `10.5281/zenodo.22923220` is not yet registered at DataCite and 404s at doi.org — Zenodo's minting lag, and nothing the article cites depends on it. Two items are carried past submission to acceptance: `DEPOSIT-W6.md` step 7, the `isSupplementTo` relation, which waits on the article DOI; and the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission cosmetic left in the deposited PDF. Metadata to complete first: `description`, `related_identifiers` (repo URL, Paper 1's `10.5281/zenodo.22061184`), licence note covering `scripts/`, title naming the paper. **Hard pre-submission checks, each verified against a primary source and not against this outline:** (1) the abstract's "publicly archived" is true — the DOI resolves to a published record; (2) ~~the biography's first degree~~ **CLOSED 2026-09-20: the author confirmed the B.E.; the manuscript already reads B.E. and needs no change. The iCloud CV that says "B.S." is corrected separately so the question cannot reopen.** This row carries the check because the biography's editorial note is stripped before submission. Then submit. |
 | W6 — **DEFECT: the bibliography bleed, and it shipped** | **What it was:** `bibliography()` in `build_article.py` ended each reference at the start of the next one and the LAST reference at end of file, so `\bibitem{heiser}` swallowed everything below the entries in `references.md`. **What it did:** 726 words of drafting apparatus were typeset inside reference [14], in the right column of page 20 — the draft-2 rulings, "reversing my draft 1 inclination", the reference-distribution table, and the line that matters most, *"the biography, which waits on Jay rather than on verification: he has confirmed he has never been an IEEE Associate Editor."* **It reached the published Zenodo artifact.** `article.pdf` md5 `3806dff8fab8878833cd0f108cc37fcd` is identical in three places — the local build, `MANIFEST.json`'s SHA-256 `711a315c…`, and the published record — and a byte-identical copy is inside `paper2-rhc-artifact-1.0.0.zip`, so the 325.5 MiB archive carries it too. **Fixed at `79aaa680`:** an entry now also stops at the first own-line `---` or `## ` after it, which is where the apparatus begins; `article.tex` lost 4.2 kB and all fourteen entries are 132–334 characters. **Guard:** `BIBITEM_MAX = 600` fails the build if any entry exceeds 600 characters, on the reasoning that a reference is a sentence or two and a swallowed section is not. Mutation-tested: unbounding the scope again reports 4,313 characters and fails. **Class:** the same shape as the citation inventory that ran 752 lines instead of 66 — a scope whose end bound is "end of file" ends nowhere. Neither was caught by a test; both were caught by reading output. |
-| W6 — **DEFECT CLASS: a check that passes while measuring the wrong property** | **Named 2026-09-23, from the deposit replacement.** `MANIFEST.json` is **141,778 bytes both before and after** the correction and its content differs entirely: the old one certifies the bled `article.pdf`, the new one the corrected file. A size-only comparison calls that **unchanged**. Had the replacement gone out on a size check, the record would have kept a manifest certifying a PDF it no longer contained — and **the package would have passed its own integrity check while misdescribing its contents**, which is worse than failing it, because a reader who verifies gets a green answer to the wrong question. Caught because `--plan-only` compares **digests**, not sizes; `zenodo_verify.py` already compared MD5 for the same reason. **Guard:** every comparison of a deposited object is by digest, and size is reported beside it as context rather than used as the test. **Class:** distinct from "a scope ending at EOF" — that one reads too much, this one measures the wrong thing. Third instance in one day of a verification that looks authoritative without measuring what it claims. |
-| W6 — **DEFECT CLASS: a value that crosses a semantic boundary while its digits stay right** | **Named 2026-09-23, from the second review pass.** Four instances, none of them an arithmetic error. (1) `0.98` was the E2b ρ* midpoint ROUNDED; printed beside an unrounded result it made `h = 0.980` read as false, when the operand is 0.98125. (2) `−0.0051` is the difference of two DISPLAYED values; `−0.0052` is the difference of the measurements. (3) `1.29 µs` is the remainder of a partition that INCLUDES the timer read, printed as the complement of a 99.81% share computed without it. (4) *"a fifth of a bisection step"* was a fraction measured on OTHER cells falling SHORT of 1.0, carried onto two cells EXCEEDING it. **The class:** a number is not a number — it carries a corpus, an estimator, a denominator, a population and an operation, and each of those is a boundary it can cross while remaining correct as digits. Every existing check compares digits to digits and is blind to all five. **Guard, narrow form, built 2026-09-23:** check 7, a registry of the seventeen values these two passes touched, each with the dimensions its context must name, enforced paragraph by paragraph and row by row against the table's own header. It found one live crossing nobody had reported — §VI-C gave 0.0696 and 0.0019 their denominator and not their estimator — and four thinner contexts. Mutation-tested on three shapes. **What it does NOT do:** it checks that the context NAMES the dimension, not that the naming is true; a paragraph saying "drain-window" beside a delivery-span figure passes. It catches the silent crossing, which is the observed failure, not a mislabelling, which has not happened here. **POST-SUBMISSION:** the general form — high-risk derived values carrying a semantic key at the point they are computed, so the key travels with the value instead of being re-asserted in prose. Deliberately not built now: infrastructure does not block a finished paper. |
-<!-- withdrawn-quote-ok: the row names both retired phrases to record why -->
-| W6 — **DEFECT CLASS: a policy sentence the paper contradicts elsewhere** | **Named 2026-09-23, from the two adversarial reviews.** Second instance in this project, and both surfaced in the same pass. (1) **§VI-B states the policy** — *"No range spanning the seven is quoted: they do not share a precision, and a range would assert one they do not have"* — while the abstract, C1, §X and the Fig. 2 caption each quoted such a range, as *within 1%* or *within 0.7%*. Both reviews found it independently. (2) **§II-E states** that *"the observation that the boundary sits near capacity is not offered as a discovery"* while C1 was listed under a heading reading *"The contributions are:"*. **What is diagnostic about the class:** neither was found by checking a number against a record. Every figure involved was correct. They were found by reading the paper against itself, and the paper had a sentence forbidding each of them at the time it made them — so a data audit, a float audit and a promotion scan could all pass while the contradiction stood. **Guards:** the claim register's headline was rewritten, and the checker now retires *within 1%* and *within 0.7%* as seven-cell formulations through the withdrawn-phrase mechanism, so regeneration cannot restore them; the contributions heading now reads *"The paper's main results and methodological contributions are:"* and C1 is *Boundary characterization*. **A guard is not the same as a pass:** a phrase list catches the two manifestations that were found and says nothing about the next policy sentence. **PRE-SUBMISSION: a dedicated read-the-paper-against-itself pass belongs on the list** — take each sentence that constrains what the paper may claim (§IV's resolution rule, §VI-B's precision rule, §II-E's disclaimer, §IX's concessions) and check every claim elsewhere against it. That is a different operation from checking claims against data, and this project has now run the data pass many times and this one never. |
+| W6 — **DEFECT CLASSES: consolidated** | The three class rows that stood here — a check measuring the wrong property, a value crossing a semantic boundary, and a policy sentence the paper contradicts elsewhere — are now **classes 2, 4 and 5 of the canonical list in §*Defect classes* below**, together with three the table never carried as classes: the EOF scope, the description written without reading its subject, and the external premise wrong while the record held the right answer. The list records, for each, the instances that produced it and **whether any checker can catch it** — which is the part worth having. Nothing was dropped in the move: the −0.0051 instance and the pre-submission read-the-paper-against-itself pass were checked back out of these rows and folded in. One number was corrected on the way: the semantic registry holds **sixteen** values, not the seventeen a row claimed, because two entries for the same figure were merged when the rule was tightened. The dated incident records — the bibliography bleed, both premise failures — stay above as rows, because they are events rather than classes. |
+| W6 — **PREMISE FAILURE: the Editor-in-Chief page gate does not exist** | **Corrected 2026-09-24 by the author, against us.** `W6-PLAN.md` and `CUT-PLAN.md` recorded that IEEE Access *requires pre-submission approval from the Editor-in-Chief above 20 pages*, and a seven-increment cut pass from 27 pages to 20 was planned and executed partly against that deadline. **The claim cannot be verified and appears to be false**: IEEE Access's author-guidelines pages 404, and current guidance is that there is no strict page limit and no over-length waiver procedure — editors judge length against the contribution during review. **21 pages needs no gate, and the manuscript ships at 21.** **What makes this worth recording rather than just fixing:** `OUTLINE.md` said the right thing in two places from the start — *"no page limit and no over-length charge; 20 pages is a readability recommendation"* — while two other planning files asserted a hard gate, and the planning ran on the stricter of the two without anyone noticing the project held both. **Second instance of this exact shape.** The Zenodo file-replacement premise failed the same way: `DEPOSIT-W6.md` had already quoted Zenodo saying files cannot be replaced after publication, while the plan beside it assumed a 30-day self-service edit. Both times the correct statement was in the repository and the work proceeded on the other one. **PRE-SUBMISSION: this is the third item for the read-the-record-against-itself pass** — not claims against data, and not the paper against itself, but *planning documents against each other*. Neither failure was findable by any checker the project has, because both premises were about the outside world. **What was not wasted:** the cut pass removed real repetition and two unsupported aggregate claims, and both reviews found defects in text the cut had already touched. It was worth doing; it was not compelled. |
 <!-- withdrawn-quote-ok: a dated record of an open question that is now closed; the phrase is inside the question as it was asked -->
-| W6 — **PREMISE FAILURE: the Editor-in-Chief page gate does not exist** | **Corrected 2026-09-24 by the author, against us.** `W6-PLAN.md` and `CUT-PLAN.md` recorded that IEEE Access *requires pre-submission approval from the Editor-in-Chief above 20 pages*, and a seven-increment cut pass from 27 pages to 20 was planned and executed partly against that deadline. **The claim cannot be verified and appears to be false**: IEEE Access's author-guidelines pages 404, and current guidance is that there is no strict page limit and no over-length waiver procedure — editors judge length against the contribution during review. **21 pages needs no gate, and the manuscript ships at 21.** **What makes this worth recording rather than just fixing:** `OUTLINE.md` said the right thing in two places from the start — *"no page limit and no over-length charge; 20 pages is a readability recommendation"* — while two other planning files asserted a hard gate, and the planning ran on the stricter of the two without anyone noticing the project held both. **Second instance of this exact shape.** The Zenodo file-replacement premise failed the same way: `DEPOSIT-W6.md` had already quoted Zenodo saying files cannot be replaced after publication, while the plan beside it assumed a 30-day self-service edit. Both times the correct statement was in the repository and the work proceeded on the other one. **PRE-SUBMISSION: this is the third item for the read-the-record-against-itself pass** — not claims against data, and not the paper against itself, but *planning documents against each other*. Neither failure was findable by any checker the project has, because both premises were about the outside world. **What was not wasted:** the cut pass removed real repetition and two unsupported aggregate claims, and both reviews found defects in text the cut had already touched. It was worth doing; it was not compelled. |\n| W6 — **PREMISE FAILURE: Zenodo does not permit self-service file replacement** | **Found 2026-09-23 by an API refusal, not by reading.** The in-place file replacement was planned, staged, verified and rehearsed on the premise of a 30-day self-service file edit. Opening `/actions/edit` succeeds and the record moves to `inprogress`, but the first `PUT` to the bucket returns **403 `Bucket is locked for modifications`**. Zenodo's documentation is explicit: *"You can edit the metadata (title, creators, etc) of a published record at any time. Files in the record however can only be edited (added, modified or deleted) after publication by contacting support."* The 30-day window is for **deletion**, not file editing — two different facilities conflated into one plan. **`DEPOSIT-W6.md` step 6 already quoted that exact sentence, recorded 2026-09-20.** The project held the correct answer in writing and planned against a different premise for a day. **What saved it:** the upload aborted on the first object, discarded the edit rather than improvising inside it, and the record returned to `done` with all seven objects byte-identical — because the discard path had been rehearsed while nothing was at stake. **Open question for the record:** the cited DOI `10.5281/zenodo.22761131` is the *version* DOI; the concept DOI `10.5281/zenodo.22761130` resolves to the latest version. A new version therefore does not correct what §IV cites. |
+| W6 — **PREMISE FAILURE: Zenodo does not permit self-service file replacement** | **Found 2026-09-23 by an API refusal, not by reading.** The in-place file replacement was planned, staged, verified and rehearsed on the premise of a 30-day self-service file edit. Opening `/actions/edit` succeeds and the record moves to `inprogress`, but the first `PUT` to the bucket returns **403 `Bucket is locked for modifications`**. Zenodo's documentation is explicit: *"You can edit the metadata (title, creators, etc) of a published record at any time. Files in the record however can only be edited (added, modified or deleted) after publication by contacting support."* The 30-day window is for **deletion**, not file editing — two different facilities conflated into one plan. **`DEPOSIT-W6.md` step 6 already quoted that exact sentence, recorded 2026-09-20.** The project held the correct answer in writing and planned against a different premise for a day. **What saved it:** the upload aborted on the first object, discarded the edit rather than improvising inside it, and the record returned to `done` with all seven objects byte-identical — because the discard path had been rehearsed while nothing was at stake. **Open question for the record:** the cited DOI `10.5281/zenodo.22761131` is the *version* DOI; the concept DOI `10.5281/zenodo.22761130` resolves to the latest version. A new version therefore does not correct what §IV cites. |
 | W6 — **PRE-SUBMISSION COSMETIC, decide after the deposit settles** | **Supplement S1 carries a 35.86 pt paragraph overfull at `C_measured`, line 117.** Reported from the v1.0.1 compile and **identical in the published v1.0.0 build**, so it is pre-existing and not a regression — but it is wide enough to run into the margin and it will be in front of IEEE Access reviewers. Not a deposit blocker and deliberately not fixed during the version work: the delivered PDFs are the artefacts and changing one to chase a cosmetic would have meant another build, another set of digests and another version. **Decide after the deposit is settled**, with the other pre-submission items. **CLOSED 2026-09-24:** fixed in the v1.1.0 supplement, see `DEPOSIT-W6.md` step 7. |
 | W6 — **DEPOSIT CLOSED: v1.1.0 published 2026-09-24** | Record `22941578`, version DOI `10.5281/zenodo.22941578`, published by hand from the web interface. The concept DOI `10.5281/zenodo.22761130` the article cites resolves to it; v1.0.1 (`22923220`) and v1.0.0 (`22761131`) still resolve, superseded not removed. Seven objects, version `1.1.0`, both delivered PDF digests (`f3677ab4…`, `6e51dbfb…`) on the record, `zenodo_verify.py` 816 verified with zero in every failure counter. **One item outlives it:** `isSupplementTo`, carried to acceptance because it needs an article DOI that does not exist yet. |
 
 Note the W2/W3 swap against plan v4: §8 is now short and drafts easily from
 Table 3, while §5 and §6 both depend on the leave-one-out result and the
 resolution table (Table 2).
+
+---
+
+## Defect classes
+
+Six classes, each named from the instances that produced it. **The column that
+matters is the last one.** A class a checker can catch is a solved problem; a
+class no checker can catch is a standing liability, and knowing which is which
+is the whole point of keeping this list. Three of the six are mechanizable and
+mechanized. Three are not, and two of those three are not mechanizable even in
+principle.
+
+This list is canonical. The dated incident records stay in the Schedule table
+above; what is consolidated here is the classification.
+
+### 1. A scope ending at EOF ends nowhere
+
+A slice whose end bound falls back to end-of-file, end-of-list, or the next
+match of a pattern that may not exist. The fallback is silent and the slice is
+always well-formed, so nothing looks wrong until the content is read.
+
+*A seventh instance, found while writing this list.* Two rows of the Schedule
+table had shared one physical line since `e8821db`, joined by a literal `\n`
+that a heredoc had escaped instead of a newline — so the Zenodo premise-failure
+row rendered as extra cells of the row above it. **No checker looks at markdown
+table structure**, in the one file that is planning apparatus rather than
+manuscript. Split 2026-09-24. It belongs to class 1 only loosely; its real
+lesson is that the record-keeping files get less verification than the paper
+does, and this list lives in one of them.
+
+*Instances.* `bibliography()` ended the last reference at end of file, so
+`\bibitem{heiser}` absorbed 726 words of drafting apparatus and typeset it in
+the right column of page 20 — **and it reached the published v1.0.0 artifact**.
+The citation inventory ran 752 lines instead of 66 because `delimited()`
+matched its own tag named in prose. `plan_sync()` gave §10 a slice running to
+end of file that swallowed two unrelated headings, and passed only because
+exactly one marker happened to fall inside it.
+
+*Mechanizable: yes, and done.* **A missing end bound raises; it never falls
+back.** `BIBITEM_MAX = 600` fails the build on any entry longer than a
+reference plausibly is, mutation-tested at 4,313 characters with the bound
+removed.
+
+### 2. A check that measures the wrong property
+
+The check passes, the answer is green, and the question was the wrong one. This
+is worse than no check, because a clean line implies coverage.
+
+*Instances.* `MANIFEST.json` was **141,778 bytes before and after** a correction
+with entirely different content — the old one certifying the superseded
+`article.pdf` — so a size comparison called it unchanged. The W6 "DOI resolves"
+pre-submission check passed on 2026-09-23 against the record carrying the bled
+PDF: a DOI that resolves to a defective artifact still resolves. A
+`tar -tzf | grep -c '/\._'` check returns 0 on macOS even with 56 AppleDouble
+entries present, because the pattern does not match what `tar` prints.
+
+*Mechanizable: yes, partly done.* Every comparison of a deposited object is now
+**by digest**, with size reported beside it as context rather than used as the
+test. The rest is not done: each check needs exercising against a known-bad
+input, which is the only way to learn what it actually measures.
+
+### 3. A description generated from something else without reading what it said
+
+A summary, note or label produced from context, from an adjacent artefact, or
+from a slice — rather than from the thing it describes. **This is the most
+frequent class in the project and the one with the most instances after every
+checker was in place.**
+
+*Instances.* A version note claiming "no data, no code, no results changed"
+while `scripts/` differed by nine files. A Zenodo Notes field produced by
+slicing the README and truncating at 4,000 characters, ending mid-word on
+`MANIFEST.j`. A plausible-sounding title written into `SUBMISSION-NOTES.md`
+from context instead of transcribed from `\title{}`. A summary sentence saying
+the tooling gained four invariants above a list of five, flagged in a report
+and then shipped anyway. The source comment beside §IV-I naming two of three
+deposit versions. `references.md` describing a sentence §IV no longer contains.
+
+*Mechanizable: no, not in general.* Each instance needs the description read
+against its subject, and the subject is different every time. The narrow
+defences that exist — generated tables with quotations asserted against their
+sources, values extracted from files rather than typed — reduce the surface
+without closing it.
+
+### 4. A value carried across a partition boundary keeps its digits and loses its meaning
+
+The number stays arithmetically correct while the corpus, estimator,
+denominator, population or operation it was defined against changes underneath
+it. No arithmetic check can fire, because no arithmetic is wrong.
+
+*Instances.* `h = (0.98 − 0.9137) / 0.0689 = 0.980`, where the operand had been
+rounded from 0.98125 while the result had not, so the printed identity
+evaluates to 0.962. `−0.0051` given as a measured difference when it is the
+difference of two **displayed** values; the difference of the measurements is
+`−0.0052`. "About a fifth of a bisection step", imported from a regime
+where 0.18 and 0.14 of a step described **different cells falling short of 1.0**
+and applied to two cells exceeding it by 0.06 and 0.08. 1.29 µs quoted as the
+complement of a share computed over a partition that excludes the timer read,
+against one that includes it.
+
+*Mechanizable: yes, and done.* **The semantic registry**: sixteen values, each
+carrying the dimensions its context must name — corpus, estimator, denominator,
+population, operation — enforced paragraph by paragraph and row by row against
+each table's own header. It found a live crossing nobody had reported. Its
+limit is stated where it is defined: it checks that the context *names* the
+dimension, not that the naming is true.
+
+### 5. A policy sentence contradicted elsewhere in the same document
+
+The document states a rule constraining what it may claim, and then claims it
+anyway somewhere else. Both halves are written in good faith and neither is a
+data error.
+
+*Instances.* §VI-B states that no range spanning the seven cells is quoted,
+because they do not share a precision — while the abstract, C1, §X and the
+Fig. 2 caption each quoted such a range. Both adversarial reviews found it
+independently. §II-E says the near-capacity location "is not offered as a
+discovery" while C1 sat under a heading reading "The contributions are:".
+
+*Mechanizable: no.* **Every number involved was correct**, so no data check
+could fire; the contradiction is between two pieces of prose, and finding it
+means reading the paper against itself. A data audit, a float audit and a
+promotion scan could all pass while the contradiction stood.
+
+**A guard is not the same as a pass.** The phrase list retires the two
+formulations that were caught and says nothing about the next policy sentence.
+**The pass that would catch the next one, on the pre-submission list:** take
+each sentence that constrains what the paper may claim — §IV's resolution rule,
+§VI-B's precision rule, §II-E's disclaimer, §IX's concessions — and check every
+claim elsewhere against it. That is a different operation from checking claims
+against data, which this project has run many times and that one never. Class 6
+adds a second such pass, reading the planning documents against each other.
+
+### 6. A premise about the outside world, wrong while the record held the right answer
+
+Work proceeds on a belief about an external system or institution that nobody
+re-verified — and in both instances the repository already contained the
+correct statement.
+
+*Instances.* Zenodo's 30-day window was taken to cover file editing, and the
+in-place replacement was planned, staged and rehearsed on that premise, while
+`DEPOSIT-W6.md` had already quoted Zenodo saying files can only be edited after
+publication by contacting support. A supposed IEEE Access requirement of
+Editor-in-Chief approval above 20 pages drove a seven-increment cut pass, while
+`OUTLINE.md` described the same rule correctly, twice, as a readability
+recommendation with no page limit and no over-length charge.
+
+*Mechanizable: no, and not even in principle.* The premise is about the world,
+not about the tree, so there is nothing local to check it against. The only
+defence is re-verifying an external claim **at the moment it starts driving
+work** — not when it is first written down, which is when it was still true or
+still unchecked.
+
+### Where the machinery stops
+
+| | `check_manuscript` | `build_article` | `zenodo_verify` / `--plan-only` | `promotion_scan` |
+|---|---|---|---|---|
+| 1 scope ending at EOF | catches (checks 1–7 all raise on a missing bound) | catches (`BIBITEM_MAX`) | — | — |
+| 2 wrong property | — | — | catches, by digest | — |
+| 3 description vs subject | — | — | — | — |
+| 4 partition boundary | catches (check 7) | — | — | — |
+| 5 policy contradiction | catches only the retired phrasings | — | — | — |
+| 6 external premise | — | — | — | — |
+
+**Classes 3 and 6 are caught by nothing, and class 5 only where the exact
+wording was seen before.** Every defect in those three rows was found by a
+human reading — two adversarial reviews, and the author reading his own
+planning files against each other.
+
+### Follow-up
+
+**`zenodo_verify.py` ends every clean run with `VERIFIED - safe to publish`,
+whatever the deposition's state.** Run against a record that is already
+published, that line describes an action nobody can take: the files cannot be
+replaced, and "safe to publish" is advice about a decision already made. It is
+a class-3 instance sitting inside the tool built to catch class-2 ones — a
+closing line generated from the check's outcome without reading the subject it
+is reporting on. The fix is small: read `state` and `submitted`, and say
+`VERIFIED — matches the published record` when the record is `done`.
+
+**Not fixed now, deliberately.** `zenodo_verify.py` is inside the published
+v1.1.0 archive. Changing it would make the repository diverge from a deposited
+artifact to correct a closing line that misleads nobody who reads the eight
+lines above it. It goes on the post-submission list beside the general form of
+the semantic key.
+

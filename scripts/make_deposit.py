@@ -202,8 +202,8 @@ caption text and changed for the same class of reason.
 
 **The remaining six scripts are the manuscript-build, checking and deposit
 tooling**, and they are the substance of this version rather than noise beside
-it. `check_manuscript.py` grew from five invariants to seven; counting the two
-retired-phrase rules, **four new invariants**:
+it. `check_manuscript.py` grew from five invariants to seven; counting the
+retired-phrase rules, **five new invariants**:
 
 1. **Float references must be keyed.** A literal "Table 8" survived a length
    cut that had renumbered the table it named. A literal cannot be checked
@@ -221,11 +221,23 @@ retired-phrase rules, **four new invariants**:
    resolution, and a prospectivity claim the archive cannot support — and the
    phrase list now rejects both wherever they are not explicitly marked as
    historical.
+5. **No release number in manuscript prose.** The paper's reproducibility
+   statement named the release it was archived as. Manuscript text freezes
+   permanently at publication while the concept DOI keeps moving, so a named
+   release is guaranteed to go stale where nobody can edit it — and the one it
+   named, v1.0.1, is the artifact this version supersedes. Both documents now
+   read *"archived under concept DOI `10.5281/zenodo.22761130`"* and say
+   nothing about which release that resolves to. The checker rejects release
+   numbers in manuscript prose, and "latest version" and "current version"
+   near a DOI. **These release notes are deliberately exempt**: naming the
+   release is exactly what release metadata is for, and the rule is about the
+   paper, not about this file.
 
 **None of it touches how a reported number is computed.** Every script that
 computes one is byte-identical, and that is checked above rather than claimed.
 
-**Both PDFs were rebuilt**, because the manuscript changed. `MANIFEST.json`
+**Both PDFs were rebuilt**, because the manuscript changed — including, last
+of all, the one clause in each document that had named the release. `MANIFEST.json`
 and the archive follow from them.
 
 **The archive was renamed** from `paper2-rhc-artifact-1.0.1.zip` to

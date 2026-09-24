@@ -8,7 +8,7 @@ the upload and SILENTLY RENAMES it to `traces_x.gz`, returning 201. That last
 behaviour is why this script exists in this form: a verifier that trusted the
 status code would have passed 806 mangled names.
 
-So the record is seven objects: six files deposited individually, and one zip
+So the record is five objects: four files deposited individually, and one zip
 holding the whole tree with its documented paths intact. Nothing is flattened.
 
 WHAT IS CHECKED, AND HOW THE CHAIN CLOSES:
@@ -49,8 +49,9 @@ from zenodo_deposit import LIVE, SANDBOX, api  # noqa: E402
 
 # Deposited as their own objects so a reader can take any of them without
 # pulling 400 MB. Every one is a flat key, which is the only kind Zenodo keeps.
-INDIVIDUAL = ('README.md', 'LICENSE', 'PRE-REGISTRATION.md', 'MANIFEST.json',
-              'article.pdf', 'supplement-S1.pdf')
+# FOUR since 2026-09-24: the manuscript PDFs left the deposit so the package
+# stops depending on the paper. Kept in step with zenodo_deposit's list.
+INDIVIDUAL = ('README.md', 'LICENSE', 'PRE-REGISTRATION.md', 'MANIFEST.json')
 
 
 def digest(path, algo):

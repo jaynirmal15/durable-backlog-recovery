@@ -119,8 +119,11 @@ def api(base, token, method, path, **kw):
 
 # Deposited as their own objects: every one is a flat key, which is the only
 # kind Zenodo keeps. zenodo_verify.py holds the same list and checks it.
+# FOUR, not six: the manuscript PDFs left the deposit on 2026-09-24 so that
+# the package stops depending on the paper. With the archive that is FIVE
+# objects on the record, not seven.
 HYBRID_INDIVIDUAL = ('README.md', 'LICENSE', 'PRE-REGISTRATION.md',
-                     'MANIFEST.json', 'article.pdf', 'supplement-S1.pdf')
+                     'MANIFEST.json')
 
 
 def put_file(bucket, token, key, path, size, verbose=False):

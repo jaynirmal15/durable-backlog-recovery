@@ -25,24 +25,23 @@ REPO = os.path.expanduser('~/Jay_NIW/durable-backlog-recovery')
 RAW = os.path.expanduser('~/Jay_NIW/rhc-raw-data/results')
 STAGE = os.path.expanduser('~/Jay_NIW/paper2-zenodo')
 
-# The DOIs for this deposit. THE ARTICLE CITES THE CONCEPT DOI: the DOI printed
-# in an accepted paper cannot be changed, so it must not name one version.
-# 22761131 is v1.0.0, published 2026-09-23 and superseded by v1.0.1 for a build
-# defect on page 20. See scripts/DEPOSIT-W6.md.
-CONCEPT_DOI = '10.5281/zenodo.22761130'      # always the newest version
-V1_0_0_DOI = '10.5281/zenodo.22761131'       # superseded by v1.0.1
-V1_0_0_ID = 22761131
-V1_0_1_DOI = '10.5281/zenodo.22923220'       # superseded by v1.1.0
-V1_0_1_ID = 22923220                         # newversion is taken from THIS,
-                                             # the current published record
-RESERVED_DOI = CONCEPT_DOI
-DEPOSITION_ID = V1_0_1_ID
+# NO DOI CONSTANTS. Every record this project made -- 22761130 (concept),
+# 22761131, 22923220 and 22941578 -- was deleted on 2026-09-24 and every one
+# now returns HTTP 410 with a Zenodo tombstone; DataCite 404s all four. They
+# are gone permanently and cannot be reinstated by anyone, including Zenodo.
+# This is a FRESH deposit with no ancestry, so there is nothing to point at
+# until it is published and a DOI exists. Do not write one here from memory.
+#
+# The deposit is also DESIGNED NEVER TO BE VERSIONED AGAIN, which is what
+# dropping the manuscript PDFs buys: with no article.pdf and no
+# supplement-S1.pdf the package does not depend on the manuscript, so no
+# future revision of the paper can ever require touching it.
 
 META = {
     'title': 'Recovery Headroom Control: pre-registered boundary measurements, '
              'per-request traces and analysis code',
     'upload_type': 'dataset',
-    'version': '1.1.0',
+    'version': '1.0.0',
     'license': 'cc-by-4.0',
     'creators': [{'name': 'Nirmal, Jay Suresh',
                   'orcid': '0009-0003-0886-4663'}],
@@ -97,19 +96,30 @@ META = {
 # has no idea where a sentence ends. This is written as its own text, lives in
 # git so it can be diffed against what the record actually carries, and ends
 # where it means to.
-NOTES = """Version 1.1.0, staged from git commit {commit}.
+NOTES = """Generated from git commit {commit}. Every file in the package is
+listed in MANIFEST.json with its SHA-256 and its size, together with the commit
+the package was built from.
 
-This version supersedes v1.0.1 (record 22923220, published 2026-09-23), which superseded v1.0.0 (record 22761131). All three remain available and each keeps its own DOI. The concept DOI 10.5281/zenodo.22761130 always resolves to the newest version, and it is the DOI the article cites.
+This deposit is the measurement record for a study of the safe drain boundary \
+in durable-backlog recovery: the pre-registration with its amendments and \
+addenda, every run record and per-request trace from the reported campaigns, \
+the analysis code that regenerates every reported number, the figure \
+generators, and the regression fixture that pins the metrics path.
 
-Why a minor version rather than a patch: v1.0.1 corrected a single build defect and left the manuscript's text untouched. This version follows two independent adversarial reviews. Seven mechanical defects were corrected against the committed records, seven rulings were applied that narrow what the paper claims, and the checking tooling gained five invariants. v1.0.1 carries the pre-review PDFs, and because the concept DOI resolves to whatever is newest, leaving v1.0.1 newest would send a reader following the article's own DOI to an artifact whose PDFs contradict the paper that cites it.
+It contains no manuscript PDF. The paper is published separately and cites \
+this deposit; nothing here depends on the paper's text, so no revision of the \
+paper changes anything in this package.
 
-What did not change, measured by diffing v1.0.1's manifest against this one rather than asserted: both versions contain 809 files, nothing added and nothing removed, and 797 are byte-identical. That includes all 521 files under results/, all 205 per-request traces, all four harness sources, the regression fixture, all six figure PDFs, PRE-REGISTRATION.md and LICENSE. Of the 62 files under scripts/, 55 are byte-identical, including every script that computes a reported number.
+Zenodo stores it as five objects, because the file API will not accept a key \
+containing a slash: README.md, LICENSE, PRE-REGISTRATION.md and MANIFEST.json \
+individually, so they can be read without downloading the archive, and \
+paper2-rhc-artifact.zip holding the complete tree with its directory paths \
+intact. The four individual files are also inside the archive, so an \
+extracted copy is complete on its own.
 
-Twelve files changed: both PDFs, this record's README.md, two manuscript artefacts under figures/, and seven scripts. The seven are the manuscript-build, checking and deposit tooling. One of them, make_table3.py, renders a manuscript table and computes no measurement; the operand it printed for one identity had been rounded while the result had not, and is now the unrounded value the boundary artefact records. That artefact is unchanged.
-
-The archive is renamed paper2-rhc-artifact-1.1.0.zip to match the version it belongs to.
-
-MANIFEST.json hashes the files that ship. pdfTeX embeds a creation timestamp and a document identifier, so recompiling the sources reproduces the layout and the text but not the bytes. The full account is the Version note in README.md."""
+MANIFEST.json's checksums verify against the EXTRACTED files, not against the \
+archive: extract first, then hash. README.md gives the layout, the commands \
+that regenerate each report, and the caveats carried in the record."""
 
 
 README = """# Recovery Headroom Control — measurement artifact
@@ -117,263 +127,42 @@ README = """# Recovery Headroom Control — measurement artifact
 Everything needed to check the reported numbers, and to re-derive them from the
 raw per-request traces.
 
-(This heading carried "v1.0.0" through v1.0.1, where it was already two
-versions stale. The version notes below carry the version; the heading no
-longer pretends to.)
-
-## Version note — v1.1.0, 2026-09-24
-
-**All dates in this note are UTC.** The repository clock runs at −0400. Every
-date below falls on the same day under both clocks, so unlike the v1.0.1 note
-there is no offset to reconcile here.
-
-**This is version 1.1.0. It supersedes version 1.0.1**, record `22923220`,
-published 2026-09-23, which superseded version 1.0.0, record `22761131`. All
-three remain available and each keeps its own DOI. The concept DOI
-`10.5281/zenodo.22761130` always resolves to the newest version, and it is the
-DOI the article cites.
-
-**Why a minor version and not a patch.** v1.0.1 was a patch: one build defect,
-corrected, with the manuscript's text untouched. This is not that. The
-manuscript went through two independent adversarial reviews and changed
-substantively — seven mechanical defects corrected against the committed
-records, and seven rulings applied that narrow what the paper claims. The
-checking tooling gained five invariants. Someone holding v1.0.1's
-`article.pdf` is not holding this paper with a tidier reference list.
-
-**Why there is a third version at all.** v1.0.1 carries the pre-review PDFs.
-The concept DOI resolves to whatever is newest, so leaving v1.0.1 newest would
-send every reader who follows the DOI printed in the article to an artifact
-whose PDFs contradict the paper that cites it.
-
-**What did not change, measured by diffing v1.0.1's manifest against this
-one — not asserted.** Both versions contain **809 files. Nothing was added and
-nothing was removed.** **797 are byte-identical.** Specifically:
-
-    results/     521 files   all byte-identical
-    traces/      205 files   all byte-identical
-    harness/       4 files   all byte-identical
-    tests/         2 files   all byte-identical
-    figures/*.pdf  6 files   all byte-identical
-    PRE-REGISTRATION.md      byte-identical
-    LICENSE                  byte-identical
-
-**No data, no per-request traces, no run records, no results, no analysis
-code, no figure generators, no regression fixture and no pre-registration
-text.** Of the 62 files under `scripts/`, **55 are byte-identical**, including
-every script that computes a reported number: `make_figures.py`,
-`make_table2.py`, `make_table4.py`, `e2e_analysis.py`,
-`capacity_calibration.py`, `locate_boundary.py`, `recompute_rho.py`,
-`slo_sweep.py`, `e2c_report.py` and `collapsed_estimator_audit.py`.
-
-**What did change: twelve files, none of them data.** Two of the twelve have
-no "after" size printed here, and deliberately: this file is one of them, and
-`make_deposit.py` is the script that holds this file's text. Writing either
-size into this note changes the thing the number describes. `MANIFEST.json`
-records both, measured after the fact, which is where a size belongs.
-
-    article.pdf                            544934 -> 548454
-    supplement-S1.pdf                      362257 -> 362963
-    README.md                               8034 ->  see MANIFEST.json
-    figures/CAPTIONS.md                     11959 ->  12097
-    figures/T3-candidate-explanations.md     7498 ->   7732
-    scripts/build_article.py                62414 ->  64728
-    scripts/check_manuscript.py             33491 ->  53876
-    scripts/make_deposit.py                 19753 ->  see MANIFEST.json
-    scripts/make_table3.py                  14137 ->  15479
-    scripts/test_check_manuscript.py        14536 ->  27844
-    scripts/test_zenodo_guard.py             8182 ->  13072
-    scripts/zenodo_deposit.py               35524 ->  39271
-
-**One of those needs stating precisely rather than being left inside a
-count.** `scripts/make_table3.py` is a generator, and its output changed:
-`figures/T3-candidate-explanations.md` is what it writes. It renders a
-manuscript table from committed artefacts and computes no measurement. What
-changed in it is that the table printed the identity
-`h = (0.98 − 0.9137) / 0.0689 = +0.980`, in which the first operand had been
-rounded while the result had not — so as printed it evaluates to 0.962 and
-read as false. The boundary artefact `results/e2b/boundaries/c50-C0.json`
-records ρ* as the interval [0.975, 0.9875], midpoint **0.98125**, which is the
-operand that yields 0.980. **The artefact did not change; the printed operand
-was wrong and is now the unrounded one, and the registered verdict is
-unaffected.** The generator now reads both operands from that artefact and
-asserts the identity, so it cannot drift again. `figures/CAPTIONS.md` is
-caption text and changed for the same class of reason.
-
-**The remaining six scripts are the manuscript-build, checking and deposit
-tooling**, and they are the substance of this version rather than noise beside
-it. `check_manuscript.py` grew from five invariants to seven; counting the
-retired-phrase rules, **five new invariants**:
-
-1. **Float references must be keyed.** A literal "Table 8" survived a length
-   cut that had renumbered the table it named. A literal cannot be checked
-   against the float that would carry that number and cannot survive
-   renumbering; the keyed form can.
-2. **Section references must resolve.** Every §X and §X-Y, in either document,
-   must name a section the article actually has. Three in the supplement
-   pointed at a §V-G and a §VII-D the same cut had removed.
-3. **Registered values must name their semantic key.** Four defects across the
-   two reviews were one failure: a value staying numerically correct while
-   crossing an estimator, population, denominator or operation boundary.
-   Sixteen values now carry the dimensions their context must name.
-4. **Retired phrases cannot reappear in live text.** Two formulations were
-   withdrawn — a percentage range asserted across seven cells of different
-   resolution, and a prospectivity claim the archive cannot support — and the
-   phrase list now rejects both wherever they are not explicitly marked as
-   historical.
-5. **No release number in manuscript prose.** The paper's reproducibility
-   statement named the release it was archived as. Manuscript text freezes
-   permanently at publication while the concept DOI keeps moving, so a named
-   release is guaranteed to go stale where nobody can edit it — and the one it
-   named, v1.0.1, is the artifact this version supersedes. Both documents now
-   read *"archived under concept DOI `10.5281/zenodo.22761130`"* and say
-   nothing about which release that resolves to. The checker rejects release
-   numbers in manuscript prose, and "latest version" and "current version"
-   near a DOI. **These release notes are deliberately exempt**: naming the
-   release is exactly what release metadata is for, and the rule is about the
-   paper, not about this file.
-
-**None of it touches how a reported number is computed.** Every script that
-computes one is byte-identical, and that is checked above rather than claimed.
-
-**Both PDFs were rebuilt**, because the manuscript changed — including, last
-of all, the one clause in each document that had named the release. `MANIFEST.json`
-and the archive follow from them.
-
-**The archive was renamed** from `paper2-rhc-artifact-1.0.1.zip` to
-`paper2-rhc-artifact-1.1.0.zip`, so that its name matches the version it
-belongs to.
-
-**Why the PDFs are not byte-reproducible.** pdfTeX embeds a creation timestamp
-and a document identifier, so no two builds of the same `.tex` are ever
-byte-identical. **`MANIFEST.json` therefore hashes the files that ship, not a
-rebuild of them.** A reader checking the manifest should hash the delivered
-files; recompiling the `.tex` reproduces the layout and the text but not the
-bytes.
-
-**Commits.** The two review passes are `22f52a3` (2026-09-23T20:21:24Z) and
-`9698759` (2026-09-23T21:11:40Z); the length trim is `e3f90b6`
-(2026-09-24T13:18:55Z) and the supplement formatting fix `afde18a`
-(2026-09-24T13:49:33Z). v1.0.1 was staged from `b7731a32c16c444a097a97028f72051def33b538`.
-The commit this version was staged from is recorded in `MANIFEST.json` as
-`gitCommit`.
-
-## Version note — v1.0.1, 2026-09-23
-
-**All dates in this note are UTC.** The repository clock runs at −0400, so
-2026-09-23 UTC is 2026-09-22 locally; they are one date under two clocks.
-
-**This is version 1.0.1. It supersedes version 1.0.0**, published earlier the
-same day as record `22761131`. Both versions remain available and both keep
-their own DOI. The concept DOI `10.5281/zenodo.22761130` always resolves to
-the newest version, and it is the DOI the article cites.
-
-**Why there is a second version.** v1.0.0's `article.pdf` carried a build
-defect: the last bibliography entry had no end bound, so reference [14]
-absorbed 726 words of drafting apparatus from the source file and typeset it
-in the right column of page 20. The count is measured from the typeset page.
-The defect was in the build script, not in the manuscript. It is corrected in
-v1.0.1.
-
-**Why a new version rather than a correction in place.** Zenodo does not
-permit files on a published record to be replaced by their owner: *"Files in
-the record however can only be edited (added, modified or deleted) after
-publication by contacting support."* A new version is the documented route,
-and unlike deletion it is reversible in the only sense that matters — nothing
-is destroyed and v1.0.0 stays citable.
-
-**What did not change, measured by diffing v1.0.0's manifest against this
-one — not asserted.** Every file under `results/` (521), `traces/` (205),
-`figures/` (10), `harness/` (4) and `tests/` (2) is **byte-identical**, and so
-is `PRE-REGISTRATION.md` and `LICENSE`. **No data, no per-request traces, no
-results, no run records, no analysis code, no figure generators, no regression
-fixture and no pre-registration text.** Of the 62 files under `scripts/`, **53
-are byte-identical**, including every analysis script and every figure and
-table generator — `make_figures.py`, `make_table2/3/4.py`, `e2e_analysis.py`,
-`capacity_calibration.py`, `locate_boundary.py` and the rest.
-
-**What did change, in full.** One file added and eleven changed:
-
-    added    scripts/test_zenodo_guard.py
-
-    changed  article.pdf            548234 -> 544934
-             supplement-S1.pdf      362084 -> 362257
-             README.md                3687 -> 6237     (this file)
-             scripts/build_article.py
-             scripts/check_manuscript.py
-             scripts/make_deposit.py
-             scripts/promotion_scan.py
-             scripts/section_wordcount.py
-             scripts/test_check_manuscript.py
-             scripts/zenodo_deposit.py
-             scripts/zenodo_verify.py
-
-**The nine files under `scripts/` are the manuscript-build and deposit
-tooling, and they are the substance of this version rather than noise beside
-it.** The defect that made v1.0.1 necessary was a defect in exactly that
-tooling: `build_article.py` ended the last bibliography entry at end of file.
-Fixing it, and fixing the same shape wherever else it appeared, is what these
-diffs are. The deposit tooling changed alongside because this version is also
-how the replacement was carried out. None of it touches how a reported number
-is computed — every script that computes one is byte-identical.
-
-**Both PDFs were rebuilt**, because both carry the DOI in their text.
-`MANIFEST.json` and the archive follow from them.
-
-**The archive was renamed** from `paper2-rhc-artifact-1.0.0.zip` to
-`paper2-rhc-artifact-1.0.1.zip`, so that its name matches the version it
-belongs to. Nothing went missing: a reader comparing the two file lists sees
-one name replace the other, not a deletion and an unexplained addition.
-
-**Toolchain, and why the PDFs are not reproducible byte-for-byte.** v1.0.1 was
-compiled with pdfTeX 1.40.25; v1.0.0 with pdfTeX 1.40.22. pdfTeX embeds a
-creation timestamp and a document identifier, so no two builds of the same
-`.tex` are ever byte-identical, even on one machine with one toolchain.
-**`MANIFEST.json` therefore hashes the files that ship, not a rebuild of
-them.** A reader checking the manifest should hash the delivered files;
-recompiling the `.tex` reproduces the layout and the text but not the bytes.
-
-**Commits.** v1.0.0 was staged from
-`e22e779547d19b462627cb06acfd07246c4d58ef`. The defect was fixed at
-`79aaa680d15f0c4bf33e903f4962d4df0f796c30`. The commit this version was staged
-from is recorded in `MANIFEST.json` as `gitCommit`.
-
----
+**This package contains no manuscript PDF.** It is the measurement record: the
+pre-registration, the run records, the per-request traces, the analysis code
+that turns one into the other, the figures and the regression fixture. The
+paper is published separately and cites this deposit; nothing here depends on
+the paper's text, and no revision of it changes anything in this package.
 
 ## How this record is stored
 
-Zenodo stores this deposit as **seven objects**, because its file API will not
-accept a key containing a slash. Six files are deposited individually so they
+Zenodo stores this deposit as **five objects**, because its file API will not
+accept a key containing a slash. Four files are deposited individually so they
 can be read without downloading 400 MB:
 
     README.md             this file
     LICENSE
-    PRE-REGISTRATION.md   the contract, with all six amendments A1-A6
+    PRE-REGISTRATION.md   the contract, with all amendments and addenda
     MANIFEST.json         every file with its SHA-256, plus the git commit
-    article.pdf           the submitted article
-    supplement-S1.pdf     its supplement
 
-The seventh object, **paper2-rhc-artifact-1.1.0.zip**, holds the complete tree
-with the directory paths below intact. Nothing is flattened: extract the
-archive and the paths in this README, in MANIFEST.json and in the paper's
-reproducibility statement are the paths you get.
+The fifth object, **paper2-rhc-artifact.zip**, holds the complete tree with the
+directory paths below intact. Nothing is flattened: extract the archive and the
+paths in this README, in MANIFEST.json and in the paper's reproducibility
+statement are the paths you get.
 
 **MANIFEST.json's SHA-256s verify against the extracted files.** Extract the
-archive first, then hash; the manifest describes the tree, not the archive.
-The six individual objects are also inside the archive, so an extracted copy
-is complete on its own.
+archive first, then hash; the manifest describes the tree, not the archive. The
+four individual objects are also inside the archive, so an extracted copy is
+complete on its own.
 
 ## Layout, inside the archive
 
-    PRE-REGISTRATION.md   the contract, with all six amendments A1-A6
+    PRE-REGISTRATION.md   the contract, with all amendments and addenda
     results/              run records, boundary files, derived JSON, reports
     traces/               per-request consumer traces, gzip, one per run
     scripts/              analysis code; every reported number comes from here
     tests/                the Aug-18 regression fixture pinning the metrics path
     harness/              Go source for the runner, downstream, consumer, producer
     figures/              paper figures as vector PDF, and their captions
-    article.pdf           the submitted article, as compiled
-    supplement-S1.pdf     its supplement
     MANIFEST.json         every file with its SHA-256, plus the git commit
 
 ## Reproducing
@@ -391,8 +180,14 @@ Scripts that read raw traces default to the layout of the working repository,
 where traces live beside it in `../rhc-raw-data/results`. In this package they
 are under `traces/`, so pass it explicitly:
 
-    python3 scripts/recompute_rho.py --boundary results/boundaries/c10-C0.json \
+    python3 scripts/recompute_rho.py --boundary results/boundaries/c10-C0.json \\
         --results results --raw-dir traces --write
+
+**The figures are the one thing that was not byte-reproducible, and it was
+fixed rather than excused.** The plotting library stamped a wall-clock creation
+time into each file, so two runs over unchanged inputs produced different bytes
+with identical drawn content. The metadata is now suppressed and determinism is
+verified over consecutive runs.
 
 ## What the campaigns are
 
@@ -405,6 +200,13 @@ are under `traces/`, so pass it explicitly:
     E2e   observing the per-request overhead, then eliminating it
     A6    estimator validity at collapsed points
 
+## Licensing
+
+The data, traces, reports and figures are released under CC BY 4.0. The source
+code under `scripts/` and `harness/` is released under the MIT License,
+reproduced in `LICENSE` in this package and in the repository. Where the two
+differ, the MIT License governs the code.
+
 ## Caveats carried in the record
 
 - A4 achieved utilisation is valid at SAFE points only. At collapsed points it
@@ -412,8 +214,13 @@ are under `traces/`, so pass it explicitly:
 - E2e runs on a later harness commit than E1-E2b, because it needed
   instrumentation that did not exist earlier. Comparisons across that line are
   flagged where they are made.
-- Three findings entered the record and were later refuted. They are listed with
-  what killed them in figures/T4-false-findings.md.
+- Three findings entered the record and were later refuted by further
+  measurement. They are listed with what killed them in
+  `figures/T4-false-findings.md`.
+- The per-request timing bias measured here is a property of this
+  implementation, this host and this Go runtime. Every run reported ran on one
+  AWS EC2 c6i.2xlarge instance under Go 1.25.3; the platform block in every run
+  record gives the full detail.
 """
 
 
@@ -493,40 +300,25 @@ def main():
     n, b = copy_into(os.path.join(REPO, 'figures'), os.path.join(STAGE, 'figures'))
     parts['figures'] = {'files': n, 'bytes': b}
 
-    # 7. the submitted article and supplement, as compiled.
-    # These are BUILD PRODUCTS, not committed artefacts: build/access is
-    # gitignored apart from the two .tex sources, so unlike everything else in
-    # this package they are not regenerable from the recorded commit alone --
-    # they need a TeX installation and the vendored IEEE Access class. They are
-    # included because a reader who has the DOI should be able to read the
-    # paper the data belongs to without finding it elsewhere.
-    # AT THE STAGE ROOT, not under article/: these two are deposited as
-    # individual Zenodo objects, and Zenodo will not take a key with a slash
-    # in it. Keeping them flat here makes the manifest path and the object key
-    # the same string, so the verifier compares like with like.
-    n = b = 0
-    for name in ('article.pdf', 'supplement-S1.pdf'):
-        src = os.path.join(REPO, 'build', 'access', name)
-        if not os.path.isfile(src):
-            print('  MISSING: %s -- compile before staging' % name)
-            continue
-        # KNOWN FALSE POSITIVE, LOGGED RATHER THAN FIXED. This compares
-        # MTIMES, and a regeneration that produces byte-identical .tex still
-        # bumps its mtime -- so a PDF compiled from exactly this .tex is
-        # reported stale after any rebuild. It fired on supplement-S1.pdf
-        # during the 2026-09-23 replacement, where the PDF was the published,
-        # correct one. The check should compare CONTENT lineage: record the
-        # .tex's SHA-256 beside the PDF at compile time and compare that.
-        # Until then, treat this as a prompt to check the digest by hand, not
-        # as a finding.
-        tex = src[:-4] + '.tex'
-        if os.path.isfile(tex) and os.path.getmtime(src) < os.path.getmtime(tex):
-            print('  STALE(mtime, may be a false positive): %s is older than '
-                  'the .tex beside it -- verify by digest, not by date' % name)
-        shutil.copy2(src, os.path.join(STAGE, name))
-        n += 1
-        b += os.path.getsize(src)
-    parts['article'] = {'files': n, 'bytes': b}
+    # 7. NO MANUSCRIPT PDFs. Removed 2026-09-24, and it is the point of
+    # this rebuild rather than an omission.
+    #
+    # Earlier versions shipped article.pdf and supplement-S1.pdf so a reader
+    # holding the DOI could read the paper the data belongs to. That coupling
+    # cost three re-versions in two days -- a build defect in the
+    # bibliography, then two adversarial review passes -- each of which
+    # changed the PDFs and so required a new version of a package whose DATA
+    # had not moved by a single byte. 797 of 809 files were byte-identical
+    # across the last pair.
+    #
+    # Without the PDFs the deposit does not depend on the manuscript at all.
+    # It can be published before the paper is submitted, and no revision of
+    # the paper can ever require touching it again. The paper points at the
+    # deposit; the deposit does not point back.
+    #
+    # The reader still gets there: once the article has a DOI the record
+    # metadata can carry an isSupplementTo relation, which is a metadata edit
+    # and needs no new version.
 
     # 8. per-request traces: the campaigns this paper reports, gzip only
     n, b = copy_into(RAW, os.path.join(STAGE, 'traces'),
@@ -565,8 +357,15 @@ def main():
         # so there is no continuity to preserve -- and an archive named 1.0.0
         # inside a record labelled 1.0.1, beside a manifest that says 1.0.1,
         # would misdescribe itself.
-        base = os.path.expanduser('~/Jay_NIW/paper2-rhc-artifact-%s'
-                                  % META['version'])
+        # NO VERSION IN THE ARCHIVE NAME. It was -1.0.0, then -1.0.1, then
+        # -1.1.0, and the rename cost something real every time: a
+        # new-version draft INHERITS the previous version's files, so a
+        # renamed archive ADDS an object instead of replacing one. That trap
+        # had to be caught and swept on both re-versions. This deposit is not
+        # going to be versioned again, and the version lives in the record
+        # metadata, where release identity belongs and where it can change
+        # without renaming a 325 MiB object.
+        base = os.path.expanduser('~/Jay_NIW/paper2-rhc-artifact')
         print('archiving...')
         shutil.make_archive(base, 'zip', STAGE)
         z = base + '.zip'

@@ -178,18 +178,27 @@ published record cannot be deleted.
   publication at 815 checks with zero missing, extra, mismatched or unchecked.
   **Re-verified against the PUBLISHED v1.0.1 record on 2026-09-23: 816
   objects, zero missing, extra, wrong size, wrong hash or unchecked.**
+- **v1.1.0 published 2026-09-24 as record `22941578`**, version DOI
+  `10.5281/zenodo.22941578`. The concept DOI now lands there (302 → 302 →
+  HTTP 200 at `https://zenodo.org/records/22941578`); v1.0.1 and v1.0.0 both
+  still return 200 — superseded, not withdrawn. `zenodo_verify.py` against
+  the published record: 816 objects, zero in every failure counter. Details
+  in `DEPOSIT-W6.md` step 7. **The deposit is closed.**
 
 **Still open, carried to acceptance:**
 - `DEPOSIT-W6.md` step 7 — add the `isSupplementTo` relation with the article
   DOI, as a metadata edit on the published record. Nothing else will prompt
   for it.
-- the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission
-  cosmetic in the deposited `supplement-S1.pdf`.
+- ~~the supplement's 35.86 pt overfull box at `C_measured`, a pre-submission
+  cosmetic in the deposited `supplement-S1.pdf`.~~ **CLOSED 2026-09-24** —
+  fixed in the v1.1.0 supplement (`DEPOSIT-W6.md` step 7).
 
-> The v1.0.1 **version** DOI `10.5281/zenodo.22923220` 404s at doi.org and is
-> absent from DataCite as of 2026-09-23 — minting lag. Nothing the article
-> cites depends on it; the concept DOI is what §IV carries. Re-check before
-> submission.
+> ~~The v1.0.1 **version** DOI `10.5281/zenodo.22923220` 404s at doi.org and is
+> absent from DataCite as of 2026-09-23 — minting lag.~~ **CLOSED 2026-09-24:**
+> `findable` at DataCite, registered 2026-09-23T19:57:13Z, resolves. The v1.1.0
+> version DOI `10.5281/zenodo.22941578` was in the same state three minutes
+> after publication — the same lag. Nothing the article cites depends on it;
+> the concept DOI is what §IV carries.
 
 ---
 

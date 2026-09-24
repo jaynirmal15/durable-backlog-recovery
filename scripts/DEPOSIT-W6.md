@@ -6,14 +6,14 @@
 |---|---|
 | **Concept DOI — WHAT THE ARTICLE CITES** | **`10.5281/zenodo.22761130`** |
 | v1.0.0 version DOI | `10.5281/zenodo.22761131`, record `22761131`, published 2026-09-23 UTC, **superseded** |
-| v1.0.1 version DOI | `10.5281/zenodo.22923220`, record `22923220`, published 2026-09-23, **superseded by v1.1.0** |
-| v1.1.0 version DOI | `10.5281/zenodo.22941578` reserved, record `22941578`, **draft staged 2026-09-24, awaiting publication by hand** |
-| State | v1.1.0 staged and unpublished; v1.0.1 published and current until it is; v1.0.0 published and citable. A new version supersedes, it does not withdraw |
+| v1.0.1 version DOI | `10.5281/zenodo.22923220`, record `22923220`, published 2026-09-23, **superseded by v1.1.0** on 2026-09-24 |
+| v1.1.0 version DOI | `10.5281/zenodo.22941578`, record `22941578`, **published 2026-09-24 — current** |
+| State | **Closed.** v1.1.0 published and current; v1.0.1 and v1.0.0 published, superseded and still citable. A new version supersedes, it does not withdraw. Nothing further touches the record until acceptance (`isSupplementTo`, step 6) |
 | Resolves to | the concept DOI follows the chain to the newest version |
-| Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-<version>.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE`. The archive is named for its version: v1.0.0 shipped `…-1.0.0.zip`, v1.0.1 ships `…-1.0.1.zip` |
+| Files | **7**: `article.pdf`, `supplement-S1.pdf`, `paper2-rhc-artifact-<version>.zip`, `MANIFEST.json`, `PRE-REGISTRATION.md`, `README.md`, `LICENSE`. The archive is named for its version: v1.0.0 shipped `…-1.0.0.zip`, v1.0.1 shipped `…-1.0.1.zip`, v1.1.0 ships `…-1.1.0.zip` |
 | Version / licence | 1.1.0 / CC BY 4.0 (`cc-by-4.0`), open access |
 | Draft created | 2026-09-14 23:20:55 −0400 (2026-09-15T03:20:55Z) |
-| Staged from | v1.0.0: git commit `e22e779547d19b462627cb06acfd07246c4d58ef`; v1.0.1: git commit `b7731a32c16c444a097a97028f72051def33b538` (`MANIFEST.json` `gitCommit`) |
+| Staged from | v1.0.0: git commit `e22e779547d19b462627cb06acfd07246c4d58ef`; v1.0.1: git commit `b7731a32c16c444a097a97028f72051def33b538`; v1.1.0: git commit `b8950a1e0e23658b51e9c86d1a47dff96e57de0b` (`MANIFEST.json` `gitCommit`) |
 
 This is the DOI §4 cites, and **it resolves.** The record was published by hand
 from the web interface, as steps 5 and 6 require.
@@ -236,6 +236,31 @@ design: a published record cannot be deleted and its files cannot be changed.
   nested keys. `zenodo_verify.py`: 816 verified, zero in every failure
   counter. `--plan-only`: **0 of 7 object(s) would be replaced.** Jay
   publishes from the web interface.
+- **DONE 2026-09-24 — v1.1.0 published** by Jay from the web interface.
+  Record `22941578`, version DOI `10.5281/zenodo.22941578`, publication date
+  2026-09-24 (record created 16:31:55Z), version `1.1.0`, state `done`,
+  seven objects, `is_last` true; v1.0.1 is now `is_last` false. Both PDFs
+  carry the delivered digests: `article.pdf` SHA-256 `f3677ab4…` and
+  `supplement-S1.pdf` SHA-256 `6e51dbfb…`, local file = `MANIFEST.json` =
+  published object (by MD5 `00e4c807…` and `d9c254ed…`).
+  `zenodo_verify.py` against the **published** record: 816 objects
+  verified, zero missing, extra, wrong size, wrong hash or unchecked.
+- **DONE 2026-09-24 — the chain, read from the API at 16:34Z:**
+  `10.5281/zenodo.22761130` (concept) 302 → 302 → HTTP 200 at
+  `https://zenodo.org/records/22941578`, i.e. v1.1.0.
+  `10.5281/zenodo.22923220` (v1.0.1) → HTTP 200 at `records/22923220`, and
+  `10.5281/zenodo.22761131` (v1.0.0) → HTTP 200 at `records/22761131`:
+  superseded, not removed. Both are `findable` at DataCite.
+- **Registration lag, not a defect: `10.5281/zenodo.22941578` returned HTTP
+  404 at doi.org and 404 at DataCite** at 16:34Z, about three minutes after
+  publication, so it has no registration timestamp yet. The v1.0.1 DOI took
+  about eight hours in the same state. The concept DOI's DataCite metadata
+  also still reads `version 1.0.1` while it already resolves to v1.1.0 — the
+  same lag. Nothing the article cites depends on either; §IV cites the
+  concept DOI.
+- **CLOSED 2026-09-24 — the v1.0.1 version DOI lag above.**
+  `10.5281/zenodo.22923220` is `findable` at DataCite, registered
+  2026-09-23T19:57:13Z, and resolves.
 - **STILL OPEN — carried forward to acceptance (1 of 2):** add the
   `isSupplementTo` relation with the article DOI, per step 6. It is the only part of this
   checklist that runs after submission, and nothing else will prompt for it —

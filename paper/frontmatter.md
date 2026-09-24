@@ -172,7 +172,8 @@ SATISFIED 2026-09-23.** The Zenodo record is published and the article cites
 the concept DOI `https://doi.org/10.5281/zenodo.22761130`, which always
 resolves to the newest version: CC BY 4.0, seven objects. v1.0.0 was record
 `22761131`; **v1.0.1 was published 2026-09-23 as record `22923220`** for a
-build defect on page 20, and the concept DOI resolves there now. The check was: verify the deposit is published,
+build defect on page 20; **v1.1.0 was published 2026-09-24 as record
+`22941578`**, and the concept DOI resolves there now. The check was: verify the deposit is published,
 then verify this sentence, then submit. The first two are done and the
 sentence stands as written; no rewrite was needed.
 

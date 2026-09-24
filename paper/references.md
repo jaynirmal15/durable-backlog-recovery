@@ -280,8 +280,9 @@ has never been an IEEE Associate Editor, and the draft claims no editorial role
 and no publications.
 
 **The artifact citations** — repository, pre-registration commit `371e477`,
-Zenodo concept DOI `10.5281/zenodo.22761130` (currently v1.0.1, record
-`22923220`, published 2026-09-23; v1.0.0 was record `22761131`), regression
+Zenodo concept DOI `10.5281/zenodo.22761130` (currently v1.1.0, record
+`22941578`, published 2026-09-24; v1.0.1 was record `22923220`, v1.0.0 was
+record `22761131`), regression
 fixture — are cited in §IV's
 reproducibility statement rather than numbered here. §IV cites the **concept**
 DOI `10.5281/zenodo.22761130`, which always resolves to the newest version,

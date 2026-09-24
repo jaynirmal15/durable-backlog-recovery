@@ -539,6 +539,36 @@ CHAR_PT = 3.1
 COLSEP_PT = 12.0        # \tabcolsep is 6pt, applied on both sides
 X_MIN_CHARS = 10        # an X column can wrap down to roughly this
 
+# TABLES WHOSE COLUMN COUNT LEAVES tabularx NOTHING TO DISTRIBUTE.
+#
+# tabularx gives the X columns whatever is left after the fixed columns and
+# the intercolumn padding. With eleven columns that padding is 22 x \tabcolsep
+# = 132pt of the 516pt line, and the estimator above -- which prices an X
+# column at X_MIN_CHARS x CHAR_PT, about 31pt -- believed the table fitted.
+# It did not. Measured from the compile log against the Times TFMs, both X
+# columns came out 7.10pt wide, and 18 of the supplement's 19 paragraph
+# overfull boxes were that one table: every header word and every capacity
+# range overflowing a column with no width in it, the widest being
+# `C_measured` in bold at 43.10pt against 7.10pt of column.
+#
+# THE ESTIMATOR'S BLIND SPOT IS THE PADDING, NOT THE COLUMNS. It counts
+# COLSEP_PT per column and then spends the remainder as though an X column
+# could not be squeezed below X_MIN_CHARS. tabularx has no such floor; it
+# will hand an X column 7pt and let every word in it hang into the margin.
+# Rather than re-tune CHAR_PT -- which would move article tables that
+# currently typeset correctly -- the tables that need a tighter separation
+# are named here, one entry each, and everything else keeps the class
+# default of 6pt.
+#
+# 2pt is not a round number chosen for looks. 22 instances x (6 - 2) frees
+# 88pt, which tabularx splits between the two X columns: 7.10 -> 51.10pt
+# each, clearing the widest token by 8pt. At 2.5pt the margin would be 2.5pt,
+# inside the measurement's own spread. The table also gets SHORTER -- 45
+# wrapped lines to 16 -- because the cells stop breaking after every word.
+TIGHT_TABLES = {
+    'tab:resolution-full': '2pt',
+}
+
 
 def short_caption(raw):
     """The entry for the list of figures: a moving argument, so it must be one
@@ -622,8 +652,12 @@ def table(lines, key, caption, wide=True):
 
     env = 'table*' if wide else 'table'
     out = [r'\begin{%s}[!t]' % env, caption_tex(caption),
-           r'\label{%s}' % key, r'\centering', r'\footnotesize',
-           open_tab, r'\hline']
+           r'\label{%s}' % key, r'\centering', r'\footnotesize']
+    if key in TIGHT_TABLES:
+        # Inside the float, so it reverts at \end{table*} and no other table
+        # sees it. Width-neutral: the tabular is still \textwidth.
+        out.append(r'\setlength{\tabcolsep}{%s}' % TIGHT_TABLES[key])
+    out += [open_tab, r'\hline']
     out.append(' & '.join(BOLD_OPEN + inline(h, True) + BOLD_CLOSE
                           for h in header) + r' \\ \hline')
     for row in data:

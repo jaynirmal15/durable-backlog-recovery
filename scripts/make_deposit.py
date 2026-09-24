@@ -30,16 +30,19 @@ STAGE = os.path.expanduser('~/Jay_NIW/paper2-zenodo')
 # 22761131 is v1.0.0, published 2026-09-23 and superseded by v1.0.1 for a build
 # defect on page 20. See scripts/DEPOSIT-W6.md.
 CONCEPT_DOI = '10.5281/zenodo.22761130'      # always the newest version
-V1_0_0_DOI = '10.5281/zenodo.22761131'       # superseded
-V1_0_0_ID = 22761131                         # newversion is taken from this
+V1_0_0_DOI = '10.5281/zenodo.22761131'       # superseded by v1.0.1
+V1_0_0_ID = 22761131
+V1_0_1_DOI = '10.5281/zenodo.22923220'       # superseded by v1.1.0
+V1_0_1_ID = 22923220                         # newversion is taken from THIS,
+                                             # the current published record
 RESERVED_DOI = CONCEPT_DOI
-DEPOSITION_ID = V1_0_0_ID
+DEPOSITION_ID = V1_0_1_ID
 
 META = {
     'title': 'Recovery Headroom Control: pre-registered boundary measurements, '
              'per-request traces and analysis code',
     'upload_type': 'dataset',
-    'version': '1.0.1',
+    'version': '1.1.0',
     'license': 'cc-by-4.0',
     'creators': [{'name': 'Nirmal, Jay Suresh',
                   'orcid': '0009-0003-0886-4663'}],
@@ -87,10 +90,161 @@ META = {
 
 
 
-README = """# Recovery Headroom Control — measurement artifact v1.0.0
+# THE ZENODO NOTES FIELD, COMPOSED -- NOT SLICED FROM THE README.
+#
+# For v1.0.1 the Notes were produced by slicing README.md and truncating at
+# 4,000 characters, which ended the field mid-word on "MANIFEST.j". A slice
+# has no idea where a sentence ends. This is written as its own text, lives in
+# git so it can be diffed against what the record actually carries, and ends
+# where it means to.
+NOTES = """Version 1.1.0, staged from git commit {commit}.
+
+This version supersedes v1.0.1 (record 22923220, published 2026-09-23), which superseded v1.0.0 (record 22761131). All three remain available and each keeps its own DOI. The concept DOI 10.5281/zenodo.22761130 always resolves to the newest version, and it is the DOI the article cites.
+
+Why a minor version rather than a patch: v1.0.1 corrected a single build defect and left the manuscript's text untouched. This version follows two independent adversarial reviews. Seven mechanical defects were corrected against the committed records, seven rulings were applied that narrow what the paper claims, and the checking tooling gained four invariants. v1.0.1 carries the pre-review PDFs, and because the concept DOI resolves to whatever is newest, leaving v1.0.1 newest would send a reader following the article's own DOI to an artifact whose PDFs contradict the paper that cites it.
+
+What did not change, measured by diffing v1.0.1's manifest against this one rather than asserted: both versions contain 809 files, nothing added and nothing removed, and 797 are byte-identical. That includes all 521 files under results/, all 205 per-request traces, all four harness sources, the regression fixture, all six figure PDFs, PRE-REGISTRATION.md and LICENSE. Of the 62 files under scripts/, 55 are byte-identical, including every script that computes a reported number.
+
+Twelve files changed: both PDFs, this record's README.md, two manuscript artefacts under figures/, and seven scripts. The seven are the manuscript-build, checking and deposit tooling. One of them, make_table3.py, renders a manuscript table and computes no measurement; the operand it printed for one identity had been rounded while the result had not, and is now the unrounded value the boundary artefact records. That artefact is unchanged.
+
+The archive is renamed paper2-rhc-artifact-1.1.0.zip to match the version it belongs to.
+
+MANIFEST.json hashes the files that ship. pdfTeX embeds a creation timestamp and a document identifier, so recompiling the sources reproduces the layout and the text but not the bytes. The full account is the Version note in README.md."""
+
+
+README = """# Recovery Headroom Control — measurement artifact
 
 Everything needed to check the reported numbers, and to re-derive them from the
 raw per-request traces.
+
+(This heading carried "v1.0.0" through v1.0.1, where it was already two
+versions stale. The version notes below carry the version; the heading no
+longer pretends to.)
+
+## Version note — v1.1.0, 2026-09-24
+
+**All dates in this note are UTC.** The repository clock runs at −0400. Every
+date below falls on the same day under both clocks, so unlike the v1.0.1 note
+there is no offset to reconcile here.
+
+**This is version 1.1.0. It supersedes version 1.0.1**, record `22923220`,
+published 2026-09-23, which superseded version 1.0.0, record `22761131`. All
+three remain available and each keeps its own DOI. The concept DOI
+`10.5281/zenodo.22761130` always resolves to the newest version, and it is the
+DOI the article cites.
+
+**Why a minor version and not a patch.** v1.0.1 was a patch: one build defect,
+corrected, with the manuscript's text untouched. This is not that. The
+manuscript went through two independent adversarial reviews and changed
+substantively — seven mechanical defects corrected against the committed
+records, and seven rulings applied that narrow what the paper claims. The
+checking tooling gained four invariants. Someone holding v1.0.1's
+`article.pdf` is not holding this paper with a tidier reference list.
+
+**Why there is a third version at all.** v1.0.1 carries the pre-review PDFs.
+The concept DOI resolves to whatever is newest, so leaving v1.0.1 newest would
+send every reader who follows the DOI printed in the article to an artifact
+whose PDFs contradict the paper that cites it.
+
+**What did not change, measured by diffing v1.0.1's manifest against this
+one — not asserted.** Both versions contain **809 files. Nothing was added and
+nothing was removed.** **797 are byte-identical.** Specifically:
+
+    results/     521 files   all byte-identical
+    traces/      205 files   all byte-identical
+    harness/       4 files   all byte-identical
+    tests/         2 files   all byte-identical
+    figures/*.pdf  6 files   all byte-identical
+    PRE-REGISTRATION.md      byte-identical
+    LICENSE                  byte-identical
+
+**No data, no per-request traces, no run records, no results, no analysis
+code, no figure generators, no regression fixture and no pre-registration
+text.** Of the 62 files under `scripts/`, **55 are byte-identical**, including
+every script that computes a reported number: `make_figures.py`,
+`make_table2.py`, `make_table4.py`, `e2e_analysis.py`,
+`capacity_calibration.py`, `locate_boundary.py`, `recompute_rho.py`,
+`slo_sweep.py`, `e2c_report.py` and `collapsed_estimator_audit.py`.
+
+**What did change: twelve files, none of them data.** Two of the twelve have
+no "after" size printed here, and deliberately: this file is one of them, and
+`make_deposit.py` is the script that holds this file's text. Writing either
+size into this note changes the thing the number describes. `MANIFEST.json`
+records both, measured after the fact, which is where a size belongs.
+
+    article.pdf                            544934 -> 547913
+    supplement-S1.pdf                      362257 -> 362979
+    README.md                               8034 ->  see MANIFEST.json
+    figures/CAPTIONS.md                     11959 ->  12097
+    figures/T3-candidate-explanations.md     7498 ->   7732
+    scripts/build_article.py                62414 ->  64728
+    scripts/check_manuscript.py             33491 ->  51617
+    scripts/make_deposit.py                 19753 ->  see MANIFEST.json
+    scripts/make_table3.py                  14137 ->  15479
+    scripts/test_check_manuscript.py        14536 ->  23484
+    scripts/test_zenodo_guard.py             8182 ->  13072
+    scripts/zenodo_deposit.py               35524 ->  39271
+
+**One of those needs stating precisely rather than being left inside a
+count.** `scripts/make_table3.py` is a generator, and its output changed:
+`figures/T3-candidate-explanations.md` is what it writes. It renders a
+manuscript table from committed artefacts and computes no measurement. What
+changed in it is that the table printed the identity
+`h = (0.98 − 0.9137) / 0.0689 = +0.980`, in which the first operand had been
+rounded while the result had not — so as printed it evaluates to 0.962 and
+read as false. The boundary artefact `results/e2b/boundaries/c50-C0.json`
+records ρ* as the interval [0.975, 0.9875], midpoint **0.98125**, which is the
+operand that yields 0.980. **The artefact did not change; the printed operand
+was wrong and is now the unrounded one, and the registered verdict is
+unaffected.** The generator now reads both operands from that artefact and
+asserts the identity, so it cannot drift again. `figures/CAPTIONS.md` is
+caption text and changed for the same class of reason.
+
+**The remaining six scripts are the manuscript-build, checking and deposit
+tooling**, and they are the substance of this version rather than noise beside
+it. `check_manuscript.py` grew from five invariants to seven; counting the two
+retired-phrase rules, **four new invariants**:
+
+1. **Float references must be keyed.** A literal "Table 8" survived a length
+   cut that had renumbered the table it named. A literal cannot be checked
+   against the float that would carry that number and cannot survive
+   renumbering; the keyed form can.
+2. **Section references must resolve.** Every §X and §X-Y, in either document,
+   must name a section the article actually has. Three in the supplement
+   pointed at a §V-G and a §VII-D the same cut had removed.
+3. **Registered values must name their semantic key.** Four defects across the
+   two reviews were one failure: a value staying numerically correct while
+   crossing an estimator, population, denominator or operation boundary.
+   Sixteen values now carry the dimensions their context must name.
+4. **Retired phrases cannot reappear in live text.** Two formulations were
+   withdrawn — a percentage range asserted across seven cells of different
+   resolution, and a prospectivity claim the archive cannot support — and the
+   phrase list now rejects both wherever they are not explicitly marked as
+   historical.
+
+**None of it touches how a reported number is computed.** Every script that
+computes one is byte-identical, and that is checked above rather than claimed.
+
+**Both PDFs were rebuilt**, because the manuscript changed. `MANIFEST.json`
+and the archive follow from them.
+
+**The archive was renamed** from `paper2-rhc-artifact-1.0.1.zip` to
+`paper2-rhc-artifact-1.1.0.zip`, so that its name matches the version it
+belongs to.
+
+**Why the PDFs are not byte-reproducible.** pdfTeX embeds a creation timestamp
+and a document identifier, so no two builds of the same `.tex` are ever
+byte-identical. **`MANIFEST.json` therefore hashes the files that ship, not a
+rebuild of them.** A reader checking the manifest should hash the delivered
+files; recompiling the `.tex` reproduces the layout and the text but not the
+bytes.
+
+**Commits.** The two review passes are `22f52a3` (2026-09-23T20:21:24Z) and
+`9698759` (2026-09-23T21:11:40Z); the length trim is `e3f90b6`
+(2026-09-24T13:18:55Z) and the supplement formatting fix `afde18a`
+(2026-09-24T13:49:33Z). v1.0.1 was staged from `b7731a32c16c444a097a97028f72051def33b538`.
+The commit this version was staged from is recorded in `MANIFEST.json` as
+`gitCommit`.
 
 ## Version note — v1.0.1, 2026-09-23
 
@@ -187,7 +341,7 @@ can be read without downloading 400 MB:
     article.pdf           the submitted article
     supplement-S1.pdf     its supplement
 
-The seventh object, **paper2-rhc-artifact-1.0.1.zip**, holds the complete tree
+The seventh object, **paper2-rhc-artifact-1.1.0.zip**, holds the complete tree
 with the directory paths below intact. Nothing is flattened: extract the
 archive and the paths in this README, in MANIFEST.json and in the paper's
 reproducibility statement are the paths you get.

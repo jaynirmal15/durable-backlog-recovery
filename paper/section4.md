@@ -1,5 +1,7 @@
 # §4 — Method
 
+*Draft 33 — DEPOSIT v1.1.0 PUBLISHED, 2026-09-24. **No body text changes.** The source comment beside §IV-I named v1.0.0 and v1.0.1 but not v1.1.0, so it read as current and was wrong; it now names all three. The build strips comments, so `article.tex` does not change.*
+
 *Draft 32 — CONCEPT DOI, NO RELEASE NUMBER, 2026-09-24. §IV-I reads "archived under concept DOI `10.5281/zenodo.22761130`". The short form, because the sentence already states the manifest and the commit separately. Manuscript text freezes at publication while the concept DOI keeps moving, so a named release is guaranteed to go stale where nobody can edit it — and 1.0.1 named the artifact this manuscript supersedes. The checker now rejects release numbers in prose.*
 
 *Draft 31 — FINAL REVISION, 2026-09-23. "Prospective" is swept from §IV-H: registration before the data is the claim, and A8 is described as registered before its own measurement with §IX-C's timestamp limitation named.*
@@ -380,7 +382,9 @@ counter-example, since fixed: the figures carried a wall-clock creation time
 <!-- repo commit, pre-registration 371e477, Zenodo CONCEPT DOI
      10.5281/zenodo.22761130, which always resolves to the newest version.
      v1.0.0 was published 2026-09-23 as record 22761131 from commit e22e779
-     and carried a build defect on page 20; v1.0.1 supersedes it. The version
+     and carried a build defect on page 20; v1.0.1 (record 22923220, from
+     commit b7731a3) supersedes it, and v1.1.0, published 2026-09-24 as
+     record 22941578 from commit b8950a1, supersedes v1.0.1. The version
      DOI is deliberately NOT cited here: the DOI printed in an accepted paper
      cannot be changed, so it must not name one version.
      fixture tests/fixtures/aug18-regression -->

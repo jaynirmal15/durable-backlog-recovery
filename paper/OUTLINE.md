@@ -952,7 +952,7 @@ instrumentation-bug objection; the scale-mismatch claim answers both.
 
 ## §4 Method — 4,750 words, T1
 
-<!-- plan-synced-to: section4 draft 32 -->
+<!-- plan-synced-to: section4 draft 33 -->
 
 - **Pre-registration**, commit `371e477`: the mechanical boundary estimator,
   SAFE / UNSAFE / MARGINAL classification, 5 rps bisection, interval

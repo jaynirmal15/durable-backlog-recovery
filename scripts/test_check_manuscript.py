@@ -513,5 +513,98 @@ class RegisteredTextIsOutOfPhraseScope(unittest.TestCase):
             self.assertIn('prospective', fh.read())
 
 
+
+
+class VersionIdentityInProse(unittest.TestCase):
+    """No release number in manuscript prose; the paper cites the concept DOI.
+
+    Manuscript text freezes at publication and the concept DOI keeps moving, so
+    a named release is guaranteed to go stale in a document nobody can edit --
+    and `version 1.0.1` had gone worse than stale, naming the artifact whose
+    claims the manuscript supersedes.
+
+    Two halves matter equally. "latest version" is banned only NEAR a DOI,
+    because it is ordinary English everywhere else; and the deposit's own
+    release notes are exempt, because naming the release is exactly what
+    release metadata is for.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix='checkver-')
+        shutil.copytree(os.path.join(ROOT, 'paper'),
+                        os.path.join(self.tmp, 'paper'))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.path = os.path.join(self.tmp, 'paper', 'section5.md')
+
+    def plant(self, text):
+        with open(self.path, encoding='utf-8') as fh:
+            body = fh.read()
+        anchor = '### C. One cost, three values, two instruments'
+        self.assertEqual(body.count(anchor), 1)
+        with open(self.path, 'w', encoding='utf-8') as fh:
+            fh.write(body.replace(anchor, anchor + '\n\n' + text))
+        return [h[2] for h in C.phrase_hits(self.path, True)]
+
+    def test_all_four_are_registered(self):
+        listed = [p for p, _, _, _ in C.CONDITIONAL]
+        for p in ('version 1.0.1', 'version 1.1.0',
+                  'latest version', 'current version'):
+            self.assertIn(p, listed)
+
+    def test_a_release_number_in_prose_fails(self):
+        self.assertIn('version 1.0.1',
+                      self.plant('Archived as version 1.0.1 under the DOI.'))
+
+    def test_the_other_release_number_fails_too(self):
+        self.assertIn('version 1.1.0',
+                      self.plant('Archived as version 1.1.0 under the DOI.'))
+
+    def test_latest_version_near_a_doi_fails(self):
+        self.assertIn('latest version', self.plant(
+            'DOI 10.5281/zenodo.22761130 resolves to the latest version.'))
+
+    def test_latest_version_away_from_a_doi_passes(self):
+        # The half that makes the rule usable rather than a nuisance.
+        self.assertNotIn('latest version',
+                         self.plant('The latest version of the harness is the '
+                                    'one reported here.'))
+
+    def test_current_version_near_a_doi_fails(self):
+        self.assertIn('current version', self.plant(
+            'The DOI 10.5281/zenodo.22761130 gives the current version.'))
+
+    def test_a_marker_exempts_historical_text(self):
+        self.assertNotIn('version 1.0.1', self.plant(
+            '<!-- withdrawn-quote-ok: historical -->\n'
+            'Archived as version 1.0.1 under the DOI.'))
+
+    def test_the_deposit_release_notes_are_exempt(self):
+        # make_deposit.py holds the README that ships with the deposit. Naming
+        # the release there is the rule, not a breach of it.
+        path = os.path.join(ROOT, 'scripts', 'make_deposit.py')
+        hits = [h[2] for h in C.phrase_hits(path, False)]
+        self.assertNotIn('version 1.0.1', hits)
+        with open(path, encoding='utf-8') as fh:
+            self.assertIn('v1.0.1', fh.read())
+
+    def test_the_two_reproducibility_sentences_name_no_release(self):
+        for rel in ('section4.md', 'supplement-S1.md'):
+            path = os.path.join(ROOT, 'paper', rel)
+            with open(path, encoding='utf-8') as fh:
+                lines = fh.readlines()
+            # BODY ONLY. The drafting header records what earlier drafts did,
+            # including the draft that named the version, and it is stripped
+            # before anything is typeset. Reading the whole file here made this
+            # test fail on a change log -- the test's bug, not the paper's.
+            body = ''.join(l for _, l in C.body_of(lines, True, path))
+            i = body.find('10.5281/zenodo.22761130')
+            self.assertGreater(i, 0, rel)
+            near = body[max(0, i - 200):i + 80]
+            self.assertIn('concept DOI', near, rel)
+            for bad in ('version 1.0.1', 'version 1.1.0',
+                        'latest version', 'current version'):
+                self.assertNotIn(bad, near.lower(), rel)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

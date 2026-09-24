@@ -1,5 +1,7 @@
 # §4 — Method
 
+*Draft 32 — CONCEPT DOI, NO RELEASE NUMBER, 2026-09-24. §IV-I reads "archived under concept DOI `10.5281/zenodo.22761130`". The short form, because the sentence already states the manifest and the commit separately. Manuscript text freezes at publication while the concept DOI keeps moving, so a named release is guaranteed to go stale where nobody can edit it — and 1.0.1 named the artifact this manuscript supersedes. The checker now rejects release numbers in prose.*
+
 *Draft 31 — FINAL REVISION, 2026-09-23. "Prospective" is swept from §IV-H: registration before the data is the claim, and A8 is described as registered before its own measurement with §IX-C's timestamp limitation named.*
 
 *Draft 30 — TWO-REVIEW REVISION, 2026-09-23. A3: the excess above unity in the two highest cells is 0.06 and 0.08 of a bisection step, not "about a fifth". A fifth was imported from E2D-REPORT, where 0.18 and 0.14 of a step describe different cells falling short of 1.0.*
@@ -366,8 +368,8 @@ seven that later sections rely on are:
 
 The harness, the pre-registration with its amendments and record corrections,
 every run record and per-request trace, the analysis code, the figure generators,
-the regression fixture and Supplement S1 are archived as version 1.0.1 under
-DOI `10.5281/zenodo.22761130`. The traces are held in the deposit rather than the
+the regression fixture and Supplement S1 are archived under concept DOI
+`10.5281/zenodo.22761130`. The traces are held in the deposit rather than the
 repository, so delivery-span quantities are re-derivable from raw observations
 only with the deposit. Every reported artefact regenerates byte-identically from
 the committed data by its own script, and a manifest records a SHA-256 for each

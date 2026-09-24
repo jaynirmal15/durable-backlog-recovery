@@ -150,7 +150,7 @@ corrections, every run record and per-request trace — the traces are archived
 with the dataset rather than held in the repository, so delivery-span
 quantities are checkable against their artefacts from the repository alone but
 re-derivable from raw observations only with the deposit — the analysis code, the figure generators and the regression
-fixture are archived as version 1.0.1 under DOI `10.5281/zenodo.22761130`. Every reported artefact regenerates
+fixture are archived under concept DOI `10.5281/zenodo.22761130`. Every reported artefact regenerates
 byte-identically from the committed data by running its own script, and a
 manifest records a SHA-256 for each file together with the commit the package
 was built from.

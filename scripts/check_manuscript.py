@@ -154,6 +154,47 @@ WITHDRAWN = [
 REGISTERED = ('A8-registration.md', 'A9-registration.md', 'A10-registration.md')
 
 
+# VERSION IDENTITY BELONGS IN RELEASE METADATA, NOT IN MANUSCRIPT PROSE.
+#
+# The standing rule, ruled 2026-09-24. Manuscript text freezes permanently at
+# publication; the concept DOI keeps moving. Any version number named in the
+# paper is therefore guaranteed to go stale in a document nobody can edit --
+# and `version 1.0.1` had already gone worse than stale, naming the artifact
+# whose claims this manuscript supersedes. The paper cites the concept DOI and
+# says nothing about which release it currently resolves to.
+#
+# "latest version" and "current version" are banned ONLY NEAR A DOI, because
+# both are ordinary English elsewhere. `near` is the condition; a phrase with
+# no `near` is unconditional.
+#
+# `skip` is the other half of the rule and not an escape from it. The deposit's
+# own release notes live inside make_deposit.py as the README text, and naming
+# the release is exactly what release metadata is for. Banning it there would
+# be enforcing the opposite of the rule.
+#
+# The same class as the aggregate-precision phrases: a rule that lives only in
+# prose is broken by the next regeneration.
+NEAR_DOI = re.compile(r'10\.5281/zenodo\.|\bdoi\b')
+DEPOSIT_NOTES = ('make_deposit.py',)
+
+CONDITIONAL = [
+    ('version 1.0.1',
+     'No version number in manuscript prose. The paper cites the CONCEPT DOI '
+     '10.5281/zenodo.22761130, which resolves to whatever is newest; a named '
+     'release goes stale in text nobody can edit, and 1.0.1 names the '
+     'superseded artifact. Write "archived under concept DOI ...".',
+     None, DEPOSIT_NOTES),
+    ('version 1.1.0', 'Same as "version 1.0.1": no release number in '
+     'manuscript prose, whichever release it is.', None, DEPOSIT_NOTES),
+    ('latest version',
+     'Near a DOI this names a moving target in frozen text. The concept DOI '
+     'already means "whatever is newest"; saying so again dates the sentence.',
+     NEAR_DOI, DEPOSIT_NOTES),
+    ('current version',
+     'Same as "latest version".', NEAR_DOI, DEPOSIT_NOTES),
+]
+
+
 def targets():
     out = []
     for name in sorted(os.listdir(PAPER)):
@@ -243,7 +284,10 @@ def phrase_hits(path, skip_header):
             else:
                 mapped.append(n)
                 prev_ws = False
-        for phrase, why in WITHDRAWN:
+        entries = [(p, w, None, ()) for p, w in WITHDRAWN] + CONDITIONAL
+        for phrase, why, near, skip in entries:
+            if os.path.basename(path) in skip:
+                continue
             start = 0
             while True:
                 i = flat.find(phrase, start)
@@ -256,6 +300,8 @@ def phrase_hits(path, skip_header):
                 window = ' '.join(l for n, l in numbered
                                   if first - 1 <= n <= last + 1)
                 if WITHDRAWN_OK_RE.search(window):
+                    continue
+                if near and not near.search(window.lower()):
                     continue
                 hits.append((path, first, phrase, why))
     return hits

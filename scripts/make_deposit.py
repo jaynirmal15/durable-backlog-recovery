@@ -101,7 +101,7 @@ NOTES = """Version 1.1.0, staged from git commit {commit}.
 
 This version supersedes v1.0.1 (record 22923220, published 2026-09-23), which superseded v1.0.0 (record 22761131). All three remain available and each keeps its own DOI. The concept DOI 10.5281/zenodo.22761130 always resolves to the newest version, and it is the DOI the article cites.
 
-Why a minor version rather than a patch: v1.0.1 corrected a single build defect and left the manuscript's text untouched. This version follows two independent adversarial reviews. Seven mechanical defects were corrected against the committed records, seven rulings were applied that narrow what the paper claims, and the checking tooling gained four invariants. v1.0.1 carries the pre-review PDFs, and because the concept DOI resolves to whatever is newest, leaving v1.0.1 newest would send a reader following the article's own DOI to an artifact whose PDFs contradict the paper that cites it.
+Why a minor version rather than a patch: v1.0.1 corrected a single build defect and left the manuscript's text untouched. This version follows two independent adversarial reviews. Seven mechanical defects were corrected against the committed records, seven rulings were applied that narrow what the paper claims, and the checking tooling gained five invariants. v1.0.1 carries the pre-review PDFs, and because the concept DOI resolves to whatever is newest, leaving v1.0.1 newest would send a reader following the article's own DOI to an artifact whose PDFs contradict the paper that cites it.
 
 What did not change, measured by diffing v1.0.1's manifest against this one rather than asserted: both versions contain 809 files, nothing added and nothing removed, and 797 are byte-identical. That includes all 521 files under results/, all 205 per-request traces, all four harness sources, the regression fixture, all six figure PDFs, PRE-REGISTRATION.md and LICENSE. Of the 62 files under scripts/, 55 are byte-identical, including every script that computes a reported number.
 
@@ -138,7 +138,7 @@ corrected, with the manuscript's text untouched. This is not that. The
 manuscript went through two independent adversarial reviews and changed
 substantively — seven mechanical defects corrected against the committed
 records, and seven rulings applied that narrow what the paper claims. The
-checking tooling gained four invariants. Someone holding v1.0.1's
+checking tooling gained five invariants. Someone holding v1.0.1's
 `article.pdf` is not holding this paper with a tidier reference list.
 
 **Why there is a third version at all.** v1.0.1 carries the pre-review PDFs.
